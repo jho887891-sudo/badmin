@@ -36,6 +36,7 @@
 
 ## 待解决问题
 - [x] Isaac Sim 下载通道确认（uv + pypi.nvidia.com 可用；curl 301 误导见 ISSUE-002）
-- [ ] Isaac Sim 大包下载耗时与磁盘占用监控（预计 40-60GB，进行中）
+- [x] Isaac Sim 大包下载（约 1h，NVIDIA 国内 CDN 峰值速 ~3.8MB/s，大文件时降至 ~0.7MB/s）
+- [ ] Isaac Sim 解包安装完成（进行中）
 - [x] torch 版本冲突已裁决（DEC-005：官方 2.10.0 cu128）
 - [ ] 根分区 inode 满：启动时需 export UV_CACHE_DIR/XDG_CACHE_HOME 到 /home/T7
