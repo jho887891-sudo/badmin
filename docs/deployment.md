@@ -32,3 +32,17 @@
 
 ## 部署路线（规划）
 ROS2 真机部署节点划分 + TensorRT / ONNX 推理部署（Stage 9 前细化）。
+
+## 磁盘与共享资源（2026-09-08 实测，重要）
+
+| 项 | 实测值 | 含义 |
+|---|---|---|
+| 根分区 /（xfs, LVM 280G） | **容量 100%**（可用 356K）；**inode 100%**（剩 873） | 根文件系统已满，dgut 家目录基本无法再写任何文件 |
+| /home/dgut | 约 164GB（根分区最大占用者） | 含用户其它项目，不可擅删 |
+| /home/T7（8T 磁盘 vdb2） | NTFS/FUSE（fuseblk），已用 5.5T，**可用 1.6T**；dgut 可写（实测） | 唯一的可用大空间 |
+| 未挂载分区 | vdb1 = 1T NTFS 未挂载 | 潜在可用（需管理员） |
+| GPU 占用 | vLLM 进程 PID 224065 常驻 ~24.8GB VRAM（0% 利用率） | 实际可用显存约剩 24GB |
+| RAM | 58GB 总；可用约 32GB；**swap 17GB 已用满** | 内存压力高（vLLM 等） |
+| dgut 家目录可清理项 | ~/.cache 17G、.npm 0.4G、（.local 16G 需甄别勿乱删） | 清理可同时释放字节与 inode |
+
+清理候选（未经用户批准不动）：~/.cache（17G，安全）；系统侧 /snap 24G、/usr/local 20G、docker snap 数据（docker images 58G，位置在 /var/snap 下，需管理员）。
