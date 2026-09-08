@@ -1,6 +1,6 @@
 # SETUP — 仿真环境安装记录（Isaac Sim 6.0.1 + Isaac Lab v3.0.0-beta2.patch1）
 
-> 状态：**安装进行中**（2026-09-08）。PHASE1 isaacsim 完成（rc=0）；torch 卡在官方 cu128 源间歇 AccessDenied（ISSUE-003），用户授权官方+后台长时重试（retry_torch_run.sh PID 2860075）。此文件是安装的唯一事实记录（本地 SSOT）。
+> 状态：**✅ 安装完成并通过最小验证**（2026-09-08 晚）。此文件是安装的唯一事实记录（本地 SSOT）。
 
 ## 目标版本（用户指定）
 - Isaac Sim: 6.0.1
@@ -41,3 +41,35 @@
 - [x] torch 版本冲突已裁决（DEC-005：官方 2.10.0 cu128）
 - [ ] torch 2.10.0+cu128 从官方源下载成功（进行中，ISSUE-003；注意：期间 TUNA 任务误杀致 torch 曾短暂被卸，由重试脚本重建）
 - [ ] 根分区 inode 满：启动时需 export UV_CACHE_DIR/XDG_CACHE_HOME 到 /home/T7
+
+
+## 最终结果（2026-09-08）
+
+### 安装成功
+- Isaac Sim: **6.0.1.0**（isaacsim[all,extscache]，uv pip，pypi.nvidia.com extra-index）
+- Isaac Lab: **v3.0.0-beta2.patch1**（git clone + ./isaaclab.sh -i，核心+全部基础子模块已装）
+- Python: **3.12.13**（uv venv env_isaaclab，路径 /home/T7/dgut/robot_sim/env_isaaclab）
+- PyTorch: **2.10.0+cu128** / torchvision 0.25.0+cu128 / torchaudio 2.10.0+cu128（CUDA 12.8，torch.cuda.is_available()=True）
+- 位置: /home/T7/dgut/robot_sim/（根分区满故装 NTFS/FUSE 的 T7，详见上文）
+- Isaac Sim 版本实测: 6.0.1（isaacsim-core 6.0.1.0）
+
+### 最小验证（通过）
+| 项 | 结果 |
+|---|---|
+| Python 启动 | ✅ 3.12.13 |
+| torch.cuda.is_available() | ✅ True（GPU=RTX A6000，CUDA 12.8） |
+| import isaaclab | ✅ ISAACLAB_IMPORT_OK |
+| Isaac-Cartpole-Direct-v0（注意本 tag 带 -v0）| ✅ env 创建(8 env)、reset、20 步 step、reward 正常、无 GPU 报错（verify_cartpole.py，headless） |
+
+### 已知遗留（不影响当前验证，后续可选完成）
+- isaaclab.sh -i 的**可选 extra** 未全部装完：isaaclab_mimic（robomimic@git）、isaaclab_rl[all]（rl-games@git）、isaacteleop extras —— 因 github.com 从此网络间歇超时（代理失效见 ISSUE-001，/tmp 满见 ISSUE-004 已通过 TMPDIR 解决；git 瞬时 HTTP2 framing/超时）。核心、tasks、rl[rsl-rl]、visualizers 均已就绪；Cartpole 不依赖这些 extras。
+- 处理办法：网络稳定时重跑 `bash isaaclab.sh -i`（run5 脚本已含代理绕过+TMPDIR+pip缓存），或改为 git 本地 mirror 后重试。
+- 首次启动建议 export：OMNI_KIT_ACCEPT_EULA=YES、HOME/TMPDIR/XDG_CACHE_HOME 指向 T7（root 分区满）。
+
+### 运行示例
+\`\`bash
+export ROOT=/home/T7/dgut/robot_sim
+export VIRTUAL_ENV=$ROOT/env_isaaclab TMPDIR=$ROOT/cache/tmp XDG_CACHE_HOME=$ROOT/cache/xdg HOME=$ROOT/cache/isaac_home OMNI_KIT_ACCEPT_EULA=YES
+cd $ROOT/IsaacLab
+./isaaclab.sh -p scripts/environments/train.py --task Isaac-Cartpole-Direct-v0 --headless --num_envs 256
+\`\`
