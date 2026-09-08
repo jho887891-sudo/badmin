@@ -22,12 +22,19 @@
 
 **解决问题：** 补齐知识库种子文件，作为后续一切工作的落盘基线
 
-**未完成：** 环境盘点（GPU/CUDA/Isaac 版本、远端主机）、硬件盘点、Observation/Action v0.1、git 首次 commit（若本地未配置 user.name/email）
+**未完成：** 环境盘点（GPU/CUDA/Isaac 版本、远端主机）、硬件盘点、Observation/Action v0.1
 
-**明日第一件事：** 完成环境与硬件事实盘点（本地跑检查命令登记到 docs/deployment.md 与 hardware_interface.md），或确认 git 提交身份后建立基线 commit
+**明日第一件事：** 完成环境与硬件事实盘点（本地跑检查命令，登记到 docs/deployment.md 与 hardware_interface.md）
 
-**Git commit：** 待执行（本次修改待提交）
+**Git commit：** a8bf4d1（chore: init project knowledge base structure，分支 main）
 
 **远端运行任务：** 无
 
 **Checkpoint：** 无
+
+**（同日补充，约 18:26）**
+- SSH 到远端开发机验证通过：dgut@172.31.68.251（hostname jxxy）；GPU = RTX A6000 49GB、驱动 550.163.01；Python 3.10.12；docker/nvidia-docker 可用；CUDA toolkit / Isaac Sim / Isaac Lab / conda 均未安装 → 事实已登记 docs/deployment.md
+- 远端候选目录 /home/T7/ojh 已查看（含 YOLO 权重与实验目录），**尚未定为项目工作区**
+- 关联 GitHub origin = https://github.com/jho887891-sudo/badmin（远程空仓库，用于备份/协同）
+- 提交身份默认：jho887891-sudo <jho887891-sudo@users.noreply.github.com>（可改为真实姓名/邮箱）
+- 补充 commit：（见 git log）
