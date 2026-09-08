@@ -57,3 +57,13 @@
 - **优点：** 历史署名一致；可随时 push 备份；本地 = SSOT 不变，远端仅作镜像/协同。
 - **缺点：** 展示名与真实姓名不一致（仅展示层面）。
 - **未来是否允许修改：** 允许 —— 用户提供真实姓名/邮箱后修改本地 config 即可（只影响后续提交）。
+
+## DEC-005 IsaacLab v3.0.0-beta2.patch1 的 torch 版本：采用官方 pin（2.10.0）而非用户消息中的 2.11.0
+- **日期：** 2026-09-08
+- **背景：** 用户指定 torch==2.11.0/torchvision==0.26.0（cu128）；但克隆的 IsaacLab tag 的官方文档（docs/source/setup/installation/pip_installation.rst）与 pyproject.toml dependencies 均要求 torch==2.10.0/torchvision==0.25.0/torchaudio==2.10.0（cu128 通道）。isaacsim[all]==6.0.1.0 的默认解析为 torch 2.11（宽松约束下的最新），官方流程随后 `uv pip install -U torch==2.10.0 ...` 强制回到 2.10。
+- **备选方案：** a) 按用户消息装 2.11.0/0.26.0；b) 按官方文档装 2.10.0/0.25.0；c) 换更新的 IsaacLab 版本。
+- **最终决定：** b) 官方 2.10.0/0.25.0/2.10.0（cu128）—— 因用户的最高原则是"严格按照当前 Isaac Lab 官方版本对应依赖安装，不自行换版"；用户的 2.11/0.26 疑对应更新版 IsaacLab。
+- **原因：** 数据优先于消息转述；tag 自带文档与 pyproject 为同一发布的事实来源。
+- **优点：** 与该 tag 的 isaaclab-dev 代码验证基线一致，避免隐性 API 不兼容。
+- **缺点：** 与用户消息中的版本数字不一致（已在此记录，用户可随时推翻）。
+- **未来是否允许修改：** 允许 —— 用户确认后可用 `uv pip install -U torch==2.11.0 torchvision==0.26.0 --index-url .../cu128` 切回 2.11。

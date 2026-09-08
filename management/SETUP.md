@@ -35,6 +35,7 @@
 7. 最小验证（Cartpole 等）待执行
 
 ## 待解决问题
-- [ ] Isaac Sim 大包下载耗时与磁盘占用监控（预计 40-60GB）
-- [ ] torch 与 isaacsim 依赖的 torch 版本一致性（dry-run 显示 isaacsim 要求 torch==2.11.0）
+- [x] Isaac Sim 下载通道确认（uv + pypi.nvidia.com 可用；curl 301 误导见 ISSUE-002）
+- [ ] Isaac Sim 大包下载耗时与磁盘占用监控（预计 40-60GB，进行中）
+- [x] torch 版本冲突已裁决（DEC-005：官方 2.10.0 cu128）
 - [ ] 根分区 inode 满：启动时需 export UV_CACHE_DIR/XDG_CACHE_HOME 到 /home/T7
