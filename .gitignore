@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 测试与缓存
+.pytest_cache/
+.ipynb_checkpoints/
+
+# 日志（运行日志建议进 logs/ 并忽略，实验摘要入 git）
+*.log
+logs/
+
+# 大文件与本地产物（checkpoint 默认不进 git，除非刻意记录）
+*.pt
+*.pth
+*.onnx
+*.engine
+*.urdf.bak
