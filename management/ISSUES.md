@@ -45,3 +45,16 @@
 - **验证方法：** uv pip install --dry-run "isaacsim[all,extscache]==6.0.1.0" 成功
 - **是否彻底解决：** 是（通道确认）
 - **相关 commit：** 无
+
+
+## ISSUE-003 官方 cu128 torch 源间歇 AccessDenied；国内镜像无 cu128
+- **日期：** 2026-09-08
+- **模块：** 环境/网络/依赖
+- **现象：** uv pip install torch==2.10.0(+cu128) --index-url https://download.pytorch.org/whl/cu128 反复失败：14:00-14:12 曾成功下载 torchvision/nvidia-cudnn-cu12，之后 torch-2.10.0+cu128 wheel(874MB) 下载 3+ 次均失败；curl 直取返回 S3 AccessDenied XML
+- **错误日志：** <?xml ...><Code>AccessDenied</Code>；uv "Downloading torch (874.4MiB)" 循环
+- **原因：** download.pytorch.org 的 S3/CF 对该出口 IP 大对象间歇拒绝（时间窗口性）；国内镜像（TUNA/阿里/上交/中科大/华为云）均未同步 cu128（止于 cu126；华为云 200 为 SPA 兜底非真文件）
+- **解决方案：** 用户拍板走官方源；uv 后台长时重试（retry_torch_run.sh，间隔 ~7min×40≈5h），命中放行窗口即装成；装成后 isaaclab.sh -i 的 `_ensure_cuda_torch` 精确匹配 torch==2.10.0+cu128 会跳过（install.py:277 起）
+- **修改文件：** 无（远端脚本）
+- **验证方法：** 重试日志 RC=0 后 python import torch 打印 2.10.0+cu128 且 cuda.is_available()=True
+- **是否彻底解决：** 待定（进行中）
+- **相关 commit：** 无

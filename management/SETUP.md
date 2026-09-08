@@ -1,6 +1,6 @@
 # SETUP — 仿真环境安装记录（Isaac Sim 6.0.1 + Isaac Lab v3.0.0-beta2.patch1）
 
-> 状态：**安装进行中**（2026-09-08）。此文件是安装的唯一事实记录（本地 SSOT），安装完成后补全"测试结果"。
+> 状态：**安装进行中**（2026-09-08）。PHASE1 isaacsim 完成（rc=0）；torch 卡在官方 cu128 源间歇 AccessDenied（ISSUE-003），用户授权官方+后台长时重试（retry_torch_run.sh PID 2860075）。此文件是安装的唯一事实记录（本地 SSOT）。
 
 ## 目标版本（用户指定）
 - Isaac Sim: 6.0.1
@@ -39,4 +39,5 @@
 - [x] Isaac Sim 大包下载（约 1h，NVIDIA 国内 CDN 峰值速 ~3.8MB/s，大文件时降至 ~0.7MB/s）
 - [ ] Isaac Sim 解包安装完成（进行中）
 - [x] torch 版本冲突已裁决（DEC-005：官方 2.10.0 cu128）
+- [ ] torch 2.10.0+cu128 从官方源下载成功（进行中，ISSUE-003；注意：期间 TUNA 任务误杀致 torch 曾短暂被卸，由重试脚本重建）
 - [ ] 根分区 inode 满：启动时需 export UV_CACHE_DIR/XDG_CACHE_HOME 到 /home/T7
