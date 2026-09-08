@@ -58,3 +58,15 @@
 - **验证方法：** 重试日志 RC=0 后 python import torch 打印 2.10.0+cu128 且 cuda.is_available()=True
 - **是否彻底解决：** 待定（进行中）
 - **相关 commit：** 无
+
+
+## ISSUE-004 isaaclab.sh -i 失败：imgui 编译写 /tmp 撞满根分区
+- **日期：** 2026-09-08
+- **模块：** 安装/构建
+- **现象：** ./isaaclab.sh -i 安装 isaaclab_teleop 子模块时构建 imgui 失败，日志：Cannot create temporary file in /tmp/: No space left on device；随后 SIGABRT，ISAACLAB_I_RC=1（16:59:29）
+- **原因：** 根分区 / 容量 100% 满（仅 356K）；cc 编译默认临时目录 /tmp 位于根分区 → ENOSPC。其余子模块（isaaclab/ppisp/assets/contrib/...）此前均已 -e 装好
+- **解决方案：** TMPDIR/TMP/TEMP 指向 /home/T7/dgut/robot_sim/cache/tmp（T7 盘）后重启 ./isaaclab.sh -i（run3.sh，PID 2901987）；imgui 将可正常构建
+- **修改文件：** 无（远端脚本/环境变量）
+- **验证方法：** isaaclab3.log 出现 ALL3_DONE 且 rc=0
+- **是否彻底解决：** 待验证（进行中）
+- **相关 commit：** 无

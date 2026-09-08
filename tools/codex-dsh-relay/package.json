@@ -1,0 +1,17 @@
+{
+  "name": "codex-dsh-relay",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "relay": "./src/cli.js",
+    "codex-dsh-session-bridge": "./src/mcp-server.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "relay": "node ./src/cli.js"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
