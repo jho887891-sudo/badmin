@@ -105,3 +105,9 @@
 - t05 ✅ ContactSensorCfg 真实接触：SHUTTLE_GROUND(step72)/SHUTTLE_NET(step52)/SHUTTLE_RACKET(step25)；contact_events.csv（force+速度前后）；说明：per-partner force_matrix_w 对静态伙伴为 0，采用 net_forces_w+受控场景分类（记录于 results.json）
 - 注：ContactSensor 需在 PHYSICS_READY 前创建；shuttle 需 activate_contact_sensors=True
 - 待续：t06 reset1000、t07 128env、t08 soak、evidence 图片/layout json/docs
+
+**（2026-09-09 续：t07 PASS / t08 运行中）**
+- create_scene 支持多 env（每 env 静态几何）；世界坐标写根状态（env_origins+local）
+- t07 ✅ 128 env：joint_pos/vel (128,6)、shuttle pos/vel (128,3)、env_origins (128,3)、nan=0、within_cell、net prims=128（outputs/t07_*/results.json；速度由 physx get_transforms 差分，已注明）
+- t08 soak 128env×600s sim 已 nohup 启动（outputs/t08_run.log）
+- 待续：soak 结果、contact per-partner matrix 增强验证、reachability、截图、scene_layout/coordinate evidence 收尾
