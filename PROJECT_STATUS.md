@@ -2,13 +2,13 @@
 
 > 保持简短：30 秒看懂项目在哪。每日工作结束或关键节点更新。
 
-- **Current Stage:** M0 项目基线已完成（知识库结构 + git 基线 commit）；RL Stage 0 未开始
-- **Current Goal:** 硬件盘点并登记（hardware_interface.md）；决定远端 Isaac Sim/Lab 安装方案
-- **Working:** 知识库种子文件齐全（基线 commit `a8bf4d1`，main）；远端 GPU 机事实已核实并登记（docs/deployment.md）；GitHub origin 已关联（jho887891-sudo/badmin）
-- **Not Working:** 无任何算法 / 仿真 / 实验代码（src/ 为空）；Isaac Sim / Isaac Lab / PyTorch / CUDA toolkit 均未安装（本地与远端）；硬件参数未确认
-- **Current Experiment:** 无（`experiments/EXPERIMENT_INDEX.md` 为空）
+- **Current Stage:** 仿真环境已就绪并冻结 baseline；**PiPER Stage 0 完成**（导入/articulation/限位/坐标系/控制全部验收通过）；RL Stage 0 未开始
+- **Current Goal:** PiPER Stage 0 验收（已完成）→ 下一阶段待用户指令（硬件参数盘点 / Observation-Action v0.1 / Morph 集成等，均未开始）
+- **Working:** Isaac Sim 6.0.1.0 + Isaac Lab v3.0.0-beta2.patch1（包 6.1.14）+ torch 2.10.0+cu128 于远端 jxxy 运行稳定；PiPER 6 轴（no gripper）URDF→USD 导入 + Isaac Lab Articulation 全验收通过（含 10 分钟 soak）；RL 训练框架 rsl_rl/skrl/rl_games/sb3 已补齐；baseline（pip freeze 325 包）已冻结于远端 robot_sim/logs
+- **Not Working:** 无算法/RL 训练代码；Morph One / 羽毛球动力学 / PPO 未开始（遵守边界）；真机硬件参数未确认
+- **Current Experiment:** 无训练（experiments/EXPERIMENT_INDEX.md 尚未登记）
 - **Best Model:** 无
 - **Best Metrics:** 无
-- **Main Blocker:** 硬件平台参数未知（底盘 / 机械臂 / 双目 / URDF）+ 远端 Isaac 安装方案待定 —— 当前不阻塞文档类工作
-- **Next Step:** ① 硬件盘点并登记（hardware_interface.md）→ ② 决定并落地远端 Isaac Sim/Lab 安装方案 → ③ 起草 Observation/Action v0.1
-- **Last Updated:** 2026-09-08
+- **Main Blocker:** 无（PiPER 单臂仿真闭环已通）。注意：根分区仍 100% 满（未清理，需用户批准）；vLLM 占用 ~24.8GB 显存
+- **Next Step:** 等用户指令进入下一阶段（候选：真机硬件盘点并登记 docs/hardware_interface.md → Observation/Action v0.1；后续再上 Morph/动力学/PPO）
+- **Last Updated:** 2026-09-09

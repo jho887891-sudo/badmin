@@ -67,3 +67,33 @@
 - **优点：** 与该 tag 的 isaaclab-dev 代码验证基线一致，避免隐性 API 不兼容。
 - **缺点：** 与用户消息中的版本数字不一致（已在此记录，用户可随时推翻）。
 - **未来是否允许修改：** 允许 —— 用户确认后可用 `uv pip install -U torch==2.11.0 torchvision==0.26.0 --index-url .../cu128` 切回 2.11。
+
+## DEC-006 PiPER 仿真资产来源与导入管线：官方 AgileX 描述 + isaacsim 官方 URDF 导入器（fix_base）
+- **日期：** 2026-09-09
+- **背景：** 需要 PiPER 6 轴机械臂在 Isaac Lab 中单独正确导入（Stage 0）；无现成本地资产
+- **备选方案：** a) 用仓库自带 USD（piper_v1/v2.usd 等，面向旧版 Isaac Sim，未采用）；b) 官方 isaacsim.asset.importer.urdf 从 URDF 现转；c) mujoco menagerie 等其它来源
+- **最终决定：** b) 采用官方 agilexrobotics/piper_isaac_sim 的 piper_description/urdf/piper_no_gripper_description.urdf（纯 6 轴无夹爪），经官方 URDFImporter（fix_base=True、merge=False、allow_self_collision=False、run_multi_physics_conversion=True）转 USD；脚本 t01
+- **原因：** 数据来源权威（厂商）；URDF 含完整 inertial/mass/limits/meshes；官方导入器保证 schema 与 PhysX 兼容；fix_base 固定基座（机械臂安装于底盘/桌面）
+- **优点：** 可复现、版本无关；关节名 joint1..6 与限位忠实保留（已对照）
+- **缺点：** 导入器默认不产生 stiffness/damping（URDF 无 transmission），增益需在 Isaac Lab 侧指定
+- **未来是否允许修改：** 允许 —— 换真机标定 URDF 或官方 v100/夹爪版本时重走 t01 即可
+- **相关文件：** scripts/piper_stage0/t01_convert_urdf.py、piper_cfg.py
+
+## DEC-007 Stage0 控制参数：ImplicitActuator stiffness=150 / damping=15（240 Hz，自碰撞关闭）
+- **日期：** 2026-09-09
+- **背景：** PiPER 轻量臂（单链接质量 ≤1.2 kg），URDF 无传动增益；Stage0 需干净的单/全轴位置控制与稳定性
+- **最终决定：** ArticulationCfg actuators：piper_arm ImplicitActuatorCfg(joint_names_expr=joint[1-6], stiffness=150.0, damping=15.0, effort_limit_sim=100.0)；init_state 取中段 rest（j2=1.5、j3=-1.5 避开 URDF 零位贴边界）；SimulationCfg dt=1/240；scene num_envs=1；spawn 自碰撞关闭（enabled_self_collisions=False）
+- **原因：** 实测稳定且收敛（单关节 err≤0.046 rad、全轴 err≤0.048 rad、静止 drift 0.022 rad、600 s soak 0 NaN）；避免零位限位接触与自碰撞伪影干扰 Stage0 验证
+- **优点：** 结果可复现；为后续加球拍负载/底盘时留出调参基线
+- **缺点：** joint2 存在重力下垂稳态误差 ~0.045-0.048 rad（增益或前馈可后续优化）
+- **未来是否允许修改：** 允许 —— 载荷/高速/自碰撞研究时按需调整并登记
+- **相关文件：** scripts/piper_stage0/piper_cfg.py
+
+## DEC-008 依赖管理：冻结 baseline，RL extras 用官方 editable 安装且不改核心版本
+- **日期：** 2026-09-09
+- **背景：** 用户要求补齐 RL extras 且不修改 Isaac Sim / Isaac Lab / Python / PyTorch / CUDA / Driver 版本；并冻结当前已验证环境
+- **最终决定：** 1) RL 框架按官方路径安装（isaaclab_rl[all] editable）得到 rsl_rl/skrl/rl_games/sb3；2) 任何与 isaacsim-kernel 硬 pin 冲突的包恢复 baseline 版本；3) pip freeze 冻结到 robot_sim/logs/baseline_env_20260909.txt 作为 baseline；4) 后续升级一律先说明风险并记录
+- **原因：** 可复现优先；官方兼容表约束核心版本
+- **优点：** 训练框架可用且核心环境与 2026-09-08 验证一致
+- **缺点：** 冻结清单将随未来合理升级而更新（需记录）
+- **未来是否允许修改：** 允许 —— 条件：先记录风险与影响范围
