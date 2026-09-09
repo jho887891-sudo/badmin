@@ -1,21 +1,17 @@
-# Coordinate System
+# Coordinate System (Badminton Robot Scene v0.1)
 
-**状态：占位（待填写，v0.1 属 P1 任务）**
+冻结定义（ENGINEERING_V0_1），唯一依据 scene_layout.py。右手系。
 
-职责：定义并登记全部坐标系与变换关系，避免"拍了半年发现坐标系反了"。
+- **World Origin** (0,0,0)：球网中央正下方地面（网 X=0）
+- **+X**：机器人一侧(-X) → 对方球场(+X)
+- **+Y**：机器人面向 +X 时的左侧
+- **+Z**：竖直向上
+- 场地：X∈[-6.70,6.70]；Y∈[-3.05,3.05]（双打）；线宽 0.04
+- 网：X=0，宽 6.10（Y±3.05），中央顶 z=1.524，边顶/柱 z=1.55，depth 0.76
+- Robot base：(-1.60,0,0) yaw0；PiPER mount world (-1.60,0,0.30)
+- Morph placeholder：(L0.70×W0.55×H0.25)m @ z0.125，SOURCE=TEMP_PLACEHOLDER
+- Camera rig：(−1.40,0,1.20)，pitch −4°，baseline 0.29（L y+0.145 / R y−0.145）
+- Racket local：+X 面法向朝对方，+Z 柄→头；tcp=link6 origin，contact @ +Z 0.50
+- ROIs/区域/来球/落区全部数值 → evidence/scene_layout.json
 
-规划坐标系：
-- 世界坐标系（court / simulator origin）
-- 底盘坐标系（base_link）
-- 机械臂基座坐标系
-- 末端执行器坐标系（arm end-effector）
-- 双目相机坐标系（left / right / camera optical frame）
-- 球拍坐标系（racket contact frame）
-
-需记录内容：
-1. 各坐标系定义与轴向约定（如 ROS REP-103：x 前、y 左、z 上）
-2. TF 变换树 / 齐次变换链
-3. 羽毛球物理量（位置/速度/轨迹）所在坐标系与转换约定
-4. 仿真（Isaac）与真机（ROS2）坐标系映射
-
-**任何涉及坐标变换的代码改动必须同步本文档。**
+env 数据写入接口（write_root_*_to_sim）使用 **世界坐标** = env_origins + 局部坐标。
