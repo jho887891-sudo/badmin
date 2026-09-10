@@ -6,9 +6,9 @@
       "width": 1280,
       "height": 720,
       "eye": [
-        3.2,
-        -3.2,
-        2.4
+        3.4,
+        -3.4,
+        2.6
       ],
       "target": [
         0.0,
@@ -16,94 +16,125 @@
         0.6
       ],
       "focal": 24.0,
-      "attempts": 1,
-      "score": 0.10708,
+      "ferr": 8.886649223807266e-10,
+      "axis_pixels_rgb": null,
+      "marker_pixels": null,
+      "missing_required": [],
+      "visible_objects": [
+        "world_origin",
+        "robot_base",
+        "morph",
+        "piper_mount",
+        "racket_body",
+        "racket_tcp",
+        "racket_contact",
+        "net_center_top",
+        "net_bottom",
+        "shuttle",
+        "ground_origin",
+        "perception_roi",
+        "candidate_strike_roi",
+        "camera_rig"
+      ],
       "projections": {
         "world_origin": [
           640.0,
-          520.5,
-          5.092,
+          509.3,
+          5.438,
           true
         ],
         "robot_base": [
-          365.1,
-          326.1,
-          6.032,
+          379.5,
+          323.7,
+          6.368,
+          true
+        ],
+        "morph": [
+          382.2,
+          360.9,
+          6.435,
           true
         ],
         "piper_mount": [
-          365.1,
-          326.1,
-          6.032,
+          379.5,
+          323.7,
+          6.368,
           true
         ],
         "racket_body": [
-          376.6,
-          378.2,
-          6.075,
+          390.5,
+          372.9,
+          6.413,
+          true
+        ],
+        "racket_tcp": [
+          390.5,
+          372.9,
+          6.413,
           true
         ],
         "racket_contact": [
-          376.6,
-          378.2,
-          6.075,
+          461.5,
+          396.4,
+          6.071,
           true
         ],
         "net_center_top": [
           640.0,
-          82.1,
-          4.529,
+          102.3,
+          4.853,
+          true
+        ],
+        "net_bottom": [
+          640.0,
+          316.9,
+          5.145,
           true
         ],
         "shuttle": [
           640.0,
-          516.9,
-          5.087,
+          506.0,
+          5.433,
+          true
+        ],
+        "ground_origin": [
+          640.0,
+          509.3,
+          5.438,
           true
         ],
         "spawn_region": [
-          954.1,
-          -49.3,
-          3.63,
+          928.5,
+          -8.7,
+          3.952,
           false
         ],
         "target_zone": [
-          1786.6,
-          1038.8,
-          2.938,
+          1661.8,
+          978.2,
+          3.297,
           false
         ],
         "perception_roi": [
-          737.4,
-          92.0,
-          4.256,
+          730.5,
+          114.1,
+          4.582,
           true
         ],
         "candidate_strike_roi": [
-          550.3,
-          146.5,
-          4.909,
+          555.9,
+          159.6,
+          5.236,
           true
         ],
         "camera_rig": [
-          379.4,
-          116.9,
-          5.568,
+          393.7,
+          127.5,
+          5.891,
           true
         ]
       },
-      "visible_objects": [
-        "world_origin",
-        "robot_base",
-        "piper_mount",
-        "racket_body",
-        "racket_contact",
-        "net_center_top",
-        "shuttle",
-        "perception_roi",
-        "candidate_strike_roi",
-        "camera_rig"
-      ]
+      "ok": true
     },
     {
       "name": "scene_perspective",
@@ -116,100 +147,132 @@
         2.4
       ],
       "target": [
-        -0.6,
+        -0.4,
         0.0,
-        0.6
+        0.9
       ],
       "focal": 24.0,
-      "attempts": 2,
-      "score": 0.48728,
-      "projections": {
-        "world_origin": [
-          748.3,
-          465.5,
-          5.742,
-          true
-        ],
-        "robot_base": [
-          413.5,
-          529.4,
-          4.577,
-          true
-        ],
-        "piper_mount": [
-          413.5,
-          529.4,
-          4.577,
-          true
-        ],
-        "racket_body": [
-          431.4,
-          583.9,
-          4.69,
-          true
-        ],
-        "racket_contact": [
-          431.4,
-          583.9,
-          4.69,
-          true
-        ],
-        "net_center_top": [
-          759.4,
-          74.5,
-          5.208,
-          true
-        ],
-        "shuttle": [
-          748.4,
-          462.2,
-          5.737,
-          true
-        ],
-        "spawn_region": [
-          945.5,
-          -80.3,
-          5.769,
-          false
-        ],
-        "target_zone": [
-          1146.7,
-          278.2,
-          7.877,
-          true
-        ],
-        "perception_roi": [
-          829.7,
-          54.7,
-          5.463,
-          true
-        ],
-        "candidate_strike_roi": [
-          676.1,
-          169.6,
-          5.022,
-          true
-        ],
-        "camera_rig": [
-          451.3,
-          238.7,
-          4.394,
-          true
-        ]
-      },
+      "ferr": 9.478934561695504e-10,
+      "axis_pixels_rgb": null,
+      "marker_pixels": null,
+      "missing_required": [],
       "visible_objects": [
         "world_origin",
         "robot_base",
+        "morph",
         "piper_mount",
         "racket_body",
+        "racket_tcp",
         "racket_contact",
         "net_center_top",
+        "net_bottom",
         "shuttle",
+        "ground_origin",
+        "spawn_region",
         "target_zone",
         "perception_roi",
         "candidate_strike_roi",
         "camera_rig"
-      ]
+      ],
+      "projections": {
+        "world_origin": [
+          710.5,
+          559.4,
+          5.713,
+          true
+        ],
+        "robot_base": [
+          372.3,
+          628.7,
+          4.513,
+          true
+        ],
+        "morph": [
+          375.3,
+          679.5,
+          4.564,
+          true
+        ],
+        "piper_mount": [
+          372.3,
+          628.7,
+          4.513,
+          true
+        ],
+        "racket_body": [
+          390.5,
+          684.4,
+          4.614,
+          true
+        ],
+        "racket_tcp": [
+          390.5,
+          684.4,
+          4.614,
+          true
+        ],
+        "racket_contact": [
+          508.7,
+          618.9,
+          4.948,
+          true
+        ],
+        "net_center_top": [
+          716.4,
+          170.5,
+          5.271,
+          true
+        ],
+        "net_bottom": [
+          713.3,
+          372.2,
+          5.492,
+          true
+        ],
+        "shuttle": [
+          710.5,
+          556.1,
+          5.709,
+          true
+        ],
+        "ground_origin": [
+          710.5,
+          559.4,
+          5.713,
+          true
+        ],
+        "spawn_region": [
+          896.0,
+          19.8,
+          5.899,
+          true
+        ],
+        "target_zone": [
+          1101.6,
+          368.1,
+          7.96,
+          true
+        ],
+        "perception_roi": [
+          785.3,
+          150.8,
+          5.542,
+          true
+        ],
+        "candidate_strike_roi": [
+          635.0,
+          264.4,
+          5.055,
+          true
+        ],
+        "camera_rig": [
+          410.8,
+          334.5,
+          4.391,
+          true
+        ]
+      },
+      "ok": true
     },
     {
       "name": "scene_top",
@@ -227,8 +290,28 @@
         0.0
       ],
       "focal": 18.0,
-      "attempts": 1,
-      "score": null,
+      "ferr": 6.666668051602436e-11,
+      "axis_pixels_rgb": null,
+      "marker_pixels": null,
+      "missing_required": [],
+      "visible_objects": [
+        "world_origin",
+        "robot_base",
+        "morph",
+        "piper_mount",
+        "racket_body",
+        "racket_tcp",
+        "racket_contact",
+        "net_center_top",
+        "net_bottom",
+        "shuttle",
+        "ground_origin",
+        "spawn_region",
+        "target_zone",
+        "perception_roi",
+        "candidate_strike_roi",
+        "camera_rig"
+      ],
       "projections": {
         "world_origin": [
           640.0,
@@ -240,6 +323,12 @@
           520.3,
           360.1,
           14.7,
+          true
+        ],
+        "morph": [
+          521.7,
+          360.1,
+          14.875,
           true
         ],
         "piper_mount": [
@@ -254,10 +343,16 @@
           14.915,
           true
         ],
-        "racket_contact": [
+        "racket_tcp": [
           526.2,
           360.1,
           14.915,
+          true
+        ],
+        "racket_contact": [
+          562.7,
+          360.1,
+          14.871,
           true
         ],
         "net_center_top": [
@@ -266,10 +361,22 @@
           13.476,
           true
         ],
+        "net_bottom": [
+          640.0,
+          360.1,
+          14.236,
+          true
+        ],
         "shuttle": [
           640.0,
           360.1,
           14.986,
+          true
+        ],
+        "ground_origin": [
+          640.0,
+          360.1,
+          15.0,
           true
         ],
         "spawn_region": [
@@ -303,20 +410,7 @@
           true
         ]
       },
-      "visible_objects": [
-        "world_origin",
-        "robot_base",
-        "piper_mount",
-        "racket_body",
-        "racket_contact",
-        "net_center_top",
-        "shuttle",
-        "spawn_region",
-        "target_zone",
-        "perception_roi",
-        "candidate_strike_roi",
-        "camera_rig"
-      ]
+      "ok": true
     },
     {
       "name": "scene_side",
@@ -324,99 +418,137 @@
       "width": 1280,
       "height": 720,
       "eye": [
-        -1.6,
-        -3.0,
-        1.2
+        0.0,
+        -12.0,
+        1.6
       ],
       "target": [
-        -1.6,
+        -0.4,
         0.0,
-        0.6
+        1.1
       ],
-      "focal": 28.0,
-      "attempts": 3,
-      "score": 0.54872,
+      "focal": 18.0,
+      "ferr": 8.118699260434721e-10,
+      "axis_pixels_rgb": null,
+      "marker_pixels": null,
+      "missing_required": [],
+      "visible_objects": [
+        "world_origin",
+        "robot_base",
+        "morph",
+        "piper_mount",
+        "racket_body",
+        "racket_tcp",
+        "racket_contact",
+        "net_center_top",
+        "net_bottom",
+        "shuttle",
+        "ground_origin",
+        "spawn_region",
+        "target_zone",
+        "perception_roi",
+        "candidate_strike_roi",
+        "camera_rig"
+      ],
       "projections": {
         "world_origin": [
-          1501.3,
-          676.7,
-          3.177,
-          false
+          676.5,
+          460.3,
+          12.05,
+          true
         ],
         "robot_base": [
-          640.0,
-          521.4,
-          3.118,
+          530.9,
+          432.5,
+          12.09,
+          true
+        ],
+        "morph": [
+          531.0,
+          448.4,
+          12.098,
           true
         ],
         "piper_mount": [
-          640.0,
-          521.4,
-          3.118,
+          530.9,
+          432.5,
+          12.09,
           true
         ],
         "racket_body": [
-          670.4,
-          633.4,
-          3.16,
+          536.1,
+          452.0,
+          12.097,
+          true
+        ],
+        "racket_tcp": [
+          536.1,
+          452.0,
+          12.097,
           true
         ],
         "racket_contact": [
-          670.4,
-          633.4,
-          3.16,
+          581.3,
+          448.2,
+          12.079,
           true
         ],
         "net_center_top": [
-          1590.8,
-          -178.4,
-          2.878,
-          false
+          676.7,
+          321.2,
+          11.986,
+          true
+        ],
+        "net_bottom": [
+          676.6,
+          390.8,
+          12.018,
+          true
         ],
         "shuttle": [
-          1502.1,
-          669.6,
-          3.174,
-          false
+          676.5,
+          459.1,
+          12.049,
+          true
+        ],
+        "ground_origin": [
+          676.5,
+          460.3,
+          12.05,
+          true
         ],
         "spawn_region": [
-          2298.2,
-          -483.1,
-          2.785,
-          false
+          778.2,
+          277.3,
+          11.93,
+          true
         ],
         "target_zone": [
-          3259.0,
-          651.2,
-          3.167,
-          false
+          975.9,
+          457.1,
+          11.939,
+          true
         ],
         "perception_roi": [
-          1830.6,
-          -194.5,
-          2.873,
-          false
+          713.4,
+          318.8,
+          11.972,
+          true
         ],
         "candidate_strike_roi": [
-          1325.4,
-          -11.8,
-          2.932,
-          false
+          637.7,
+          346.3,
+          12.012,
+          true
         ],
         "camera_rig": [
-          756.3,
-          17.9,
-          2.942,
+          548.8,
+          350.8,
+          12.046,
           true
         ]
       },
-      "visible_objects": [
-        "robot_base",
-        "piper_mount",
-        "racket_body",
-        "racket_contact",
-        "camera_rig"
-      ]
+      "ok": true
     },
     {
       "name": "racket_frames",
@@ -424,9 +556,9 @@
       "width": 1280,
       "height": 720,
       "eye": [
-        -0.5947204113006592,
-        -0.7000043165532588,
-        0.5569456040859222
+        -0.6947204113006592,
+        -0.10000431655325884,
+        0.3269456040859222
       ],
       "target": [
         -1.2947204113006592,
@@ -434,90 +566,122 @@
         0.10694560408592224
       ],
       "focal": 30.0,
-      "attempts": 4,
+      "ferr": 3.03396675190395e-09,
       "axis_pixels_rgb": [
         0,
         0,
         0
       ],
+      "marker_pixels": {
+        "tcp": 8133,
+        "contact": 6499
+      },
+      "missing_required": [],
+      "visible_objects": [
+        "morph",
+        "racket_body",
+        "racket_tcp",
+        "racket_contact"
+      ],
       "projections": {
         "world_origin": [
-          6265.1,
-          3285.9,
-          0.298,
+          -113.4,
+          -1533.3,
+          -0.518,
           false
         ],
         "robot_base": [
-          311.5,
-          -43.4,
-          1.204,
+          533.6,
+          -242.0,
+          0.864,
           false
         ],
+        "morph": [
+          540.5,
+          123.2,
+          0.924,
+          true
+        ],
         "piper_mount": [
-          311.5,
-          -43.4,
-          1.204,
+          533.6,
+          -242.0,
+          0.864,
           false
         ],
         "racket_body": [
-          383.3,
-          283.1,
-          1.257,
+          555.3,
+          230.1,
+          0.885,
+          true
+        ],
+        "racket_tcp": [
+          555.3,
+          230.1,
+          0.885,
           true
         ],
         "racket_contact": [
-          383.3,
-          283.1,
-          1.257,
+          823.7,
+          641.7,
+          0.408,
           true
         ],
         "net_center_top": [
-          -4406.9,
-          5383.0,
-          -0.332,
+          263.5,
+          1948.6,
+          -1.036,
+          false
+        ],
+        "net_bottom": [
+          138.4,
+          792.5,
+          -0.778,
           false
         ],
         "shuttle": [
-          6376.5,
-          3264.0,
-          0.292,
+          -106.5,
+          -1469.9,
+          -0.523,
+          false
+        ],
+        "ground_origin": [
+          -113.4,
+          -1533.3,
+          -0.518,
           false
         ],
         "spawn_region": [
-          -1867.5,
-          1874.3,
-          -1.237,
+          314.8,
+          1166.9,
+          -2.218,
           false
         ],
         "target_zone": [
-          -2605.4,
-          -1035.4,
-          -1.815,
+          254.3,
+          -454.8,
+          -3.549,
           false
         ],
         "perception_roi": [
-          -3015.9,
-          2854.9,
-          -0.601,
+          279.4,
+          1380.4,
+          -1.416,
           false
         ],
         "candidate_strike_roi": [
-          21297.5,
-          -26045.1,
-          0.055,
+          162.4,
+          2975.5,
+          -0.549,
           false
         ],
         "camera_rig": [
-          445.9,
-          -2314.6,
-          0.703,
+          554.9,
+          -4867.2,
+          0.373,
           false
         ]
       },
-      "visible_objects": [
-        "racket_body",
-        "racket_contact"
-      ]
+      "ok": true
     },
     {
       "name": "scene_128env",
@@ -535,6 +699,11 @@
         0.0
       ],
       "focal": 20.0,
+      "ferr": 5.13538445102111e-10,
+      "axis_pixels_rgb": null,
+      "marker_pixels": null,
+      "missing_required": [],
+      "visible_objects": [],
       "projections": {
         "world_origin": [
           1885.5,
@@ -546,6 +715,12 @@
           1866.3,
           1355.1,
           112.164,
+          false
+        ],
+        "morph": [
+          1864.8,
+          1354.8,
+          112.323,
           false
         ],
         "piper_mount": [
@@ -560,10 +735,16 @@
           112.359,
           false
         ],
-        "racket_contact": [
+        "racket_tcp": [
           1865.2,
           1354.8,
           112.359,
+          false
+        ],
+        "racket_contact": [
+          1872.4,
+          1354.9,
+          112.319,
           false
         ],
         "net_center_top": [
@@ -572,10 +753,22 @@
           111.053,
           false
         ],
+        "net_bottom": [
+          1892.2,
+          1355.9,
+          111.743,
+          false
+        ],
         "shuttle": [
           1885.6,
           1354.7,
           112.424,
+          false
+        ],
+        "ground_origin": [
+          1885.5,
+          1354.6,
+          112.436,
           false
         ],
         "spawn_region": [
@@ -609,7 +802,12 @@
           false
         ]
       },
-      "visible_objects": []
+      "ok": true,
+      "env_origins_span_xy": [
+        165.0,
+        150.0
+      ],
+      "env_count": 128
     }
   ]
 }
