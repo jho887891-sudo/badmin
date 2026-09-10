@@ -1,0 +1,219 @@
+{
+  "world_origin": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "court": {
+    "length": 13.4,
+    "half_length": 6.7,
+    "doubles_width": 6.1,
+    "singles_width": 5.18,
+    "half_doubles": 3.05,
+    "half_singles": 2.59,
+    "line_width": 0.04,
+    "line_z": 0.001,
+    "back_x": 6.7,
+    "short_service_x": 1.98,
+    "long_service_x": 5.94,
+    "center_y": 0.0
+  },
+  "net": {
+    "x": 0.0,
+    "width": 6.1,
+    "half_width": 3.05,
+    "depth": 0.76,
+    "center_top_z": 1.524,
+    "side_top_z": 1.55,
+    "post_height": 1.55,
+    "collision_thickness_x": 0.02,
+    "collision_top_z": 1.55,
+    "collision_bottom_z": 0.1
+  },
+  "robot": {
+    "world_pos": [
+      -1.6,
+      0.0,
+      0.0
+    ],
+    "yaw": 0.0,
+    "front_range": [
+      -0.6,
+      1.4
+    ]
+  },
+  "morph_placeholder": {
+    "source": "TEMP_PLACEHOLDER",
+    "length_x": 0.7,
+    "width_y": 0.55,
+    "height_z": 0.25,
+    "center_world": [
+      -1.6,
+      0.0,
+      0.125
+    ],
+    "top_z": 0.25
+  },
+  "piper": {
+    "mount_rel": [
+      0.0,
+      0.0,
+      0.3
+    ],
+    "mount_world": [
+      -1.6,
+      0.0,
+      0.3
+    ],
+    "rest_joint_pos": {
+      "joint1": 0.0,
+      "joint2": 1.5,
+      "joint3": -1.5,
+      "joint4": 0.0,
+      "joint5": 0.0,
+      "joint6": 0.0
+    }
+  },
+  "racket": {
+    "source": "TEMP_PLACEHOLDER",
+    "total_length": 0.675,
+    "head_width_max": 0.225,
+    "head_height_approx": 0.29,
+    "mass": 0.1,
+    "tcp_to_contact_approx": 0.5
+  },
+  "camera": {
+    "rig_height": 1.2,
+    "rig_rel_x": 0.2,
+    "rig_world": [
+      -1.4,
+      0.0,
+      1.2
+    ],
+    "pitch_deg": -4.0,
+    "baseline": 0.29,
+    "left_y": 0.145,
+    "right_y": -0.145
+  },
+  "perception_roi": {
+    "rel_x": [
+      1.0,
+      3.0
+    ],
+    "rel_y": [
+      -1.0,
+      1.0
+    ],
+    "world_x": [
+      -0.6,
+      1.4
+    ],
+    "world_y": [
+      -1.0,
+      1.0
+    ],
+    "z": [
+      0.3,
+      2.8
+    ],
+    "color": [
+      0.2,
+      0.5,
+      1.0,
+      0.25
+    ]
+  },
+  "candidate_strike_roi": {
+    "world_x": [
+      -0.75,
+      -0.1
+    ],
+    "world_y": [
+      -0.9,
+      0.9
+    ],
+    "z": [
+      0.7,
+      1.8
+    ],
+    "color": [
+      1.0,
+      0.5,
+      0.1,
+      0.3
+    ]
+  },
+  "spawn_region": {
+    "world_x": [
+      0.8,
+      1.4
+    ],
+    "world_y": [
+      -0.8,
+      0.8
+    ],
+    "z": [
+      1.6,
+      2.4
+    ],
+    "color": [
+      1.0,
+      0.25,
+      0.2,
+      0.3
+    ]
+  },
+  "target_zone": {
+    "world_x": [
+      2.0,
+      4.5
+    ],
+    "world_y": [
+      -2.0,
+      2.0
+    ],
+    "z": [
+      0.0,
+      0.1
+    ],
+    "z_ground": true,
+    "color": [
+      0.1,
+      0.9,
+      0.4,
+      0.25
+    ]
+  },
+  "canonical_incoming": {
+    "name": "CANONICAL_INCOMING_001",
+    "pos": [
+      1.2,
+      0.0,
+      1.8
+    ],
+    "lin_vel": [
+      -3.0,
+      0.0,
+      1.5
+    ],
+    "ang_vel": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "gravity_on": true,
+    "drag_off": true
+  },
+  "shuttle": {
+    "mass": 0.0051,
+    "base_diameter_m": 0.028,
+    "physics_collision_radius": 0.014,
+    "visual_model": "simple"
+  },
+  "simulation": {
+    "physics_dt": 0.004166666666666667,
+    "render_dt": 0.016666666666666666,
+    "env_spacing": 15.0,
+    "gravity": 9.81
+  }
+}

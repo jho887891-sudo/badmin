@@ -1,0 +1,80 @@
+{
+  "racket_frames.png": {
+    "size": [
+      1280,
+      720
+    ],
+    "mean_rgb": [
+      108.8,
+      207.6,
+      145.7
+    ],
+    "court_green_frac": 1.0,
+    "racket_red_frac": 0.0
+  },
+  "scene_128env.png": {
+    "size": [
+      1600,
+      900
+    ],
+    "mean_rgb": [
+      140.7,
+      166.2,
+      155.9
+    ],
+    "court_green_frac": 0.2719,
+    "racket_red_frac": 1e-05
+  },
+  "scene_perspective.png": {
+    "size": [
+      1280,
+      720
+    ],
+    "mean_rgb": [
+      71.9,
+      121.3,
+      91.6
+    ],
+    "court_green_frac": 0.4873,
+    "racket_red_frac": 0.0
+  },
+  "scene_side.png": {
+    "size": [
+      1280,
+      720
+    ],
+    "mean_rgb": [
+      104.5,
+      150.1,
+      121.7
+    ],
+    "court_green_frac": 0.5487,
+    "racket_red_frac": 0.0
+  },
+  "scene_top.png": {
+    "size": [
+      1280,
+      720
+    ],
+    "mean_rgb": [
+      120.7,
+      188.4,
+      152.0
+    ],
+    "court_green_frac": 0.7567,
+    "racket_red_frac": 2e-05
+  },
+  "world_frame.png": {
+    "size": [
+      1280,
+      720
+    ],
+    "mean_rgb": [
+      42.6,
+      54.0,
+      48.3
+    ],
+    "court_green_frac": 0.1071,
+    "racket_red_frac": 0.0
+  }
+}
