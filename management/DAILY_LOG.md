@@ -133,3 +133,9 @@
 - 证据：outputs/t08_20260910_171556/{results.json, run.log, soak.csv, gpu_stats.txt}
 - 期间修复：大静态地面（400×400×0.4，防穿透/覆盖不足）、shuttle 初始 z=0.30、加 linear/angular damping（消除无限滚动导致的 cross-env 虚高）、beat 周期与 reset 周期解耦
 - 另：Superpowers 插件已装（profile web, superpowers-dsh@0.1.1，14 skills），但需重启 profile 才生效
+
+**（t08 soak 完成 PASS）**
+- 128 env，sim_time 600.0s，144,000 steps，wall 1328.4s
+- nan=0 / inf=0 / reset_fail=0（reset_ok=119）/ cross_env_collision=0 / contact_events=61,440 / cuda_fatal=0 / physx_fatal=0 / anomalies=0 → passed=true
+- 产物（远端 outputs/t08_20260910_171556/，本地 evidence/t08_soak/）：results.json、run.log、soak.csv(482 行)、gpu_stats.txt
+- 另：截图相机 bug 已定位（USD xformOp:orient 需 GfQuatd；set_world_poses 未生效）并修复，重拍待做；先前的 screenshots.json 可见性断言已撤回

@@ -1,0 +1,17 @@
+{
+  "num_envs": 128,
+  "sim_time_s": 600.0,
+  "steps": 144000,
+  "wall_s": 1328.4,
+  "nan": 0,
+  "inf": 0,
+  "reset_ok": 119,
+  "reset_fail": 0,
+  "cross_env_collision": 0,
+  "contact_events": 61440,
+  "cuda_fatal": 0,
+  "physx_fatal": 0,
+  "anomalies": 0,
+  "passed": true,
+  "gpu_final": "99 %, 8199 MiB, 49140 MiB"
+}
