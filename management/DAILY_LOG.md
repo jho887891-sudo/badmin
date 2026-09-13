@@ -258,3 +258,7 @@
 - 契约扩展 2 次（DEC-013、DEC-019），均带 DEC 条目与契约测试证据；冻结资产未改动；全程未使用 Isaac/GPU（纯 numpy）
 - 未实现/未实测项全部显式登记（ISSUE-006/007/008 + 各模块 measurement_requirements）
 - 验收报告：outputs/reports/brain_modules_acceptance.md（10 节）
+**（2026-09-13 收尾：契约语义固化 + 最终回归 wave 5）**
+- 语义固化（消除契约歧义，均有契约测试护栏）：`odom_twist` = 每步增量（非速度，ISSUE-009 命名债）；`WholeBodyTarget.horizon_s` = 批量最小 deadline（标量）；`ShuttleMeasurement.valid_mask`（DEC-023，出视场时估计层不再把 (0,0,0) 当测量）
+- 启动最终回归 wave 5（覆盖 wave 4 之后落地的 valid_mask / T11 物理真值 / 语义注释等改动）
+- 全部评审意见（T2/T5/T7/T8/T9/T10 模块评审 + broad 整体评审 D1–D8）均已处置或显式登记；无未处置的 REQUEST CHANGES
