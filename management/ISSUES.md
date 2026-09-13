@@ -96,3 +96,15 @@
 - **验证方法：** t02/t03 全 phase 通过（含 600s soak，nan=0）
 - **是否彻底解决：** 是
 - **相关 commit：** 无
+## ISSUE-005 USD 25.11：xformOp 精度与 customData 类型（已多次触发，列为已知坑）
+- **现象：** 新建 `xformOp:orient` 在不同条件下分别是 `Quatf` 或 `Quatd`，写入另一精度直接抛 `Tf.ErrorException`；`SetCustomDataByKey` 不接受 Python list
+- **触发记录：** ① 本会话早期相机 `cam.set_world_poses` 无效 → 改直接写 USD 需 `GfQuatd`；② 用户 `build_racket.py` 写 `GfQuatd` 到 `Quatf` op 失败；③ 我的球拍预览脚本写 `Gf.Quatf` 到 `Quatd` op 失败；④ `SetCustomDataByKey("face_normal_local", [1.0,0.0,0.0])` 失败
+- **处理：** 统一做法 —— **读取属性类型再按类型写入**（`_set_orient(op, quat)`）；customData 用 `Vt.FloatArray`。已在 `tools/build_racket.py` 与本项目脚本中落地
+- **影响范围：** 所有 USD authoring 代码（含后续 Robot 模块的 TEMP 资产）
+- **状态：** OPEN（作为编码规范固化；建议后续抽成公共 helper）
+
+## ISSUE-006 规范引用的 `docs/architecture/MODULE_INTERFACES.md` 缺失
+- **现象：** `BADMINTON_ROBOT.md` §64 与 Appendix C 要求实现前必读该文档，但仓库中不存在
+- **当前处理：** 未擅自编写（避免自造接口），Phase 1/2 只依赖 `COORDINATE_SYSTEM.md` 与规格本身；接口层（Robot State / Command / 与其他模块的数据契约）如与该文档冲突需要回改
+- **需要：** 用户提供该文档，或授权我按规范补写并送审
+- **状态：** OPEN（潜在返工风险）

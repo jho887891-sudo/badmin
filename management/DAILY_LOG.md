@@ -146,3 +146,12 @@
 - Phase 0 审计（只读）：冻结软件 ✅（Isaac Sim 6.0.1.0 / Isaac Lab v3.0.0-beta2.patch1 / py3.12.13 / torch 2.10.0+cu128）；PiPER 资产 ✅（joints root_joint+joint1..6，7 bodies，mpu=1.0）；场景约定 ✅（240 Hz、Court Frame、env_spacing 15.0）；球拍视觉 ✅ 存在、final 被 REQUIRES_MEASUREMENT 阻塞（符合设计）；现有测试 **59 项全通过**（16+14+7+16+6）
 - 发现缺口：docs/architecture/MODULE_INTERFACES.md 缺失（规范 §64/Appendix C 要求先读）；Morph One 资产不存在（规范允许 TEMP，但拓扑必须四转四驱）；规范里的资产路径与仓库实际路径不一致（需 adapter/映射）
 - 未进入 Phase 1（等用户确认规范 + 补 MODULE_INTERFACES.md）
+
+**（2026-09-13 Phase 1 + Phase 2 实现完成，TDD）**
+- Phase 1 Config：`simulation/robots/badminton_robot/badminton_robot_cfg.py` + `validation/robot_validator.py`；测试 `tests/simulation/robots/test_robot_config.py` **18 项通过**
+  - RED：先跑测试得 `ModuleNotFoundError: No module named 'robots'` → 实现 → GREEN
+  - AssetStatus 8 级真实性枚举、Param(value+status+source)、四转四驱 8 个语义关节、PiPER 冻结关节序、双目基线校验、development/final 双模式（final 遇到 TEMP/UNMEASURED 直接失败）
+- Phase 2 Frames：`frames/robot_frames.py`（Transform/FrameTree/quat 工具/整机链条/env_origin 剥离）；测试 `test_robot_frames.py` **15 项通过**（含 round-trip <1e-12、S41 组合式校验）
+  - TDD 中也修了自己的 bug：`from_xyz_quat` 签名与测试不符（按测试为准修实现）、别名 frame 解析顺序
+- 记录：`outputs/reports/phase1_config_report.md`、`phase2_frames_report.md`（规范 §67 格式）；TEMP 清单 `morph_one/TEMP_README.md`
+- 未开始 Phase 3（Morph One 运动学）——下一步

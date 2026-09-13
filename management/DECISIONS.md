@@ -105,3 +105,11 @@
 - **优点：** Morph One 真资产到位后可无痛替换，上层 API 不变
 - **缺点：** 大量参数与最终 USD 会长期处于 BLOCKED（这是设计意图）
 - **未来是否允许修改：** 需用户显式批准（Frozen Decisions 不得自行修改）
+## DEC-010 Frame 命名冲突：以别名解析到单一真值（不许存在两套平行定义）
+- **日期：** 2026-09-13
+- **背景：** `BADMINTON_ROBOT.md` §7 写 `racket_contact_frame` / `camera_center`；`docs/architecture/COORDINATE_SYSTEM.md` §2.5 写 `racket_contact` / `camera_rig`。两份都是规范来源
+- **最终决定：** 实现中 **单一真值** 为 `racket_contact` 与 `camera_center`；`racket_contact_frame`、`camera_rig` 作为**别名**解析到同一变换（`FrameTree.get_transform` 入口统一解析别名）。COORDINATE_SYSTEM §2.5 明确要求"禁止同一实体存在多个无必要别名"，故不建立两套独立变换
+- **原因：** 避免出现两个名字各有一套数值、后续算法取错 frame
+- **优点：** 两套文档的命名都能用，且物理上只有一个真相
+- **缺点：** 需要在验证器/文档中显式说明别名关系
+- **未来是否允许修改：** 若上游规范统一为一个名字，则删除别名并更新调用点
