@@ -12,7 +12,10 @@ Acceptance asserted here:
   3. the horizon follows the intercept deadline and stays bounded;
   4. an infeasible decision / missing intercept holds position;
   5. the arm target is a bounded first-order response to the contact-point residual;
-  6. the PPO slot is NOT_IMPLEMENTED: it raises when called and final mode refuses it.
+  6. the PPO slot is NOT_IMPLEMENTED: it raises when called and final mode refuses it;
+  7. the time base is DEC-016: BestIntercept.time_s is ABSOLUTE simulation time on the same
+     clock as UnifiedState.timestamp, so the horizon is time_s - state.timestamp and shifting
+     the whole clock must not change a single bit of the command.
 """
 from __future__ import annotations
 import math
@@ -69,15 +72,22 @@ def make_trajectory(n=N, t=0.1):
                                timestamp=t)
 
 
-def make_intercept(position=(0.0, 0.0, 1.0), time_s=0.4, n=N, racket_pose=None):
+def make_intercept(position=(0.0, 0.0, 1.0), time_s=None, t_go=0.4, now=0.0, n=N,
+                   racket_pose=None):
+    """Build a BestIntercept.  DEC-016: time_s is ABSOLUTE simulation time.
+
+    Either pass the absolute time_s directly, or pass the time-to-go together with the current
+    simulation time now (absolute = now + t_go), which is how the planner must consume it.
+    """
+    absolute = (now + t_go) if time_s is None else float(time_s)
     pose = None if racket_pose is None else np.tile(np.asarray(racket_pose, dtype=float), (n, 1))
     return BestIntercept(position=np.tile(np.asarray(position, dtype=float), (n, 1)),
-                         time_s=np.full((n,), float(time_s)), racket_pose=pose,
-                         score=np.ones((n,)), timestamp=0.1)
+                         time_s=np.full((n,), float(absolute)), racket_pose=pose,
+                         score=np.ones((n,)), timestamp=float(now))
 
 
 def make_state(n=N, base_xy=(-1.6, 0.0), yaw_deg=0.0, contact=(0.0, 0.0, 1.0), joints=None,
-               timestamp=0.1):
+               timestamp=0.0):
     base_pose = np.tile(np.concatenate([[base_xy[0], base_xy[1], 0.0],
                                         quat_from_rpy(0.0, 0.0, math.radians(yaw_deg))]), (n, 1))
     joint_pos = np.zeros((n, 6)) if joints is None else np.tile(np.asarray(joints, float), (n, 1))
@@ -108,15 +118,17 @@ class ExpertPlannerTargetTests(unittest.TestCase):
         self.planner = ExpertPlanner()
 
     def test_target_shapes_follow_the_whole_body_contract(self):
-        target = self.planner.process(make_state(n=N), feasible(),
-                                      make_intercept(n=N, time_s=0.4), make_trajectory(n=N))
+        # Absolute clock at 0.25 s, deadline at 0.65 s => time-to-go 0.4 s.
+        target = self.planner.process(make_state(n=N, timestamp=0.25), feasible(),
+                                      make_intercept(n=N, now=0.25, t_go=0.4), make_trajectory(n=N))
         self.assertIsInstance(target, WholeBodyTarget)
         self.assertEqual(target.base_twist.shape, (N, 3))
         self.assertEqual(target.joint_position_target.shape, (N, 6))
         self.assertTrue(np.all(np.isfinite(target.base_twist)))
         self.assertTrue(np.all(np.isfinite(target.joint_position_target)))
         self.assertEqual(target.frame, 'court')
-        self.assertAlmostEqual(target.timestamp, 0.1, places=12)
+        self.assertAlmostEqual(target.timestamp, 0.25, places=12)   # S43 passthrough
+        self.assertAlmostEqual(target.horizon_s, 0.4, places=12)    # time-to-go, not 0.65
 
     def test_planner_uses_the_frozen_morph_one_geometry(self):
         self.assertEqual(self.planner.wheel_radius_m, R_W)
@@ -320,15 +332,17 @@ class PlannerContractGuardTests(unittest.TestCase):
         self.assertEqual(sorted(w.value for w in planner.wheel_positions), ['FL', 'FR', 'RL', 'RR'])
         self.assertIn('TEMP', planner.wheel_geometry_source)
 
-    def test_mismatched_batch_or_negative_deadline_is_refused(self):
+    def test_mismatched_batch_or_expired_deadline_is_refused(self):
         planner = ExpertPlanner()
         with self.assertRaises(BrainBoundaryError):
             planner.process(make_state(n=1), feasible(), make_intercept(n=N, time_s=0.4),
                             make_trajectory(n=1))
-        negative = BestIntercept(position=np.zeros((1, 3)), time_s=np.array([-0.1]),
-                                 score=np.ones((1,)), timestamp=0.1)
+        # DEC-016: time_s is an absolute simulation time, so -0.1 s is already expired, not just
+        # "negative"; a deadline behind the clock is refused rather than planned.
+        expired = BestIntercept(position=np.zeros((1, 3)), time_s=np.array([-0.1]),
+                                score=np.ones((1,)), timestamp=0.0)
         with self.assertRaises(BrainBoundaryError):
-            planner.process(make_state(n=1), feasible(), negative, make_trajectory(n=1))
+            planner.process(make_state(n=1, timestamp=0.0), feasible(), expired, make_trajectory(n=1))
 
 
 def wrap_to_pi(angle):
@@ -482,6 +496,63 @@ class MeasurementRequirementTests(unittest.TestCase):
         # Handing the TEMP proxy back in is not a measurement.
         still_temp = ExpertPlanner(contact_jacobian=TEMP_CONTACT_JACOBIAN)
         self.assertIn('contact_jacobian', still_temp.measurement_requirements())
+
+
+class TimeBaseTests(unittest.TestCase):
+    """DEC-016: BestIntercept.time_s is an ABSOLUTE simulation time, not a time-to-go.
+
+    The planner must derive the horizon itself as time_s - state.timestamp (per environment);
+    PredictedTrajectory.times and every message timestamp live on that same clock.
+    """
+
+    def _plan(self, planner, now, t_go, base_xy=(-1.6, 0.0), hit=(-0.7, 0.0, 1.0)):
+        state = make_state(n=N, base_xy=base_xy, timestamp=now)
+        intercept = make_intercept(n=N, now=now, t_go=t_go, position=hit)
+        return planner.process(state, feasible(), intercept, make_trajectory(n=N))
+
+    def test_shifting_the_absolute_clock_does_not_change_the_command(self):
+        planner = ExpertPlanner()
+        early = self._plan(planner, now=3.0, t_go=0.25)
+        late = self._plan(planner, now=12.0, t_go=0.25)
+        # The horizon is the time-to-go, not the absolute deadline ...
+        self.assertAlmostEqual(early.horizon_s, 0.25, places=12)
+        self.assertAlmostEqual(late.horizon_s, 0.25, places=12)
+        # ... and reading time_s as a duration would have clamped the 12.25 s case to the cap.
+        self.assertNotAlmostEqual(late.horizon_s, planner.limits.max_horizon_s.value, places=6)
+        # Same geometry and same time-to-go => bit-for-bit identical whole-body target.
+        np.testing.assert_array_equal(early.base_twist, late.base_twist)
+        np.testing.assert_array_equal(early.joint_position_target, late.joint_position_target)
+
+    def test_the_absolute_deadline_is_converted_per_environment(self):
+        planner = ExpertPlanner()
+        now = 7.0
+        state = make_state(n=N, timestamp=now)
+        intercept = BestIntercept(position=np.tile(np.array([-0.7, 0.0, 1.0]), (N, 1)),
+                                  time_s=np.array([now + 0.5, now + 0.2, now + 0.9]),
+                                  score=np.ones((N,)), timestamp=now)
+        target = planner.process(state, feasible(), intercept, make_trajectory(n=N))
+        self.assertAlmostEqual(target.horizon_s, 0.2, places=12)   # batch minimum of the t_go values
+        np.testing.assert_allclose(planner.last_diagnostics['horizon_s'],
+                                   [0.5, 0.2, 0.9], atol=1e-12)
+
+    def test_an_expired_deadline_is_refused_while_the_same_instant_is_clamped(self):
+        planner = ExpertPlanner()
+        now = 12.0
+        state = make_state(n=N, timestamp=now)
+        with self.assertRaises(BrainBoundaryError):
+            planner.process(state, feasible(), make_intercept(n=N, now=now, t_go=-0.05),
+                            make_trajectory(n=N))
+        # t_go == 0 is not an error: it is clamped to the minimum horizon (and the resulting
+        # saturated demand is still clipped to the wheel limit, so nothing non-finite escapes).
+        contact = planner.process(state, feasible(), make_intercept(n=N, now=now, t_go=0.0),
+                                  make_trajectory(n=N))
+        self.assertAlmostEqual(contact.horizon_s, planner.limits.min_horizon_s.value, places=12)
+        self.assertTrue(np.all(np.isfinite(contact.base_twist)))
+        self.assertLess(float(planner.last_diagnostics['clip_scale'][0]), 1.0)
+        # Floating-point noise around the deadline is tolerated (clamped), not treated as expiry.
+        noisy = planner.process(state, feasible(), make_intercept(n=N, now=now, t_go=-1e-12),
+                                make_trajectory(n=N))
+        self.assertAlmostEqual(noisy.horizon_s, planner.limits.min_horizon_s.value, places=12)
 
 
 if __name__ == '__main__':

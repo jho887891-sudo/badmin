@@ -13,12 +13,19 @@ Acceptance (docs/superpowers/plans/2026-09-13-brain-modules.md, task T1):
   3. no calibration constant is invented: fx/fy/cx/cy and the stereo extrinsics
      (baseline, left/right camera poses) are Param values with an explicit status + source
 
+Review finding D4 (broad review): a target leaving the field of view is a NORMAL sensor event.
+project()/detect() must report it as an invalid detection (valid=False, uv=NaN) and keep
+running instead of throwing through pipeline.step; only genuinely invalid input (wrong shape,
+empty batch, NaN/Inf coordinates) stays a BrainBoundaryError.  The discipline that a NaN
+correspondence is never triangulated stays in stereo_geometry.triangulate().
+
 Run: cd /home/T7/ojh/robot_sim && ./env_isaaclab/bin/python tests/badminton_brain/test_perception_geometry.py
 """
 from __future__ import annotations
 
 import sys
 import unittest
+import warnings
 from pathlib import Path
 
 import numpy as np
@@ -465,6 +472,129 @@ class TestPerceptionChain(unittest.TestCase):
         with self.assertRaises(BrainBoundaryError):
             triangulate(detection.uv_left, detection.uv_right, detector.intrinsics_left,
                         detector.extrinsics.T_left_right())
+
+
+
+class TestOutOfViewIsASensorEvent(unittest.TestCase):
+    """Review finding D4: losing the target is a sensor event, not a pipeline failure.
+
+    detect()/project() report it as valid=False with NaN uv and keep running; the refusal to
+    triangulate a NaN correspondence stays where it belongs, in triangulate().
+    """
+
+    # a shuttle that has left the coverage on every axis: behind the rig, beside it, above it
+    OUT_OF_VIEW = np.array([
+        [-3.00, 0.00, 1.20],     # behind both cameras (negative camera depth)
+        [0.40, 9.00, 1.40],      # far outside the images, to the side
+        [0.40, 0.00, 40.00],     # far above the visible cone
+    ])
+
+    def _detector(self, noise_sigma_px: float = NOISE_SIGMA_PX) -> SyntheticStereoDetector:
+        return SyntheticStereoDetector(noise_sigma_px=noise_sigma_px, seed=DEFAULT_SEED)
+
+    def test_out_of_view_detection_is_invalid_not_an_exception(self) -> None:
+        detector = self._detector()
+        detection = detector.detect(self.OUT_OF_VIEW)          # D4: must not raise
+        self.assertEqual(detection.count, len(self.OUT_OF_VIEW))
+        self.assertFalse(np.any(detection.valid))
+        self.assertEqual(detection.valid_count, 0)
+        self.assertTrue(np.all(np.isnan(detection.uv_left)))
+        self.assertTrue(np.all(np.isnan(detection.uv_right)))
+        uv_left, uv_right = detection.valid_pairs()
+        self.assertEqual(uv_left.shape, (0, 2))
+        self.assertEqual(uv_right.shape, (0, 2))
+        self.assertTrue(detection.is_synthetic)
+
+    def test_project_itself_reports_the_empty_view(self) -> None:
+        detector = self._detector(noise_sigma_px=0.0)
+        detection = detector.project(self.OUT_OF_VIEW)         # D4: must not raise either
+        self.assertEqual(detection.valid_count, 0)
+        self.assertTrue(np.all(np.isnan(detection.uv_left)))
+        self.assertTrue(np.all(np.isnan(detection.uv_right)))
+
+    def test_invalid_input_is_still_rejected_loudly(self) -> None:
+        """Only genuinely illegal input keeps raising: the D4 fix must not swallow bugs."""
+        detector = self._detector()
+        with self.assertRaises(BrainBoundaryError):
+            detector.detect(np.zeros((0, 3)))                      # empty batch
+        with self.assertRaises(BrainBoundaryError):
+            detector.detect(np.zeros((4, 2)))                      # not (N, 3)
+        with self.assertRaises(BrainBoundaryError):
+            detector.detect(np.array([[np.nan, 0.0, 1.4]]))        # NaN coordinate
+        with self.assertRaises(BrainBoundaryError):
+            detector.detect(np.array([[0.4, 0.0, np.inf]]))        # Inf coordinate
+        # and the geometry functions keep their own input discipline
+        with self.assertRaises(BrainBoundaryError):
+            triangulate(np.zeros((2, 3)), np.zeros((2, 3)), detector.intrinsics_left,
+                        detector.extrinsics.T_left_right())
+
+    def test_camera_plane_point_is_flagged_without_a_warning(self) -> None:
+        """z_cam == 0 divides by zero: it must become an invalid row, never a warning/crash."""
+        detector = self._detector(noise_sigma_px=0.0)
+        left_pose = detector.extrinsics.T_court_left()
+        on_the_plane = (left_pose[:3, 3] + 0.5 * left_pose[:3, 0]).reshape(1, 3)   # z_cam == 0
+        with warnings.catch_warnings():
+            warnings.simplefilter('error')                     # any numpy warning fails the test
+            detection = detector.detect(on_the_plane)
+        self.assertFalse(bool(detection.valid[0]))
+        self.assertTrue(np.all(np.isnan(detection.uv_left)))
+        self.assertTrue(np.all(np.isnan(detection.uv_right)))
+
+    def test_a_mixed_frame_keeps_the_visible_point(self) -> None:
+        detector = self._detector(noise_sigma_px=0.0)
+        points = np.array([[0.40, 0.00, 1.40], [-3.00, 0.00, 1.20], [1.20, 0.00, 1.60]])
+        detection = detector.detect(points)
+        self.assertEqual(list(detection.valid), [True, False, True])
+        self.assertTrue(np.all(np.isnan(detection.uv_left[~detection.valid])))
+        self.assertTrue(np.all(np.isfinite(detection.uv_left[detection.valid])))
+        recovered = triangulate(detection.uv_left[detection.valid],
+                               detection.uv_right[detection.valid],
+                               detector.intrinsics_left, detector.extrinsics.T_left_right())
+        self.assertLess(float(np.abs(recovered - points[detection.valid]).max()),
+                        TRIANGULATION_TOL_M)
+
+    def test_the_detector_keeps_running_when_the_target_leaves_and_returns(self) -> None:
+        """The pipeline.step sequence D4 crashed on: visible -> gone -> visible again."""
+        detector = self._detector()
+        visible = np.array([[0.40, 0.00, 1.40]])
+        first = detector.detect(visible)
+        self.assertTrue(bool(first.valid[0]))
+        gone = detector.detect(self.OUT_OF_VIEW)               # target leaves the field of view
+        self.assertEqual(gone.valid_count, 0)
+        back = detector.detect(visible)                        # ... and comes back
+        self.assertTrue(bool(back.valid[0]))
+        self.assertTrue(np.all(np.isfinite(back.uv_left)))
+        self.assertTrue(np.all(np.isfinite(back.uv_right)))
+
+    def test_a_sweep_of_poses_outside_the_view_never_raises(self) -> None:
+        detector = self._detector()
+        grid = np.array([[x, y, z]
+                         for x in np.linspace(-6.0, 3.0, 7)
+                         for y in np.linspace(-6.0, 6.0, 7)
+                         for z in (-1.0, 0.0, 1.4, 6.0)])
+        detection = detector.detect(grid)                      # must not raise anywhere
+        self.assertEqual(detection.count, grid.shape[0])
+        inner = detection.valid
+        # a valid row is a finite pair; the rows that are not valid never carry a fake pixel
+        self.assertTrue(np.all(np.isfinite(detection.uv_left[inner])))
+        self.assertTrue(np.all(np.isfinite(detection.uv_right[inner])))
+        self.assertTrue(np.all(np.isnan(detection.uv_left[~inner]) |
+                               np.isnan(detection.uv_right[~inner])))
+
+    def test_triangulate_still_refuses_the_invalid_pair(self) -> None:
+        """Requirement 2: the NaN correspondence is never turned into a measurement."""
+        detector = self._detector()
+        detection = detector.detect(self.OUT_OF_VIEW)
+        with self.assertRaises(BrainBoundaryError):
+            triangulate(detection.uv_left, detection.uv_right, detector.intrinsics_left,
+                        detector.extrinsics.T_left_right())
+        with self.assertRaises(BrainBoundaryError):            # the mask does not excuse NaN uv
+            triangulate(detection.uv_left, detection.uv_right, detector.intrinsics_left,
+                        detector.extrinsics.T_left_right(), valid=detection.valid)
+        # the only discipline-preserving way to consume this frame: filter first (as the
+        # perception adapter does), which leaves nothing to triangulate
+        uv_left, uv_right = detection.valid_pairs()
+        self.assertEqual(uv_left.shape[0], 0)
 
 
 if __name__ == '__main__':

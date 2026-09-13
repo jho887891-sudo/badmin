@@ -467,13 +467,46 @@ class DeterminismTests(unittest.TestCase):
         relative_trajectory = make_trajectory(position, velocity, times, times[-1], timestamp=12.5)
         relative = search_intercepts(state, relative_trajectory, config=cfg)
         self.assertAlmostEqual(absolute.now_s, 12.5, places=12)
-        self.assertAlmostEqual(relative.now_s, 0.0, places=12)
+        self.assertAlmostEqual(relative.now_s, 12.5, places=12)
         self.assertTrue(np.array_equal(absolute.feasible, relative.feasible))
         np.testing.assert_allclose(absolute.score, relative.score, atol=1e-12)
-        self.assertAlmostEqual(absolute.best_for_env(0).time_s - 12.5,
-                               relative.best_for_env(0).time_s, places=9)
+        # DEC-016: both grids describe the same instants, so the emitted absolute times agree.
+        np.testing.assert_allclose(absolute.best.time_s, relative.best.time_s, atol=1e-9)
         self.assertEqual(times.shape[0], absolute.candidate_times.shape[0])
         self.assertEqual(trajectory.times.shape, absolute.candidate_times.shape)
+
+
+class AbsoluteTimeContractTests(unittest.TestCase):
+    """DEC-016: BestIntercept.time_s is an absolute simulation time, never a time-to-go."""
+
+    def test_best_intercept_time_is_absolute_simulation_time(self) -> None:
+        state, trajectory, cfg, times, position, velocity = canonical(timestamp=12.5)
+        result = search_intercepts(state, trajectory, config=cfg)
+        self.assertAlmostEqual(result.now_s, 12.5, places=12)
+        limits = feasibility_config(cfg)
+        t_go = next(t for t, z in zip(times, z_window(times, P0[2]))
+                    if z <= limits['arm_z_max_m'])
+        earliest = result.earliest_for_env(0)
+        self.assertIsNotNone(earliest)
+        # The producer emits the absolute instant (= now + time-to-go); a consumer that needs the
+        # time-to-go subtracts state.timestamp itself.
+        self.assertAlmostEqual(earliest.time_s, result.now_s + t_go, places=9)
+        self.assertAlmostEqual(earliest.time_s, float(state.timestamp) + t_go, places=9)
+        self.assertAlmostEqual(earliest.time_s - state.timestamp, t_go, places=9)
+        # The emitted time lies on the trajectory time axis: same grid, same simulation clock.
+        absolute_axis = np.asarray(times, dtype=float) + 12.5
+        self.assertLessEqual(float(np.min(np.abs(absolute_axis - earliest.time_s))), 1e-9)
+        self.assertGreaterEqual(earliest.time_s, float(absolute_axis[0]) - 1e-9)
+        self.assertLessEqual(earliest.time_s, float(absolute_axis[-1]) + 1e-9)
+        best_time = float(result.best.time_s[0])
+        self.assertLessEqual(float(np.min(np.abs(absolute_axis - best_time))), 1e-9)
+        self.assertGreaterEqual(best_time, result.now_s)
+        # An absolute grid (S6) describes the same instants: both representations must agree.
+        absolute_trajectory = make_trajectory(position, velocity, times + 12.5, 12.5 + times[-1],
+                                              timestamp=12.5)
+        absolute = search_intercepts(state, absolute_trajectory, config=cfg)
+        np.testing.assert_allclose(absolute.best.time_s, result.best.time_s, atol=1e-9)
+        self.assertAlmostEqual(float(absolute.best.time_s[0]), best_time, places=9)
 
 
 class PhysicsAgreementTests(unittest.TestCase):

@@ -188,3 +188,23 @@
 - **验证：** `test_full_brain`（9 项）在 development 模式全绿；`test_final_mode_refuses_unresolved_stage_rates` 与 PPO 占位拒绝用例通过；T8 的 `SafetyShield()` 默认即拒绝启动（REQUIRES_MEASUREMENT），显式 `temp_proxy()` 才可运行
 - **优点：** 现在就能开发与集成；上线前不会被 TEMP 蒙混过关
 - **缺点：** 运行时会有 TEMP 警告噪声（有意保留，避免"静默使用未实测值"）
+## DEC-019 PredictedTrajectory.landed_within_horizon 提升为契约字段；final 校验必须查未实测参数
+- **日期：** 2026-09-13
+- **背景：** broad 评审 D2：T5 把「地平线截断投影」当真实落点判 OUTSIDE_RESPONSIBILITY（实测 last_z=1.16/1.39 m 却报落对方半场）；D6：validate_architecture(final) 对未实测参数完全无感知（把频率填成已解析后，100% 跑在 TEMP 代理上的脑仍判 ok=True）
+- **最终决定：**
+  1) `PredictedTrajectory.landed_within_horizon` 由预测器的私有附加属性**提升为契约可选字段**（(N,) 逐 env 标量，可空），因为「球在地平线内是否真的落地」是消费者必须能看到的语义；
+  2) `validate_architecture` 在两种模式下都查询每个模块的 `measurement_requirements()` 与 `unresolved_limits()`：development 计为 warning，**final 计为 error**；模块的收集器抛异常也算 error（不允许用它隐藏问题）。
+- **验证：** 契约测试 10+15 绿；把频率填成已解析后 `final ok=False`，错误逐层列出（planning 的 contact_jacobian/max_horizon_s/max_joint_offset_rad/max_joint_rate_rad_s…）
+- **优点：** 上线门禁真正咬得住未实测项；消费者不会把截断点当落点
+- **缺点：** 契约多一个可选字段；final 模式的报错数量变多（有意）
+
+## DEC-020 T11 运行时与测试纪律：推入式通道 + 变异可杀断言
+- **日期：** 2026-09-13
+- **背景：** broad 评审 D3/D8：T11「canonical 端到端」前 11 步指令恒为 0（决策不可行→规划保持），因此 estop 对比退化为「零 vs 零」；两个致命变异（set_context 置空、process 全零 twist）都能通过；另有测试无断言
+- **最终决定：**
+  1) T11 的 estop 测试必须用**会动的桩规划器**（registry.replace(AlwaysMovePlanner())）建立非零基线，并断言基线非零 + 急停 env 归零 + 非急停 env 与基线逐位相同；
+  2) 所有 T11 测试必须含真实断言（reset 传播测试改为用 spy 断言「8 层都收到且只收到请求的 env_ids」）；
+  3) 推入式通道（prediction / SafetyContext / clock）由 `FullBrainRuntime` 统一负责，测试必须覆盖。
+- **验证：** test_full_brain 11/11 绿；运行时实测 prediction_available=[True,True]；reset spy 断言通过
+- **优点：** 端到端测试不再是空转；变异不再能溜过
+- **缺点：** 测试更长（桩规划器 + spy）

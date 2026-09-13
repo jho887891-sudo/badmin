@@ -12,6 +12,14 @@ acceptance of task T1 is meaningful.  It says NOTHING about real camera accuracy
 intrinsics/extrinsics are still TEMP or unmeasured (see stereo_geometry
 calibration_parameters()).
 
+Contract (review finding D4): a target that leaves the field of view - behind a camera, on
+the camera plane, or outside an image - is a NORMAL sensor event.  project()/detect() report
+it as an invalid detection (valid=False with NaN uv) and return normally, so a frame with no
+visible shuttle can never throw through pipeline.step.  Genuinely illegal input (wrong shape,
+empty batch, NaN/Inf coordinates, an ROI in the wrong frame) still raises BrainBoundaryError,
+and stereo_geometry.triangulate() still refuses NaN correspondences: the discipline lives at
+the boundary of the measurement, not by killing the pipeline.
+
 Authenticity: the noise level is a Param.  The default is a TEMP_PARAMETERIZED_PROXY
 engineering guess and the real pixel noise of the assembled rig is an explicit
 REQUIRES_MEASUREMENT slot with value None.
@@ -44,6 +52,10 @@ _NOISE_SOURCE = ('TEMP engineering proxy for rig pixel noise: a plausible detect
 @dataclass(frozen=True)
 class SyntheticDetection:
     """One synthetic frame pair: what a stereo detector would have reported.
+
+    valid is (N,) and a False row means 'this target was not measured in this frame' (outside
+    an image, behind a camera, on the camera plane, or gated out by an ROI); its uv entries
+    are NaN.  An all-False frame is a legal result, not an error (D4).
 
     points_court is the ground truth the frame was generated from.  It exists ONLY for test
     error evaluation and must never be consumed by estimation/prediction (that would be
@@ -166,16 +178,19 @@ class SyntheticStereoDetector:
         return cam, uv, visible
 
     def project(self, points_court: Any) -> SyntheticDetection:
-        """Exact analytic projection (no noise): the ground-truth stereo pair."""
+        """Exact analytic projection (no noise): the ground-truth stereo pair.
+
+        A point the cameras cannot see (negative depth, on the camera plane, outside an image)
+        comes back as an invalid row: valid=False and NaN uv, with the row count preserved.  A
+        frame in which nothing is visible is therefore a valid, empty measurement - a normal
+        sensor event (the shuttle left the coverage) and never an exception (D4).  Only
+        illegal input raises: wrong shape, empty batch, NaN/Inf coordinates.
+        """
         points = self._check_points(points_court)
         K_l = self.intrinsics_left.matrix()
         K_r = self.intrinsics_right.matrix()
         cam_l, uv_l, vis_l = self._project_one(self.extrinsics.T_court_left(), K_l, points)
         cam_r, uv_r, vis_r = self._project_one(self.extrinsics.T_court_right(), K_r, points)
-        if not np.any(vis_l):
-            raise BrainBoundaryError(
-                "no ground truth point is visible in the left image: the scene is outside the "
-                "camera view (check the rig pose and the point cloud)")
         return SyntheticDetection(
             points_court=points, uv_left=uv_l, uv_right=uv_r, valid=(vis_l & vis_r),
             points_left_cam=cam_l, points_right_cam=cam_r)
@@ -183,7 +198,9 @@ class SyntheticStereoDetector:
     def detect(self, points_court: Any, add_noise: bool = True,
                roi: Optional[ImageROI] = None) -> SyntheticDetection:
         """Project and (optionally) add deterministic pixel noise; a pixel ROI gates the left
-        image, and anything it rejects is reported as an invalid detection."""
+        image, and anything it rejects is reported as an invalid detection (valid=False, NaN
+        uv).  Losing the target - out of view or out of the ROI - is reported, never raised
+        (D4); only illegal input raises BrainBoundaryError."""
         detection = self.project(points_court)
         uv_l = detection.uv_left.copy()
         uv_r = detection.uv_right.copy()

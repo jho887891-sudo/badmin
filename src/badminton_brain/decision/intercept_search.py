@@ -38,13 +38,21 @@ The candidate grid is arithmetic, the racket roll is fixed by the documented up-
 and every quaternion is canonicalised to w >= 0, so two identical calls return bit-identical
 arrays (tests/badminton_brain/test_intercept_search.py asserts np.array_equal).
 
-Time base
-----------
-04_HIT_DECISION.md S6 requires ``trajectory_points[].absolute_time``.  A prediction module that
-publishes a grid starting at 0 (the frozen aerodynamics rollout does) is detected by comparing
-the grid origin with ``PredictedTrajectory.timestamp`` and then measured from the prediction
-instant instead - see :func:`_resolve_now`.  Passing ``now`` explicitly always wins, and a base
-that lies after the whole grid is refused loudly rather than silently rejecting every candidate.
+Time base (DEC-016: one clock for every time in the brain)
+---------------------------------------------------------
+``BestIntercept.time_s`` is an **absolute simulation time** on the same clock as
+``PredictedTrajectory.times``/``timestamp`` and ``UnifiedState.timestamp`` - never a time-to-go.
+A consumer that needs the time-to-go subtracts ``state.timestamp`` itself.  Every candidate
+``time_s``, the reported ``now_s`` and ``candidate_times`` follow the same rule, and all gates
+(T_available, arrival) are evaluated in that clock.
+
+The prediction grid may arrive in either of two shapes and both are mapped onto that clock
+(:func:`_grid_time_offset`): a grid whose first sample is not before its own creation instant is
+already absolute (04_HIT_DECISION.md S6 asks for absolute times); a grid whose first sample lies
+before ``PredictedTrajectory.timestamp`` (the frozen aerodynamics rollout returns times from 0)
+is measured from the prediction instant, so its first sample maps onto ``trajectory.timestamp``.
+Passing ``now`` explicitly always wins (it is then an absolute instant too), and a base that lies
+after the whole grid is refused loudly rather than silently rejecting every candidate.
 
 What is deliberately NOT here (honest scope, S46-S59 / S78-S82)
 -------------------------------------------------------------
@@ -225,7 +233,10 @@ class InterceptSearchConfig:
 
 @dataclass(frozen=True)
 class SearchCandidate:
-    """One evaluated candidate time (kept even when it is rejected, so a decision is auditable)."""
+    """One evaluated candidate time (kept even when it is rejected, so a decision is auditable).
+
+    ``time_s`` is an absolute simulation time (DEC-016), like the BestIntercept field it feeds.
+    """
     env_id: int
     time_s: float
     position: np.ndarray
@@ -249,6 +260,10 @@ class InterceptSearchResult:
     in the order of ``env_ids`` - infeasible environments are simply absent (they are listed in
     ``best_env_ids`` and flagged in ``feasible``), so a BestIntercept never carries a fabricated
     position.  When no environment has a feasible intercept, ``best`` is None.
+
+    ``best.time_s``, ``candidate_times`` and ``now_s`` are absolute simulation times (DEC-016);
+    ``now_s`` is the instant this decision was taken (``state.timestamp``).  A consumer that needs
+    a time-to-go computes ``time_s - state.timestamp`` itself.
     """
     feasible: np.ndarray
     reason: Tuple[InterceptReason, ...]
@@ -485,14 +500,13 @@ def _resolve_env_ids(env_ids: Optional[Sequence[int]], batch: int) -> Tuple[int,
     return selected
 
 
-def _resolve_now(state: UnifiedState, trajectory: PredictedTrajectory, times: np.ndarray,
+def _resolve_now(state: UnifiedState, trajectory: PredictedTrajectory,
                  now: Optional[float]) -> float:
-    """Reference instant for T_available (S70-S73).
+    """Absolute simulation instant of this decision, i.e. the origin of every time-to-go (S70-S73).
 
-    ``now`` wins when supplied.  Otherwise ``state.timestamp`` is used, except when the prediction
-    grid starts *after* its own creation timestamp - that can only mean the grid is relative to
-    the prediction instant (S6 asks for absolute times, the frozen aerodynamics rollout returns
-    times from 0), and then the elapsed time since the prediction is the honest base.
+    ``now`` wins when supplied and is then an absolute instant as well.  Otherwise the decision
+    cannot be older than the state it consumes nor than the prediction it searches, so the
+    reference is ``max(state.timestamp, trajectory.timestamp)``.
     """
     if now is not None:
         value = float(now)
@@ -505,9 +519,23 @@ def _resolve_now(state: UnifiedState, trajectory: PredictedTrajectory, times: np
     predicted_at = float(trajectory.timestamp)
     if not math.isfinite(predicted_at):
         raise BrainBoundaryError('PredictedTrajectory.timestamp must be finite')
+    return max(reference, predicted_at)
+
+
+def _grid_time_offset(trajectory: PredictedTrajectory, times: np.ndarray) -> float:
+    """Offset that turns a prediction-grid time into an absolute simulation time (DEC-016).
+
+    A grid whose first sample is not before its own creation instant is already absolute: 0.0.
+    Otherwise the grid can only be measured from the prediction instant (a prediction cannot
+    contain samples from before it was created), so its first sample maps onto
+    ``trajectory.timestamp``.
+    """
+    predicted_at = float(trajectory.timestamp)
+    if not math.isfinite(predicted_at):
+        raise BrainBoundaryError('PredictedTrajectory.timestamp must be finite')
     if float(times[0]) < predicted_at - _TIME_EPS_S:
-        return max(0.0, reference - predicted_at)
-    return reference
+        return predicted_at - float(times[0])
+    return 0.0
 
 
 class InterceptSearcher:
@@ -573,18 +601,22 @@ def search_intercepts(state: UnifiedState, trajectory: PredictedTrajectory, *,
         raise BrainBoundaryError(
             f'UnifiedState batch ({batch}) and PredictedTrajectory batch ({predicted_batch}) differ')
     selected = _resolve_env_ids(env_ids, batch)
-    now_s = _resolve_now(state, trajectory, times, now)
+    # DEC-016: the reported decision instant and every emitted time are absolute simulation times.
+    now_s = _resolve_now(state, trajectory, now)
+    time_offset_s = _grid_time_offset(trajectory, times)
 
     if times.shape[0] < 2:
-        return _empty_result(selected, times, now_s, InterceptReason.INVALID_PREDICTION)
+        return _empty_result(selected, times + time_offset_s, now_s,
+                             InterceptReason.INVALID_PREDICTION)
     if np.any(np.diff(times) <= 0.0):
         raise BrainBoundaryError(
             'PredictedTrajectory.times must be strictly increasing for interpolation')
-    if now_s > float(times[-1]) + _TIME_EPS_S:
+    last_absolute_s = float(times[-1]) + time_offset_s
+    if now_s > last_absolute_s + _TIME_EPS_S:
         raise BrainBoundaryError(
-            f'search time base now={now_s} lies after the whole prediction grid '
-            f'[{float(times[0])}, {float(times[-1])}]; pass now explicitly (a prediction grid may '
-            f'be relative to its own start instant)')
+            f'search time base now={now_s} lies after the whole prediction grid, which spans the '
+            f'absolute interval [{float(times[0]) + time_offset_s}, {last_absolute_s}]; pass now '
+            f'explicitly (a prediction grid may be measured from its own start instant)')
 
     limits = {name: _param_float(param, name) for name, param in cfg.param_limits().items()
               if param.value is not None}
@@ -601,7 +633,10 @@ def search_intercepts(state: UnifiedState, trajectory: PredictedTrajectory, *,
     step = limits['candidate_dt_s']
     span = float(times[-1] - times[0])
     count = int(math.floor(span / step + 1e-9)) + 1
-    candidate_times = float(times[0]) + step * np.arange(count, dtype=float)
+    # Sample the prediction in its own clock (that is how its samples are indexed) and emit the
+    # absolute instant of every candidate; the two clocks differ by time_offset_s (DEC-016).
+    grid_times = float(times[0]) + step * np.arange(count, dtype=float)
+    candidate_times = grid_times + time_offset_s
 
     per_env: list = []
     feasible_flags = []
@@ -613,7 +648,8 @@ def search_intercepts(state: UnifiedState, trajectory: PredictedTrajectory, *,
     for env in selected:
         positions = np.asarray(trajectory.position[env], dtype=float)
         velocities = np.asarray(trajectory.velocity[env], dtype=float)
-        arrival_s = float(np.asarray(trajectory.arrival_time[env], dtype=float))
+        arrival_absolute_s = (float(np.asarray(trajectory.arrival_time[env], dtype=float))
+                              + time_offset_s)
         base_pose = np.asarray(state.base_pose[env], dtype=float).reshape(7)
         base_x = float(base_pose[0])
         base_y = float(base_pose[1])
@@ -622,9 +658,10 @@ def search_intercepts(state: UnifiedState, trajectory: PredictedTrajectory, *,
         sin_yaw = math.sin(yaw)
 
         candidates = []
-        for time_s in candidate_times:
-            time_s = float(time_s)
-            position, velocity = _hermite(times, positions, velocities, time_s)
+        for grid_time_s in grid_times:
+            grid_time_s = float(grid_time_s)
+            time_s = grid_time_s + time_offset_s          # absolute simulation time (DEC-016)
+            position, velocity = _hermite(times, positions, velocities, grid_time_s)
             reason = None
             travel = 0.0
             required = 0.0
@@ -633,7 +670,7 @@ def search_intercepts(state: UnifiedState, trajectory: PredictedTrajectory, *,
             terms = ScoreTerms()
             pose = None
 
-            if time_s > arrival_s:
+            if time_s > arrival_absolute_s:
                 reason = InterceptReason.OUT_OF_BOUNDS
             elif not (z_min <= float(position[2]) <= z_max):
                 reason = InterceptReason.NO_GEOMETRIC_WINDOW

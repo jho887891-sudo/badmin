@@ -16,6 +16,19 @@ Frames (coordinator verdict, recorded in the plan ledger):
     wheel-limit clipping.  The yaw rate wz is unchanged by a rotation about the court +Z axis,
     so it is the same scalar in both frames.
 
+Time base (coordinator verdict DEC-016, recorded in the plan ledger):
+  * BestIntercept.time_s is an ABSOLUTE simulation time on the same clock as
+    UnifiedState.timestamp, PredictedTrajectory.times and every message timestamp.  It is NOT a
+    time-to-go duration.
+  * Downstream converts it itself: this planner computes the horizon per environment as
+    t_go = intercept.time_s - state.timestamp, then clamps it into
+    [min_horizon_s, max_horizon_s].  Everything downstream of that (stationing speed, yaw rate,
+    joint-rate bound) is expressed in time-to-go.
+  * Expired deadlines are refused, not planned: t_go < -1e-9 s means the decision layer handed
+    over a deadline that is already behind the clock (BrainBoundaryError).  The same-instant
+    case t_go == 0 s, and floating-point noise inside that tolerance, are clamped to
+    min_horizon_s instead - a benign within-step race must not crash the control loop.
+
 Honesty contract - what is exact and what is an approximation:
   * EXACT (base side).  The chassis command is validated by mapping it through the frozen
     Phase-3 Morph One four-steer/four-drive kinematics
@@ -110,6 +123,9 @@ _SRC_NEED_CONTACT_JACOBIAN = ("measure the PiPER racket-contact Jacobian d p_con
 _SRC_NEED_JOINT_LIMITS = ("measure the PiPER joint position and velocity limits (no joint limit "
                           "table exists in this repository)")
 
+_TIME_EPS = 1e-9
+"""Deadline-comparison tolerance in seconds: float noise only, not a physical parameter."""
+
 
 @dataclass
 class PlannerLimits:
@@ -175,6 +191,9 @@ class ExpertPlanner(PlanningModule):
 
     Output frame: WholeBodyTarget.base_twist is robot_base (body) frame - see the module
     docstring, which is where the court -> body rotation is documented.
+
+    Time base: intercept.time_s is an absolute simulation time (DEC-016); process() converts it
+    to a per-environment time-to-go against state.timestamp before deriving any command.
     """
 
     name = 'expert_planner'
@@ -305,8 +324,9 @@ class ExpertPlanner(PlanningModule):
                                    horizon_s=0.0, timestamp=timestamp)
 
         hit = self._intercept_position(intercept, n)
-        time_s = self._intercept_times(intercept, n)
-        horizon = np.clip(time_s, self.limits.min_horizon_s.value, self.limits.max_horizon_s.value)
+        time_to_go = self._time_to_go(intercept, n, timestamp)
+        horizon = np.clip(time_to_go, self.limits.min_horizon_s.value,
+                          self.limits.max_horizon_s.value)
 
         rotation = np.stack([self._quat_to_matrix(q) for q in base_pose[:, 3:7]])
         yaw = self._yaw(rotation)
@@ -381,17 +401,31 @@ class ExpertPlanner(PlanningModule):
         return hit
 
     @staticmethod
-    def _intercept_times(intercept, n: int) -> np.ndarray:
+    def _time_to_go(intercept, n: int, now: float) -> np.ndarray:
+        """Horizon per environment: DEC-016 absolute deadline minus the current simulation time.
+
+        BestIntercept.time_s is an absolute simulation time (same clock as state.timestamp), so
+        the planner - not the decision layer - performs the subtraction.  A deadline already
+        behind the clock is an upstream logic error and is refused; t_go == 0 (or noise within
+        _TIME_EPS of it) is a benign within-step race and is clamped, not rejected.
+        """
         if getattr(intercept, 'time_s', None) is None:
             raise BrainBoundaryError("BestIntercept.time_s is required for planning")
-        time_s = np.asarray(intercept.time_s, dtype=float).reshape(-1)
-        if time_s.shape != (n,):
-            raise BrainBoundaryError("BestIntercept.time_s must be (%d,), got %s" % (n, time_s.shape))
-        if not np.all(np.isfinite(time_s)):
+        absolute = np.asarray(intercept.time_s, dtype=float).reshape(-1)
+        if absolute.shape != (n,):
+            raise BrainBoundaryError("BestIntercept.time_s must be (%d,), got %s" % (n, absolute.shape))
+        if not np.all(np.isfinite(absolute)):
             raise BrainBoundaryError("BestIntercept.time_s contains NaN/Inf")
-        if np.any(time_s < 0.0):
-            raise BrainBoundaryError("BestIntercept.time_s must be >= 0 (simulation time)")
-        return time_s
+        if not math.isfinite(float(now)):
+            raise BrainBoundaryError("UnifiedState.timestamp must be finite (simulation time)")
+        time_to_go = absolute - float(now)
+        if np.any(time_to_go < -_TIME_EPS):
+            raise BrainBoundaryError(
+                "BestIntercept.time_s is an absolute simulation time (DEC-016): deadline %s s is "
+                "already behind state.timestamp=%s s, so this intercept has expired "
+                "(worst t_go=%.9f s); the decision layer must not hand over a past deadline"
+                % (absolute.tolist(), float(now), float(np.min(time_to_go))))
+        return np.maximum(time_to_go, 0.0)
 
     @staticmethod
     def _desired_contact(intercept, hit: np.ndarray, n: int) -> np.ndarray:

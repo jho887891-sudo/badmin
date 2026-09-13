@@ -50,7 +50,7 @@ def full_flight(p0, v0, dt=0.01):
 
 
 def make_trajectory(p0=CANONICAL_P0, v0=CANONICAL_V0, dt=0.01, horizon=None,
-                    landing=None, arrival=None, stamp=0.0, shift=0.0):
+                    landing=None, arrival=None, stamp=0.0, shift=0.0, landed=None):
     """Build a PredictedTrajectory from the gravity-only reference flight."""
     times, pos, vel, t_land, land = full_flight(p0, v0, dt)
     if horizon is not None:
@@ -59,9 +59,11 @@ def make_trajectory(p0=CANONICAL_P0, v0=CANONICAL_V0, dt=0.01, horizon=None,
     times = times + shift
     land = np.asarray(landing, dtype=float) if landing is not None else land
     arrival = (float(arrival) if arrival is not None else t_land) + shift
+    # landed: DEC-019 contract flag (None = unknown/not reported by the predictor)
+    flag = None if landed is None else np.array([float(bool(landed))])
     return PredictedTrajectory(times=times, position=pos[None], velocity=vel[None],
                                landing_point=land[None], arrival_time=np.array([arrival]),
-                               timestamp=stamp)
+                               landed_within_horizon=flag, timestamp=stamp)
 
 
 def make_state(base_xyz=ROBOT_HOME_XYZ, p=CANONICAL_P0, v=CANONICAL_V0, timestamp=0.0):
@@ -158,12 +160,19 @@ class RejectionTests(unittest.TestCase):
         decision = self.gate.evaluate(make_state(), make_trajectory(shift=-1.0))
         self.assertEqual(decision.reason, HitReason.NO_TIME_MARGIN.value)
 
-    def test_ball_above_the_workspace_is_unreachable(self) -> None:
-        # High lob: every predicted sample stays above the racket workspace box.
+    def test_ball_above_the_workspace_with_a_clipped_horizon_defers(self) -> None:
+        # High lob whose real landing is beyond the horizon: every sample is above the racket
+        # box and there is no landing yet, so the gate defers instead of claiming UNREACHABLE.
         decision = self.gate.evaluate(make_state(p=(-1.0, 0.0, 3.5), v=(-0.2, 0.0, 1.0)),
                                       make_trajectory(p0=(-1.0, 0.0, 3.5), v0=(-0.2, 0.0, 1.0),
                                                       horizon=0.50))
         self.assertFalse(decision.feasible)
+        self.assertEqual(decision.reason, HitReason.NO_LANDING_IN_HORIZON.value)
+
+    def test_ball_below_the_racket_window_is_unreachable(self) -> None:
+        # Rolling/low shuttle: it lands for real, but no sample is inside the racket z window.
+        decision = self.gate.evaluate(make_state(p=(-1.0, 0.0, 0.10), v=(-0.5, 0.0, -0.5)),
+                                      make_trajectory(p0=(-1.0, 0.0, 0.10), v0=(-0.5, 0.0, -0.5)))
         self.assertEqual(decision.reason, HitReason.UNREACHABLE.value)
 
     def test_outside_the_workspace_box_with_tight_limits(self) -> None:
@@ -325,6 +334,93 @@ class BaseTravelModelTests(unittest.TestCase):
                      (1.0, math.inf, 1.5), (1.0, 0.0, 1.5), (1.0, 1.0, 0.0), (1.0, -1.0, 1.5)):
             with self.assertRaises(ValueError, msg='args=%r' % (args,)):
                 base_min_travel_time_s(*args)
+
+
+class HorizonTruncationTests(unittest.TestCase):
+    """D2: a horizon-clipped projection is not a landing and may not decide the court gates.
+
+    The T4 predictor sets landing_point to the last sample projected onto the ground plane when
+    the shuttle never reached the ground inside its horizon, and reports that with the optional
+    flag landed_within_horizon (DEC-019).  Judging that projection as a landing rejected balls
+    that were still in the air.
+    """
+
+    def setUp(self) -> None:
+        self.gate = HitFeasibilityGate()
+
+    @staticmethod
+    def clipped_flight():
+        """Ball stopped at z ~ 1.18 m, still on the opponent side (x ~ +0.55), as the predictor
+        would report it: landing_point = last sample projected onto the ground."""
+        return make_trajectory(p0=(1.2, 0.0, 1.8), v0=(-1.2, 0.0, 1.5), horizon=0.545,
+                               landing=(0.55, 0.0, 0.0), landed=False)
+
+    def test_clipped_projection_beyond_the_net_is_not_outside_responsibility(self) -> None:
+        trajectory = self.clipped_flight()
+        self.assertFalse(bool(trajectory.landed_within_horizon[0]))
+        self.assertGreater(float(trajectory.position[0, -1, 2]), 1.0)     # never touched the ground
+        decision = self.gate.evaluate(make_state(), trajectory)
+        self.assertNotEqual(decision.reason, HitReason.OUTSIDE_RESPONSIBILITY.value)
+        self.assertNotEqual(decision.reason, HitReason.OUT_OF_BOUNDS.value)
+        self.assertFalse(decision.feasible)
+        self.assertEqual(decision.reason, HitReason.NO_LANDING_IN_HORIZON.value)
+
+    def test_without_the_flag_the_samples_decide_that_there_is_no_landing(self) -> None:
+        trajectory = make_trajectory(p0=(1.2, 0.0, 1.8), v0=(-1.2, 0.0, 1.5), horizon=0.545,
+                                     landing=(0.55, 0.0, 0.0))    # flag left at its default None
+        self.assertIsNone(trajectory.landed_within_horizon)
+        decision = self.gate.evaluate(make_state(), trajectory)
+        self.assertEqual(decision.reason, HitReason.NO_LANDING_IN_HORIZON.value)
+        self.assertNotEqual(decision.reason, HitReason.OUTSIDE_RESPONSIBILITY.value)
+
+    def test_clipped_flight_that_lands_out_of_bounds_is_not_judged_by_the_projection(self) -> None:
+        # Samples are playable (x ~ -1.0, z ~ 0.4) but the clipped point is out of bounds: the
+        # projection may not veto the ball.
+        trajectory = make_trajectory(horizon=0.72, landing=(-7.5, 0.0, 0.0), landed=False)
+        self.assertLess(float(trajectory.position[0, -1, 0]), 0.0)
+        decision = self.gate.evaluate(make_state(), trajectory)
+        self.assertNotEqual(decision.reason, HitReason.OUT_OF_BOUNDS.value)
+        self.assertTrue(decision.feasible, decision.reason)
+
+    def test_a_real_landing_out_of_bounds_is_still_rejected(self) -> None:
+        trajectory = make_trajectory(landing=(-7.5, 0.0, 0.0), landed=True)
+        decision = self.gate.evaluate(make_state(), trajectory)
+        self.assertFalse(decision.feasible)
+        self.assertEqual(decision.reason, HitReason.OUT_OF_BOUNDS.value)
+
+    def test_a_real_landing_on_our_side_is_still_accepted(self) -> None:
+        trajectory = make_trajectory(landed=True)
+        decision = self.gate.evaluate(make_state(), trajectory)
+        self.assertTrue(decision.feasible, decision.reason)
+
+    def test_the_flag_is_per_environment(self) -> None:
+        # Same samples in both environments; only the flag differs.  Env 0 reports a real landing
+        # that is out of bounds -> reject; env 1 reports a clipped projection -> the point is
+        # never judged, so the playable samples decide.
+        near = make_trajectory(landing=(-7.5, 0.0, 0.0))
+        position = np.concatenate([near.position, near.position], axis=0)
+        position[1, -1, 2] = 1.16                       # env 1 stops mid-air
+        trajectory = PredictedTrajectory(
+            times=near.times, position=position,
+            velocity=np.concatenate([near.velocity, near.velocity], axis=0),
+            landing_point=np.concatenate([near.landing_point,
+                                          np.array([[0.55, 0.0, 0.0]])], axis=0),
+            arrival_time=np.array([float(near.arrival_time[0]), float(near.arrival_time[0])]),
+            landed_within_horizon=np.array([True, False]), timestamp=0.0)
+        state = make_state()
+        batched = UnifiedState(
+            base_pose=np.vstack([state.base_pose, state.base_pose]),
+            base_twist=np.vstack([state.base_twist, state.base_twist]),
+            joint_pos=np.vstack([state.joint_pos, state.joint_pos]),
+            joint_vel=np.vstack([state.joint_vel, state.joint_vel]),
+            racket_contact_pose=np.vstack([state.racket_contact_pose, state.racket_contact_pose]),
+            racket_contact_twist=np.vstack([state.racket_contact_twist,
+                                            state.racket_contact_twist]),
+            shuttle_position=np.tile(state.shuttle_position, (2, 1)),
+            shuttle_velocity=np.tile(state.shuttle_velocity, (2, 1)), timestamp=0.0)
+        decisions = self.gate.evaluate_batch(batched, trajectory)
+        self.assertEqual(decisions[0].reason, HitReason.OUT_OF_BOUNDS.value)
+        self.assertEqual(decisions[1].reason, HitReason.FEASIBLE.value)
 
 
 class DirectionWindowTests(unittest.TestCase):
