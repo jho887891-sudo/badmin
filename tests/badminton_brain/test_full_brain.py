@@ -15,17 +15,41 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'src'))
 
 from badminton_brain.apps.full_brain import build_full_brain  # noqa: E402
+from badminton_brain.interfaces import PlanningModule  # noqa: E402
+from badminton_brain.types import WholeBodyTarget  # noqa: E402
 from badminton_brain.types import Layer, RobotSensorState  # noqa: E402
 from badminton_brain.validation import validate_architecture  # noqa: E402
 
 N = 2
 
 
+# Physics-consistent ground truth: the same frozen aerodynamics the predictor integrates.
+# A straight-line truth would leave a constant model mismatch that the slow loop would then
+# push into its parameters until they saturate (T10 review, 2026-09-13).
+_TRUTH_START = np.array([5.20, 0.30, 2.10])
+_TRUTH_VELOCITY = np.array([-8.0, -0.10, 1.20])
+_TRUTH_DT = 1e-3
+_TRUTH_TABLE = None
+
+
+def _truth_table():
+    global _TRUTH_TABLE
+    if _TRUTH_TABLE is None:
+        from trajectory.shuttle_aerodynamics import k_from_aerodynamic_length, rollout
+        result = rollout(_TRUTH_START, _TRUTH_VELOCITY, duration_s=1.5, dt_s=_TRUTH_DT,
+                         k_per_m=k_from_aerodynamic_length(6.5))
+        times = np.asarray(result['time'], dtype=float)
+        positions = np.asarray(result['position'], dtype=float)
+        _TRUTH_TABLE = (times, positions)
+    return _TRUTH_TABLE
+
+
 def canonical_truth(num_envs: int, timestamp: float) -> np.ndarray:
-    """Simulated ground-truth shuttle path (simulation-side input for the perception proxy)."""
-    start = np.array([5.20, 0.30, 2.10])
-    velocity = np.array([-8.0, -0.10, 1.20])
-    return np.stack([start + velocity * timestamp for _ in range(num_envs)])
+    """Simulated ground-truth shuttle position at an absolute time, from the frozen physics."""
+    times, positions = _truth_table()
+    index = int(np.clip(np.searchsorted(times, float(timestamp)), 0, times.shape[0] - 1))
+    point = np.asarray(positions[index], dtype=float).reshape(3)
+    return np.stack([point for _ in range(num_envs)])
 
 
 def sensors(t: float = 0.0) -> RobotSensorState:
@@ -33,6 +57,20 @@ def sensors(t: float = 0.0) -> RobotSensorState:
                             joint_pos=np.zeros((N, 6)), joint_vel=np.zeros((N, 6)), timestamp=t,
                             odom_twist=np.zeros((N, 3)), imu_yaw_rate=np.zeros((N,)))
 
+
+
+
+class AlwaysMovePlanner(PlanningModule):
+    """Stub planner that always commands motion (the canonical scenario may command none),
+    so an e-stop comparison has a non-zero baseline to differ from."""
+
+    name = 'always_move'
+    is_implemented = True
+
+    def process(self, state, decision, intercept, trajectory):
+        return WholeBodyTarget(base_twist=np.full((N, 3), 0.4),
+                               joint_position_target=np.zeros((N, 6)),
+                               horizon_s=0.2, timestamp=state.timestamp)
 
 class FullBrainIntegrationTests(unittest.TestCase):
     def test_all_eight_layers_are_registered(self) -> None:
@@ -80,19 +118,20 @@ class FullBrainIntegrationTests(unittest.TestCase):
     def test_estop_context_reaches_the_command_end_to_end(self) -> None:
         from badminton_brain.safety.safety_shield import SafetyContext
         registry, pipeline = build_full_brain(num_envs=N, truth_provider=canonical_truth)
-        safety = registry.get(Layer.SAFETY)
-        # Compare against an identical run without e-stop: the scenario itself may command nothing
-        # (an unreachable intercept), so only the DIFFERENCE proves the e-stop reached the command.
-        _, reference_pipeline = build_full_brain(num_envs=N, truth_provider=canonical_truth)
-        reference = reference_pipeline.step(sensors(0.0))
-        safety.set_context(SafetyContext(now=0.0, estop=np.array([True, False])))
-        result = pipeline.step(sensors(0.0))
-        twist = np.asarray(result.safe_command.base_twist)
+        registry.replace(AlwaysMovePlanner())   # guarantee a non-zero baseline command
+        reference = pipeline.step(sensors(0.0))
         reference_twist = np.asarray(reference.safe_command.base_twist)
+        assert np.max(np.abs(reference_twist)) > 0.0, 'the baseline must actually command motion'
+
+        registry_b, pipeline_b = build_full_brain(num_envs=N, truth_provider=canonical_truth)
+        registry_b.replace(AlwaysMovePlanner())
+        safety = registry_b.get(Layer.SAFETY)
+        safety.set_context(SafetyContext(now=0.0, estop=np.array([True, False])))
+        result = pipeline_b.step(sensors(0.0))
+        twist = np.asarray(result.safe_command.base_twist)
         np.testing.assert_allclose(twist[0], np.zeros(3), atol=1e-12, err_msg='e-stopped env must not move')
         np.testing.assert_allclose(twist[1], reference_twist[1], atol=1e-12,
-                                   err_msg='the non-e-stopped env must keep exactly its original command')
-        self.assertTrue(np.all(np.isfinite(np.asarray(result.safe_command.joint_position_target))))
+                                   err_msg='the non-e-stopped env must keep its command')
         self.assertTrue(result.safe_command.limited, 'an e-stop must be reported in the command')
 
     def test_context_free_run_is_flagged_and_not_silently_normal(self) -> None:
@@ -129,7 +168,22 @@ class FullBrainIntegrationTests(unittest.TestCase):
         self.assertIsNotNone(result.safe_command)
     def test_reset_is_propagated_to_every_layer(self) -> None:
         registry, pipeline = build_full_brain(num_envs=N, truth_provider=canonical_truth)
+        seen = []
+        for module in registry.modules():
+            original = module.reset
+
+            def spy(env_ids, _module=module, _original=original):
+                seen.append((_module.layer.value, list(env_ids)))
+                return _original(env_ids)
+
+            module.reset = spy
         pipeline.reset([1])
+        self.assertEqual(len(seen), len(registry.modules()),
+                         'reset must reach every registered layer')
+        self.assertEqual(sorted(layer for layer, _ in seen),
+                         sorted(m.layer.value for m in registry.modules()))
+        self.assertTrue(all(ids == [1] for _, ids in seen),
+                        'every layer must receive exactly the requested env ids')
 
 
 if __name__ == '__main__':

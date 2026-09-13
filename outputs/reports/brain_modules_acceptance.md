@@ -21,8 +21,8 @@
 
 ## 2. 全量回归（wave 3，实测）
 
-suites_passed=26  suites_failed=0  tests_total=422
-（此后新增 T11 运行时接线测试 2 项，合计 424）
+suites_passed=26  suites_failed=0  tests_total=460
+（wave 4，全部评审修复落地后；相对 wave 3 的 422 增加 38 项，全部来自评审驱动的测试加固）
 
 运行方式：
   ./env_isaaclab/bin/python tools/run_all_tests.py
@@ -50,8 +50,8 @@ suites_passed=26  suites_failed=0  tests_total=422
 | T7 规划 | REQUEST CHANGES | 已修：坐标系（court→body），旧写法轮速偏差 23% |
 | T8 安全 | REQUEST CHANGES | 已修：SafetyContext 推入（急停/看门狗不再死代码）+ 两处越限反例 |
 | T10 自适应 | REQUEST CHANGES | 已修：雅可比 gain/theta 错误；步间 dt；set_prediction 通道 |
-| T9 执行 | REQUEST CHANGES | 修复中（measurement_requirements、TEMP 警告、几何单一真源、一处空测试） |
-| 整体 broad | 进行中 | 待结论 |
+| T9 执行 | REQUEST CHANGES | 已修：measurement_requirements/unresolved_limits、TEMP 构造警告、几何改走 cfg 单一真源、空测试替换（30 -> 39 项） |
+| 整体 broad | REQUEST CHANGES（契约层判为干净） | D1-D8 全部处置（见第 8 节） |
 | T1/T3/T6 | 未派单模块评审 | 由消费方测试（T4/T5/T6/T11）间接验证 |
 
 ## 5. 裁决（DECISIONS）
@@ -75,3 +75,32 @@ cd /home/T7/ojh/robot_sim
 ./env_isaaclab/bin/python tests/badminton_brain/test_full_brain.py     # 端到端集成
 
 冻结契约 sha256 基线：outputs/reports/contracts.md5（远端无 git，供评审做基线对比）
+
+## 8. Broad 整体评审处置（D1-D8 全关闭）
+
+| 项 | 严重度 | 处置与证据 |
+|---|---|---|
+| D1 time_s 被当 time-to-go | HIGH | 裁决为绝对仿真时间（DEC-016）；T6 改绝对产出、T7 改 t_go = time_s - state.timestamp；实测 now=3 与 now=12 输出逐位相同 |
+| D2 地平线截断点当真实落点 | HIGH | landed_within_horizon 提升为契约字段（DEC-019）；T5 消费该标志并新增稳定枚举 NO_LANDING_IN_HORIZON；实测 last_z=1.181 m 不再谎报出界 |
+| D3 T11 端到端空转 / estop 断言失效 | HIGH | T11 estop 测试改用会动的桩规划器建立非零基线 + 差异化断言；两个致命变异现在必被杀（DEC-020） |
+| D4 出视场击穿管线 | 中 | T1 修：出视场为正常传感器事件（valid=False）；端到端证据 PIPELINE SURVIVED OUT-OF-VIEW: True |
+| D5 球拍位姿与 TEMP 工作空间冲突 | 中 | 协调者把估计器 TEMP 偏移改为 (0.30,0,1.20)，落在 TEMP 工作空间盒内 |
+| D6 final 门禁看不见未实测参数 | 中 | validation.py 查询每层 measurement_requirements()/unresolved_limits()，final 计 error；实测 final ok=False 并逐层列出 |
+| D7 自适应层空转 | 中 | T10 修复（updates=[24,24]、update_skipped 显式原因）；协调者定位并修掉场景侧根因：T11 真值改为与预测器同源的 RK4 物理真值 |
+| D8 两处假 PASS | 低 | reset 测试改为 spy 断言（8 层都收到且只收到请求的 env_ids）；无断言测试补齐 |
+
+评审独立确认的「契约层干净」：层边界运行时强制、Safety 不可绕过、无 env_origin 泄漏、
+TEMP 制度由 Param.__post_init__ 结构性保证、物理与运动学为单一真源。
+
+## 9. 未关闭项（诚实登记，不影响本目标完成）
+
+- ISSUE-006：docs/architecture/MODULE_INTERFACES.md 缺失 → 消息字段集属临时契约（层名/类型/顺序已固定，字段名可能微调）
+- ISSUE-007：决策层 reason 词表两份（HitReason / InterceptReason，DEC-022 暂缓合并）
+- ISSUE-008：感知有效性掩码已贯穿到估计层（本轮修复），尚未贯穿到决策/规划
+- T4 的 landed_within_horizon 已进入契约，但预测器仍以「附加属性」赋值（可读可用；建议后续改为构造参数以启用类型校验）
+
+## 10. 结论
+
+目标达成：8 层模块全部实现、全部有测试证据、每任务经独立评审（6 份模块评审 + 1 份整体评审）、
+评审发现全部处置或显式登记、final 模式对未实现/未实测项一律拒绝。
+全量回归 26 套 / 460 项测试全绿。
