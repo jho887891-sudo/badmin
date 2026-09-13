@@ -7,7 +7,7 @@ layer message type.  Nothing may silently absorb another layer duty
 """
 from __future__ import annotations
 
-from typing import Any, Optional, Sequence, Tuple
+from typing import Any, Optional, Sequence
 
 from .types import (
     BestIntercept, BrainBoundaryError, Feedback, HitDecision, Layer, PredictedTrajectory,

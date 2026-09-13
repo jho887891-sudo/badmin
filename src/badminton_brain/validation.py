@@ -37,6 +37,37 @@ def validate_architecture(registry: ModuleRegistry, config: Optional[PipelineCon
             else:
                 warnings.append(message)
 
+    for module in registry.modules():
+        collector = getattr(module, 'measurement_requirements', None)
+        if callable(collector):
+            try:
+                requirements = collector() or {}
+            except Exception as exc:  # a broken collector must not hide the problem
+                errors.append(
+                    f"layer '{module.layer.value}' measurement_requirements() raised {exc!r}")
+                continue
+            for name, param in sorted(requirements.items()):
+                message = (f"layer '{module.layer.value}' parameter '{name}' is still "
+                           f"{getattr(param, 'status', 'UNKNOWN')}")
+                if mode == 'final':
+                    errors.append('final mode requires measured parameters: ' + message)
+                else:
+                    warnings.append(message)
+        unresolved = getattr(module, 'unresolved_limits', None)
+        if callable(unresolved):
+            try:
+                items = unresolved() or ()
+            except Exception as exc:
+                errors.append(
+                    f"layer '{module.layer.value}' unresolved_limits() raised {exc!r}")
+                continue
+            for item in items:
+                message = f"layer '{module.layer.value}' has an unresolved limit {item!r}"
+                if mode == 'final':
+                    errors.append('final mode requires resolved limits: ' + message)
+                else:
+                    warnings.append(message)
+
     for layer_name, param in config.stage_rate_hz.items():
         if param.status in UNRESOLVED:
             message = f"stage rate for '{layer_name}' is {param.status.value}"

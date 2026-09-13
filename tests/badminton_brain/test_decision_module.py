@@ -75,10 +75,8 @@ class DecisionModuleTests(unittest.TestCase):
         self.assertTrue(bool(mod.last_decisions[0].feasible))
 
     def test_end_to_end_feasible_case_requires_the_real_search(self) -> None:
-        probe = search_intercepts(make_state(), make_trajectory())
-        if not bool(np.any(probe.feasible)):
-            self.skipTest('T6 intercept search is still a shell (NOT_IMPLEMENTED); '
-                          're-run after it lands')
+        # The skip that used to live here was removed once T6 landed: a conditional skip on an
+        # implemented dependency silently swallows the feasible branch (broad review D8).
         mod = FeasibilityDecisionModule(num_envs=N)
         decision, intercept = mod.process(make_state(), make_trajectory())
         self.assertTrue(decision.feasible)

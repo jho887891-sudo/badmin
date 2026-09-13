@@ -9,7 +9,7 @@ environment must not play, nothing is planned.
 """
 from __future__ import annotations
 
-from typing import Any, Callable, Optional, Sequence, Tuple
+from typing import Callable, Optional, Sequence, Tuple
 
 import numpy as np
 

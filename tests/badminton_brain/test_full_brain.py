@@ -137,8 +137,8 @@ class FullBrainIntegrationTests(unittest.TestCase):
     def test_context_free_run_is_flagged_and_not_silently_normal(self) -> None:
         registry, pipeline = build_full_brain(num_envs=N, truth_provider=canonical_truth)
         safety = registry.get(Layer.SAFETY)
-        if not hasattr(safety, 'context_snapshot'):
-            self.skipTest('safety context API not available')
+        self.assertTrue(hasattr(safety, 'context_snapshot'),
+                        'the safety module must expose its context API')
         snapshot = safety.context_snapshot()
         self.assertIn(str(snapshot.get('source', '')), ('none', 'pushed', 'argument'))
         result = pipeline.step(sensors(0.0))

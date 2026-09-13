@@ -11,7 +11,7 @@ measure_fn (stereo frames + measured calibration + trained detector).
 """
 from __future__ import annotations
 
-from typing import Any, Callable, Optional, Sequence
+from typing import Any, Callable, Sequence
 
 import numpy as np
 
@@ -59,8 +59,11 @@ class StereoPerceptionModule(PerceptionModule):
             raise BrainBoundaryError('measurement must be (N, 3), got %s' % (position.shape,))
         velocity = self._velocity(position, timestamp)
         covariance = np.tile(np.eye(3) * self.measurement_noise_m ** 2, (position.shape[0], 1, 1))
+        valid_mask = self.last_valid_mask
+        if valid_mask is not None and valid_mask.shape[0] != position.shape[0]:
+            valid_mask = None
         return ShuttleMeasurement(position=position, velocity=velocity, covariance=covariance,
-                                  timestamp=timestamp)
+                                  valid_mask=valid_mask, timestamp=timestamp)
 
     def reset(self, env_ids: Sequence[int]) -> None:
         self._prev_position = None

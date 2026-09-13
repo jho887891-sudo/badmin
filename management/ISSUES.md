@@ -147,3 +147,18 @@
 
 ### 文档注解待办（随 ISSUE-011 一并处理）
 - `docs/architecture/04_HIT_DECISION.md` S20 需补注：实现采用「窗首样本」保守变体（DEC-025）
+## ISSUE-012 T6 的绝对/相对时间「自动判别」启发式应当换成显式不变量
+- **现象：** `decision/intercept_search.py` 在 `times[0] < trajectory.timestamp` 时**静默**切换到相对基准。当前预测器满足 `times[0] == timestamp`（T4 已按 DEC-016 修正），走的是正确分支；但一旦某个生产者让 `timestamp` 略微领先 `times[0]`，搜索会把绝对 `time_s`(约 12 s) 与 `now_s`(约 0) 相减 → 得到约 12 s 可达时间 → **一切都被判可行**
+- **建议：** 把启发式改为显式不变量检查（不满足 `times[0] == timestamp` 直接 raise），或由调用方显式传 `now`
+- **风险：** 静默降级为「永远可行」，是危险的失效模式
+- **状态：** OPEN（中危；当前不触发，但缺少护栏）
+
+## ISSUE-013 空气动力长度 L=6.5 m 在三个模块各声明一份
+- **现象：** `adaptation/online_adaptation.py`（AERODYNAMIC_LENGTH_M）、`estimation/shuttle_ukf.py`（1.0/6.5）、`prediction/physics_predictor.py`（L=6.5 与 k=1/L）各带一份 source。物理 ODE 本身是单一真源（三者都 import shuttle_aerodynamics），但常数有 3 份副本
+- **建议：** 收敛为由 `trajectory/shuttle_aerodynamics` 导出的单个 Param（决策层的同类重复已由 `decision/travel_model.py` 收敛，可作范例）
+- **状态：** OPEN（低危；漂移风险）
+
+## ISSUE-014 UnifiedState.base_twist / racket_contact_twist 的机体系语义未进契约/DEC
+- **现象：** `estimation/robot_localization.py` 的 base_twist() 明确定义为**机体系** [vx,vy,vz,wx,wy,wz]，`estimator.py` 又把它原样填进 racket_contact_twist；而 `types.UnifiedState` 的 docstring 写「one consistent Court-Frame state」且 check_court_frame 强制 frame=='court'。当前 src 内无人消费这两个字段（尚未暴露），但语义漂移与 DEC-014 同类
+- **建议：** 与 DEC-014 一并补 DEC：明确 UnifiedState.base_twist / racket_contact_twist 为机体系，或改为显式字段名；同时 racket_contact_twist 缺少 omega×r 力臂项应标 TEMP
+- **状态：** OPEN（低危；尚未被消费）
