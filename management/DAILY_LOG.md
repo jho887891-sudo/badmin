@@ -197,3 +197,12 @@
 - 新增 `decision/decision_module.py`（FeasibilityDecisionModule）：T5 门 + T6 搜索 → 批量级 (HitDecision, BestIntercept|None)；测试 5 项通过（端到端可行性用例在 T6 空壳期间显式 skip）
 - 评审派发：T2 0fe56b7e｜T7 03fc7c8e｜T5 b43cb41b｜T9 aee7cf91｜T10 b3f23862（此前 T4 cde60461、T8 83a9148e）
 - 仍在实现中：T1 perception、T3 shuttle_ukf、T6 intercept search（当前仍为空壳）
+
+**（2026-09-13 轮2 续2：T1/T3/T9/T5/T10 已交付，协调者接线三处）**
+- T1 感知几何 28/28 绿（三角化误差 5.3e-15 m）｜T3 羽毛球 UKF 13/13 绿（位置 RMSE 0.00568 vs 原始测量 0.01424，k 误差 11%）｜T9 执行适配器 24/24 绿｜T5 可行性门 25/25 绿｜T10 在线自适应 15/15 绿
+- 协调者新增接线（均有测试）：
+  `perception/perception_module.py` StereoPerceptionModule 7/7（合成路径用 T1 探测器 + 三角化，**ground truth 不泄漏**；real 路径需 measure_fn + 实测标定）
+  `estimation/estimator.py` 默认自动注入 T3 的 ShuttleEstimatorBridge（接线测试 3/3；禁用时显式标 TEMP 直通）
+  `decision/decision_module.py` FeasibilityDecisionModule 5 项（1 项 skip：T6 仍为空壳）
+- 清理误入仓库的 `_scratch_psd.py`
+- 待完成：T6 拦截搜索（仍空壳，agent 运行中）→ 之后 T11 集成 + T12 整体评审

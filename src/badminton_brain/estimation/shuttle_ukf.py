@@ -50,6 +50,7 @@ __all__ = [
     "INITIAL_DRAG_STD", "INITIAL_WIND_STD", "POSITION_MEASUREMENT_STD",
     "VELOCITY_MEASUREMENT_STD", "FUSED_VELOCITY_MEASUREMENT_STD", "DRAG_K_MIN", "DRAG_K_MAX",
     "POSITION_SLICE", "VELOCITY_SLICE", "DRAG_INDEX", "WIND_SLICE", "ShuttleUKF",
+    "ShuttleEstimatorBridge",
 ]
 
 # --------------------------------------------------------------------------------------
@@ -584,3 +585,85 @@ class ShuttleUKF:
             raise BrainBoundaryError(
                 f"{name} must be finite and {'>= 0' if allow_zero else '> 0'}")
         return out
+
+
+class ShuttleEstimatorBridge:
+    """Injection bridge for the estimation adapter (badminton_brain/estimation/estimator.py).
+
+    The adapter injects a shuttle filter object and calls
+
+        update(ShuttleMeasurement, RobotSensorState) -> dict with 'position' and 'velocity'
+        reset(env_ids)
+
+    while ShuttleUKF deliberately exposes the explicit predict(dt_s) / update(measurement) pair.
+    This bridge carries no physics, no state of its own and no noise model: it only derives dt
+    from the measurement timestamps (S43, simulation time), forwards to the UKF and reports the
+    estimate.  Either inject this bridge, or let the adapter call predict(dt) + update(...)
+    directly - both are equivalent.
+    """
+
+    def __init__(self, num_envs: int = 1, ukf: Optional[ShuttleUKF] = None) -> None:
+        self.ukf = ShuttleUKF(num_envs=num_envs) if ukf is None else ukf
+        self.num_envs = self.ukf.num_envs
+        self._last_timestamp: Optional[float] = None
+
+    def update(self, measurement: ShuttleMeasurement,
+               sensors: Optional[object] = None) -> Dict[str, np.ndarray]:
+        """Predict to the measurement time, fuse it, and return the current estimate.
+
+        The 'sensors' argument is accepted (and ignored) because the adapter passes the robot
+        state along; the shuttle filter needs no robot state and the measurement already carries
+        the simulation time.
+        """
+        if not isinstance(measurement, ShuttleMeasurement):
+            raise BrainBoundaryError(
+                f"update expects a ShuttleMeasurement, got {type(measurement).__name__}")
+        timestamp = float(measurement.timestamp)
+        dt = 0.0 if self._last_timestamp is None else timestamp - self._last_timestamp
+        if dt < 0.0:
+            raise BrainBoundaryError(f"measurement timestamp went backwards by {-dt:.6f} s")
+        if dt > 0.0:
+            self.ukf.predict(dt)
+        self.ukf.update(measurement)
+        self._last_timestamp = timestamp
+        return {
+            'position': self.ukf.position,
+            'velocity': self.ukf.velocity,
+            'drag_k': self.ukf.drag_k,
+            'wind': self.ukf.wind,
+            'state': self.ukf.state,
+            'covariance': self.ukf.covariance,
+        }
+
+    def reset(self, env_ids: Optional[Sequence[int]] = None) -> None:
+        self.ukf.reset(env_ids)
+        self._last_timestamp = None
+
+    # thin passthroughs so callers can read the estimate exactly like on the UKF itself
+    @property
+    def position(self) -> np.ndarray:
+        return self.ukf.position
+
+    @property
+    def velocity(self) -> np.ndarray:
+        return self.ukf.velocity
+
+    @property
+    def drag_k(self) -> np.ndarray:
+        return self.ukf.drag_k
+
+    @property
+    def wind(self) -> Optional[np.ndarray]:
+        return self.ukf.wind
+
+    @property
+    def state(self) -> np.ndarray:
+        return self.ukf.state
+
+    @property
+    def covariance(self) -> np.ndarray:
+        return self.ukf.covariance
+
+    @classmethod
+    def parameters(cls) -> Dict[str, Param]:
+        return ShuttleUKF.parameters()

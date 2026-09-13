@@ -83,7 +83,11 @@ _COURT_X = np.array([1.0, 0.0, 0.0])
 
 
 class InterceptReason(str, Enum):
-    """Reason vocabulary of 04_HIT_DECISION.md S14 (decision layer codes) + NOT_IMPLEMENTED."""
+    """Reason vocabulary of 04_HIT_DECISION.md S14 (decision layer codes) + NOT_IMPLEMENTED.
+
+    NOT_IMPLEMENTED is not produced by this module: it is the code a DecisionModule reports when no
+    search is run at all (disabled / policy slot), so the vocabulary stays complete in one place.
+    """
     BEST_INTERCEPT_FOUND = 'BEST_INTERCEPT_FOUND'
     INVALID_STATE = 'INVALID_STATE'
     INVALID_PREDICTION = 'INVALID_PREDICTION'

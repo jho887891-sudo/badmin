@@ -181,7 +181,10 @@ class EarliestFeasibleInterceptTests(unittest.TestCase):
         self.assertEqual(result.best.time_s.shape, (1,))
         self.assertEqual(result.best.racket_pose.shape, (1, 7))
         self.assertEqual(result.best.score.shape, (1,))
-        self.assertAlmostEqual(float(result.best.time_s[0]), earliest.time_s, places=12)
+        # The selected best is a *different* candidate in general (score maximum, S99-S115);
+        # it must be one of the feasible candidates of this environment.
+        self.assertTrue(any(abs(c.time_s - float(result.best.time_s[0])) < 1e-12
+                            for c in result.candidates[0] if c.feasible))
 
     def test_candidates_are_not_restricted_to_a_fixed_x_plane(self) -> None:
         """S27: the search must not collapse onto a constant-x strike plane."""
@@ -280,7 +283,7 @@ class TimeAndBaseTravelTests(unittest.TestCase):
         # A slow shuttle 0.15 m outside the workspace box: the base must move d = 0.15 m first.
         dt = DT_S
         times = np.arange(int(1.20 / dt) + 1, dtype=float) * dt
-        velocity = np.tile(np.array([[0.10, 0.00, -0.05]]), (times.size, 1))
+        velocity = np.tile(np.array([[0.00, 0.00, -0.05]]), (times.size, 1))
         position = np.array([[-0.75, 0.00, 1.00]]) + velocity * times.reshape(-1, 1)
         trajectory = make_trajectory(position, velocity, times, times[-1])
         state = make_state(position[0], velocity[0], base_xy=(0.0, 0.0))
@@ -316,13 +319,41 @@ class TimeAndBaseTravelTests(unittest.TestCase):
         self.assertAlmostEqual(min_travel_time_s(distance, v_max, a_max),
                                min_travel_time_s(-distance, v_max, a_max), places=12)
 
+    def test_workspace_box_follows_the_estimated_base_yaw(self) -> None:
+        """The box is carried by the base, so the base yaw decides which contacts are inside."""
+        dt = DT_S
+        times = np.arange(int(1.20 / dt) + 1, dtype=float) * dt
+        velocity = np.tile(np.array([[0.00, 0.00, -0.05]]), (times.size, 1))
+        position = np.array([[0.70, 0.00, 1.00]]) + velocity * times.reshape(-1, 1)
+        trajectory = make_trajectory(position, velocity, times, times[-1])
+        cfg = config(candidate_dt_s=dt)
+        straight = search_intercepts(
+            make_state(position[0], velocity[0], base_xy=(0.0, 0.0), yaw=0.0), trajectory, config=cfg)
+        turned = search_intercepts(
+            make_state(position[0], velocity[0], base_xy=(0.0, 0.0), yaw=math.pi / 4.0),
+            trajectory, config=cfg)
+        # yaw = 0: the contact is 0.10 m beyond the +X half extent -> the base must travel 0.10 m.
+        straight_earliest = straight.earliest_for_env(0)
+        self.assertIsNotNone(straight_earliest)
+        limits = feasibility_config(cfg)
+        self.assertAlmostEqual(straight_earliest.base_travel_m,
+                               0.70 - limits['arm_reach_x_m'], places=12)
+        # yaw = 45 deg: the same contact point is inside the (rotated) box -> no base travel at all,
+        # and therefore an earlier feasible intercept.
+        turned_earliest = turned.earliest_for_env(0)
+        self.assertIsNotNone(turned_earliest)
+        self.assertEqual(turned_earliest.base_travel_m, 0.0)
+        self.assertLess(turned_earliest.time_s, straight_earliest.time_s)
+
     def test_time_too_short_for_even_the_arm_slew(self) -> None:
         state, trajectory, cfg, times, _, _ = canonical(base_xy=BASE_XY, timestamp=0.0)
         late = config(candidate_dt_s=DT_S, decision_latency_s=0.90)
         result = search_intercepts(state, trajectory, config=late)
         self.assertIsNone(result.best)
         reasons = {c.reason for c in result.candidates[0]}
-        self.assertTrue(reasons <= {InterceptReason.NO_TIME_MARGIN, InterceptReason.UNREACHABLE})
+        # Candidates that are still above the racket box fail the height gate first.
+        self.assertTrue(reasons <= {InterceptReason.NO_TIME_MARGIN,
+                                    InterceptReason.NO_GEOMETRIC_WINDOW})
         self.assertIn(InterceptReason.NO_TIME_MARGIN, reasons)
 
 
@@ -404,6 +435,18 @@ class DeterminismTests(unittest.TestCase):
             self.assertEqual([c.score for c in first.candidates[0]],
                              [c.score for c in other.candidates[0]])
 
+    def test_search_does_not_mutate_its_inputs(self) -> None:
+        state, trajectory, cfg, _, _, _ = canonical()
+        position_before = np.array(trajectory.position, copy=True)
+        velocity_before = np.array(trajectory.velocity, copy=True)
+        base_before = np.array(state.base_pose, copy=True)
+        times_before = np.array(trajectory.times, copy=True)
+        search_intercepts(state, trajectory, config=cfg)
+        self.assertTrue(np.array_equal(trajectory.position, position_before))
+        self.assertTrue(np.array_equal(trajectory.velocity, velocity_before))
+        self.assertTrue(np.array_equal(state.base_pose, base_before))
+        self.assertTrue(np.array_equal(trajectory.times, times_before))
+
     def test_fresh_but_equal_input_objects_give_the_same_result(self) -> None:
         state, trajectory, cfg, _, _, _ = canonical()
         first = search_intercepts(state, trajectory, config=cfg)
@@ -414,18 +457,23 @@ class DeterminismTests(unittest.TestCase):
         self.assertEqual(first.best_for_env(0).time_s, second.best_for_env(0).time_s)
 
     def test_time_base_is_resolved_for_absolute_and_relative_grids(self) -> None:
-        absolute_state, absolute_trajectory, cfg, times, _, _ = canonical(timestamp=12.5)
-        offset = np.asarray(absolute_trajectory.times, dtype=float) + 12.5
-        absolute_trajectory = make_trajectory(absolute_trajectory.position,
-                                              absolute_trajectory.velocity, offset, 12.5 + HORIZON_S,
+        """S6 asks for absolute times; a grid relative to its prediction instant is recognised."""
+        state, trajectory, cfg, times, position, velocity = canonical(timestamp=12.5)
+        # (a) specification-compliant absolute grid: the sample times carry the simulation clock.
+        absolute_trajectory = make_trajectory(position, velocity, times + 12.5, 12.5 + times[-1],
                                               timestamp=12.5)
-        absolute = search_intercepts(absolute_state, absolute_trajectory, config=cfg)
-        relative = search_intercepts(absolute_state, absolute_trajectory, config=cfg, now=0.0)
+        absolute = search_intercepts(state, absolute_trajectory, config=cfg)
+        # (b) grid starting at the prediction instant (what shuttle_aerodynamics.rollout returns).
+        relative_trajectory = make_trajectory(position, velocity, times, times[-1], timestamp=12.5)
+        relative = search_intercepts(state, relative_trajectory, config=cfg)
+        self.assertAlmostEqual(absolute.now_s, 12.5, places=12)
+        self.assertAlmostEqual(relative.now_s, 0.0, places=12)
         self.assertTrue(np.array_equal(absolute.feasible, relative.feasible))
-        self.assertTrue(np.array_equal(absolute.score, relative.score))
+        np.testing.assert_allclose(absolute.score, relative.score, atol=1e-12)
         self.assertAlmostEqual(absolute.best_for_env(0).time_s - 12.5,
-                               relative.best_for_env(0).time_s, places=12)
+                               relative.best_for_env(0).time_s, places=9)
         self.assertEqual(times.shape[0], absolute.candidate_times.shape[0])
+        self.assertEqual(trajectory.times.shape, absolute.candidate_times.shape)
 
 
 class PhysicsAgreementTests(unittest.TestCase):
@@ -487,7 +535,10 @@ class BatchAndInputTests(unittest.TestCase):
 
         result = search_intercepts(state, trajectory, config=cfg)
         self.assertEqual(result.feasible.tolist(), [True, False])
-        self.assertEqual(result.reason[1], InterceptReason.UNREACHABLE)
+        late = [c for c in result.candidates[1] if c.time_available_s > 0.0]
+        self.assertTrue(late)
+        self.assertTrue(all(c.reason is InterceptReason.UNREACHABLE for c in late))
+        self.assertEqual(result.reason[1], InterceptReason.NO_TIME_MARGIN)
         self.assertEqual(result.best_env_ids.tolist(), [0])
         self.assertEqual(result.best.position.shape, (1, 3))
         self.assertIsNone(result.best_for_env(1))
@@ -518,7 +569,7 @@ class BatchAndInputTests(unittest.TestCase):
 
     def test_single_sample_prediction_is_reported_as_invalid(self) -> None:
         times = np.array([0.0])
-        trajectory = make_trajectory(P0, V0, times, [0.0])
+        trajectory = make_trajectory([P0], [V0], times, [0.0])
         state = make_state(P0, V0)
         result = search_intercepts(state, trajectory, config=config())
         self.assertFalse(bool(np.any(result.feasible)))

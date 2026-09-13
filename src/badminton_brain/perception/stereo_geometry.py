@@ -424,10 +424,7 @@ def baseline_stereo_setup() -> BaselineStereoSetup:
 def calibration_parameters() -> Dict[str, Param]:
     """Every calibration quantity of the rig with its authenticity (S4/S12), incl. the empty
     measured slots, so that nothing unknown can hide behind a number."""
-    params = baseline_stereo_setup().parameters()
-    params['intrinsics_uncalibrated_left.fx'] = CameraIntrinsics.uncalibrated(
-        IMAGE_FRAME_LEFT, CAMERA_FRAME_LEFT).fx
-    return params
+    return baseline_stereo_setup().parameters()
 
 
 # ---------------------------------------------------------------------------
@@ -438,12 +435,6 @@ def _check_uv(name: str, value: Any) -> np.ndarray:
     if arr.ndim < 1 or arr.shape[-1] != 2:
         raise BrainBoundaryError(f"{name} must have shape (..., 2), got {arr.shape}")
     return arr
-
-
-def _lead_mask(mask_flat: np.ndarray, shape: Tuple[int, ...]) -> Any:
-    if shape == ():
-        return bool(mask_flat[0])
-    return mask_flat.reshape(shape)
 
 
 @dataclass(frozen=True)

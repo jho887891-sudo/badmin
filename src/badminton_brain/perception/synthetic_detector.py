@@ -19,7 +19,7 @@ REQUIRES_MEASUREMENT slot with value None.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, replace
 from typing import Any, Dict, Optional, Tuple
 
 import numpy as np
@@ -109,13 +109,11 @@ class SyntheticStereoDetector:
             "the synthetic noise is only an engineering proxy")
         self.seed = int(seed)
         self._rng = np.random.default_rng(self.seed)
-        self._projected = 0
 
     # -- housekeeping -------------------------------------------------------
     def reset(self) -> None:
         """Restart the noise stream: the next detect() reproduces the first one."""
         self._rng = np.random.default_rng(self.seed)
-        self._projected = 0
 
     @property
     def sigma_px(self) -> float:
@@ -196,7 +194,6 @@ class SyntheticStereoDetector:
             noise_r = self._rng.normal(0.0, sigma, size=(count, 2))
             uv_l = np.where(np.isfinite(uv_l), uv_l + noise_l, uv_l)
             uv_r = np.where(np.isfinite(uv_r), uv_r + noise_r, uv_r)
-            self._projected += 1
         valid = detection.valid.copy()
         if roi is not None:
             if roi.frame != IMAGE_FRAME_LEFT:
