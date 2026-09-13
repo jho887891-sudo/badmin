@@ -6,8 +6,50 @@
 - Platform: Sketchfab
 - Source UID: 795e4cca2e544d7ab86a8e5c7ded2362
 - URL: https://sketchfab.com/3d-models/badminton-racket-and-shuttlecock-low-poly-795e4cca2e544d7ab86a8e5c7ded2362
-- License: CC Attribution
+- License: CC Attribution (CC-BY-4.0)
 - Public listing: downloadable, approximately 5.2k triangles / 2.7k vertices for the combined model
 - Local target: assets/third_party/shuttlecock_visual.usd
-- SHA256: record after download/extraction/conversion
+- SHA256: see conversion record below
 - Conversion requirements: shuttlecock only; meters; preserve visual proportions; align local frame to project convention; do not use visual mesh as the sole high-cost physics collision mesh.
+
+## Conversion record (2026-09-13)
+
+**Downloaded artefact (original, unmodified)**
+```
+assets/external/_staging/D_racket_shuttle/original/badminton_racket_and_shuttlecock_low_poly.glb
+size   : 308444 bytes
+sha256 : 8f6c2baac0bbd2f2f1aceaa295b06fd74a10aed59de8686d2d76cdcc2e22bfa5
+format : glTF binary (Sketchfab autoconverted, texture 512 px embedded)
+```
+
+**Extraction** (tool: `tools/glb_shuttle_extract.py`, pxr only — no Blender)
+- GLB node audit: `Gp_Shuttle` = `Obj_Feather` + `Obj_Cork` (kept) ；`Obj_Racket`/`Obj_Racket.001`
+  (+ `.Strings`) 为球拍（丢弃）。
+- Kept triangles: feather 1920 + cork 1502 = **3422 tri**（丢弃球拍 2×868 tri）。
+- No rescale applied (source already in metres and in project frame convention).
+
+**Produced visual**
+```
+assets/third_party/shuttlecock_visual.usd      sha256 4e409c41c0d405fa1070fee968364335431563d1ad4eb8202ad8e9a7ef52d60b
+assets/third_party/textures/shuttle_basecolor.png  sha256 42c87519eb08d52ad1fb6a5ecba1e168f32167bc3a68cebcfc8728b28242e324
+```
+- defaultPrim `/ShuttlecockVisual`；metersPerUnit 1.0；upAxis Z
+- frame 约定：原点在球托平面中心，+Z 由球托指向裙边（与 `configs/shuttlecock.yaml` 一致）
+- geometry check (world bbox):
+  - feather: x/y ±0.0309 m (裙尖 Ø **61.8 mm**，与配置 61.804 mm 一致) ，z 0.0006–0.0780 m
+  - cork: x/y ±0.0178 m (Ø **35.6 mm**)，z 0.0002–0.0411 m
+  - 总高 78.0 mm（配置参考总长 ≈ 79 mm）
+- material: UsdPreviewSurface + baseColor texture（来自 GLB 内嵌贴图）
+
+**Final shuttlecock asset**
+```
+assets/shuttle/shuttlecock.usd   sha256 108ceb1aa0ca3084673b71338bfb2b598b237ef6e74b5fbbe4259ae59830f7fb
+```
+- `/Shuttlecock` = Visual (External reference -> shuttlecock_visual.usd) + Physics (CorkCollider + 16 SkirtColliders) + Frames
+- mass 0.005000 kg，COM [0, 0, 0.011978] m，inertia [3.543e-06, 3.543e-06, 1.341e-06] kg·m²
+- `project:contactCalibrationStatus = REQUIRES_PAIR_CALIBRATION`
+- **Note**: the low-poly cork is slightly wider than the BWF reference value used by the physics proxy
+  (visual Ø35.6 mm vs config cork Ø26.5 mm). Physics still uses the configured proxy; visual/collision
+  are intentionally decoupled. Recorded here for traceability.
+- `shuttlecock_physics_proxy.obj` mentioned in `docs/SHUTTLECOCK.md` was **not** delivered in the download
+  set; the collision proxy is generated procedurally from `shuttlecock.yaml` instead.
