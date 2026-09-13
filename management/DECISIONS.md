@@ -254,3 +254,15 @@
 - **理由：** 截断不等于不可打（球可能正穿过球拍盒）；决策层的假阴性（放弃本可打的球）在信息不足时是可以接受的代价，但**用伪造的理由拒绝**是不可接受的（会掩盖真正的模型缺陷）
 - **验证：** 用真实 T4 预测器端到端复现：horizon 0.30/0.545 s（last_z=1.798/1.181 m）→ `NO_LANDING_IN_HORIZON`（修前为 `OUTSIDE_RESPONSIBILITY`）；真实落地出界仍判 `OUT_OF_BOUNDS`；41 项测试绿
 - **观察（转 T4 参考，非缺陷）：** 当地平线恰好等于落地时刻时，样本网格末点 z=0.180 m > 0，预测器按自身契约报 `landed_within_horizon=False`；门因此更保守（只少拒、不多拒）
+## DEC-028 引入 YOLO 作为感知层粗检测器（仅下载归档，未接入、未安装）
+- **日期：** 2026-09-13
+- **背景：** 用户指示「下载 yolo」。架构文档 `docs/architecture/01_PERCEPTION.md` 第 22–26 节明确规定 YOLO 的角色是**粗检测**（输出 coarse bbox + confidence + class，回答「羽毛球大概在哪」），并要求显式还原 letterbox/scale 到全幅整流图坐标；**不得**把 bbox 中心当精确球心
+- **与旧冻结规格的关系：** 早先 Scene v0.1 冻结规格曾把「YOLO」列入当期禁止项——那是对**场景资产阶段**的限制；本次用户指示 + 架构文档共同构成 Robot Brain 阶段的有效依据（指令优先级高于规格）
+- **本次执行：** 仅**下载并归档**，未安装进任何运行环境、未修改任何代码路径：
+  - 权重：YOLO11n、YOLOv8n（官方 v8.3.0 发布资产）→ `assets/external/_staging/F_yolo/weights/`
+  - 包：`ultralytics-8.4.150-py3-none-any.whl`（`--no-deps`）→ 同目录 `wheels/`
+  - 完整性与来源记录：`assets/THIRD_PARTY_ASSETS_YOLO.md`（含 sha256/md5、CRC 全条目校验、来源 URL）
+- **许可提示（需项目决策）：** Ultralytics 代码与官方权重为 **AGPL-3.0**（网络传染性；闭源商用需企业许可）。宽松替代：YOLOX / RT-DETR / NanoDet-Plus（Apache-2.0）。
+- **关键限制：** COCO 预训练权重**不含羽毛球类**，只能作为微调起点或弱代理；要真正检测必须先做 整流/同步 → 数据采集与标注 → 微调 → 验证。任何在微调前的检测精度声明都无效。
+- **环境策略：** 未安装到 `env_isaaclab`（保持 Isaac Lab 环境稳定）；建议后续用独立 `env_vision`（`--system-site-packages` 复用 torch）。
+- **接口约束：** 真实检测器只能通过 `StereoPerceptionModule(measure_fn=...)` 注入，保持层边界（`ROBOT_BRAIN.md` S12）。
