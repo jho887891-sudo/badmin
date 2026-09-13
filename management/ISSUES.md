@@ -132,3 +132,9 @@
 - **当前处置：** 已在 `types.py` 契约注释中**钉死语义**（per-step increment，机体系，EKF 只积分一次；`imu_yaw_rate` 为同一区间角速率），并保留 DEC-013 记录
 - **建议：** 接入真实里程计前重命名为 `odom_increment`（两处调用点 + 契约测试），避免长期歧义
 - **状态：** OPEN（低危，已用注释与 DEC 缓解；属于命名债）
+## ISSUE-010 base_twist 的物理帧无法在消息中编码（仅文档 + 护栏）
+- **现象：** `types.check_court_frame` 强制每条消息 `frame == 'court'`，因此 `SafeCommand.frame` 始终是 `'court'`，而其 `base_twist` 字段的**物理帧是 robot_base（机体系，DEC-014）**。该差异无法在消息里表达，只能靠 docstring 与护栏测试锁定
+- **现有护栏：** T9 `FrameConventionGuardTests`（5 项）：文档即契约守卫、court→body 映射复算、原样透传证明（`record.body_twist` 与传入逐位相同）、负向护栏（court 直传会让四个舵角各错 90°）、wz≠0 时轮速差异可见（>1%）
+- **注意：** wz=0 的纯平移下，两帧的轮速**大小**相同（只差舵角 90°），因此轮速差护栏必须带 wz≠0；舵角护栏在 wz=0 也有效
+- **建议：** 若将来需要机器可校验的帧标注，应解冻 `types.py`，为 `WholeBodyTarget`/`SafeCommand` 增加显式 `twist_frame` 字段（需 DEC + 契约测试）
+- **状态：** OPEN（低危，已被文档与护栏覆盖；属契约表达力债）
