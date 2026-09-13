@@ -162,3 +162,9 @@
 - **现象：** `estimation/robot_localization.py` 的 base_twist() 明确定义为**机体系** [vx,vy,vz,wx,wy,wz]，`estimator.py` 又把它原样填进 racket_contact_twist；而 `types.UnifiedState` 的 docstring 写「one consistent Court-Frame state」且 check_court_frame 强制 frame=='court'。当前 src 内无人消费这两个字段（尚未暴露），但语义漂移与 DEC-014 同类
 - **建议：** 与 DEC-014 一并补 DEC：明确 UnifiedState.base_twist / racket_contact_twist 为机体系，或改为显式字段名；同时 racket_contact_twist 缺少 omega×r 力臂项应标 TEMP
 - **状态：** OPEN（低危；尚未被消费）
+## ISSUE-015 T11 集成测试曾在高负载下出现一次性 errors=6（无法复现）
+- **现象：** 某轮批量运行中 `test_full_brain.py` 报 `Ran 11 tests ... FAILED (errors=6)`；随后**连续多次**单独复跑（含 CPU 负载下）均 `OK (11 tests)`，无法复现。同一时段仓库有 5+ 个 agent 并行写盘（reviewers 做 mutation testing）
+- **可能原因（未证实）：** ①并发期间文件被其他 agent 短暂改写（此前已两次观察到 `types.py` 等被并发修改）；②全仓唯一墙钟使用者 `pipeline.py` 的计时探针 + T11 的 clock/e-stop 用例在多 agent 争抢 CPU 时触及时钟容差
+- **当前状态：** wave 4 / 5 / 6 三次全量回归中 `test_full_brain` 均为 11 OK；D7/D8 修复后新增了端到端护栏 `test_end_to_end_full_runtime_keeps_the_slow_loop_alive`（12 拍 20 Hz 断言慢环存活）
+- **建议：** 后续 CI 化时要求「记录文件 hash + 单进程独占」再判定红绿；若再复现，优先检查 SafetyShield 的 clock tolerance 断言与并发写盘
+- **状态：** OPEN（低危，可观测性问题；不影响当前结论）
