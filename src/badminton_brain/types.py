@@ -267,6 +267,9 @@ class WholeBodyTarget:
     """Planning/policy output: base twist + arm joint targets. Never executed directly."""
     base_twist: Any = None
     joint_position_target: Any = None
+    # SCALAR by contract: while BestIntercept.time_s is per-environment, this horizon is the
+    # batch-min deadline (the most conservative), so every environment is served by a
+    # horizon that is valid for it.  Changing this to (N,) would break Execution/Safety.
     horizon_s: float = 0.0
     timestamp: float = 0.0
     frame: str = COURT_FRAME
