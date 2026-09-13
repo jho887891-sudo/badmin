@@ -42,3 +42,26 @@ Tool: `tools/glb_racket_extract.py` (pxr only, no Blender).
 ## Attribution requirement
 
 Preserve author/title/source/license information in the project's consolidated `assets/THIRD_PARTY_ASSETS.md` and any redistribution package that includes the visual asset.
+## Visual verification (2026-09-13)
+
+Rendered standalone previews with the project camera pipeline (Isaac RTX, headless):
+
+| image | content |
+|---|---|
+| `outputs/evidence/racket_preview_threequarter.png` | 整体三视角 1400×1000：白色拍框 + 拍杆 + 握柄，拍面（线床）呈深色 |
+| `outputs/evidence/racket_preview_face.png` | 沿 +X（面法向）正视 1400×1000 |
+
+Renderer: `tools/render_racket_preview.py`；日志 `outputs/runs/racket_preview4.log`。
+
+Checked visually:
+- frame / shaft / handle: **white, correct shape and proportions** ✅
+- orientation: +Z handle→head, +X face normal ✅ (camera along +X sees the string-bed)
+- string-bed plane renders **dark**; diagnosis: the source string-bed mesh is a thin double-sided plane whose
+  vertex normals cancel out (average normal ≈ 0), so the lit shading comes out dark.
+  The USD itself is correct — `st` primvar present (44 values) and the material is bound to the extracted
+  `badminton_strings` texture (512×512, white ground with a black string grid).
+  This is a **cosmetic** issue only (physics uses the procedural colliders, not this mesh).
+  Options if a lighter string-bed look is wanted: (a) make the string-bed shading emissive from the texture,
+  (b) replace it with a translucent light-grey plane, (c) keep as-is — the reference model also shows dark strings.
+- **Still blocked for final authoring**: `racket.yaml:measured_unit` is `REQUIRES_MEASUREMENT`, so the visual
+  has not been rescaled to the measured racket and the final racket/wrapper USD cannot be produced yet.
