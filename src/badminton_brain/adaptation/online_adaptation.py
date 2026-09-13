@@ -164,6 +164,7 @@ class OnlineAdaptation(AdaptationModule):
         self._prediction_slots: list = []
         self._last_dt = np.zeros(0)
         self._last_source: list = []
+        self._used_prediction_timestamp = np.zeros(0)
         if self.num_envs is not None:
             self._allocate(self.num_envs)
 
@@ -192,6 +193,7 @@ class OnlineAdaptation(AdaptationModule):
         self._prediction_slots = []
         self._last_dt = np.full(n, np.nan)
         self._last_source = ['none'] * n
+        self._used_prediction_timestamp = np.full(n, np.nan)
 
     def _ensure_envs(self, num_envs: int) -> None:
         if self.num_envs is None:
@@ -293,9 +295,8 @@ class OnlineAdaptation(AdaptationModule):
         candidates.extend(self._prediction_slots)
         return candidates
 
-    def _prediction_residual(self, candidates, env: int, position: np.ndarray,
-                             now: float):
-        """predicted - measured position [m] from the newest usable prediction, else None."""
+    def _prediction_residual(self, candidates, env: int, position: np.ndarray, now: float):
+        """(predicted - measured position [m], prediction timestamp) from the newest usable slot."""
         for slot in candidates:
             if not bool(slot['valid'][env]):
                 continue
@@ -304,8 +305,8 @@ class OnlineAdaptation(AdaptationModule):
                 continue        # made at this instant (nothing to compare) or already past its horizon
             predicted = np.array([float(np.interp(now, times, slot['positions'][env, :, axis]))
                                   for axis in range(3)])
-            return predicted - np.asarray(position, dtype=float)
-        return None
+            return predicted - np.asarray(position, dtype=float), float(slot['timestamp'])
+        return None, float('nan')
 
     # ------------------------------------------------------------------ ledger
 
@@ -390,6 +391,7 @@ class OnlineAdaptation(AdaptationModule):
         limited = np.zeros(num_envs, dtype=bool)
         clamped = np.zeros(num_envs, dtype=bool)
         source = ['none'] * num_envs
+        used = np.full(num_envs, np.nan)
 
         for env in range(num_envs):
             error = None
@@ -400,10 +402,12 @@ class OnlineAdaptation(AdaptationModule):
                 if np.all(np.isfinite(errors[env])):
                     error = errors[env]
             else:
-                predicted = self._prediction_residual(candidates, env, position[env], now)
+                predicted, used_timestamp = self._prediction_residual(candidates, env,
+                                                                      position[env], now)
                 if predicted is not None:
                     source[env] = 'prediction'
                     error = predicted
+                    used[env] = used_timestamp
             if error is None or not np.all(np.isfinite(error)):
                 continue                    # no usable residual: record nothing, update nothing
             residual[env] = float(np.linalg.norm(error))
@@ -424,6 +428,7 @@ class OnlineAdaptation(AdaptationModule):
         self.clamped = clamped
         self._last_dt = dt.copy()
         self._last_source = list(source)
+        self._used_prediction_timestamp = used
         return self._correction(dt=dt, residual=residual, updated=updated, limited=limited,
                                 clamped=clamped, state_jump=jump, residual_source=source)
 
@@ -533,15 +538,18 @@ class OnlineAdaptation(AdaptationModule):
             timestamp[fresh] = slot['timestamp']
             horizon_end[fresh] = float(slot['times'][-1])
             available |= slot['valid']
+        # age of the prediction the last residual actually used (the interval it covered)
         age = np.full(n, np.nan)
-        covered = self._prev_valid & available
-        age[covered] = self._prev_timestamp[covered] - timestamp[covered]
+        covered = np.isfinite(self._used_prediction_timestamp) & self._prev_valid
+        age[covered] = (self._prev_timestamp[covered]
+                        - self._used_prediction_timestamp[covered])
         return {
             'num_envs': n,
             'prediction_available': available,
             'prediction_timestamp': timestamp,
             'prediction_horizon_end_s': horizon_end,
             'prediction_age_s': age,
+            'prediction_used_timestamp': self._used_prediction_timestamp.copy(),
             'prediction_slots': len(self._prediction_slots),
             'previous_state_valid': self._prev_valid.copy(),
             'previous_timestamp': self._prev_timestamp.copy(),

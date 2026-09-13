@@ -41,9 +41,23 @@ Drive modes (BADMINTON_ROBOT.md S9):
 Wheel order is the frozen topology order of the canonical kinematics module:
 (FL, FR, RL, RR) - every (N,4) array in this module uses it.
 
-Geometry policy (S12): the chassis geometry is NOT measured.  wheel_positions_param defaults
-to an explicitly TEMP parameterised proxy and wheel_radius_param reuses the Param of
-badminton_robot_cfg.MorphOneGeometry (also TEMP); neither is presented as measured.
+Geometry policy (S12 + DEC-017 single source, DEC-018 visibility):
+  The robot configuration owns the geometry: MorphOneGeometry.wheel_positions_robot and
+  MorphOneGeometry.wheel_radius_m of badminton_robot_cfg are read first (pass cfg=... to use a
+  specific configuration; the default engineering configuration is used otherwise).  A value that
+  the config really resolved is adopted with its own status/source and is NOT re-labelled.  Only
+  when the config carries no value (wheel_positions_robot is REQUIRES_MEASUREMENT by design, value
+  None) does the adapter fall back to an explicitly TEMP_PARAMETERIZED_PROXY engineering baseline,
+  or to the config's own TEMP wheel radius - never to a second, unlabelled copy of the geometry.
+  Resolution order for both inputs, identical for each: explicit Param > explicit raw value (kept
+  TEMP: "caller-supplied ... still TEMP until measured and re-labelled") > resolved config value >
+  labelled TEMP fallback.  An explicit None means exactly "not supplied" and follows the same path
+  as omitting the argument.
+  Whenever any geometry is still a proxy, the constructor raises a RuntimeWarning naming the TEMP
+  fields (DEC-018), and the values stay queryable for the final-mode gate:
+  param_limits() / unresolved_limits() / measurement_requirements() (same API as T5/T6/T7).
+  Injecting measured geometry (a resolved cfg, or a Param with a measured status) removes the
+  corresponding requirement.
 
 Feedback policy (DEC-015) - two different residuals, never mixed up again:
   prediction_error is the PREDICTION residual (predicted shuttle position/velocity minus the
@@ -53,8 +67,8 @@ Feedback policy (DEC-015) - two different residuals, never mixed up again:
   tracking_residual (N,) is the EXECUTION tracking residual: how far the command that was
   actually sent stayed from the command that was requested.  Here it is the Euclidean distance
   in the robot_base frame between the commanded base twist and the twist reconstructed from the
-  emitted wheel targets (kinematics.wheel_targets_to_body_twist), i.e. exactly zero unless a
-  wheel-level solution (S11) changes it.  It is finite and per environment.
+  emitted wheel targets (kinematics.wheel_targets_to_body_twist): at most 1e-12 in floating
+  point (measured ~4e-16) unless a wheel-level solution (S11) changes it.  Finite and per env.
   Feedback.contact_detected is a latched execution event flag (default False), set only through
   SimExecutionAdapter.report_contact.
 """
@@ -62,6 +76,7 @@ from __future__ import annotations
 
 import importlib
 import sys
+import warnings
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
@@ -70,22 +85,25 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 import numpy as np
 
 from ..interfaces import ExecutionModule
-from ..status import AssetStatus, Param
+from ..status import AssetStatus, Param, UNRESOLVED_STATUSES
 from ..types import BrainBoundaryError, Feedback, Layer, SafeCommand
 
-#: TEMP proxy wheel centres in robot_base (same values as
-#: tests/simulation/robots/test_morph_one_kinematics.py).  The real geometry is
-#: Param(None, REQUIRES_MEASUREMENT, 'wheel center coordinates in robot_base') in
-#: badminton_robot_cfg.MorphOneGeometry and is NOT resolved by this module.
-_TEMP_WHEEL_POSITIONS_M: Dict[str, Tuple[float, float]] = {
+#: Last-resort TEMP proxy wheel centres in robot_base, used only because the single source of
+#: truth (badminton_robot_cfg.MorphOneGeometry.wheel_positions_robot) carries NO value: it is
+#: Param(None, REQUIRES_MEASUREMENT, 'wheel center coordinates in robot_base'), and this module
+#: never resolves it.  Same numbers as the phase-3 kinematics test proxy; giving cfg=... with a
+#: resolved wheel_positions_robot replaces them entirely (DEC-017).
+TEMP_WHEEL_POSITIONS_M: Dict[str, Tuple[float, float]] = {
     'FL': (0.25, 0.20),
     'FR': (0.25, -0.20),
     'RL': (-0.25, 0.20),
     'RR': (-0.25, -0.20),
 }
-_TEMP_WHEEL_POSITIONS_SOURCE = (
-    "TEMP proxy from docs/simulation/BADMINTON_ROBOT.md S10 (same proxy as "
-    "tests/simulation/robots/test_morph_one_kinematics.py); chassis wheel centres are not measured")
+TEMP_WHEEL_POSITIONS_SOURCE = (
+    "TEMP engineering proxy from docs/simulation/BADMINTON_ROBOT.md S10 (same proxy as "
+    "tests/simulation/robots/test_morph_one_kinematics.py): "
+    "badminton_robot_cfg.MorphOneGeometry.wheel_positions_robot is REQUIRES_MEASUREMENT "
+    "(value None), so the measured chassis geometry must be supplied through the robot config")
 
 #: S8 + DEC-015: this adapter sees neither the shuttle nor its own realised state, so it can
 #: report neither a prediction residual nor a sensor-based contact event.
@@ -107,7 +125,14 @@ def _find_simulation_dir() -> Optional[Path]:
 
 @lru_cache(maxsize=1)
 def load_kinematics() -> Tuple[Any, Any]:
-    """Return (robot cfg module, canonical four-steer kinematics module). No Isaac import."""
+    """Return (robot cfg module, canonical four-steer kinematics module). No Isaac import.
+
+    Note: the canonical kinematics lives under <repo>/simulation as the package
+    robots.badminton_robot.morph_one.kinematics, so this function adds <repo>/simulation to
+    sys.path once.  The insertion is idempotent (checked before inserting) and process-global,
+    exactly like ExpertPlanner._morph_one(); the result is cached, so the control cycle never
+    touches sys.path again.
+    """
     path = _find_simulation_dir()
     if path is not None and str(path) not in sys.path:
         sys.path.insert(0, str(path))
@@ -143,6 +168,25 @@ def _coerce_drive_mode(value: Any, cfg: Any) -> Any:
         "drive_mode must be a DriveMode or its string value, got " + type(value).__name__)
 
 
+def _adopt_geometry_param(name: str, supplied: Any, cfg_param: Any, fallback: Param) -> Param:
+    """Resolve one geometry input, keeping its provenance intact (DEC-017).
+
+    Order: explicit Param > explicit raw value (TEMP-labelled) > value resolved by the robot
+    config > the supplied labelled TEMP fallback.  An explicit None means "not supplied".
+    """
+    if isinstance(supplied, Param):
+        return supplied
+    if supplied is not None:
+        return Param(supplied, AssetStatus.TEMP_PARAMETERIZED_PROXY,
+                     "caller-supplied " + name + "; still TEMP until measured and re-labelled")
+    if isinstance(cfg_param, Param) and cfg_param.value is not None:
+        return cfg_param
+    source = fallback.source
+    if isinstance(cfg_param, Param):
+        source = source + "; the configuration value is " + str(cfg_param.status.value)
+    return Param(fallback.value, fallback.status, source)
+
+
 def _normalise_wheel_positions(wheel_positions: Any, cfg: Any) -> Dict[Any, Tuple[float, float]]:
     """Map WheelId -> (x, y) in robot_base, rejecting incomplete/ill-formed geometry."""
     out: Dict[Any, Tuple[float, float]] = {}
@@ -171,7 +215,8 @@ class ExecutionCommand:
 
     Shapes: body_twist (3,), joint_position_target (6,), steer_angle_rad (4,),
     wheel_speed_rad_s (4,), wheel_tangential_speed_mps (4,) - all in the frozen
-    wheel order (FL, FR, RL, RR).
+    wheel order (FL, FR, RL, RR).  Every array is stored read-only, so the cached record cannot
+    be mutated from outside, and the record is explicitly unhashable (it holds arrays).
     """
     env_id: int = 0
     drive_mode: Any = None
@@ -184,6 +229,15 @@ class ExecutionCommand:
     wheel_level_authoritative: bool = False
     limited: bool = False
     violations: tuple = ()
+
+    def __post_init__(self) -> None:
+        # A cached command must be immutable: copy each array and freeze it, so a reader cannot
+        # corrupt the record through the returned view.
+        for name in ('body_twist', 'joint_position_target', 'steer_angle_rad',
+                     'wheel_speed_rad_s', 'wheel_tangential_speed_mps'):
+            array = np.array(getattr(self, name), dtype=float, copy=True)
+            array.setflags(write=False)
+            object.__setattr__(self, name, array)
 
     @property
     def actuator_target(self) -> Dict[str, np.ndarray]:
@@ -210,6 +264,11 @@ class ExecutionCommand:
         }
 
 
+# numpy arrays have no meaningful value hash, so the record is explicitly unhashable instead of
+# failing deep inside numpy with a confusing "unhashable type: 'numpy.ndarray'".
+ExecutionCommand.__hash__ = None
+
+
 class SimExecutionAdapter(ExecutionModule):
     """SafeCommand -> Morph One wheel/arm targets -> Feedback (pure numpy, no Isaac)."""
     layer = Layer.EXECUTION
@@ -217,61 +276,100 @@ class SimExecutionAdapter(ExecutionModule):
     is_implemented = True
 
     def __init__(self, num_envs: int = 1, drive_mode: Any = None, wheel_positions: Any = None,
-                 wheel_radius_m: Any = None, joint_names: Optional[Sequence[str]] = None) -> None:
-        cfg, kinematics = load_kinematics()
+                 wheel_radius_m: Any = None, joint_names: Optional[Sequence[str]] = None,
+                 *, cfg: Any = None) -> None:
+        sim_module, kinematics = load_kinematics()
         self.num_envs = int(num_envs)
         if self.num_envs < 1:
             raise ValueError("num_envs must be >= 1, got " + str(num_envs))
+        self.sim_module = sim_module
         self.kinematics = kinematics
-        self.cfg = cfg
+        # DEC-017: the robot configuration owns the geometry.  Pass cfg=... to hand in a specific
+        # configuration (e.g. one whose wheel centres are measured); otherwise the default
+        # engineering baseline configuration is used and its unresolved fields stay unresolved.
+        self.cfg = cfg if cfg is not None else sim_module.make_default_robot_cfg()
         self.wheel_order: Tuple[Any, ...] = tuple(kinematics.WHEEL_ORDER)
         self.drive_mode = _coerce_drive_mode(
-            cfg.DriveMode.BODY_TWIST_ACTUATOR if drive_mode is None else drive_mode, cfg)
+            sim_module.DriveMode.BODY_TWIST_ACTUATOR if drive_mode is None else drive_mode,
+            sim_module)
 
-        if wheel_positions is None:
-            self.wheel_positions_param = Param(
-                dict(_TEMP_WHEEL_POSITIONS_M), AssetStatus.TEMP_PARAMETERIZED_PROXY,
-                _TEMP_WHEEL_POSITIONS_SOURCE)
-        else:
-            self.wheel_positions_param = Param(
-                dict(wheel_positions), AssetStatus.TEMP_PARAMETERIZED_PROXY,
-                "wheel centres supplied by the caller for this run (chassis geometry is still "
-                "REQUIRES_MEASUREMENT in badminton_robot_cfg)")
-        self.wheel_positions = _normalise_wheel_positions(self.wheel_positions_param.value, cfg)
-
-        if wheel_radius_m is None:
-            # single source: never invent a second wheel radius
-            radius_param = cfg.MorphOneCfg().geometry.wheel_radius_m
-            if radius_param.value is None:
-                raise ValueError(
-                    "wheel_radius_m was not supplied and badminton_robot_cfg carries no value "
-                    "(status=" + str(radius_param.status.value) + "); pass the measured radius")
-            self.wheel_radius_param = radius_param
-        else:
-            value = float(wheel_radius_m)
-            if not np.isfinite(value) or value <= 0.0:
-                raise ValueError("wheel_radius_m must be finite and > 0, got " + str(wheel_radius_m))
-            self.wheel_radius_param = Param(
-                value, AssetStatus.TEMP_PARAMETERIZED_PROXY,
-                "wheel radius supplied by the caller for this run")
-        self.wheel_radius_m = float(self.wheel_radius_param.value)
+        geometry = getattr(getattr(self.cfg, 'morph_one', None), 'geometry', None)
+        # Both geometry inputs follow exactly the same path: an explicit None means "not supplied".
+        self.wheel_positions_param = _adopt_geometry_param(
+            'wheel_positions_robot', wheel_positions,
+            getattr(geometry, 'wheel_positions_robot', None),
+            Param(dict(TEMP_WHEEL_POSITIONS_M), AssetStatus.TEMP_PARAMETERIZED_PROXY,
+                  TEMP_WHEEL_POSITIONS_SOURCE))
+        self.wheel_radius_param = _adopt_geometry_param(
+            'wheel_radius_m', wheel_radius_m, getattr(geometry, 'wheel_radius_m', None),
+            sim_module.MorphOneCfg().geometry.wheel_radius_m)
+        self.wheel_positions = _normalise_wheel_positions(self.wheel_positions_param.value,
+                                                          sim_module)
+        self.wheel_radius_m = self._positive_radius(self.wheel_radius_param)
 
         if joint_names is not None:
             self.joint_names: Tuple[str, ...] = tuple(joint_names)
         else:
             # S13: the PiPER joint order is frozen by the robot config, never re-defined here
-            self.joint_names = tuple(cfg.PiperCfg().joint_names)
+            piper = getattr(self.cfg, 'piper', None) or sim_module.PiperCfg()
+            self.joint_names = tuple(piper.joint_names)
 
         self._steer_state: List[Dict[Any, float]] = [
             {wheel: 0.0 for wheel in self.wheel_order} for _ in range(self.num_envs)]
         self._contact: np.ndarray = np.zeros((self.num_envs,), dtype=bool)
         self._last_command: List[Optional[ExecutionCommand]] = [None] * self.num_envs
 
+        # DEC-018: TEMP geometry must never be silent.
+        self._warn_unresolved_geometry()
+
+    # ------------------------------------------------------------------ parameter reporting
+    def param_limits(self) -> Dict[str, Param]:
+        """Every geometry parameter of this adapter as a Param, by name (T5/T6/T7 API)."""
+        return {'wheel_positions_robot': self.wheel_positions_param,
+                'wheel_radius_m': self.wheel_radius_param}
+
+    def unresolved_limits(self) -> Tuple[Tuple[str, Param], ...]:
+        """Geometry not backed by a real measurement, sorted by name (T5/T6/T7 API).
+
+        A TEMP proxy or a value-less parameter shows up here, so the final-mode gate can see
+        that this adapter still runs on an engineering baseline.
+        """
+        return tuple((name, param) for name, param in sorted(self.param_limits().items())
+                     if param.status in UNRESOLVED_STATUSES or param.value is None)
+
+    def measurement_requirements(self) -> Dict[str, Param]:
+        """One Param(None, REQUIRES_MEASUREMENT, source) per geometry that is still unresolved."""
+        return {name: Param(None, AssetStatus.REQUIRES_MEASUREMENT,
+                            'measure ' + name + ': ' + param.source)
+                for name, param in self.unresolved_limits()}
+
+    @staticmethod
+    def _positive_radius(param: Param) -> float:
+        if param.value is None:
+            raise ValueError(
+                "wheel_radius_m has no value: supply it or use a robot cfg whose "
+                "MorphOneGeometry.wheel_radius_m is set (source: " + param.source + ")")
+        value = float(param.value)
+        if not np.isfinite(value) or value <= 0.0:
+            raise ValueError("wheel_radius_m must be finite and > 0, got " + str(param.value))
+        return value
+
+    def _warn_unresolved_geometry(self) -> None:
+        unresolved = self.unresolved_limits()
+        if not unresolved:
+            return
+        warnings.warn(
+            "[SimExecutionAdapter] running with TEMP_PARAMETERIZED_PROXY geometry: "
+            + ", ".join(name for name, _ in unresolved)
+            + "; measured Morph One wheel centres / radius are REQUIRES_MEASUREMENT "
+              "(docs/simulation/BADMINTON_ROBOT.md S4/S12).",
+            RuntimeWarning, stacklevel=3)
+
     # ------------------------------------------------------------------ properties
     @property
     def wheel_level_authoritative(self) -> bool:
         """True iff this mode sends wheel-level targets to the robot (S9.2)."""
-        return self.drive_mode is self.cfg.DriveMode.STEER_DRIVE_WHEEL_MODEL
+        return self.drive_mode is self.sim_module.DriveMode.STEER_DRIVE_WHEEL_MODEL
 
     # ------------------------------------------------------------------ API
     def process(self, command: SafeCommand) -> Feedback:
@@ -325,7 +423,7 @@ class SimExecutionAdapter(ExecutionModule):
 
     def set_drive_mode(self, drive_mode: Any) -> None:
         """Switch S9 mode at runtime; the steering state survives (reset clears it)."""
-        self.drive_mode = _coerce_drive_mode(drive_mode, self.cfg)
+        self.drive_mode = _coerce_drive_mode(drive_mode, self.sim_module)
 
     def reset(self, env_ids: Sequence[int]) -> None:
         """Clear the command cache / steering state / contact latch of the selected envs only."""
@@ -386,4 +484,4 @@ class SimExecutionAdapter(ExecutionModule):
 
 
 __all__ = ["SimExecutionAdapter", "ExecutionCommand", "load_kinematics",
-           "SENSOR_FEEDBACK_SOURCE"]
+           "SENSOR_FEEDBACK_SOURCE", "TEMP_WHEEL_POSITIONS_M", "TEMP_WHEEL_POSITIONS_SOURCE"]

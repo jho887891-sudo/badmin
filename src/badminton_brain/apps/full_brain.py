@@ -108,4 +108,51 @@ def build_full_brain(*, num_envs: int = 1, config: Optional[PipelineConfig] = No
     return registry, pipeline
 
 
-__all__ = ["build_full_brain", "LAYER_MODULE_PATHS"]
+
+
+class FullBrainRuntime:
+    """Runtime loop: BrainPipeline plus the push channels the modules need (DEC-016).
+
+    The frozen pipeline only calls process(), so the application layer pushes the per-step
+    prediction into the adaptation module (slow-loop residual) and may push a safety context
+    (clock / e-stop) before each step.
+    """
+
+    def __init__(self, registry, pipeline):
+        self.registry = registry
+        self.pipeline = pipeline
+
+    def step(self, sensors):
+        result = self.pipeline.step(sensors)
+        adaptation = self.registry.get(Layer.ADAPTATION)
+        if adaptation is not None and result.trajectory is not None:
+            push = getattr(adaptation, 'set_prediction', None)
+            if callable(push):
+                push(result.trajectory)
+        return result
+
+    def push_safety_context(self, context) -> None:
+        safety = self.registry.get(Layer.SAFETY)
+        push = getattr(safety, 'set_context', None)
+        if not callable(push):
+            raise BrainBoundaryError('the registered safety module has no set_context API')
+        push(context)
+
+    def push_clock(self, now: float) -> None:
+        decision = self.registry.get(Layer.DECISION)
+        push = getattr(decision, 'set_now', None)
+        if callable(push):
+            push(now)
+
+    def reset(self, env_ids) -> None:
+        self.pipeline.reset(env_ids)
+
+
+def build_full_runtime(*, num_envs: int = 1, config: Optional[PipelineConfig] = None,
+                       truth_provider=None) -> FullBrainRuntime:
+    """Same wiring as build_full_brain, wrapped in the runtime loop used by sim and real."""
+    registry, pipeline = build_full_brain(num_envs=num_envs, config=config,
+                                          truth_provider=truth_provider)
+    return FullBrainRuntime(registry, pipeline)
+
+__all__ = ["build_full_brain", "build_full_runtime", "FullBrainRuntime", "LAYER_MODULE_PATHS"]

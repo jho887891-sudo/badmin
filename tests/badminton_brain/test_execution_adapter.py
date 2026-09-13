@@ -15,6 +15,8 @@ import math
 import re
 import sys
 import unittest
+import warnings
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -29,8 +31,13 @@ from badminton_brain.execution.sim_adapter import (  # noqa: E402
     SimExecutionAdapter,
 )
 from badminton_brain.interfaces import ExecutionModule  # noqa: E402
+from badminton_brain.status import AssetStatus, Param  # noqa: E402
 from badminton_brain.types import BrainBoundaryError, Layer, SafeCommand  # noqa: E402
-from robots.badminton_robot.badminton_robot_cfg import DriveMode, WheelId  # noqa: E402
+from robots.badminton_robot.badminton_robot_cfg import (  # noqa: E402
+    DriveMode,
+    WheelId,
+    make_default_robot_cfg,
+)
 from robots.badminton_robot.morph_one import kinematics as canonical_kinematics  # noqa: E402
 from robots.badminton_robot.morph_one.kinematics import (  # noqa: E402
     body_twist_to_wheel_targets,
@@ -69,6 +76,19 @@ def make_adapter(mode=DriveMode.BODY_TWIST_ACTUATOR, num_envs=1):
 def canonical(twist, current_steer_rad=None):
     return body_twist_to_wheel_targets(twist, WHEEL_POSITIONS, R_W,
                                        current_steer_rad=current_steer_rad)
+
+
+def measured_cfg(positions=None, radius=0.061):
+    """A robot cfg whose Morph One wheel geometry is really measured (S4 VERIFIED_MEASURED)."""
+    cfg = make_default_robot_cfg()
+    geometry = replace(
+        cfg.morph_one.geometry,
+        wheel_positions_robot=Param(dict(positions if positions is not None else WHEEL_POSITIONS),
+                                    AssetStatus.VERIFIED_MEASURED,
+                                    'wheel centres measured on the real chassis'),
+        wheel_radius_m=Param(float(radius), AssetStatus.VERIFIED_MEASURED,
+                             'wheel radius measured with calipers'))
+    return replace(cfg, morph_one=replace(cfg.morph_one, geometry=geometry))
 
 
 def court_to_body_planar(court_velocity_xy, yaw_rad):
@@ -359,16 +379,6 @@ class ModeConfigurationTests(unittest.TestCase):
                                       wheel_radius_m=R_W)
         self.assertIs(adapter.drive_mode, DriveMode.BODY_TWIST_ACTUATOR)
 
-    def test_unmeasured_geometry_stays_marked_requires_measurement(self) -> None:
-        adapter = make_adapter()
-        statuses = {p.status.value for p in (adapter.wheel_positions_param,
-                                             adapter.wheel_radius_param)}
-        self.assertTrue(all(s in {'REQUIRES_MEASUREMENT', 'TEMP_PARAMETERIZED_PROXY'}
-                            for s in statuses), statuses)
-        for param in (adapter.wheel_positions_param, adapter.wheel_radius_param):
-            self.assertTrue(param.source.strip(), 'a Param must state its source')
-
-
 class FrameConventionGuardTests(unittest.TestCase):
     """Regression guard for the coordinator ruling on the base_twist frame.
 
@@ -443,6 +453,152 @@ class FrameConventionGuardTests(unittest.TestCase):
         print('[frame guard] yaw=90deg, wz=%s: body wheel rates %s rad/s vs court-passed-through %s '
               'rad/s (max gap %.1f%%)' % (yaw_rate, np.round(body_rates, 3),
                                           np.round(court_rates, 3), 100.0 * gap))
+
+
+class ParameterReportingTests(unittest.TestCase):
+    """DEC-017 (cfg is the single source of geometry) + DEC-018 (unresolved values are visible
+    and TEMP geometry raises a RuntimeWarning)."""
+
+    def test_zero_argument_construction_reports_the_temp_geometry_as_unresolved(self) -> None:
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter('always')
+            adapter = SimExecutionAdapter(num_envs=1)
+        self.assertEqual(set(dict(adapter.unresolved_limits())),
+                         {'wheel_positions_robot', 'wheel_radius_m'})
+        self.assertIs(adapter.wheel_positions_param.status, AssetStatus.TEMP_PARAMETERIZED_PROXY)
+        self.assertIs(adapter.wheel_radius_param.status, AssetStatus.TEMP_PARAMETERIZED_PROXY)
+        requirements = adapter.measurement_requirements()
+        self.assertEqual(set(requirements), {'wheel_positions_robot', 'wheel_radius_m'})
+        for name, param in requirements.items():
+            self.assertIsNone(param.value)
+            self.assertIs(param.status, AssetStatus.REQUIRES_MEASUREMENT)
+            self.assertIn('measure ' + name, param.source)
+        # DEC-018: a zero-argument construction on TEMP geometry must not be silent
+        self.assertTrue([w for w in caught if issubclass(w.category, RuntimeWarning)],
+                        'TEMP geometry must raise a RuntimeWarning')
+
+    def test_the_temp_warning_names_the_temp_fields(self) -> None:
+        with self.assertWarnsRegex(RuntimeWarning, 'wheel_positions_robot'):
+            SimExecutionAdapter(num_envs=1)
+        with self.assertWarnsRegex(RuntimeWarning, 'wheel_radius_m'):
+            SimExecutionAdapter(num_envs=1, wheel_positions=WHEEL_POSITIONS)
+        with self.assertWarnsRegex(RuntimeWarning, 'wheel_radius_m'):
+            make_adapter()
+
+    def test_measured_geometry_in_the_cfg_clears_the_requirements(self) -> None:
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter('always')
+            adapter = SimExecutionAdapter(num_envs=1, cfg=measured_cfg())
+        self.assertEqual(adapter.unresolved_limits(), ())
+        self.assertEqual(adapter.measurement_requirements(), {})
+        self.assertIs(adapter.wheel_positions_param.status, AssetStatus.VERIFIED_MEASURED)
+        self.assertIs(adapter.wheel_radius_param.status, AssetStatus.VERIFIED_MEASURED)
+        self.assertEqual([w for w in caught if issubclass(w.category, RuntimeWarning)], [])
+
+    def test_measured_geometry_can_be_injected_as_a_param(self) -> None:
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter('always')
+            adapter = SimExecutionAdapter(
+                num_envs=1,
+                wheel_positions=Param(dict(WHEEL_POSITIONS), AssetStatus.VERIFIED_MEASURED,
+                                      'measured on the chassis'),
+                wheel_radius_m=Param(0.061, AssetStatus.VERIFIED_MEASURED, 'measured radius'))
+        self.assertEqual(adapter.unresolved_limits(), ())
+        self.assertEqual([w for w in caught if issubclass(w.category, RuntimeWarning)], [])
+
+    def test_caller_supplied_raw_values_stay_labelled_temp(self) -> None:
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            adapter = make_adapter()
+        for param in (adapter.wheel_positions_param, adapter.wheel_radius_param):
+            self.assertIs(param.status, AssetStatus.TEMP_PARAMETERIZED_PROXY)
+            self.assertTrue(param.source.strip(), 'a Param must state its source')
+            self.assertIn('caller-supplied', param.source)
+        self.assertEqual(set(dict(adapter.unresolved_limits())),
+                         {'wheel_positions_robot', 'wheel_radius_m'})
+
+    def test_cfg_is_the_single_source_of_the_wheel_geometry(self) -> None:
+        positions = {WheelId.FL: (0.31, 0.24), WheelId.FR: (0.31, -0.24),
+                     WheelId.RL: (-0.31, 0.24), WheelId.RR: (-0.31, -0.24)}
+        adapter = SimExecutionAdapter(num_envs=1, cfg=measured_cfg(positions=positions,
+                                                                   radius=0.08))
+        self.assertAlmostEqual(adapter.wheel_radius_m, 0.08, places=15)
+        for wheel, xy in positions.items():
+            np.testing.assert_allclose(adapter.wheel_positions[wheel], xy, atol=1e-15)
+        # the IK really runs on the cfg geometry, not on a hardcoded copy of it
+        adapter.process(safe_command([0.5, 0.0, 0.0]))
+        record = adapter.get_last_command()[0]
+        expected = body_twist_to_wheel_targets([0.5, 0.0, 0.0], positions, 0.08)
+        for index, wheel in enumerate(canonical_kinematics.WHEEL_ORDER):
+            self.assertAlmostEqual(record.wheel_speed_rad_s[index],
+                                   expected[wheel].wheel_speed_rad_s, places=12)
+        self.assertNotAlmostEqual(float(record.wheel_speed_rad_s[0]), 0.5 / R_W, places=6)
+
+    def test_the_temp_proxy_source_names_the_cfg_field_it_falls_back_from(self) -> None:
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            adapter = SimExecutionAdapter(num_envs=1)
+        self.assertIn('wheel_positions_robot', adapter.wheel_positions_param.source)
+        self.assertIn('REQUIRES_MEASUREMENT', adapter.wheel_positions_param.source)
+        # the radius proxy is the cfg engineering baseline itself, not a second copy
+        baseline = make_default_robot_cfg().morph_one.geometry.wheel_radius_m
+        self.assertIs(adapter.wheel_radius_param.status, baseline.status)
+        self.assertEqual(adapter.wheel_radius_param.value, baseline.value)
+        self.assertEqual(adapter.wheel_radius_param.source, baseline.source)
+
+    def test_explicit_none_and_omitted_geometry_follow_the_same_path(self) -> None:
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            omitted = SimExecutionAdapter(num_envs=1)
+            explicit_none = SimExecutionAdapter(num_envs=1, wheel_positions=None,
+                                                wheel_radius_m=None)
+            omitted.process(safe_command([0.3, 0.1, 0.0]))
+            explicit_none.process(safe_command([0.3, 0.1, 0.0]))
+        self.assertEqual(omitted.wheel_positions_param, explicit_none.wheel_positions_param)
+        self.assertEqual(omitted.wheel_radius_param, explicit_none.wheel_radius_param)
+        self.assertEqual(omitted.unresolved_limits(), explicit_none.unresolved_limits())
+        self.assertEqual(set(omitted.measurement_requirements()),
+                         set(explicit_none.measurement_requirements()))
+        np.testing.assert_allclose(omitted.get_last_command()[0].wheel_speed_rad_s,
+                                   explicit_none.get_last_command()[0].wheel_speed_rad_s,
+                                   atol=1e-15)
+        for kwargs in ({}, {'wheel_positions': None, 'wheel_radius_m': None}):
+            with self.assertWarns(RuntimeWarning):
+                SimExecutionAdapter(num_envs=1, **kwargs)
+        # ... and both adopt a resolved cfg in exactly the same way
+        cfg = measured_cfg(radius=0.07)
+        adopted = SimExecutionAdapter(num_envs=1, cfg=cfg)
+        adopted_none = SimExecutionAdapter(num_envs=1, cfg=cfg, wheel_positions=None,
+                                           wheel_radius_m=None)
+        self.assertAlmostEqual(adopted.wheel_radius_m, 0.07, places=15)
+        self.assertEqual(adopted.measurement_requirements(),
+                         adopted_none.measurement_requirements())
+        self.assertEqual(adopted.unresolved_limits(), ())
+
+
+class ExecutionCommandHygieneTests(unittest.TestCase):
+    """The cached record must not leak mutable state and must not pretend to be hashable."""
+
+    def test_record_is_not_hashable(self) -> None:
+        adapter = make_adapter()
+        adapter.process(safe_command([0.1, 0.0, 0.0]))
+        record = adapter.get_last_command()[0]
+        with self.assertRaises(TypeError) as caught:
+            hash(record)
+        self.assertIn('ExecutionCommand', str(caught.exception))
+
+    def test_record_arrays_are_read_only(self) -> None:
+        adapter = make_adapter()
+        adapter.process(safe_command([0.1, 0.2, 0.0]))
+        record = adapter.get_last_command()[0]
+        arrays = (record.body_twist, record.joint_position_target, record.steer_angle_rad,
+                  record.wheel_speed_rad_s, record.wheel_tangential_speed_mps)
+        for array in arrays:
+            self.assertFalse(array.flags.writeable, 'a cached command must be immutable')
+            with self.assertRaises(ValueError):
+                array[0] = 123.0
+        self.assertIs(record.actuator_target['body_twist'], record.body_twist)
+        self.assertFalse(record.as_dict()['wheel_speed_rad_s'].flags.writeable)
 
 
 if __name__ == '__main__':

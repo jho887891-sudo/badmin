@@ -234,3 +234,9 @@
 - 全量回归实测：**24 套通过 / 2 套失败 / 405 项测试**（含 26 套测试文件）；失败两套（execution_adapter、online_adaptation）是**在回归运行之后才完成修复**的，属时序问题而非代码问题
 - 已完成修复回归：T2 22/22（7 变异体全杀）、T7 23/23、T8 38/38、T9 30/30、T4 17/17、T11 9/9（含 estop 差异化端到端）
 - 新增裁决：DEC-017（src 只读引用 simulation 规范实现，禁止复制）、DEC-018（TEMP 默认值可用于开发，final 必须拒绝）
+**（2026-09-13 轮2 续7：全量回归 26/26 绿 422 项 + 运行时接线 + T12 报告）**
+- wave 3 全量回归实测：suites_passed=26 suites_failed=0 tests_total=422（全绿）
+- T10 收尾 26/26：set_prediction 预测推入通道（真值 1.25 倍阻力下 drag_scale 收敛 1.24999999）
+- 协调者接线：apps/full_brain.py 新增 FullBrainRuntime（每步把 prediction 推入自适应层、可推 SafetyContext/时钟）；T11 增至 11/11 绿，实测 prediction_available=[True,True] → 慢环闭环真正转起来
+- T9 评审 REQUEST CHANGES（缺 measurement_requirements、TEMP 无警告、几何未走单一真源、一处空测试）→ 已派修
+- 产出 T12 验收报告：outputs/reports/brain_modules_acceptance.md（8 层交付/回归/架构规则/评审闭环/裁决/诚实边界/复现）

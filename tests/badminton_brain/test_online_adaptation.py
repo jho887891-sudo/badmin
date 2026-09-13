@@ -584,6 +584,11 @@ class PredictionResidualTests(unittest.TestCase):
                                float(np.linalg.norm(offset)), places=12)
         # predicted ahead of the measurement along +v means the model under-estimates drag
         self.assertGreater(float(module.drag_scale[0]), 1.0)
+        # the diagnostic must report the prediction that was USED (the previous step's), not the
+        # newest cached one, so the age is the covered interval
+        seen = module.diagnostics()
+        self.assertAlmostEqual(float(seen['prediction_used_timestamp'][0]), 0.0, places=12)
+        self.assertAlmostEqual(float(seen['prediction_age_s'][0]), DT, places=12)
 
         inline = OnlineAdaptation(num_envs=1, estimate=('drag_scale',))
         inline.process(Feedback(prediction_error=None, timestamp=0.0),

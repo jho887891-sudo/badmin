@@ -107,6 +107,26 @@ class FullBrainIntegrationTests(unittest.TestCase):
         if snapshot.get('source') == 'none':
             self.assertIn('no_context', violations,
                           'running without any clock/e-stop information must be visible')
+
+    def test_runtime_pushes_the_prediction_into_the_adaptation_layer(self) -> None:
+        from badminton_brain.apps.full_brain import build_full_runtime
+        runtime = build_full_runtime(num_envs=N, truth_provider=canonical_truth)
+        for step in range(3):
+            runtime.step(sensors(0.05 * step))
+        adaptation = runtime.registry.get(Layer.ADAPTATION)
+        diagnostics = adaptation.diagnostics()
+        self.assertTrue(all(np.asarray(diagnostics['prediction_available'])),
+                        'the runtime must feed the prediction to the slow loop (DEC-016)')
+
+    def test_runtime_exposes_the_safety_context_push(self) -> None:
+        from badminton_brain.apps.full_brain import build_full_runtime
+        from badminton_brain.safety.safety_shield import SafetyContext
+        runtime = build_full_runtime(num_envs=N, truth_provider=canonical_truth)
+        runtime.step(sensors(0.0))
+        runtime.push_safety_context(SafetyContext(now=0.05, estop=np.array([False, False])))
+        runtime.push_clock(0.05)
+        result = runtime.step(sensors(0.05))
+        self.assertIsNotNone(result.safe_command)
     def test_reset_is_propagated_to_every_layer(self) -> None:
         registry, pipeline = build_full_brain(num_envs=N, truth_provider=canonical_truth)
         pipeline.reset([1])
