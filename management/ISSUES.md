@@ -168,3 +168,8 @@
 - **当前状态：** wave 4 / 5 / 6 三次全量回归中 `test_full_brain` 均为 11 OK；D7/D8 修复后新增了端到端护栏 `test_end_to_end_full_runtime_keeps_the_slow_loop_alive`（12 拍 20 Hz 断言慢环存活）
 - **建议：** 后续 CI 化时要求「记录文件 hash + 单进程独占」再判定红绿；若再复现，优先检查 SafetyShield 的 clock tolerance 断言与并发写盘
 - **状态：** OPEN（低危，可观测性问题；不影响当前结论）
+## ISSUE-016 远端与本地均无法稳定下载 GitHub 发布资产 CDN 大文件
+- **现象：** 远端 jxxy 可访问 api.github.com 与 pypi.org，但 release-assets.githubusercontent.com 时通时断：5–6 MB 的 yolo11n/yolov8n 直连成功；20 MB 的 yolo26s.pt 直连 278 s 连接超时；38 MB 的 yolo26s.onnx 远端与本地重试均失败（本地为 curl (56) Recv failure: Connection was reset）
+- **当前处置：** 走本地下载 → scp 上传 → 两端核对字节数与 sha256（yolo26s.pt 已按此完成并通过校验）
+- **影响：** 后续较大第三方资产（模型权重、数据集、USD/GLB）默认应走本地中转路径，并在 THIRD_PARTY_ASSETS_*.md 记录来源与哈希
+- **状态：** OPEN（环境约束，已有可用绕行方案；ONNX 仍未取得）

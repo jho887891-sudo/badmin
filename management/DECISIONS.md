@@ -266,3 +266,9 @@
 - **关键限制：** COCO 预训练权重**不含羽毛球类**，只能作为微调起点或弱代理；要真正检测必须先做 整流/同步 → 数据采集与标注 → 微调 → 验证。任何在微调前的检测精度声明都无效。
 - **环境策略：** 未安装到 `env_isaaclab`（保持 Isaac Lab 环境稳定）；建议后续用独立 `env_vision`（`--system-site-packages` 复用 torch）。
 - **接口约束：** 真实检测器只能通过 `StereoPerceptionModule(measure_fn=...)` 注入，保持层边界（`ROBOT_BRAIN.md` S12）。
+### DEC-028 补充（2026-09-13，用户确认模型版本）
+- 指定模型为 **YOLO26s**：`weights/yolo26s.pt`（20,422,725 B，v8.4.0 发布资产，sha256 646f8bc3…84a1b）
+- 校验证据：字节数与 GitHub API 声明值逐字节一致；本地与远端 sha256 相同；zip 718 条目全 CRC 通过
+- 早期下载的 yolo11n.pt / yolov8n.pt 保留为备选（可删，约 12 MB）
+- `yolo26s.onnx` **未取得**（远端超时 + 本地连接重置）→ 部署路径稍后重试或由 ultralytics 自行导出
+- 其余结论（AGPL 许可、COCO 无羽毛球类需微调、未安装未接入、注入点约束）不变
