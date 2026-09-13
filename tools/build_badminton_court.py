@@ -114,6 +114,17 @@ def validate_config(cfg: Mapping[str, Any]) -> None:
     if floor_length < length or floor_width < width:
         raise ValueError("surrounding floor must fully contain the court")
 
+    surface = cfg.get("court_surface")
+    if surface is not None:
+        surface = _require_mapping(cfg, "court_surface")
+        _require_number(surface, "thickness_m", positive=True)
+        cof = _require_number(surface, "measured_reference_cof")
+        if not 0.0 < cof <= 1.0:
+            raise ValueError("court_surface.measured_reference_cof must be within (0, 1]")
+        shock = _require_number(surface, "shock_absorption")
+        if not 0.0 <= shock <= 1.0:
+            raise ValueError("court_surface.shock_absorption must be within [0, 1]")
+
     _require_number(lines, "visual_thickness_m", positive=True)
 
     net_width = _require_number(net, "width_m", positive=True)
@@ -122,8 +133,11 @@ def validate_config(cfg: Mapping[str, Any]) -> None:
     vertical_depth = _require_number(net, "vertical_depth_m", positive=True)
     _require_number(net, "visual_thickness_m", positive=True)
     _require_number(net, "collider_thickness_m", positive=True)
-    _require_number(net, "top_tape_height_m", positive=True)
+    _tape_key = "top_tape_width_m" if "top_tape_width_m" in net else "top_tape_height_m"
+    _require_number(net, _tape_key, positive=True)
     _require_number(net, "top_tape_thickness_m", positive=True)
+    if "mesh_size_m" in net:
+        _require_number(net, "mesh_size_m", positive=True)
     _require_number(net, "post_radius_m", positive=True)
     min_bottom = _require_number(net, "minimum_allowed_bottom_z_m")
 
@@ -166,13 +180,15 @@ def validate_config(cfg: Mapping[str, Any]) -> None:
         if not isinstance(enabled, bool):
             raise ValueError(f"physics.{material_name}.enabled must be boolean")
         if enabled:
-            for key in ("static_friction", "dynamic_friction", "restitution"):
+            for key in ("static_friction", "dynamic_friction"):
                 value = _require_number(material, key)
                 if value < 0.0:
                     raise ValueError(f"physics.{material_name}.{key} must be >= 0")
-            restitution = float(material["restitution"])
-            if restitution > 1.0:
-                raise ValueError(f"physics.{material_name}.restitution must be <= 1")
+            restitution = material.get("restitution")
+            if restitution is not None:
+                restitution = float(restitution)
+                if restitution < 0.0 or restitution > 1.0:
+                    raise ValueError(f"physics.{material_name}.restitution must be within [0, 1]")
 
 
 def _line(
@@ -226,12 +242,23 @@ def build_geometry(cfg: Mapping[str, Any]) -> Geometry:
     floor_collider_thickness = float(floor_cfg["collider_thickness_m"])
     floor_size_xy = (float(floor_cfg["length_m"]), float(floor_cfg["width_m"]))
 
+    surface_cfg = cfg.get("court_surface") or {}
+    mat_thickness = float(surface_cfg.get("thickness_m", 0.0) or 0.0)
     floor_visual = {
         "name": "Floor",
-        "center": (0.0, 0.0, -floor_visual_thickness / 2.0),
+        "center": (0.0, 0.0, -mat_thickness - floor_visual_thickness / 2.0),
         "size": (floor_size_xy[0], floor_size_xy[1], floor_visual_thickness),
         "rgb": tuple(float(v) for v in appearance["floor_rgb"]),
     }
+    court_mat = None
+    if mat_thickness > 0.0:
+        court_mat = {
+            "name": "CourtMat",
+            "center": (0.0, 0.0, -mat_thickness / 2.0),
+            "size": (length, width, mat_thickness),
+            "rgb": tuple(float(v) for v in appearance["floor_rgb"]),
+            "surface_type": str(surface_cfg.get("type", "UNKNOWN")),
+        }
     ground_collider = {
         "name": "GroundCollider",
         "center": (0.0, 0.0, -floor_collider_thickness / 2.0),
@@ -329,7 +356,9 @@ def build_geometry(cfg: Mapping[str, Any]) -> Geometry:
     n_segments = int(net_cfg["segments"])
     visual_thickness = float(net_cfg["visual_thickness_m"])
     collider_thickness = float(net_cfg["collider_thickness_m"])
-    tape_height = float(net_cfg["top_tape_height_m"])
+    _tape_key = "top_tape_width_m" if "top_tape_width_m" in net_cfg else "top_tape_height_m"
+    tape_height = float(net_cfg[_tape_key])
+    mesh_size = float(net_cfg.get("mesh_size_m", 0.0) or 0.0)
     tape_thickness = float(net_cfg["top_tape_thickness_m"])
     dy = net_width / n_segments
 
@@ -402,9 +431,11 @@ def build_geometry(cfg: Mapping[str, Any]) -> Geometry:
 
     return {
         "floor_visual": floor_visual,
+        "court_mat": court_mat,
         "ground_collider": ground_collider,
         "lines": lines,
         "net": {
+            "mesh_size_m": mesh_size,
             "segments": segments,
             "top_tape_segments": top_tape_segments,
             "profile_samples": profile_samples,
@@ -495,7 +526,8 @@ def _author_physics_material(stage, path: str, spec: Mapping[str, Any]):
     api = UsdPhysics.MaterialAPI.Apply(material.GetPrim())
     api.CreateStaticFrictionAttr(float(spec["static_friction"]))
     api.CreateDynamicFrictionAttr(float(spec["dynamic_friction"]))
-    api.CreateRestitutionAttr(float(spec["restitution"]))
+    if spec.get("restitution") is not None:
+        api.CreateRestitutionAttr(float(spec["restitution"]))
     return material
 
 
@@ -569,6 +601,16 @@ def build_usd(cfg: Mapping[str, Any], output_path: str | Path) -> Path:
         floor["size"],
         rgb=floor["rgb"],
     )
+
+    if geometry.get("court_mat"):
+        mat = geometry["court_mat"]
+        _author_cube(
+            stage,
+            "/BadmintonCourt/Visual/CourtMat",
+            mat["center"],
+            mat["size"],
+            rgb=mat["rgb"],
+        )
 
     for line in geometry["lines"]:
         _author_cube(

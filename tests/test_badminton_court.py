@@ -20,7 +20,10 @@ import unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-CONFIG_PATH = HERE / "court.yaml"
+ROOT = HERE.parent
+import sys
+sys.path.insert(0, str(ROOT / "tools"))
+CONFIG_PATH = ROOT / "configs" / "court.yaml"
 
 from build_badminton_court import (  # noqa: E402
     build_geometry,
@@ -71,13 +74,53 @@ class CourtGeometryTests(unittest.TestCase):
         self.assertAlmostEqual(robot["center"][0], -(6.70 + 1.98) / 2.0, places=9)
         self.assertAlmostEqual(opponent["center"][0], (6.70 + 1.98) / 2.0, places=9)
 
-    def test_floor_visual_and_ground_collider_have_top_surface_at_z_zero(self) -> None:
+    def test_playing_surface_and_ground_collider_have_top_surface_at_z_zero(self) -> None:
+        """The z=0 plane is the PLAYING surface.
+
+        With a court_surface layer (e.g. 4.5 mm PVC), the mat carries the z=0
+        surface and the base floor slab sits one mat thickness below it.
+        """
         floor = self.geo["floor_visual"]
         ground = self.geo["ground_collider"]
-        floor_top = floor["center"][2] + floor["size"][2] / 2.0
         ground_top = ground["center"][2] + ground["size"][2] / 2.0
-        self.assertAlmostEqual(floor_top, 0.0, places=9)
         self.assertAlmostEqual(ground_top, 0.0, places=9)
+
+        mat = self.geo.get("court_mat")
+        if mat is None:
+            floor_top = floor["center"][2] + floor["size"][2] / 2.0
+            self.assertAlmostEqual(floor_top, 0.0, places=9)
+        else:
+            mat_top = mat["center"][2] + mat["size"][2] / 2.0
+            floor_top = floor["center"][2] + floor["size"][2] / 2.0
+            self.assertAlmostEqual(mat_top, 0.0, places=9)
+            self.assertAlmostEqual(floor_top, -mat["size"][2], places=9)
+
+    def test_court_surface_matches_project_spec(self) -> None:
+        surface = self.cfg["court_surface"]
+        self.assertEqual(surface["type"], "PVC")
+        self.assertAlmostEqual(surface["thickness_m"], 0.0045, places=9)
+        self.assertAlmostEqual(surface["measured_reference_cof"], 0.55, places=9)
+        self.assertAlmostEqual(surface["shock_absorption"], 0.35, places=9)
+        mat = self.geo["court_mat"]
+        self.assertAlmostEqual(mat["size"][2], 0.0045, places=9)
+        self.assertAlmostEqual(mat["size"][0], 13.40, places=9)
+        self.assertAlmostEqual(mat["size"][1], 6.10, places=9)
+
+    def test_ground_friction_uses_measured_reference_cof(self) -> None:
+        ground_material = self.cfg["physics"]["ground_material"]
+        self.assertTrue(ground_material["enabled"])
+        self.assertAlmostEqual(ground_material["static_friction"], 0.55, places=9)
+        self.assertAlmostEqual(ground_material["dynamic_friction"], 0.55, places=9)
+        self.assertIsNone(ground_material["restitution"])
+
+    def test_net_mesh_and_top_tape_dimensions(self) -> None:
+        net_cfg = self.cfg["net"]
+        self.assertAlmostEqual(net_cfg["mesh_size_m"], 0.018, places=9)
+        self.assertAlmostEqual(net_cfg["top_tape_width_m"], 0.075, places=9)
+        net_geo = self.geo["net"]
+        self.assertAlmostEqual(net_geo["mesh_size_m"], 0.018, places=9)
+        tape = net_geo["top_tape_segments"][0]
+        self.assertAlmostEqual(tape["size"][2], 0.075, places=9)
 
     def test_net_has_finite_width_and_never_creates_ground_to_net_wall(self) -> None:
         net = self.geo["net"]

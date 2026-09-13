@@ -21,6 +21,13 @@ court:
   short_service_x_m: 1.98
   doubles_long_service_x_m: 5.94
 
+# Playing-surface layer (project hardware spec; measured reference data).
+court_surface:
+  type: "PVC"
+  thickness_m: 0.0045
+  measured_reference_cof: 0.55
+  shock_absorption: 0.35
+
 surrounding_floor:
   length_m: 16.0
   width_m: 9.0
@@ -33,7 +40,7 @@ lines:
 net:
   width_m: 6.10
   center_height_m: 1.524
-  post_height_m: 1.55
+  post_height_m: 1.550
   vertical_depth_m: 0.760
 
   # Finite segmented approximation of the sagging net surface.
@@ -41,9 +48,10 @@ net:
   segments: 16
   sag_profile: "QUADRATIC"
 
+  mesh_size_m: 0.018
   visual_thickness_m: 0.004
   collider_thickness_m: 0.012
-  top_tape_height_m: 0.04
+  top_tape_width_m: 0.075
   top_tape_thickness_m: 0.018
 
   post_radius_m: 0.025
@@ -65,15 +73,15 @@ appearance:
   post_rgb: [0.10, 0.10, 0.10]
 
 physics:
-  # Do not pretend unmeasured friction/restitution values are "real".
-  # Enable only after measuring / validating the actual floor.
+  # Ground contact: measured reference COF of the PVC surface (0.55).
+  # restitution stays null = not measured -> no restitution attribute is authored.
   ground_material:
-    enabled: false
-    static_friction: null
-    dynamic_friction: null
+    enabled: true
+    static_friction: 0.55
+    dynamic_friction: 0.55
     restitution: null
 
-  # Net contact material is also left uncalibrated by default.
+  # Net contact material is left uncalibrated by default.
   net_material:
     enabled: false
     static_friction: null
