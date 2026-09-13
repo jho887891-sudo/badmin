@@ -22,8 +22,9 @@ from ..types import BrainBoundaryError, Layer, RobotSensorState, ShuttleMeasurem
 from .robot_localization import RobotLocalization
 
 RACKET_CONTACT_OFFSET = Param(
-    (0.0, 0.0, 0.0), AssetStatus.TEMP_PARAMETERIZED_PROXY,
-    "identity placeholder until measured T_link6_tcp / T_tcp_contact are available",
+    (0.30, 0.0, 1.20), AssetStatus.TEMP_PARAMETERIZED_PROXY,
+    "TEMP offset reproducing the nominal PiPER mount height until measured "
+    "T_link6_tcp / T_tcp_contact exist; chosen to stay inside the TEMP safety workspace box",
 )
 
 ABSOLUTE_POSE_NOISE = Param(
@@ -83,7 +84,8 @@ class EkfEstimatorModule(EstimationModule):
 
         base_pose = np.asarray(self.localization.base_pose(), dtype=float)
         base_twist = np.asarray(self.localization.base_twist(), dtype=float)
-        shuttle_position, shuttle_velocity = self._shuttle_estimate(perception, sensors)
+        valid = self._valid_rows(perception)
+        shuttle_position, shuttle_velocity = self._shuttle_estimate(perception, sensors, valid)
 
         return UnifiedState(
             base_pose=base_pose,
@@ -110,10 +112,30 @@ class EkfEstimatorModule(EstimationModule):
                          1.0 - 2.0 * (pose[:, 2] ** 2 + pose[:, 3] ** 2))
         return np.stack([pose[:, 0], pose[:, 1], yaw], axis=1)
 
-    def _shuttle_estimate(self, perception: ShuttleMeasurement, sensors: RobotSensorState):
+    def _valid_rows(self, perception: ShuttleMeasurement):
+        mask = getattr(perception, 'valid_mask', None)
+        if mask is None:
+            return None
+        mask = np.asarray(mask, dtype=float).reshape(-1)
+        return [i for i, flag in enumerate(mask) if flag > 0.5]
+
+    def _shuttle_estimate(self, perception: ShuttleMeasurement, sensors: RobotSensorState, valid=None):
+        position = np.asarray(perception.position, dtype=float)
+        velocity = np.asarray(perception.velocity, dtype=float)
         if self.shuttle_filter is None:
-            return np.asarray(perception.position, dtype=float), np.asarray(perception.velocity, dtype=float)
-        estimate = self.shuttle_filter.update(perception, sensors)
+            if valid is not None and len(valid) != position.shape[0]:
+                keep = np.zeros_like(position)
+                keep[valid] = position[valid]
+                keep_v = np.zeros_like(velocity)
+                keep_v[valid] = velocity[valid]
+                return keep, keep_v
+            return position, velocity
+        if valid is not None:
+            if not valid:
+                return position, velocity          # nothing to update: keep the last estimate
+            estimate = self.shuttle_filter.update(perception, valid)
+        else:
+            estimate = self.shuttle_filter.update(perception, sensors)
         return np.asarray(estimate['position'], dtype=float), np.asarray(estimate['velocity'], dtype=float)
 
     def _racket_contact_pose(self, base_pose: np.ndarray) -> np.ndarray:
@@ -125,10 +147,13 @@ class EkfEstimatorModule(EstimationModule):
 
     def state_snapshot(self) -> Tuple[np.ndarray, ...]:
         """Per-environment (state, covariance) pairs, for reset-isolation tests."""
-        state = np.asarray(self.localization._state, dtype=float) if hasattr(self.localization, '_state') else None
-        covariance = np.asarray(self.localization._covariance, dtype=float) if hasattr(self.localization, '_covariance') else None
+        state = getattr(self.localization, 'state', None)
+        covariance = getattr(self.localization, 'covariance', None)
         if state is None or covariance is None:
-            raise BrainBoundaryError('RobotLocalization does not expose _state/_covariance for snapshots')
+            raise BrainBoundaryError(
+                'RobotLocalization must expose the public state/covariance properties for snapshots')
+        state = np.asarray(state, dtype=float)
+        covariance = np.asarray(covariance, dtype=float)
         return tuple(np.concatenate([state[i], covariance[i].reshape(-1)]) for i in range(state.shape[0]))
 
 
