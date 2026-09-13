@@ -19,15 +19,26 @@ with an explicit source (BADMINTON_ROBOT.md S4 authenticity levels / S12 TEMP po
 Home-hall airflow is not measured yet, so wind is a declared TEMP proxy rather than a
 silently assumed zero.
 
+Time base (coordinator ruling, SIMULATION_ENVIRONMENT S6)
+--------------------------------------------------------
+``times`` is ABSOLUTE simulation time on the same base as ``PredictedTrajectory.timestamp``: the
+rollout grid shifted by the state timestamp, so ``times[0] == timestamp`` and
+``times[-1] == timestamp + horizon_s`` (1-D, strictly increasing, step ``dt_s`` unchanged).
+``arrival_time`` shares that base: it is the absolute moment of the ground crossing, not an
+offset from the prediction time -- a consumer that wants a time-to-go subtracts the timestamp.
+
 Landing point
 -------------
 ``landing_point`` / ``arrival_time`` are the first downward crossing of the court ground plane
 ``z = ground_z_m`` (Court Frame, ROBOT_BRAIN.md S3), obtained by linear interpolation between
 the two rollout samples that straddle the plane.  If the shuttle is airborne for the whole
 horizon the crossing does not exist yet: the module then reports the last sample projected
-onto the ground plus the horizon time and sets the additive diagnostic flag
+onto the ground plus the horizon time (``timestamp + horizon_s``, absolute like every other
+time in the message) and sets the additive diagnostic flag
 ``landed_within_horizon[env] = False``, so a caller can never mistake a horizon-clipped
-extrapolation for a real bounce.  (The type contract has no field for that flag and the
+extrapolation for a real bounce.  A caller gating on the horizon should compare
+``arrival_time`` against ``timestamp + horizon_s`` and read that flag instead of inferring a
+bounce from a finite ``arrival_time``.  (The type contract has no field for that flag and the
 frozen contracts must not change, hence an extra attribute.)
 
 Usage
@@ -35,6 +46,7 @@ Usage
 ```python
 predictor = PhysicsTrajectoryPredictor(horizon_s=0.6, dt_s=0.005)   # configurable horizon
 trajectory = predictor.process(unified_state)                        # (N, T, 3) + landing
+trajectory.times[0] == trajectory.timestamp                          # absolute simulation time
 ```
 """
 from __future__ import annotations
@@ -236,7 +248,11 @@ class PhysicsTrajectoryPredictor(PredictionModule):
     def predict(self, position: Any, velocity: Any, *, k_per_m: Optional[float] = None,
                 horizon_s: Optional[float] = None, dt_s: Optional[float] = None,
                 timestamp: float = 0.0) -> PredictedTrajectory:
-        """Roll out (3,) or (N, 3) shuttle states; identical maths to rollout() per sample."""
+        """Roll out (3,) or (N, 3) shuttle states; identical maths to rollout() per sample.
+
+        Returned times are absolute simulation time (the rollout grid shifted by timestamp),
+        and arrival_time is on that same absolute base.
+        """
         pos = _batched3(position, 'position')
         vel = _batched3(velocity, 'velocity')
         if pos.shape[0] != vel.shape[0]:
@@ -253,22 +269,26 @@ class PhysicsTrajectoryPredictor(PredictionModule):
         gravity = _vec3(self.gravity_mps2.value, 'gravity_mps2.value')
         wind = _vec3(self.wind_mps.value, 'wind_mps.value')
 
+        offset = _finite_float(timestamp, 'timestamp')   # absolute simulation-time base
+        grid_reference: Optional[np.ndarray] = None
         times: Optional[np.ndarray] = None
         positions, velocities, landings, arrivals, landed_flags = [], [], [], [], []
         for index in range(pos.shape[0]):
             # The single source of truth for shuttle flight: the frozen aerodynamics rollout.
             sample = rollout(pos[index], vel[index], duration_s=horizon, dt_s=step,
                              k_per_m=k, gravity=gravity, wind=wind)
-            sample_times = np.asarray(sample['time'], dtype=float)
+            # rollout() reports time from 0; the message contract wants absolute sim time.
+            grid = np.asarray(sample['time'], dtype=float)
             if times is None:
-                times = sample_times
-            elif sample_times.shape != times.shape or not np.array_equal(sample_times, times):
+                grid_reference = grid
+                times = grid + offset
+            elif grid.shape != grid_reference.shape or not np.array_equal(grid, grid_reference):
                 raise BrainBoundaryError(
                     'shuttle_aerodynamics.rollout returned inconsistent time grids across the '
                     'batch; PredictedTrajectory.times is shared by every environment')
             sample_position = np.asarray(sample['position'], dtype=float)
-            point, arrival, landed = _ground_crossing(sample_times, sample_position,
-                                                      self.ground_z_m)
+            # arrival is read off the same absolute grid, so it is absolute as well
+            point, arrival, landed = _ground_crossing(times, sample_position, self.ground_z_m)
             positions.append(sample_position)
             velocities.append(np.asarray(sample['velocity'], dtype=float))
             landings.append(point)
@@ -281,11 +301,11 @@ class PhysicsTrajectoryPredictor(PredictionModule):
             velocity=np.stack(velocities, axis=0),
             landing_point=np.stack(landings, axis=0),
             arrival_time=np.asarray(arrivals, dtype=float),
-            timestamp=float(timestamp),
+            timestamp=offset,
         )
         # Additive diagnostic (the frozen contract has no field for it): False means the
         # shuttle never reached the ground inside this horizon and landing_point/arrival_time
-        # are horizon-clipped projections, not a predicted bounce.
+        # (then timestamp + horizon_s, absolute) are horizon-clipped projections, not a bounce.
         trajectory.landed_within_horizon = np.asarray(landed_flags, dtype=bool)
         return trajectory
 

@@ -11,8 +11,26 @@ Duties: this module is the only place where a SafeCommand becomes actuator-level
 It does NOT plan, does NOT clamp (Safety owns the limits) and does NOT call any Isaac/Kit/Omni
 API - the real environment driver feeds SafeCommand in and reads Feedback out.
 
+Frame convention (coordinator ruling with the T7 fix) - FROZEN:
+  WholeBodyTarget.base_twist and SafeCommand.base_twist are the robot_base (body) frame twist
+  [vx_body, vy_body, wz]: +x_body points forward, +y_body points left of the robot, wz is the
+  yaw rate about +z_body.  The court -> body rotation is the planner's duty (T7, done inside
+  planning); this adapter hands the numbers it receives straight to the body-frame four-steer
+  inverse kinematics and never re-rotates them - equally it must never be fed a court-frame
+  velocity.  Worked example: a robot at yaw = 90 deg with the court-frame intent (0.5, 0) m/s
+  must be commanded the body twist (0.0, -0.5, 0.0).  Feeding (0.5, 0, 0) straight into the
+  body IK steers every wheel wrong by exactly the yaw angle (90 deg); for a pure translation
+  (wz = 0) the wheel-rate magnitudes coincide in both frames, so only the steer angle reveals
+  the mistake - with wz != 0 the wheel rates differ too (TEMP geometry, wz = 0.5 rad/s: about
+  35% on the worst wheel).  Regression guard: tests/badminton_brain/test_execution_adapter.py
+  ::FrameConventionGuardTests.
+  Caveat: the message-level frame attribute stays 'court' (the frozen check_court_frame
+  contract in types.py checks every message), so the body frame of the base_twist VALUES can
+  only be documented, not encoded in the message.
+
 Drive modes (BADMINTON_ROBOT.md S9):
-  BODY_TWIST_ACTUATOR      the actuator consumes the court-frame body twist (vx, vy, wz).
+  BODY_TWIST_ACTUATOR      the actuator consumes the robot_base (body) frame twist
+                           [vx_body, vy_body, wz] documented above.
                            S10 inverse kinematics is still evaluated and exposed, but only as a
                            diagnostic: the adapter keeps no steering state (nothing to optimise).
   STEER_DRIVE_WHEEL_MODEL  the actuator consumes steer angle (N,4) + wheel rate (N,4).  The S11
@@ -139,6 +157,9 @@ def _normalise_wheel_positions(wheel_positions: Any, cfg: Any) -> Dict[Any, Tupl
 @dataclass(frozen=True)
 class ExecutionCommand:
     """One environment's last executed command, in the frozen actuator vocabulary.
+
+    body_twist is the robot_base (body) frame twist [vx_body, vy_body, wz] (module docstring:
+    frame convention); steer/wheel arrays are body-frame wheel quantities in the frozen order.
 
     Shapes: body_twist (3,), joint_position_target (6,), steer_angle_rad (4,),
     wheel_speed_rad_s (4,), wheel_tangential_speed_mps (4,) - all in the frozen

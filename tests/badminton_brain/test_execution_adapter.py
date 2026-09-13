@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'src'))
 sys.path.insert(0, str(ROOT / 'simulation'))
 
+from badminton_brain.execution import sim_adapter as sim_adapter_module  # noqa: E402
 from badminton_brain.execution.sim_adapter import (  # noqa: E402
     ExecutionCommand,
     SimExecutionAdapter,
@@ -68,6 +69,18 @@ def make_adapter(mode=DriveMode.BODY_TWIST_ACTUATOR, num_envs=1):
 def canonical(twist, current_steer_rad=None):
     return body_twist_to_wheel_targets(twist, WHEEL_POSITIONS, R_W,
                                        current_steer_rad=current_steer_rad)
+
+
+def court_to_body_planar(court_velocity_xy, yaw_rad):
+    """Court-frame planar velocity -> robot_base velocity: R(-yaw) @ v.
+
+    Coordinator ruling: WholeBodyTarget.base_twist / SafeCommand.base_twist are the robot_base
+    (body) twist, and the court -> body rotation is done by the PLANNER (T7).  It is recomputed
+    here only so the guard test can state what the execution adapter must receive; the adapter
+    itself never rotates anything.
+    """
+    c, s = math.cos(-yaw_rad), math.sin(-yaw_rad)
+    return np.array([[c, -s], [s, c]]) @ np.asarray(court_velocity_xy, dtype=float)
 
 
 class LayerContractTests(unittest.TestCase):
@@ -326,6 +339,82 @@ class ModeConfigurationTests(unittest.TestCase):
                             for s in statuses), statuses)
         for param in (adapter.wheel_positions_param, adapter.wheel_radius_param):
             self.assertTrue(param.source.strip(), 'a Param must state its source')
+
+
+class FrameConventionGuardTests(unittest.TestCase):
+    """Regression guard for the coordinator ruling on the base_twist frame.
+
+    Ruling: WholeBodyTarget.base_twist / SafeCommand.base_twist are the robot_base (body) frame
+    twist [vx_body, vy_body, wz]; the court -> body rotation is the PLANNER's duty (T7).  The
+    execution adapter must therefore hand the numbers it receives straight to the body-frame
+    four-steer IK and must never re-rotate (or require a court-frame input).
+    """
+    YAW = math.pi / 2.0                                  # robot at yaw = 90 deg
+    COURT_INTENT = np.array([0.5, 0.0])                  # move +X, as seen in the court frame
+    BODY_TWIST = np.array([0.0, -0.5, 0.0])              # what the planner must emit
+
+    def test_module_documents_the_body_frame_twist_convention(self) -> None:
+        doc = sim_adapter_module.__doc__ or ''
+        for phrase in ('robot_base (body) frame', 'planner', 'yaw'):
+            self.assertIn(phrase, doc,
+                          'the adapter docstring must state the frozen frame convention '
+                          '(coordinator ruling): input is the robot_base twist and the planner '
+                          'owns the court -> body rotation')
+
+    def test_the_ruling_maps_a_court_intent_to_the_body_twist(self) -> None:
+        body_planar = court_to_body_planar(self.COURT_INTENT, self.YAW)
+        np.testing.assert_allclose(body_planar, self.BODY_TWIST[:2], atol=1e-15)
+
+    def test_adapter_forwards_the_body_twist_to_the_body_frame_ik(self) -> None:
+        adapter = make_adapter()
+        adapter.process(safe_command([self.BODY_TWIST]))
+        record = adapter.get_last_command()[0]
+        expected = canonical(self.BODY_TWIST)
+        for index, wheel in enumerate(canonical_kinematics.WHEEL_ORDER):
+            self.assertAlmostEqual(record.steer_angle_rad[index],
+                                   expected[wheel].steer_angle_rad, places=12)
+            self.assertAlmostEqual(record.wheel_speed_rad_s[index],
+                                   expected[wheel].wheel_speed_rad_s, places=12)
+        np.testing.assert_allclose(record.body_twist, self.BODY_TWIST, atol=1e-15)
+
+    def test_court_velocity_fed_straight_into_the_body_ik_is_a_different_command(self) -> None:
+        """Negative guard: the bug the ruling fixes is visible in the steer angles."""
+        adapter = make_adapter()
+        adapter.process(safe_command([self.BODY_TWIST]))
+        record = adapter.get_last_command()[0]
+        wrong = canonical(np.array([self.COURT_INTENT[0], self.COURT_INTENT[1], 0.0]))
+        for index, wheel in enumerate(canonical_kinematics.WHEEL_ORDER):
+            self.assertAlmostEqual(
+                abs(record.steer_angle_rad[index] - wrong[wheel].steer_angle_rad),
+                self.YAW, places=12,
+                msg='every wheel is steered wrong by exactly the yaw angle')
+            # wz = 0: a pure translation has the same wheel-rate MAGNITUDE in either frame,
+            # so the wheel rate alone can never reveal this frame error.
+            self.assertAlmostEqual(abs(record.wheel_speed_rad_s[index]),
+                                   abs(wrong[wheel].wheel_speed_rad_s), places=12)
+
+    def test_wheel_rates_reveal_the_frame_error_when_the_robot_also_turns(self) -> None:
+        yaw_rate = 0.5
+        body_twist = np.array([0.0, -0.5, yaw_rate])
+        court_twist = np.array([self.COURT_INTENT[0], self.COURT_INTENT[1], yaw_rate])
+        body_rates = np.array([canonical(body_twist)[wheel].wheel_speed_rad_s
+                               for wheel in canonical_kinematics.WHEEL_ORDER])
+        court_rates = np.array([canonical(court_twist)[wheel].wheel_speed_rad_s
+                                for wheel in canonical_kinematics.WHEEL_ORDER])
+        self.assertFalse(np.allclose(body_rates, court_rates, atol=1e-9))
+        gap = float(np.max(np.abs(body_rates - court_rates)) / np.max(np.abs(body_rates)))
+        self.assertGreater(gap, 0.01, 'the two frame interpretations must be measurably different')
+
+        adapter = make_adapter()
+        adapter.process(safe_command([body_twist]))
+        record = adapter.get_last_command()[0]
+        np.testing.assert_allclose(record.wheel_speed_rad_s, body_rates, atol=1e-12)
+        np.testing.assert_allclose(record.steer_angle_rad,
+                                   [canonical(body_twist)[wheel].steer_angle_rad
+                                    for wheel in canonical_kinematics.WHEEL_ORDER], atol=1e-12)
+        print('[frame guard] yaw=90deg, wz=%s: body wheel rates %s rad/s vs court-passed-through %s '
+              'rad/s (max gap %.1f%%)' % (yaw_rate, np.round(body_rates, 3),
+                                          np.round(court_rates, 3), 100.0 * gap))
 
 
 if __name__ == '__main__':

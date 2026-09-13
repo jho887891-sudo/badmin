@@ -29,7 +29,7 @@ sys.path.insert(0, str(ROOT / 'simulation'))
 from robots.badminton_robot.badminton_robot_cfg import (  # noqa: E402
     WheelId, make_default_robot_cfg,
 )
-from robots.badminton_robot.frames.robot_frames import quat_from_rpy  # noqa: E402
+from robots.badminton_robot.frames.robot_frames import quat_from_rpy, quat_to_matrix  # noqa: E402
 from robots.badminton_robot.morph_one.kinematics import (  # noqa: E402
     body_twist_to_wheel_targets,
 )
@@ -38,6 +38,7 @@ from badminton_brain.planning import (  # noqa: E402
     TEMP_CONTACT_JACOBIAN, ExpertPlanner, PpoPolicyStub,
 )
 from badminton_brain.registry import ModuleRegistry  # noqa: E402
+from badminton_brain.status import AssetStatus, Param  # noqa: E402
 from badminton_brain.types import (  # noqa: E402
     BestIntercept, BrainBoundaryError, HitDecision, Layer, PredictedTrajectory, UnifiedState,
     WholeBodyTarget,
@@ -328,6 +329,159 @@ class PlannerContractGuardTests(unittest.TestCase):
                                  score=np.ones((1,)), timestamp=0.1)
         with self.assertRaises(BrainBoundaryError):
             planner.process(make_state(n=1), feasible(), negative, make_trajectory(n=1))
+
+
+def wrap_to_pi(angle):
+    return (angle + math.pi) % (2.0 * math.pi) - math.pi
+
+
+class BodyFrameTwistTests(unittest.TestCase):
+    """Coordinator verdict: WholeBodyTarget.base_twist is robot_base, never court.
+
+    Execution receives only SafeCommand (no pose), so the planner - which holds UnifiedState
+    with the base yaw - must do the court -> body rotation itself before wheel clipping.
+    """
+
+    def setUp(self):
+        self.planner = ExpertPlanner()
+        self.standoff = self.planner.limits.standoff_m.value
+
+    def _spec(self, base_xy, yaw_deg, hit_xy, time_s):
+        """The command the spec demands, derived from geometry only (not from the planner)."""
+        rotation = quat_to_matrix(quat_from_rpy(0.0, 0.0, math.radians(yaw_deg)))
+        offset = np.asarray(hit_xy, dtype=float) - np.asarray(base_xy, dtype=float)
+        distance = float(np.linalg.norm(offset))
+        velocity_court = (distance - self.standoff) / time_s * (offset / distance)
+        yaw_rate = wrap_to_pi(math.atan2(offset[1], offset[0]) - math.radians(yaw_deg)) / time_s
+        return rotation, velocity_court, yaw_rate
+
+    def test_translation_is_rotated_into_the_body_frame_at_every_yaw(self):
+        base_xy, hit_xy, time_s = (-1.6, 0.0), (-0.7, 0.0), 0.9
+        for yaw_deg in (0.0, 30.0, 45.0, 90.0, 135.0, 180.0):
+            with self.subTest(yaw_deg=yaw_deg):
+                rotation, velocity_court, yaw_rate = self._spec(base_xy, yaw_deg, hit_xy, time_s)
+                target = self.planner.process(
+                    make_state(n=1, base_xy=base_xy, yaw_deg=yaw_deg), feasible(),
+                    make_intercept(n=1, position=(hit_xy[0], hit_xy[1], 1.0), time_s=time_s),
+                    make_trajectory(n=1))
+                # No clipping in this scenario, so the command must match the spec exactly.
+                self.assertAlmostEqual(float(self.planner.last_diagnostics['clip_scale'][0]), 1.0,
+                                       places=12)
+                np.testing.assert_allclose(target.base_twist[0, :2],
+                                           rotation[:2, :2].T @ velocity_court, atol=1e-9)
+                # Round trip: expressing the command back in the court frame restores the demand.
+                np.testing.assert_allclose(rotation[:2, :2] @ target.base_twist[0, :2],
+                                           velocity_court, atol=1e-9)
+                self.assertAlmostEqual(target.base_twist[0, 2], yaw_rate, places=9)
+
+    def test_the_rotation_changes_the_steer_angles_but_not_the_wheel_speeds(self):
+        # Physical consistency: the same motion expressed in two frames drives the same wheels.
+        # Expressing it in the court frame rotates the wheel positions together with the twist,
+        # which shifts every steer angle by +yaw and leaves every wheel speed unchanged.
+        base_xy, hit_xy, time_s = (-1.6, 0.0), (-0.7, 0.0), 0.9
+        yaw_deg = 90.0
+        yaw = math.radians(yaw_deg)
+        rotation, velocity_court, yaw_rate = self._spec(base_xy, yaw_deg, hit_xy, time_s)
+        target = self.planner.process(make_state(n=1, base_xy=base_xy, yaw_deg=yaw_deg), feasible(),
+                                      make_intercept(n=1, position=(hit_xy[0], hit_xy[1], 1.0),
+                                                     time_s=time_s),
+                                      make_trajectory(n=1))
+        body_twist = target.base_twist[0]
+        court_twist = np.array([velocity_court[0], velocity_court[1], yaw_rate])
+        planar = rotation[:2, :2]
+        court_positions = {wid: tuple(planar @ np.asarray(pos, dtype=float))
+                           for wid, pos in self.planner.wheel_positions.items()}
+        body_targets = body_twist_to_wheel_targets(body_twist, self.planner.wheel_positions,
+                                                   self.planner.wheel_radius_m)
+        court_targets = body_twist_to_wheel_targets(court_twist, court_positions,
+                                                    self.planner.wheel_radius_m)
+        for wid in WheelId:
+            self.assertAlmostEqual(body_targets[wid].wheel_speed_rad_s,
+                                   court_targets[wid].wheel_speed_rad_s, places=9)
+            self.assertAlmostEqual(wrap_to_pi(court_targets[wid].steer_angle_rad
+                                              - body_targets[wid].steer_angle_rad),
+                                   wrap_to_pi(yaw), places=9)
+        # Feeding the court-frame twist straight into the body-frame kinematics (the pre-verdict
+        # behaviour) is a *different* command, not a re-labelling - that is why the fix matters.
+        misframed = body_twist_to_wheel_targets(court_twist, self.planner.wheel_positions,
+                                                self.planner.wheel_radius_m)
+        worst = max(abs(misframed[wid].wheel_speed_rad_s - body_targets[wid].wheel_speed_rad_s)
+                    for wid in WheelId)
+        self.assertGreater(worst, 0.5)
+        self.assertLessEqual(max(wheel_ranges(body_twist, self.planner)[1]), MAX_STEER + 1e-9)
+
+
+class SteerLimitTests(unittest.TestCase):
+    """A steer limit tighter than the TEMP pi default must really be enforced and reported."""
+
+    @staticmethod
+    def _tight_planner():
+        cfg = make_default_robot_cfg()
+        cfg.morph_one.max_steer_angle_rad = Param(
+            1.0, AssetStatus.TEMP_PARAMETERIZED_PROXY,
+            'test fixture: artificially tight steer limit to exercise the steer check')
+        return ExpertPlanner(cfg=cfg)
+
+    def test_a_tighter_steer_limit_is_adopted_flagged_and_still_speed_limited(self):
+        planner = self._tight_planner()
+        self.assertAlmostEqual(planner.max_steer_angle_rad, 1.0, places=12)
+        state = make_state(n=1, base_xy=(-1.6, 0.0), yaw_deg=0.0)
+        # Pure lateral intercept: the required wheel directions sit near +-pi/2, which no limit
+        # below pi/2 can represent, not even by the equivalent (theta +- pi, -omega) command.
+        intercept = make_intercept(n=1, position=(-1.6, 0.9, 1.0), time_s=0.9)
+        target = planner.process(state, feasible(), intercept, make_trajectory(n=1))
+        self.assertTrue(bool(planner.last_diagnostics['steer_limit_exceeded'][0]))
+        self.assertGreater(float(planner.last_diagnostics['steer_equivalent_max_rad'][0]), 1.0)
+        speeds, steers = wheel_ranges(target.base_twist[0], planner)
+        self.assertLessEqual(max(speeds), MAX_WHEEL_SPEED + 1e-9)   # the drive limit still holds
+        self.assertLessEqual(max(steers), MAX_STEER + 1e-9)
+
+        relaxed = ExpertPlanner()   # the continuous-steering baseline meets the same command
+        relaxed.process(state, feasible(), intercept, make_trajectory(n=1))
+        self.assertFalse(bool(relaxed.last_diagnostics['steer_limit_exceeded'][0]))
+
+
+class MeasurementRequirementTests(unittest.TestCase):
+    """Alignment with T5/T6: the unmeasured list is a queryable API, not prose."""
+
+    def test_measurement_requirements_lists_every_unmeasured_quantity(self):
+        planner = ExpertPlanner()
+        requirements = planner.measurement_requirements()
+        self.assertIsInstance(requirements, dict)
+        for name in ('standoff_m', 'max_joint_offset_rad', 'max_joint_rate_rad_s',
+                     'max_wheel_speed_rad_s', 'max_steer_angle_rad', 'wheel_radius_m',
+                     'wheel_positions_robot', 'contact_jacobian', 'piper_joint_limits'):
+            self.assertIn(name, requirements)
+        for name, param in requirements.items():
+            self.assertIsInstance(param, Param, name)
+            self.assertIsNone(param.value, name)
+            self.assertIs(param.status, AssetStatus.REQUIRES_MEASUREMENT, name)
+            self.assertTrue(str(param.source).strip(), name)
+        temp_limits = [name for name, param in planner.limits.param_limits().items()
+                       if param.status == AssetStatus.TEMP_PARAMETERIZED_PROXY]
+        self.assertTrue(temp_limits)
+        for name in temp_limits:
+            self.assertIn(name, requirements)
+
+    def test_supplied_geometry_drops_the_matching_requirement(self):
+        measured_jacobian = np.hstack([np.diag([0.3, 0.3, 0.3]), np.zeros((3, 3))])
+        planner = ExpertPlanner(wheel_positions=WHEEL_POSITIONS, contact_jacobian=measured_jacobian)
+        requirements = planner.measurement_requirements()
+        self.assertNotIn('wheel_positions_robot', requirements)
+        self.assertNotIn('contact_jacobian', requirements)
+        self.assertIn('wheel_radius_m', requirements)   # handed-in geometry is not a measurement
+
+        target = planner.process(
+            make_state(n=1, contact=(0.0, 0.0, 1.0), joints=np.zeros(6)), feasible(),
+            make_intercept(n=1, position=(0.0, 0.0, 1.05), time_s=0.4,
+                           racket_pose=[0.0, 0.0, 1.05, 1.0, 0.0, 0.0, 0.0]),
+            make_trajectory(n=1))
+        np.testing.assert_allclose(target.joint_position_target[0],
+                                   [0.0, 0.0, 0.05 / 0.3, 0.0, 0.0, 0.0], atol=1e-12)
+
+        # Handing the TEMP proxy back in is not a measurement.
+        still_temp = ExpertPlanner(contact_jacobian=TEMP_CONTACT_JACOBIAN)
+        self.assertIn('contact_jacobian', still_temp.measurement_requirements())
 
 
 if __name__ == '__main__':

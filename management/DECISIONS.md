@@ -137,3 +137,22 @@
 - **优点：** 换实现不动上层；边界错误立刻暴露；sim/real 共用同一套契约
 - **缺点：** 多一层抽象；消息字段在 MODULE_INTERFACES.md 到位后可能需微调（ISSUE-006）
 - **未来是否允许修改：** 允许，但必须同时更新 ROBOT_BRAIN.md / MODULE_INTERFACES.md / 本文件（文档 S15 要求）
+## DEC-013 RobotSensorState 增加可选 odom/IMU 通道（契约扩展，向后兼容）
+- **日期：** 2026-09-13
+- **背景：** 估计层（T2 EKF）需要里程计与 IMU，但冻结的 `RobotSensorState` 只有 base_pose / joint_pos / joint_vel → 估计模块无法接入 `EstimationModule`
+- **最终决定：** 在 `src/badminton_brain/types.py` 的 `RobotSensorState` 增加**可选**字段 `odom_twist (N,3)` 与 `imu_yaw_rate (N,)`（默认 None；提供时按批量形状与非有限值校验）；既有调用方无需改动
+- **语义：** `odom_twist` = 本步里程计增量通道（vx, vy, wz，机体系），`imu_yaw_rate` = 本步偏航角速率；由 `estimation/estimator.py` 按调用间隔消费
+- **配套：** 新增 `estimation/estimator.py`（EkfEstimatorModule）作为唯一桥接点，把 T2 的批量 EKF 与 T3 的 UKF bridge 接进接口
+- **验证：** `tests/architecture/test_sensor_channels.py`（6 项）+ 既有契约测试 `test_brain_types`(10)/`test_brain_pipeline`(15) 全绿，证明向后兼容
+- **优点：** 估计层可插拔；契约保持 court frame 与批量形状纪律
+- **缺点：** 契约文件出现一次受控变更（需同时更新本文件与 plan ledger）
+- **未来是否允许修改：** 允许，但任何契约变更都必须有 DEC 条目 + 契约测试证据
+## DEC-014 base_twist 坐标系：脑内 court frame，唯 base_twist 是机体系（由规划器旋转）
+- **日期：** 2026-09-13
+- **背景：** T7 评审实测：把 court 系速度直送机体系四舵轮 IK，yaw=90° 时方向错 90°、轮速偏差最大 23%（5.91 vs 7.70 rad/s）
+- **最终决定：** `WholeBodyTarget.base_twist` 与 `SafeCommand.base_twist` 定义为 **robot_base（机体系）** `[vx_body, vy_body, wz]`；court→body 旋转由**规划器**完成（它持有 UnifiedState 的 yaw）；执行层直接送入机体系 IK。其余所有消息字段仍为 Court Frame
+- **原因：** 执行层只收到 SafeCommand，拿不到位姿，无法自行旋转；若改为 court 系需扩契约或让执行层缓存状态
+- **验证：** T7 增加 yaw=0/30/45/90/135/180° 逐位断言（atol 1e-9）；T9 增加同名回归护栏（机体系直传 vs court 系直传必须得到不同轮速）
+- **优点：** 契约不变、执行层无隐式状态
+- **缺点：** 一个字段的坐标系与消息其余字段不同，必须靠文档与测试护栏维持
+- **未来是否允许修改：** 允许，但必须同时改 T7/T9 两个模块与双方的护栏测试

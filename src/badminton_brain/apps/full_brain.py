@@ -56,9 +56,12 @@ def _implementers(module, interface) -> List[type]:
     return found
 
 
-def _instantiate(cls, num_envs: int):
+def _instantiate(cls, num_envs: int, truth_provider=None):
     last_error: Optional[Exception] = None
-    for kwargs in ({'num_envs': num_envs}, {}, {'n': num_envs}):
+    attempts = [{'num_envs': num_envs, 'truth_provider': truth_provider},
+                {'num_envs': num_envs}, {}, {'n': num_envs}] if truth_provider is not None else [
+                {'num_envs': num_envs}, {}, {'n': num_envs}]
+    for kwargs in attempts:
         try:
             return cls(**kwargs)
         except TypeError as exc:
@@ -67,7 +70,8 @@ def _instantiate(cls, num_envs: int):
         f"could not instantiate {cls.__name__} with (num_envs) or no arguments: {last_error}")
 
 
-def build_full_brain(*, num_envs: int = 1, config: Optional[PipelineConfig] = None):
+def build_full_brain(*, num_envs: int = 1, config: Optional[PipelineConfig] = None,
+                     truth_provider=None):
     """Return (registry, pipeline) with all eight layers wired, or raise a clear error."""
     registry = ModuleRegistry()
     missing: List[str] = []
@@ -82,7 +86,7 @@ def build_full_brain(*, num_envs: int = 1, config: Optional[PipelineConfig] = No
                 continue
             candidates = _implementers(module, interface)
             if len(candidates) == 1:
-                chosen = _instantiate(candidates[0], num_envs)
+                chosen = _instantiate(candidates[0], num_envs, truth_provider)
                 break
             if len(candidates) > 1:
                 problems.append(

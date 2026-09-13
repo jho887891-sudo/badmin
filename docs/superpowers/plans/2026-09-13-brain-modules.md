@@ -85,3 +85,16 @@ Decisions and deviations are recorded here as `Ruling: ... — why — cost if w
   `simulation/robots/badminton_robot/morph_one/kinematics.py`; `src/` imports it through a documented
   lazy loader (T7/T9 both did this) — why: duplicating it would create two truths — cost if wrong:
   `src/` depends on a simulation path (documented, no functional impact).
+- Ruling (frames): `WholeBodyTarget.base_twist` / `SafeCommand.base_twist` are **robot_base (body)**
+  `[vx_body, vy_body, wz]`; the planner owns the court->body rotation because Execution receives only
+  the SafeCommand and has no pose — why: T7's review proved a 90 deg direction error and a 23 % wheel-speed
+  error at yaw=90 deg when a court-frame value was fed to the body-frame IK — cost if wrong: one extra
+  rotation in the planner (tested) and a documented convention.
+- Ruling (time base): `PredictedTrajectory.times` (and therefore `arrival_time`) are **absolute
+  simulation time** on the same clock as `timestamp` — why: SIMULATION_ENVIRONMENT S6 and the T6/T5
+  consumers assume one clock — cost if wrong: one offset in the predictor (fixed by T4, guarded by tests).
+- Ruling (safety context): the frozen `SafetyModule.process(target)` signature stays; the **application
+  layer pushes** `SafetyContext` (estop / watchdog now / measured state) into the safety module before
+  each step, and a T11 end-to-end test must prove estop reaches the command — why: pipeline.py calls only
+  `process(target)`, so T8's headline features were unreachable (dead code) — cost if wrong: one
+  documented push call in the runtime loop.

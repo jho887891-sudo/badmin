@@ -206,3 +206,11 @@
   `decision/decision_module.py` FeasibilityDecisionModule 5 项（1 项 skip：T6 仍为空壳）
 - 清理误入仓库的 `_scratch_psd.py`
 - 待完成：T6 拦截搜索（仍空壳，agent 运行中）→ 之后 T11 集成 + T12 整体评审
+
+**（2026-09-13 轮2 续3：8 层实现完毕 + T11 端到端跑通 + 评审闭环）**
+- **8 层全部实现**：registry 探测确认 8 个模块（perception/estimation/prediction/decision/planning/safety/execution/adaptation）
+- **T11 端到端 7/7 通过**：canonical 来球 → 感知(合成代理)→EKF+UKF→预测→决策→规划→安全→执行→反馈→自适应，连续 5 步不发散，逐步计时 8 段
+- 评审闭环：T4 **APPROVE**（变异体 3/3 被抓、独立复算一致）｜T7 **REQUEST CHANGES → 已修 23/23 绿**（court→body 修复，并实测证明坐标系错会导致轮速偏差 23%）｜T2 **REQUEST CHANGES**（发现一个**死测试**=假 PASS + 协方差断言无判别力 → 已派修）｜T8 **REQUEST CHANGES**（**HIGH：SafetyContext 无人构造=死代码** + 两处可复现越限反例 → 已派修）
+- 协调者裁决（已入 plan ledger + DECISIONS）：DEC-014 base_twist 机体系；times 绝对仿真时间（T4 已改，17/17 绿）；SafetyContext 由应用层推入（T11 将加 estop 端到端测试）
+- 发现的流程问题：我曾把**本地过期文件 scp 回远端**覆盖了自己的补丁 → 已改为一律"远端改完立即同步回本地"
+- 未决：T9 护栏测试（已派）、T5/T9/T10 评审结论待回、T12 整体评审与最终回归
