@@ -25,3 +25,5 @@ _probe_*.py
 _*_probe*.py
 __pycache__/
 *.pyc
+# reviewer worktree mirrors (never part of the project)
+.review_remote/
