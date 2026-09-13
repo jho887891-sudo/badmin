@@ -122,3 +122,18 @@
 - **优点：** 每个行为都有失败证据；重构有测试护栏；避免"看起来完成"
 - **缺点：** 单轮耗时增加（小步多次跑测试）
 - **未来是否允许修改：** 仅用户显式指示可豁免（例如明确说"这次是原型/一次性脚本"）
+## DEC-012 模块化整体架构的实现形态：注册表 + 管线 + 强制边界（不是一堆 if）
+- **日期：** 2026-09-13
+- **背景：** 需按 ROBOT_BRAIN.md（S11/S12/S15）把"模块化整体架构"变成可运行、可替换、可验收的代码
+- **最终决定：**
+  1) 层与消息先用**显式契约类型**固定（`src/badminton_brain/types.py`），全部 Court Frame、批量、带仿真时间戳，且**不含 env_origin**
+  2) 层职责用**接口类**表达（8 个），模块只能返回自己那一层的消息类型，违者 `BrainBoundaryError`
+  3) 装配用 `ModuleRegistry`（一层一模块、重复/层错拒绝、`replace()` 替换实现），运行用 `BrainPipeline`（按 `BASELINE_ORDER` 顺序、逐步计时）
+  4) **Safety 是执行层的唯一上游**：缺 Safety 层时管线构造即失败（PPO/规划无法绕过）
+  5) **频率不硬编码**：`PipelineConfig.stage_rate_hz` 每层默认 `REQUIRES_MEASUREMENT`，待接口/实时性测试确定
+  6) `validate_architecture(mode='final')` 对"未实现算法/未定频率"直接判失败
+  7) `AssetStatus/Param` 收敛到 `src/common/status.py` 单一来源（robot 仿真层再导出）
+- **原因：** 满足"结构正式、未知显式、资产可替换、接口稳定、批量原生"；避免算法逻辑散落在场景代码里
+- **优点：** 换实现不动上层；边界错误立刻暴露；sim/real 共用同一套契约
+- **缺点：** 多一层抽象；消息字段在 MODULE_INTERFACES.md 到位后可能需微调（ISSUE-006）
+- **未来是否允许修改：** 允许，但必须同时更新 ROBOT_BRAIN.md / MODULE_INTERFACES.md / 本文件（文档 S15 要求）

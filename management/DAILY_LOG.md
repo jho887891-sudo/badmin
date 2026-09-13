@@ -164,3 +164,11 @@
   - REFACTOR：两个提取器改用共享 helper（168→78 行、144→88 行，消除重复实现）
   - 验证 GREEN(2)：真实提取重跑，tri/bbox/材质与重构前一致；最终羽毛球资产重建成功
 - 报告：`outputs/reports/tdd_cycle_usd_glb_common.md`
+
+**（2026-09-13 按 docs/architecture 实现模块化整体架构，TDD 完整回路）**
+- 读出架构契约：主闭环 `Perception → Estimation(EKF/UKF) → Prediction → HitFeasibility → InterceptSearch → Planner/PPO → Safety → Execution → Feedback`；规则：模块不得代劳、PPO 不得绕过 Safety、频率不硬编码、MODULE_INTERFACES.md 管消息结构
+- 新增 `src/badminton_brain/`：`types.py`（9 类消息契约 + Court Frame/批量/时间戳校验）、`interfaces.py`（8 层接口）、`registry.py`（一层一模块 + replace）、`pipeline.py`（按基线顺序装配与运行、层输出类型校验、逐步计时、reset(env_ids)）、`validation.py`（development/final）
+- 新增 `src/common/status.py`：`AssetStatus/Param` 单一来源；robot 模块改为再导出（消除重复定义，42 项测试护栏不变）
+- TDD：RED（先空壳 → 断言级失败 failures=6 / failures=10+errors=5）→ GREEN 分 2 片（10/10、15/15）→ 全量回归 **11 套 134 项全绿** → REFACTOR（共享词汇）→ 再回归全绿
+- 报告：`outputs/reports/architecture_implementation.md`；`src/README.md` 更新
+- 未实现（明确）：各层算法本体；所有模块 is_implemented=False，final 模式报错

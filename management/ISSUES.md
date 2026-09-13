@@ -112,3 +112,6 @@
 - **解决方式：** 抽出 `tools/usd_glb_common.py`，其中 `set_orient_compat(op, quat_wxyz)` 先读属性类型再按类型写入（Quatf/Quatd 皆可）；两个 GLB 提取器与后续 USD authoring 统一调用它，不再各写一份
 - **覆盖测试：** `tests/tools/test_usd_glb_common.py::OrientCompatTests`（新建 op 不报错 + 旋转方向正确）
 - **状态：** RESOLVED（若后续在别处再出现同类写法，视为新缺陷）
+### ISSUE-006 追加说明（2026-09-13）
+- 模块化架构已按 ROBOT_BRAIN.md 实现，但**消息字段集属临时契约**：层名/输入输出类型/顺序已固定，
+  字段细节待 `docs/architecture/MODULE_INTERFACES.md` 到位后核对；若该文档给出不同字段名，只需改 `src/badminton_brain/types.py` 与测试，管线与接口不变
