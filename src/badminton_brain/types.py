@@ -118,10 +118,16 @@ class ShuttleMeasurement:
     covariance: Any = None
     timestamp: float = 0.0
     frame: str = COURT_FRAME
+    # DEC-023: which rows are real detections.  An out-of-view shuttle must never be
+    # consumed as a measurement at the origin.
+    valid_mask: Any = None
 
     def __post_init__(self) -> None:
         check_court_frame(self)
         self.timestamp = _check_timestamp(self.timestamp, 'ShuttleMeasurement')
+        if self.valid_mask is not None:
+            self.valid_mask = check_per_env_scalar('ShuttleMeasurement.valid_mask',
+                                                   np.asarray(self.valid_mask, dtype=float))
         self.position = check_batched('ShuttleMeasurement.position', self.position, 3)
         self.velocity = check_batched('ShuttleMeasurement.velocity', self.velocity, 3)
         self.covariance = check_batched('ShuttleMeasurement.covariance', self.covariance, 3)
@@ -136,9 +142,13 @@ class RobotSensorState:
     joint_pos: Any = None
     joint_vel: Any = None
     timestamp: float = 0.0
-    # Optional proprioception channels (coordinator ruling 2026-09-13): the estimation
-    # layer needs odometry and a yaw-rate source, but they must stay optional so that
-    # existing callers keep working unchanged.
+    # Optional proprioception channels (coordinator ruling 2026-09-13, DEC-013): the
+    # estimation layer needs odometry and a yaw-rate source, but they must stay optional so
+    # that existing callers keep working unchanged.
+    # SEMANTICS (pinned after the T2 review flagged the hazard): odom_twist is the
+    # PER-STEP INCREMENT supplied by the wheel odometry, [dx_body, dy_body, dyaw] since the
+    # previous call - NOT a velocity despite the field name; the EKF integrates it once.
+    # imu_yaw_rate is the yaw rate in rad/s for the same interval.
     odom_twist: Any = None
     imu_yaw_rate: Any = None
 
@@ -194,6 +204,9 @@ class PredictedTrajectory:
     velocity: Any = None
     landing_point: Any = None
     arrival_time: Any = None
+    # DEC-019: promoted from the predictor private attribute to the contract, because a
+    # horizon-truncated landing point must never be consumed as a real bounce.
+    landed_within_horizon: Any = None
     timestamp: float = 0.0
     frame: str = COURT_FRAME
 
@@ -211,6 +224,10 @@ class PredictedTrajectory:
             raise BrainBoundaryError('PredictedTrajectory.position must be (N, T, 3) matching times')
         self.landing_point = check_batched('PredictedTrajectory.landing_point', self.landing_point, 3)
         self.arrival_time = check_per_env_scalar('PredictedTrajectory.arrival_time', self.arrival_time)
+        if self.landed_within_horizon is not None:
+            self.landed_within_horizon = check_per_env_scalar(
+                'PredictedTrajectory.landed_within_horizon',
+                np.asarray(self.landed_within_horizon, dtype=float))
 
 
 @dataclass

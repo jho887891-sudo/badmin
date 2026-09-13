@@ -127,3 +127,8 @@
 - **影响：** 球出视场时估计层可能把 (0,0,0) 当测量使用（T3 UKF 会把状态往原点拉）
 - **建议：** 在 `ShuttleMeasurement` 上增加可选 `valid_mask (N,)` 契约字段（需 DEC），或在估计层消费 `perception.last_valid_mask`
 - **状态：** OPEN（中危，需在接入真机/长回合前解决）
+## ISSUE-009 odom_twist 字段名与语义（每步增量）不一致
+- **现象：** T2 评审指出 `RobotSensorState.odom_twist` 被 `estimation/estimator.py` 当作**每步增量** [dx, dy, dyaw] 消费，但字段名与类型校验的措辞像「速度（twist）」。当前所有调用点都填 0，故未暴露；一旦感知/仿真层填真实速度，EKF 会把速度当位移积分
+- **当前处置：** 已在 `types.py` 契约注释中**钉死语义**（per-step increment，机体系，EKF 只积分一次；`imu_yaw_rate` 为同一区间角速率），并保留 DEC-013 记录
+- **建议：** 接入真实里程计前重命名为 `odom_increment`（两处调用点 + 契约测试），避免长期歧义
+- **状态：** OPEN（低危，已用注释与 DEC 缓解；属于命名债）
