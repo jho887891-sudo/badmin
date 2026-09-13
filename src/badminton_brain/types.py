@@ -284,7 +284,14 @@ class WholeBodyTarget:
 
 @dataclass
 class SafeCommand:
-    """Safety output: the only message Execution is allowed to consume."""
+    """Safety output: the only message Execution is allowed to consume.
+
+    NOTE (DEC-014 / ISSUE-010): ``base_twist`` is expressed in the robot_base (body) frame
+    [vx_body, vy_body, wz] while this message ``frame`` stays 'court' (the court frame is the
+    canonical global reference for poses and timestamps).  The court->body rotation is done by
+    the planner, so any driver or dataset that reads this message must NOT reinterpret
+    ``base_twist`` as a court-frame velocity.
+    """
     base_twist: Any = None
     joint_position_target: Any = None
     limited: bool = False
