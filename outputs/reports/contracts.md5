@@ -1,11 +1,20 @@
 # Frozen-contract baseline (evidence for reviewers: the remote repo has no git)
-# generated 2026-09-13 11:33:37 UTC
+# generated 2026-09-13 13:59:57 UTC
+#
+# Contract files DID change during this work, always with a DEC entry and contract tests:
+#   types.py       DEC-013 (odom/imu channels), DEC-015 (tracking_residual),
+#                  DEC-019 (landed_within_horizon), DEC-023 (valid_mask), semantics pinning
+#   interfaces.py  unchanged since first write (timestamp only)
+#   registry.py    UNCHANGED since 10:16
+#   pipeline.py    UNCHANGED since 10:16  (no contract change was ever needed there)
+#   validation.py  DEC-019 (final mode queries module measurement_requirements)
+#
 # path  sha256  mtime
-src/badminton_brain/types.py                                             b42c18a9532a1f55db715d0d97df4d8bfdf96a49ceefa7c36e3fe405d2c2dad4  2026-09-13 11:31:12
-src/badminton_brain/interfaces.py                                        38217f7a47839ded973dafc9e1c2669bd7c291b43c006f60a5164be0d2aab5b9  2026-09-13 10:15:51
+src/badminton_brain/types.py                                             7220f9c8d54d3fee270476068a2a933f4343534bff254a59e3418c77566ace76  2026-09-13 13:40:43
+src/badminton_brain/interfaces.py                                        33d1c8ea250c0e646102c1c55b74fb89525214074d72968b9228c035d23e87ed  2026-09-13 13:40:43
 src/badminton_brain/registry.py                                          9c3c5a367e4649202ed86c851962549b63a4dbeaaedfa392c22b33f43e3da883  2026-09-13 10:16:22
 src/badminton_brain/pipeline.py                                          7c8f171a69d440227eb2153d55e18175a262699c823638569b166d99de2eac57  2026-09-13 10:16:25
-src/badminton_brain/validation.py                                        c94e3315fb19f09356839edf8a3886217598d13b5588e47421fca5c072283e8d  2026-09-13 10:16:28
+src/badminton_brain/validation.py                                        8b48040016749560bd91492c32f637f9c6d876ce0ae6dc94fe0b942e9642597f  2026-09-13 12:27:44
 src/common/status.py                                                     355fe55264dec3f44cb9109335a40dcd5bee23e1ab54dd17111d51ec33a48ce9  2026-09-13 10:12:34
 src/trajectory/shuttle_aerodynamics.py                                   7ac86eac1a60b6658f02a608a9d4cb777a7938fb510b1b46c1a91e0f506e0e52  2026-09-13 07:56:14
 simulation/robots/badminton_robot/morph_one/kinematics.py                72e050da8ba46d845481b2bf1375d7255a3e07f571d7574ddddb13a33f05d11b  2026-09-13 09:59:16

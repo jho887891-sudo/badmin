@@ -269,3 +269,8 @@
 - 回退修正：estimator 的 state_snapshot 改用公有 state/covariance（消除与 T2 私有属性耦合）
 - 启动收官回归 wave 6（含契约 sha256 漂移检查）
 - 累计裁决 DEC-013…025（13 条）、问题 ISSUE-006…014（9 条）
+**（2026-09-13 收官：wave 6 全绿 26/460）**
+- 收官回归 wave 6 实测：**suites_passed=26 suites_failed=0 tests_total=460**（全部评审修复 + 测试卫生 + 语义固化之后的最终确认）
+- 契约基线刷新：`outputs/reports/contracts.md5` 现附「哪些 DEC 改了哪个文件」的说明；**registry.py 与 pipeline.py 自 10:16 起从未改动**（说明架构骨架本身不需要为任何评审发现让步）
+- 全部评审条目处置完毕：T4 APPROVE；T2/T5/T7/T8/T9/T10 修复回归绿；broad D1–D8 修复、D9–D14 显式登记
+- 累计：DEC-013…025（13 条）｜ISSUE-006…014（9 条）
