@@ -498,8 +498,13 @@ class ShuttleUKF:
         return out
 
     def _clip_state(self, state: np.ndarray) -> np.ndarray:
+        """Project the drag state into its declared bounds (1-D mean or 2-D batch)."""
         out = np.array(state, dtype=float, copy=True)
-        np.clip(out[:, DRAG_INDEX], self.drag_k_min, self.drag_k_max, out=out[:, DRAG_INDEX])
+        if out.ndim == 1:
+            out[DRAG_INDEX] = min(max(out[DRAG_INDEX], self.drag_k_min), self.drag_k_max)
+        else:
+            np.clip(out[:, DRAG_INDEX], self.drag_k_min, self.drag_k_max,
+                    out=out[:, DRAG_INDEX])
         return out
 
     def _process_noise(self, dt: float) -> np.ndarray:
@@ -557,6 +562,8 @@ class ShuttleUKF:
     @staticmethod
     def _block(values, rows: int, cols: int, name: str) -> np.ndarray:
         arr = np.asarray(values, dtype=float)
+        if arr.ndim == 1 and arr.size == cols and rows == 1:
+            arr = arr[None, :]      # a single environment may be addressed with a bare vector
         if arr.shape != (rows, cols):
             raise BrainBoundaryError(f"{name} must have shape ({rows}, {cols}), got {arr.shape}")
         if not np.isfinite(arr).all():

@@ -190,3 +190,10 @@
 - 全量回归实测：17 套 224 项，5 套 FAIL（含 T11）—— 均为进行中状态，非最终结论
 - T4 已交付（RED: ModuleNotFoundError→断言级；GREEN 16/16；与 rollout 逐点差 0.0；landing Δpoint=1.03e-5 m、Δt=1.98e-6 s）→ **已派独立评审子智能体 cde60461**
 - 协调者工具：`tools/run_all_tests.py` 作为全量回归门（本轮用它取得上述实测）
+
+**（2026-09-13 轮2 续：协调者补齐两处集成缺口 + 派 7 个评审）**
+- 契约扩展：`RobotSensorState` 增加可选 `odom_twist (N,3)` / `imu_yaw_rate (N,)`；架构测试 10+15 仍全绿（向后兼容）
+- 新增 `estimation/estimator.py`（EkfEstimatorModule）：把 T2 的批量 EKF 接到 `EstimationModule`；测试 6/6 通过；羽毛球估计暂为测量直通并显式标 TEMP（待 T3 UKF 注入）
+- 新增 `decision/decision_module.py`（FeasibilityDecisionModule）：T5 门 + T6 搜索 → 批量级 (HitDecision, BestIntercept|None)；测试 5 项通过（端到端可行性用例在 T6 空壳期间显式 skip）
+- 评审派发：T2 0fe56b7e｜T7 03fc7c8e｜T5 b43cb41b｜T9 aee7cf91｜T10 b3f23862（此前 T4 cde60461、T8 83a9148e）
+- 仍在实现中：T1 perception、T3 shuttle_ukf、T6 intercept search（当前仍为空壳）

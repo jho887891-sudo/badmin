@@ -41,7 +41,7 @@ import sys
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -354,4 +354,4 @@ class SimExecutionAdapter(ExecutionModule):
 
 
 __all__ = ["SimExecutionAdapter", "ExecutionCommand", "load_kinematics",
-           "SENSOR_FEEDBACK_SOURCE", "Mapping"]
+           "SENSOR_FEEDBACK_SOURCE"]

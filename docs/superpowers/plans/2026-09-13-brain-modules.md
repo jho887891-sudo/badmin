@@ -69,3 +69,19 @@ Decisions and deviations are recorded here as `Ruling: ... — why — cost if w
 - Ruling: a project-wide regression runner (`tools/run_all_tests.py`) is the single gate for
   "全量回归" — why: SDD requires verifying after every task, and ad-hoc command lists drift —
   cost if wrong: the gate could miss a suite that does not follow the `tests/**/test_*.py` pattern.
+- Ruling: `RobotSensorState` gains **optional** `odom_twist (N,3)` and `imu_yaw_rate (N,)` channels
+  (defaults None, validated when present) so the estimation layer can be plugged in; the frozen
+  architecture tests still pass unchanged — why: T2's EKF needs proprioception the contract lacked —
+  cost if wrong: two extra optional fields on one message (no caller breaks).
+- Ruling: the estimation adapter `estimation/estimator.py` is the ONLY bridge between T2's batched EKF
+  API and `EstimationModule`; shuttle estimation is measurement passthrough until the T3 UKF is
+  injected, and that shortcut is labelled TEMP in the module (never presented as an estimate).
+- Ruling: the decision layer reports **batch level**: aggregate `HitDecision` (feasible only if every
+  environment is feasible) plus the batched `BestIntercept` that T6 already returns; per-environment
+  decisions stay available as `last_decisions` — why: the frozen interface returns one 2-tuple per step
+  and T7 already reads `decision.feasible` + (N,.) arrays — cost if wrong: partial batches are handled
+  conservatively (nothing is planned) instead of per-env.
+- Ruling: the Morph One kinematics stays a **single source** at
+  `simulation/robots/badminton_robot/morph_one/kinematics.py`; `src/` imports it through a documented
+  lazy loader (T7/T9 both did this) — why: duplicating it would create two truths — cost if wrong:
+  `src/` depends on a simulation path (documented, no functional impact).

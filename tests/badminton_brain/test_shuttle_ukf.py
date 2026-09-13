@@ -42,12 +42,21 @@ DURATION = 1.0
 SIGMA_POS = 0.01                                        # synthetic measurement noise [m]
 P0 = np.array([1.0, 0.5, 1.5])
 V0 = np.array([-8.0, -1.0, 4.0])
-WIND_TRUE = np.array([1.0, 0.0, 0.0])
+# Lateral gust, deliberately perpendicular to the flight direction (-x): a wind along the
+# flight direction is only weakly separable from the drag coefficient k, a lateral one is not.
+WIND_TRUE = np.array([0.0, 1.5, 0.0])
+_NEEDS_REAL_VALUE = {AssetStatus.REQUIRES_MEASUREMENT, AssetStatus.UNKNOWN,
+                     AssetStatus.REQUIRES_CALIBRATION}
 
 
-def synthetic_flight(*, wind=WIND_TRUE, sigma=SIGMA_POS, seed=20260913,
+def synthetic_flight(*, wind=None, sigma=SIGMA_POS, seed=20260913,
                      duration=DURATION, dt_meas=DT_MEAS):
-    """Ground truth from shuttle_aerodynamics.rollout + noisy ShuttleMeasurement."""
+    """Ground truth from shuttle_aerodynamics.rollout + noisy ShuttleMeasurement.
+
+    Default: still air.  Only the wind test introduces a gust, so that every other scenario
+    compares the filter against the exact model it is allowed to use.
+    """
+    wind = np.zeros(3) if wind is None else np.asarray(wind, dtype=float)
     n_steps = int(round(duration / dt_meas))
     truth = rollout(P0, V0, duration_s=duration, dt_s=5e-4, k_per_m=K_TRUE,
                     gravity=GRAVITY_PARAM.value, wind=wind)
@@ -70,11 +79,11 @@ def synthetic_flight(*, wind=WIND_TRUE, sigma=SIGMA_POS, seed=20260913,
     }
 
 
-def measurement_at(flight, k, n_envs=1):
+def measurement_at(flight, k, n_envs=1, cov_scale=1.0):
     """(n_envs,) identical ShuttleMeasurement at sample k."""
     pos = np.tile(flight['measurement_position'][k], (n_envs, 1))
     vel = np.tile(flight['measurement_velocity'][k], (n_envs, 1))
-    cov = np.tile(np.eye(3) * SIGMA_POS ** 2, (n_envs, 1, 1))
+    cov = np.tile(np.eye(3) * SIGMA_POS ** 2 * cov_scale, (n_envs, 1, 1))
     return ShuttleMeasurement(position=pos, velocity=vel, covariance=cov,
                               timestamp=float(flight['times'][k]))
 
@@ -84,7 +93,7 @@ def rmse(a, b):
     return float(np.sqrt(np.mean(np.sum(d * d, axis=-1))))
 
 
-def run_filter(ukf, flight, *, n_envs=1, burn_in=5, fuse_velocity=False):
+def run_filter(ukf, flight, *, n_envs=1, burn_in=5, cov_scale=1.0):
     """Drive the filter over the whole flight; return per-step filter/raw errors."""
     ukf.initialize(position=np.tile(flight['measurement_position'][0], (n_envs, 1)),
                    velocity=np.tile((flight['measurement_position'][1]
@@ -93,7 +102,7 @@ def run_filter(ukf, flight, *, n_envs=1, burn_in=5, fuse_velocity=False):
     filt_err, raw_err, vel_err, k_hist = [], [], [], []
     for k in range(1, len(flight['times'])):
         ukf.predict(DT_MEAS)
-        ukf.update(measurement_at(flight, k, n_envs))
+        ukf.update(measurement_at(flight, k, n_envs, cov_scale))
         if k >= burn_in:
             filt_err.append(rmse(ukf.position, flight['position'][k]))
             raw_err.append(rmse(flight['measurement_position'][k], flight['position'][k]))
@@ -121,7 +130,10 @@ class ShuttleUkfTests(unittest.TestCase):
         self.assertAlmostEqual(float(np.sum(wm)), 1.0, places=12)
         # alpha = 1.0 in this filter, so sum(wc) = 1 + beta (Julier/Uhlmann scaled UT)
         self.assertAlmostEqual(float(np.sum(wc)), 1.0 + ukf.beta, places=12)
-        self.assertTrue(np.all(wm > 0.0) and np.all(wc > 0.0))
+        # alpha=1, kappa=0 -> all weights are non-negative (PSD-safe); with this
+        # configuration the centre weight is exactly lambda/(n+lambda) = 0.
+        self.assertTrue(np.all(wm >= 0.0) and np.all(wc >= 0.0))
+        self.assertAlmostEqual(float(wm[0]), ukf._lambda / (ukf.state_dim + ukf._lambda), places=12)
         np.testing.assert_allclose(wm @ pts[0], mean, rtol=0.0, atol=1e-12)
 
         d = pts[0] - mean
@@ -180,7 +192,7 @@ class ShuttleUkfTests(unittest.TestCase):
             if k % 5 == 0:
                 ukf.update(measurement_at(flight, k))
             state = ukf.state
-            cov = ukf.covariance
+            cov = ukf.covariance[0]      # per environment, so the axes really are the matrix axes
             self.assertTrue(np.all(np.isfinite(state)))
             self.assertTrue(np.all(np.isfinite(cov)))
             np.testing.assert_allclose(cov, cov.T, rtol=0.0, atol=1e-12)
@@ -242,7 +254,7 @@ class ShuttleUkfTests(unittest.TestCase):
 
     # ---- 8. wind is part of the augmented state ------------------------------
     def test_wind_augmented_state_estimates_the_wind_and_keeps_low_rmse(self) -> None:
-        flight = synthetic_flight(seed=5)
+        flight = synthetic_flight(wind=WIND_TRUE, seed=5)
         ukf = ShuttleUKF(num_envs=1, enable_wind=True)
         self.assertEqual(ukf.state.shape, (1, 10))
         res = run_filter(ukf, flight)
@@ -258,10 +270,14 @@ class ShuttleUkfTests(unittest.TestCase):
         for name, param in params.items():
             self.assertIsInstance(param, Param, name)
             self.assertTrue(str(param.source).strip(), name)
-            if param.status in UNRESOLVED_STATUSES:
+            if param.status in _NEEDS_REAL_VALUE:
+                # only REQUIRES_MEASUREMENT / UNKNOWN / REQUIRES_CALIBRATION must stay empty
                 self.assertIsNone(param.value, '%s claims a value while unresolved' % name)
             else:
                 self.assertIsNotNone(param.value, name)
+            if param.status is AssetStatus.TEMP_PARAMETERIZED_PROXY:
+                # a TEMP proxy is still an unresolved value: it must be replaced, never trusted
+                self.assertIn(param.status, UNRESOLVED_STATUSES, name)
         self.assertIs(params['positional_noise'], POSITION_MEASUREMENT_STD)
         self.assertIs(POSITION_MEASUREMENT_STD.status, AssetStatus.REQUIRES_MEASUREMENT)
         self.assertIsNone(POSITION_MEASUREMENT_STD.value)
@@ -284,20 +300,14 @@ class ShuttleUkfTests(unittest.TestCase):
 
     # ---- 10. measurement fusion uses ShuttleMeasurement.covariance ------------
     def test_measurement_update_uses_the_reported_covariance(self) -> None:
-        """A 100x larger reported covariance must be trusted 100x less."""
+        """The same measurements, reported as 100x noisier, must be trusted far less."""
         flight = synthetic_flight(seed=3)
         tight = run_filter(ShuttleUKF(num_envs=1), flight)
-        ukf_loose = ShuttleUKF(num_envs=1)
-        ukf_loose.initialize(position=np.tile(flight['measurement_position'][0], (1, 1)),
-                             velocity=np.zeros((1, 3)))
-        for k in range(1, 40):
-            ukf_loose.predict(DT_MEAS)
-            m = measurement_at(flight, k)
-            m.covariance = m.covariance * 1e4
-            ukf_loose.update(m)
-        self.assertGreater(np.linalg.norm(ukf_loose.position[0] - flight['position'][39]),
-                           np.linalg.norm(ukf_loose.position[0] - flight['measurement_position'][39]))
+        loose = run_filter(ShuttleUKF(num_envs=1), flight, cov_scale=1e4)
+        print('\n[T3] reported R as given: position RMSE = %.5f m   |   R x 1e4: %.5f m   '
+              '(raw %.5f m)' % (tight['filter_rmse'], loose['filter_rmse'], tight['raw_rmse']))
         self.assertLess(tight['filter_rmse'], 0.5 * tight['raw_rmse'])
+        self.assertGreater(loose['filter_rmse'], 3.0 * tight['filter_rmse'])
 
 
 if __name__ == '__main__':

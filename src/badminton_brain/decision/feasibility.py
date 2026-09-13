@@ -42,7 +42,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field, fields
 from enum import Enum
-from typing import Dict, Optional, Sequence, Tuple
+from typing import Dict, Optional, Tuple
 
 import numpy as np
 
@@ -161,7 +161,7 @@ class FeasibilityLimits:
                 if isinstance(getattr(self, f.name), Param)}
 
     def unresolved_limits(self) -> Tuple[str, ...]:
-        """Fields whose value is not usable yet (status unresolved or value None)."""
+        """Fields that are not backed by a real measurement (TEMP/unknown) or have no value."""
         return tuple(sorted(name for name, p in self.param_limits().items()
                             if p.status in UNRESOLVED_STATUSES or p.value is None))
 

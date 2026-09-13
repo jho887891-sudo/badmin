@@ -72,9 +72,9 @@ class OnlineAdaptation(AdaptationModule):
                  gain_drag_scale: float = 0.4,
                  gain_wind: float = 0.4,
                  gain_delay: float = 0.4,
-                 max_step_drag_scale: float = 0.2,
-                 max_step_wind_mps: float = 0.5,
-                 max_step_delay_s: float = 0.01,
+                 max_step_drag_scale: float = 0.1,
+                 max_step_wind_mps: float = 0.2,
+                 max_step_delay_s: float = 0.005,
                  eps: float = 1e-9) -> None:
         unknown = [name for name in estimate if name not in self.PARAMETERS]
         if unknown:

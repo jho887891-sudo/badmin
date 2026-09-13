@@ -126,7 +126,7 @@ class ConvergenceTests(unittest.TestCase):
             errors.append(float(np.abs(module.wind[0] - true_wind).max()))
             module.process(Feedback(prediction_error=residual, timestamp=t0 + DT),
                            make_state(position, velocity, t0))
-        # measured: 6.0e-1 (initial) -> 5.4e-3 after 20 samples -> 7.1e-7 after 60 samples
+        # measured: 6.0e-1 (initial) -> 6.9e-3 after 20 samples -> 9.2e-7 after 60 samples
         np.testing.assert_allclose(module.wind[0], true_wind, atol=1e-3)
         self.assertLess(errors[0], 0.8)
         self.assertLess(errors[19], 1e-2, 'wind did not converge within 20 samples')
