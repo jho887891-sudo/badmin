@@ -567,30 +567,85 @@ def peak_pixel(image_patch: Any) -> Tuple[int, int]:
     return int(col), int(row)
 
 
+@dataclass(frozen=True)
+class CentroidResult:
+    """Subpixel centroid of one detection window, with its validity made explicit.
+
+    valid=False is a LEGAL sensor event, not a failure: nothing in the window reached the
+    threshold (occlusion, underexposure, the shuttle outside the window).  uv is then NaN and
+    the row must be treated exactly like an invalid detection: never triangulated.  uv is
+    (2,) = (u, v) = (column, row) in the frame spanned by origin_uv; weight_sum is the total
+    background-subtracted intensity above the threshold; peak is the local integer seed.
+    """
+
+    uv: np.ndarray
+    valid: bool
+    weight_sum: float
+    threshold: float
+    peak: Tuple[int, int]
+    origin_uv: Tuple[float, float]
+
+    def __post_init__(self) -> None:
+        uv = np.asarray(self.uv, dtype=float).reshape(-1)
+        if uv.shape != (2,):
+            raise BrainBoundaryError(f"CentroidResult.uv must be (2,), got {self.uv!r}")
+        if self.valid and not np.all(np.isfinite(uv)):
+            raise BrainBoundaryError("CentroidResult.valid=True requires finite uv")
+        if not self.valid and not np.all(np.isnan(uv)):
+            raise BrainBoundaryError("CentroidResult.valid=False requires NaN uv (the sentinel)")
+        object.__setattr__(self, 'uv', uv)
+        object.__setattr__(self, 'origin_uv', (float(self.origin_uv[0]),
+                                               float(self.origin_uv[1])))
+
+    def __bool__(self) -> bool:
+        return bool(self.valid)
+
+
+def _check_threshold(threshold: Any) -> float:
+    value = float(threshold)
+    if not math.isfinite(value):
+        raise BrainBoundaryError(f"threshold must be finite, got {threshold!r}")
+    return value
+
+
 def subpixel_centroid(image_patch: Any, threshold: float = 0.0,
-                      origin_uv: Sequence[float] = (0.0, 0.0)) -> np.ndarray:
+                      origin_uv: Sequence[float] = (0.0, 0.0)) -> CentroidResult:
     """Intensity-weighted centroid of a patch, in the uv frame of the patch.
 
     The patch pixel (row i, column j) sits at uv = origin_uv + (j, i), i.e. u is the column
     and v the row, with the integer value at the CENTRE of that pixel (image convention of
     this module).  threshold is subtracted first and negative residuals are clipped, which is
-    the background rejection used for a bright shuttle on a darker background.  Raises
-    BrainBoundaryError when the patch cannot carry a measurement (empty, NaN, no intensity).
+    the background rejection used for a bright shuttle on a darker background.
+
+    A window with no intensity above the threshold is a normal sensor event (the shuttle is
+    occluded, the exposure collapsed, or the shuttle is not in this window): the sentinel
+    CentroidResult(uv=[NaN, NaN], valid=False) is returned and the caller skips the
+    detection - exactly the convention SyntheticDetection uses for an out-of-view target.
+    Genuinely illegal input still raises BrainBoundaryError: wrong shape, NaN/Inf pixels,
+    empty patch, malformed origin, non-finite threshold.
     """
     patch = _check_patch(image_patch)
     origin = np.asarray(origin_uv, dtype=float).reshape(-1)
     if origin.shape != (2,) or not np.all(np.isfinite(origin)):
         raise BrainBoundaryError(f"origin_uv must be two finite numbers, got {origin_uv!r}")
-    weights = np.clip(patch - float(threshold), 0.0, None)
+    thr = _check_threshold(threshold)
+    weights = np.clip(patch - thr, 0.0, None)
     total = float(weights.sum())
+    peak = peak_pixel(patch)
     if total <= 0.0:
-        raise BrainBoundaryError(
-            f"image_patch has no intensity above threshold={threshold}: no centroid exists")
+        # D4 principle: nothing above the threshold is a legal sensor event (occlusion,
+        # underexposure, the shuttle outside the window), reported as the sentinel - the same
+        # convention SyntheticDetection uses for an out-of-view target.  uv is never a fake
+        # centre such as (0, 0), so the caller cannot mistake it for a measurement.
+        return CentroidResult(uv=np.array([np.nan, np.nan]), valid=False, weight_sum=0.0,
+                              threshold=thr, peak=peak, origin_uv=(origin[0], origin[1]))
     rows = np.arange(patch.shape[0], dtype=float)
     cols = np.arange(patch.shape[1], dtype=float)
     v = float((weights.sum(axis=1) * rows).sum() / total)
     u = float((weights.sum(axis=0) * cols).sum() / total)
-    return np.array([origin[0] + u, origin[1] + v])
+    return CentroidResult(uv=np.array([origin[0] + u, origin[1] + v]), valid=True,
+                          weight_sum=total, threshold=thr, peak=peak,
+                          origin_uv=(origin[0], origin[1]))
 
 
 # ---------------------------------------------------------------------------
@@ -720,6 +775,7 @@ __all__ = [
     "ENGINEERING_BASELINE_M", "ENGINEERING_LEFT_Y", "ENGINEERING_RIGHT_Y",
     "ENGINEERING_IMAGE_WIDTH_PX", "ENGINEERING_IMAGE_HEIGHT_PX",
     "CameraIntrinsics", "StereoExtrinsics", "BaselineStereoSetup", "ImageROI", "CourtBoxROI",
+    "CentroidResult",
     "baseline_stereo_setup", "calibration_parameters", "roi_gate", "roi_select",
     "court_box_gate", "subpixel_centroid", "peak_pixel", "triangulate", "intrinsics_matrix",
     "forward_camera_rotation", "forward_camera_pose_court", "rigid_inverse", "compose",

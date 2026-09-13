@@ -274,3 +274,10 @@
 - 契约基线刷新：`outputs/reports/contracts.md5` 现附「哪些 DEC 改了哪个文件」的说明；**registry.py 与 pipeline.py 自 10:16 起从未改动**（说明架构骨架本身不需要为任何评审发现让步）
 - 全部评审条目处置完毕：T4 APPROVE；T2/T5/T7/T8/T9/T10 修复回归绿；broad D1–D8 修复、D9–D14 显式登记
 - 累计：DEC-013…025（13 条）｜ISSUE-006…014（9 条）
+**（2026-09-13 目标关闭：Robot Brain 8 层模块实现完成）**
+- 目标正式标记 complete（第 3 轮）
+- 完成证据：wave 4/5/6 三次全量回归一致 —— **26 套 / 460 项测试全绿**；本轮复验 integration 11 / pipeline 15 / types 10 全绿
+- 8 层模块（perception/estimation/prediction/decision/planning/safety/execution/adaptation）+ 3 协调者适配器 + FullBrainRuntime 全部可运行
+- 流程：writing-plans → 10 个全新 implementer（各自 RED→GREEN）→ 6 份模块评审 + 1 份整体评审 → 全量回归；评审发现全部处置或显式登记
+- 纪律：TEMP/REQUIRES_MEASUREMENT 结构性保证（Param.__post_init__）；final 模式实测 ok=False errors=33；未进 PPO（仅抛错占位）；未改冻结资产；全程纯 numpy 不占 GPU
+- 遗留（非阻塞、已登记）：ISSUE-006…015（10 条）；DEC-026 的 subpixel_centroid 哨兵化由 T1 收尾中

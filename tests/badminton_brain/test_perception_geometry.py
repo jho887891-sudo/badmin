@@ -13,6 +13,12 @@ Acceptance (docs/superpowers/plans/2026-09-13-brain-modules.md, task T1):
   3. no calibration constant is invented: fx/fy/cx/cy and the stereo extrinsics
      (baseline, left/right camera poses) are Param values with an explicit status + source
 
+Review ruling D4 / observation 2 (broad review): a LEGAL sensor event must never crash the
+closed loop.  Losing the target out of view is reported as an invalid detection (valid=False,
+NaN uv); a detection window with nothing above the threshold (occlusion, underexposure, the
+shuttle outside the window) is reported the same way by subpixel_centroid, which returns the
+sentinel CentroidResult(uv=NaN, valid=False).  Only genuinely illegal input raises.
+
 Review finding D4 (broad review): a target leaving the field of view is a NORMAL sensor event.
 project()/detect() must report it as an invalid detection (valid=False, uv=NaN) and keep
 running instead of throwing through pipeline.step; only genuinely invalid input (wrong shape,
@@ -37,10 +43,12 @@ from badminton_brain.perception.stereo_geometry import (  # noqa: E402
     CAMERA_FRAME_LEFT, CAMERA_FRAME_RIGHT, COURT_FRAME, ENGINEERING_BASELINE_M,
     ENGINEERING_IMAGE_HEIGHT_PX, ENGINEERING_IMAGE_WIDTH_PX, ENGINEERING_LEFT_Y,
     ENGINEERING_RIGHT_Y, ENGINEERING_RIG_PITCH_DEG, ENGINEERING_RIG_WORLD, IMAGE_FRAME_LEFT,
-    IMAGE_FRAME_RIGHT, CameraIntrinsics, CourtBoxROI, ImageROI, StereoExtrinsics,
+    IMAGE_FRAME_RIGHT, CameraIntrinsics, CentroidResult, CourtBoxROI, ImageROI,
+    StereoExtrinsics,
     baseline_stereo_setup, court_box_gate, peak_pixel, roi_gate, roi_select,
     subpixel_centroid, triangulate,
 )
+from badminton_brain.perception.stereo_geometry import CentroidResult  # noqa: E402, F401
 from badminton_brain.perception.synthetic_detector import (  # noqa: E402
     DEFAULT_SEED, SyntheticStereoDetector,
 )
@@ -302,48 +310,109 @@ class TestRoiGating(unittest.TestCase):
 
 
 class TestSubpixelCentroid(unittest.TestCase):
-    """Subpixel centroid: exact on discrete weights, bounded error on Gaussian blobs."""
+    """Subpixel centroid: exact on discrete weights, bounded error on Gaussian blobs.
+
+    Two distinct semantics, both tested below:
+      * a legal but unusable WINDOW (nothing above the threshold: occlusion, underexposure,
+        the shuttle outside the window) -> the sentinel, uv = NaN and valid = False (D4);
+      * genuinely ILLEGAL input (shape, NaN/Inf, illegal parameters) -> BrainBoundaryError.
+    """
 
     def test_exact_on_a_linear_ramp(self) -> None:
         patch = np.array([[0.0, 0.0, 0.0],
                           [0.0, 0.0, 1.0],
                           [0.0, 0.0, 2.0]])
-        uv = subpixel_centroid(patch)
-        self.assertTrue(np.allclose(uv, [2.0, 5.0 / 3.0], atol=1e-12), uv)
+        result = subpixel_centroid(patch)
+        self.assertTrue(result.valid)
+        self.assertTrue(np.allclose(result.uv, [2.0, 5.0 / 3.0], atol=1e-12), result.uv)
+        self.assertAlmostEqual(result.weight_sum, 3.0, places=12)
+        self.assertEqual(result.threshold, 0.0)
+        self.assertEqual(result.peak, (2, 2), 'brightest sample is u=2 (col), v=2 (row)')
 
     def test_symmetric_peak_is_the_pixel_centre(self) -> None:
         patch = np.zeros((5, 5))
         patch[2, 3] = 1.0
-        self.assertTrue(np.allclose(subpixel_centroid(patch), [3.0, 2.0], atol=1e-12))
+        result = subpixel_centroid(patch)
+        self.assertTrue(result.valid)
+        self.assertTrue(np.allclose(result.uv, [3.0, 2.0], atol=1e-12))
         patch = np.array([[0.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 0.0]])
-        self.assertTrue(np.allclose(subpixel_centroid(patch), [1.0, 1.0], atol=1e-12))
+        result = subpixel_centroid(patch)
+        self.assertTrue(result.valid)
+        self.assertTrue(np.allclose(result.uv, [1.0, 1.0], atol=1e-12))
         self.assertEqual(tuple(peak_pixel(patch)), (1, 1))
+        self.assertEqual(result.peak, (1, 1))
 
     def test_gaussian_blob_centre_is_subpixel_accurate(self) -> None:
         detector = SyntheticStereoDetector(noise_sigma_px=0.0)
         truth_uv = np.array([611.37, 288.62])
         patch, origin = detector.render_patch(truth_uv, sigma_px=1.2, half_size=6)
         self.assertEqual(patch.shape, (13, 13))
-        uv = subpixel_centroid(patch, origin_uv=origin)
-        error = float(np.abs(uv - truth_uv).max())
+        result = subpixel_centroid(patch, origin_uv=origin)
+        self.assertTrue(result.valid)
+        error = float(np.abs(result.uv - truth_uv).max())
         print('  [T1] gaussian centroid error = {:.3e} px (origin {} )'.format(error, origin))
         self.assertLess(error, CENTROID_TOL_PX)
         # background subtraction keeps the estimate unbiased
         noisy_background = patch + 0.4
-        uv_bg = subpixel_centroid(noisy_background, threshold=0.4, origin_uv=origin)
-        self.assertLess(float(np.abs(uv_bg - truth_uv).max()), CENTROID_TOL_PX * 2.0)
+        result_bg = subpixel_centroid(noisy_background, threshold=0.4, origin_uv=origin)
+        self.assertTrue(result_bg.valid)
+        self.assertLess(float(np.abs(result_bg.uv - truth_uv).max()), CENTROID_TOL_PX * 2.0)
 
-    def test_unusable_patches_are_rejected(self) -> None:
-        with self.assertRaises(BrainBoundaryError):
-            subpixel_centroid(np.zeros((4, 4)))                  # no intensity
-        with self.assertRaises(BrainBoundaryError):
-            subpixel_centroid(np.zeros((4, 4)) - 1.0)            # only negative intensity
+    def test_blank_window_returns_the_sentinel_not_an_exception(self) -> None:
+        """D4 principle: a window with nothing to measure is a sensor event, not a failure."""
+        cases = (
+            ('all dark', np.zeros((5, 5)), 0.0),
+            ('only negative intensity', np.zeros((5, 5)) - 2.0, 0.0),
+            ('threshold above the peak', np.array([[0.1, 0.2], [0.3, 0.15]]), 0.5),
+            ('single dark sample', np.zeros((1, 1)), 0.0),
+        )
+        for name, patch, threshold in cases:
+            result = subpixel_centroid(patch, threshold=threshold)      # must not raise
+            self.assertFalse(result.valid, name)
+            self.assertEqual(result.uv.shape, (2,), name)
+            self.assertTrue(np.all(np.isnan(result.uv)), name)
+            self.assertEqual(result.weight_sum, 0.0, name)
+        sentinel = subpixel_centroid(np.zeros((4, 4)), origin_uv=(600.0, 300.0))
+        self.assertFalse(sentinel.valid)
+        self.assertTrue(np.all(np.isnan(sentinel.uv)), 'never a fake centre such as (0, 0)')
+        self.assertEqual(tuple(sentinel.origin_uv), (600.0, 300.0))
+
+    def test_sentinel_and_estimate_share_one_convention(self) -> None:
+        """Exactly the detector's convention: valid rows are finite, invalid rows are NaN."""
+        detector = SyntheticStereoDetector(noise_sigma_px=0.0)
+        truth_uv = np.array([611.37, 288.62])
+        patch, origin = detector.render_patch(truth_uv, sigma_px=1.2, half_size=6)
+        measured = subpixel_centroid(patch, origin_uv=origin)
+        blank = subpixel_centroid(np.zeros_like(patch), origin_uv=origin)
+        self.assertTrue(measured.valid)
+        self.assertFalse(blank.valid)
+        self.assertTrue(np.all(np.isfinite(measured.uv)))
+        self.assertTrue(np.all(np.isnan(blank.uv)))
+        # a batch built from both behaves like a SyntheticDetection.valid mask
+        batch = np.stack([measured.uv, blank.uv])
+        finite = np.isfinite(batch).all(axis=1)
+        self.assertTrue(np.array_equal(finite, np.array([measured.valid, blank.valid])))
+        with self.assertRaises(BrainBoundaryError):        # the sentinel is never a measurement
+            triangulate(batch, np.zeros((2, 2)), np.eye(3) * 700.0, np.eye(4))
+
+    def test_illegal_patches_are_still_rejected(self) -> None:
+        """The sentinel must not swallow programming errors."""
         with self.assertRaises(BrainBoundaryError):
             subpixel_centroid(np.zeros(4))                       # not a 2-D patch
         with self.assertRaises(BrainBoundaryError):
             subpixel_centroid(np.full((3, 3), np.nan))           # NaN patch
         with self.assertRaises(BrainBoundaryError):
+            subpixel_centroid(np.array([[0.0, np.inf], [1.0, 2.0]]))   # Inf patch
+        with self.assertRaises(BrainBoundaryError):
             subpixel_centroid(np.zeros((0, 0)))                  # empty patch
+        with self.assertRaises(BrainBoundaryError):
+            subpixel_centroid(np.zeros((3, 3)), origin_uv=(1.0, 2.0, 3.0))   # bad origin shape
+        with self.assertRaises(BrainBoundaryError):
+            subpixel_centroid(np.zeros((3, 3)), origin_uv=(np.nan, 0.0))     # NaN origin
+        with self.assertRaises(BrainBoundaryError):
+            subpixel_centroid(np.zeros((3, 3)), threshold=float('nan'))      # illegal parameter
+        with self.assertRaises(BrainBoundaryError):
+            subpixel_centroid(np.zeros((3, 3)), threshold=float('inf'))
 
 
 class TestSyntheticDetector(unittest.TestCase):
@@ -446,8 +515,11 @@ class TestPerceptionChain(unittest.TestCase):
                                                       half_size=6)
             patch_r, origin_r = detector.render_patch(detection.uv_right[i], sigma_px=1.5,
                                                       half_size=6)
-            uv_left[i] = subpixel_centroid(patch_l, origin_uv=origin_l)
-            uv_right[i] = subpixel_centroid(patch_r, origin_uv=origin_r)
+            result_l = subpixel_centroid(patch_l, origin_uv=origin_l)
+            result_r = subpixel_centroid(patch_r, origin_uv=origin_r)
+            self.assertTrue(result_l.valid and result_r.valid)
+            uv_left[i] = result_l.uv
+            uv_right[i] = result_r.uv
         volume = CourtBoxROI.perception_volume()
         points = triangulate(uv_left, uv_right, detector.intrinsics_left,
                              detector.extrinsics.T_left_right())
@@ -457,6 +529,33 @@ class TestPerceptionChain(unittest.TestCase):
         print('  [T1] patch -> centroid -> 3D error = {:.3e} m'.format(error))
         self.assertLess(error, PATCH_CHAIN_TOL_M)
         self.assertLess(float(np.abs(uv_left - detection.uv_left).max()), CENTROID_TOL_PX)
+
+    def test_a_blank_window_is_skipped_not_thrown(self) -> None:
+        """The front-end flow of the ruling: one target is hidden in this frame (occlusion /
+        underexposure).  It must be skipped like an invalid detection, and the rest of the
+        frame must still produce a measurement."""
+        detector, detection = stereo_pair(GT_POINTS_COURT[:2], noise_sigma_px=0.0)
+        uv_left = np.full_like(detection.uv_left, np.nan)
+        results = []
+        for i in range(len(detection.uv_left)):
+            patch, origin = detector.render_patch(detection.uv_left[i], sigma_px=1.5,
+                                                  half_size=6)
+            if i == 1:                                  # the second target is hidden
+                patch = np.zeros_like(patch)
+            results.append(subpixel_centroid(patch, origin_uv=origin))
+        self.assertEqual([r.valid for r in results], [True, False])
+        self.assertTrue(np.all(np.isnan(results[1].uv)))
+        uv_left[0] = results[0].uv
+        keep = np.array([r.valid for r in results])
+        self.assertLess(float(np.abs(uv_left[keep] - detection.uv_left[keep]).max()),
+                        CENTROID_TOL_PX)
+        points = triangulate(uv_left[keep], detection.uv_right[keep],
+                             detector.intrinsics_left, detector.extrinsics.T_left_right())
+        self.assertLess(float(np.abs(points - GT_POINTS_COURT[:1]).max()), PATCH_CHAIN_TOL_M)
+        # pushing the sentinel row through anyway is still refused (measurement discipline)
+        with self.assertRaises(BrainBoundaryError):
+            triangulate(uv_left, detection.uv_right, detector.intrinsics_left,
+                        detector.extrinsics.T_left_right())
 
     def test_roi_rejects_the_ball_entering_late(self) -> None:
         """A detection outside the ROI must never reach triangulation as a valid point."""
