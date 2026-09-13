@@ -21,7 +21,8 @@
 
 ## 2. 全量回归（wave 3，实测）
 
-suites_passed=26  suites_failed=0  tests_total=460
+wave 4: suites_passed=26  suites_failed=0  tests_total=460
+wave 5: suites_passed=26  suites_failed=0  tests_total=460   (最终确认，覆盖其后落地的 valid_mask / 物理真值 / 语义固化)
 （wave 4，全部评审修复落地后；相对 wave 3 的 422 增加 38 项，全部来自评审驱动的测试加固）
 
 运行方式：
@@ -123,3 +124,13 @@ T2 8/8 变异被杀、T4 3/3、T5 2/2、T7 2/2、T8 7/8（第 8 个为等价变�
 评审看到的「绝对时间基裁决无记录」对应的是**旧快照**；该裁决已记录在两处：
 - docs/superpowers/plans/2026-09-13-brain-modules.md 的 Ruling (time base)；
 - management/DECISIONS.md 的 DEC-016（消息携带仿真时间戳 + 应用层推入运行时钟）。
+
+## 13. 最终确认（wave 5）
+
+wave 5 在 wave 4 之后又落地了 `ShuttleMeasurement.valid_mask`（DEC-023）、T11 物理自洽真值、
+以及三处契约语义固化（`odom_twist` 每步增量、`horizon_s` 批量最小 deadline、`base_twist` 机体系说明），
+重新跑全量回归仍为 **26 套 / 460 项全绿**，说明这些改动无回归。
+
+各层最终测试数（wave 5）：perception 36+7｜estimation 22+13+3｜prediction 17｜decision 41+27+7｜
+planning 26｜safety 38｜execution 39｜adaptation 33｜integration 11｜contracts 10+15+6+3｜
+simulation/robots 9+18+15｜assets 16+6+16+7+14+8。
