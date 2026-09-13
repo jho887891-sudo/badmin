@@ -281,3 +281,9 @@
 - 流程：writing-plans → 10 个全新 implementer（各自 RED→GREEN）→ 6 份模块评审 + 1 份整体评审 → 全量回归；评审发现全部处置或显式登记
 - 纪律：TEMP/REQUIRES_MEASUREMENT 结构性保证（Param.__post_init__）；final 模式实测 ok=False errors=33；未进 PPO（仅抛错占位）；未改冻结资产；全程纯 numpy 不占 GPU
 - 遗留（非阻塞、已登记）：ISSUE-006…015（10 条）；DEC-026 的 subpixel_centroid 哨兵化由 T1 收尾中
+**（2026-09-13 打包交付：robot_sim 源码包，排除资产）**
+- 产物：`robot_sim_src_20260913-1443.zip`（**7.9 MB / 295 文件**），远端 `/home/T7/ojh/`，本地 SSOT `E:\具身智能\`
+- SHA256（两端一致）：`08e636800295c03e039ce596983dd14c021c850fb72c44b053d11cf31fd238b9`
+- 包含：`AGENTS.md` `env.sh` `configs/` `docs/` `experiments/` `management/` `outputs/` `scripts/` `simulation/` `src/` `tests/` `tools/`
+- 排除：`assets/`（用户要求，670 MB；包内 assets 条目数实测 0）、`env_isaaclab/`（Python venv，机器相关且体积大）、`IsaacLab/`（第三方源码克隆）、`cache/`、`home/`（机器状态）、`.pytest_cache/`、`__pycache__/`、`*.pyc/*.pyo/*.log`
+- 说明：首次用 `zip -r ... -x` 全树排除时因遍历 `assets/`（670 MB、文件极多，NTFS via fuseblk 很慢）超时；改为**显式文件清单 + `zip -@`** 后 295 文件秒级完成（该残留进程已终止）
