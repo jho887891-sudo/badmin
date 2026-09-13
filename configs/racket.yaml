@@ -1,0 +1,77 @@
+schema_version: "1.0"
+
+reference:
+  bwf:
+    max_overall_length_m: 0.680
+    max_overall_width_m: 0.230
+    max_stringed_area_length_m: 0.280
+    max_stringed_area_width_m: 0.220
+    source_url: "https://system.bwfbadminton.com/documents/folder_1_81/Statutes/CHAPTER-4---RULES-OF-THE-GAME/SECTION%204.1-%20Laws%20of%20Badminton.pdf"
+  product:
+    manufacturer: "VICTOR"
+    model: "THRUSTER Onigiri"
+    item_code: "TK-ONIGIRI"
+    overall_length_m: 0.675
+    shaft_diameter_m: 0.0064
+    weight_class: "4U"
+    unstrung_mass_range_kg: [0.0800, 0.0849]
+    source_url: "https://www.victorsport.com/product/20231/thruster-k-onigiri"
+    weight_class_source_url: "https://de.victor-europe.com/page/laster_engved_code"
+    note: "Manufacturer-published product fields only. Mass range is unstrung 4U category, not this robot's installed-racket mass."
+
+frames:
+  convention: "racket_tcp origin; +X face normal toward opponent; +Z handle-to-head; +Y completes right-handed frame"
+  racket_tcp_xyz_m: [0.0, 0.0, 0.0]
+  face_normal_local: [1.0, 0.0, 0.0]
+
+measured_unit:
+  status: "REQUIRES_MEASUREMENT"
+  measurement_note: "Fill from the exact strung racket + grip/adapter portions represented by this asset. Do not copy category midpoints."
+  installed_mass_kg: null
+  center_of_mass_from_tcp_m: null
+  diagonal_inertia_kg_m2: null
+  handle_size_x_m: null
+  handle_size_y_m: null
+  handle_length_m: null
+  head_outer_length_m: null
+  head_outer_width_m: null
+  stringbed_length_m: null
+  stringbed_width_m: null
+  frame_tube_diameter_m: null
+  stringbed_thickness_m: null
+
+physics_proxy:
+  frame_shape: "SEGMENTED_ELLIPSE_TUBE"
+  frame_segments: 24
+  stringbed_shape: "THIN_ELLIPTIC_PRISM"
+  stringbed_outline_segments: 32
+  shaft_shape: "CYLINDER"
+  handle_shape: "BOX"
+  collision_approximation_note: "Proxy must be fitted to measured geometry; frame/grommet micro-detail is intentionally omitted for stable contact."
+
+visual:
+  mode: "EXTERNAL_REFERENCE"
+  required_for_final: true
+  local_asset_path: "assets/third_party/racket_visual.usd"
+  source_url: "https://sketchfab.com/3d-models/badminton-racket-and-shuttlecock-low-poly-795e4cca2e544d7ab86a8e5c7ded2362"
+  source_uid: "795e4cca2e544d7ab86a8e5c7ded2362"
+  title: "Badminton Racket And Shuttlecock (Low Poly)"
+  author: "game_travel"
+  license: "CC Attribution"
+  extraction_note: "Extract racket only, preserve attribution, align/scaled to the measured physical racket, and record SHA256 in THIRD_PARTY_ASSETS.md."
+
+contact_pair_parameters:
+  status: "REQUIRES_PAIR_CALIBRATION"
+  shuttle_racket: null
+
+piper_attachment:
+  piper_usd_path: "assets/piper_no_gripper.usd"
+  piper_destination_prim_path: "/Robot/Piper"
+  piper_link6_prim_path: "/Robot/Piper/Geometry/link6"
+  racket_usd_path: "assets/racket/racket.usd"
+  racket_root_prim_path: "/Robot/Racket"
+  mount_transform:
+    status: "REQUIRES_MEASUREMENT"
+    convention: "T_link6_tcp maps racket_tcp coordinates into link6 coordinates"
+    translation_m: null
+    quaternion_xyzw: null
