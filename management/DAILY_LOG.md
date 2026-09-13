@@ -155,3 +155,12 @@
   - TDD 中也修了自己的 bug：`from_xyz_quat` 签名与测试不符（按测试为准修实现）、别名 frame 解析顺序
 - 记录：`outputs/reports/phase1_config_report.md`、`phase2_frames_report.md`（规范 §67 格式）；TEMP 清单 `morph_one/TEMP_README.md`
 - 未开始 Phase 3（Morph One 运动学）——下一步
+
+**（2026-09-13 用户指令：以后都用 TDD 的完整路程）**
+- 立即执行一轮完整 TDD 回路，产物 `tools/usd_glb_common.py`（GLB→USD 共享实现）
+  - RED：8 项测试对 stub 先失败（2 failures + 6 errors，全部"功能缺失"）
+  - 验证 RED → GREEN 分 3 片实现（解析 / 精度兼容 / 网格材质），每片后重跑看绿色增长
+  - 验证 GREEN：**全量回归 9 套 109 项全通过**
+  - REFACTOR：两个提取器改用共享 helper（168→78 行、144→88 行，消除重复实现）
+  - 验证 GREEN(2)：真实提取重跑，tri/bbox/材质与重构前一致；最终羽毛球资产重建成功
+- 报告：`outputs/reports/tdd_cycle_usd_glb_common.md`
