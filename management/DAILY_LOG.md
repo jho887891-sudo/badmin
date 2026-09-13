@@ -262,3 +262,10 @@
 - 语义固化（消除契约歧义，均有契约测试护栏）：`odom_twist` = 每步增量（非速度，ISSUE-009 命名债）；`WholeBodyTarget.horizon_s` = 批量最小 deadline（标量）；`ShuttleMeasurement.valid_mask`（DEC-023，出视场时估计层不再把 (0,0,0) 当测量）
 - 启动最终回归 wave 5（覆盖 wave 4 之后落地的 valid_mask / T11 物理真值 / 语义注释等改动）
 - 全部评审意见（T2/T5/T7/T8/T9/T10 模块评审 + broad 整体评审 D1–D8）均已处置或显式登记；无未处置的 REQUEST CHANGES
+**（2026-09-13 收尾：全部评审条目处置完毕 + 测试卫生 + 收官回归 wave 6）**
+- broad 评审完整版列出的 D1–D14：D1–D8 已修复并回归绿；D9/D10/D12 登记为 ISSUE-012/013/014；D11 的未使用导入已清理，并确认 DEC-015 在册（评审快照早于写入）
+- 测试卫生（D8）：删除两处**陈旧条件 skip**（decision 测试里 T6 早已落地、full_brain 里安全上下文 API 早已具备）——可行分支测试现在真正执行，不再被静默吞掉
+- 契约注释（T9 评审 INFO）：SafeCommand 内显式标注 DEC-014 帧裁决（base_twist 机体系 vs 消息 frame='court'）
+- 回退修正：estimator 的 state_snapshot 改用公有 state/covariance（消除与 T2 私有属性耦合）
+- 启动收官回归 wave 6（含契约 sha256 漂移检查）
+- 累计裁决 DEC-013…025（13 条）、问题 ISSUE-006…014（9 条）
