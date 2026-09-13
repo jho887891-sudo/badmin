@@ -23,7 +23,7 @@ except Exception as exc:  # noqa: BLE001
 
 from isaacsim.asset.importer.urdf import URDFImporter, URDFImporterConfig  # noqa: E402
 
-STAGE = Path("/home/T7/dgut/robot_sim/projects/piper_stage0")
+STAGE = Path("/home/T7/ojh/robot_sim/assets/piper_stage0")
 SRC_URDF = STAGE / "assets/piper_isaac_sim/piper_description/urdf/piper_no_gripper_description.urdf"
 MESHES_DIR = STAGE / "assets/piper_isaac_sim/piper_description/meshes"
 WORK_DIR = STAGE / "work"
