@@ -332,14 +332,15 @@ class DirectionWindowTests(unittest.TestCase):
 
     def test_a_single_noisy_sample_does_not_flip_the_direction(self) -> None:
         trajectory = make_trajectory()
-        trajectory.velocity[0] = np.array([0.5, 0.0, 1.5])   # noisy sample, flight still incoming
+        # Only the FIRST sample is noisy: velocity is (N, T, 3), so the index is (env 0, sample 0).
+        trajectory.velocity[0, 0] = np.array([0.5, 0.0, 1.5])
         decision = HitFeasibilityGate().evaluate(make_state(), trajectory)
         self.assertNotEqual(decision.reason, HitReason.WRONG_DIRECTION.value)
         self.assertTrue(decision.feasible, decision.reason)
 
     def test_a_receding_short_window_is_the_wrong_direction(self) -> None:
         trajectory = make_trajectory()
-        trajectory.velocity[:15, 0] = 1.0                    # 0.15 s of receding samples
+        trajectory.velocity[0, :15, 0] = 1.0                 # env 0, first 0.15 s of samples
         decision = HitFeasibilityGate().evaluate(make_state(), trajectory)
         self.assertEqual(decision.reason, HitReason.WRONG_DIRECTION.value)
 

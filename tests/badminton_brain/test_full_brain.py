@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'src'))
 
 from badminton_brain.apps.full_brain import build_full_brain  # noqa: E402
-from badminton_brain.types import RobotSensorState  # noqa: E402
+from badminton_brain.types import Layer, RobotSensorState  # noqa: E402
 from badminton_brain.validation import validate_architecture  # noqa: E402
 
 N = 2
@@ -76,6 +76,37 @@ class FullBrainIntegrationTests(unittest.TestCase):
         self.assertTrue(report.ok, report.errors)
         self.assertTrue(report.warnings)
 
+
+    def test_estop_context_reaches_the_command_end_to_end(self) -> None:
+        from badminton_brain.safety.safety_shield import SafetyContext
+        registry, pipeline = build_full_brain(num_envs=N, truth_provider=canonical_truth)
+        safety = registry.get(Layer.SAFETY)
+        # Compare against an identical run without e-stop: the scenario itself may command nothing
+        # (an unreachable intercept), so only the DIFFERENCE proves the e-stop reached the command.
+        _, reference_pipeline = build_full_brain(num_envs=N, truth_provider=canonical_truth)
+        reference = reference_pipeline.step(sensors(0.0))
+        safety.set_context(SafetyContext(now=0.0, estop=np.array([True, False])))
+        result = pipeline.step(sensors(0.0))
+        twist = np.asarray(result.safe_command.base_twist)
+        reference_twist = np.asarray(reference.safe_command.base_twist)
+        np.testing.assert_allclose(twist[0], np.zeros(3), atol=1e-12, err_msg='e-stopped env must not move')
+        np.testing.assert_allclose(twist[1], reference_twist[1], atol=1e-12,
+                                   err_msg='the non-e-stopped env must keep exactly its original command')
+        self.assertTrue(np.all(np.isfinite(np.asarray(result.safe_command.joint_position_target))))
+        self.assertTrue(result.safe_command.limited, 'an e-stop must be reported in the command')
+
+    def test_context_free_run_is_flagged_and_not_silently_normal(self) -> None:
+        registry, pipeline = build_full_brain(num_envs=N, truth_provider=canonical_truth)
+        safety = registry.get(Layer.SAFETY)
+        if not hasattr(safety, 'context_snapshot'):
+            self.skipTest('safety context API not available')
+        snapshot = safety.context_snapshot()
+        self.assertIn(str(snapshot.get('source', '')), ('none', 'pushed', 'argument'))
+        result = pipeline.step(sensors(0.0))
+        violations = ' '.join(getattr(result.safe_command, 'violations', ()) or ())
+        if snapshot.get('source') == 'none':
+            self.assertIn('no_context', violations,
+                          'running without any clock/e-stop information must be visible')
     def test_reset_is_propagated_to_every_layer(self) -> None:
         registry, pipeline = build_full_brain(num_envs=N, truth_provider=canonical_truth)
         pipeline.reset([1])

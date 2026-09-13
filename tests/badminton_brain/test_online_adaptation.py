@@ -308,6 +308,17 @@ class ConvergenceTests(unittest.TestCase):
         position = np.array([[0.0, 0.0, 3.0]])
         velocity = orbit_velocity(0)
         measured = rk4_position(position, velocity, DT)
+        # the sign convention itself, checked against RK4 instead of assumed: a longer assumed
+        # latency stretches the rollout, so d(residual)/d(delay) is +v (the old -v diverged here)
+        probe = 1e-4
+        jac_fd = (rk4_position(position, velocity, DT + true_delay + probe)
+                  - rk4_position(position, velocity, DT + true_delay - probe)) / (2.0 * probe)
+        self.assertGreater(float(jac_fd[0] @ velocity[0]), 0.0,
+                           'latency sensitivity must be +v, not -v')
+        # d(rollout position)/d(duration) is the velocity AT THE END of the rollout, not the start
+        _, end_velocity = rk4_step(position[0], velocity[0], DT + true_delay,
+                                   k_per_m=K_BASE, gravity=GRAVITY)
+        np.testing.assert_allclose(jac_fd[0], end_velocity, rtol=0.02)
         errors = []
         for step in range(60):
             t0 = step * DT
