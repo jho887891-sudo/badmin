@@ -138,3 +138,12 @@
 - **注意：** wz=0 的纯平移下，两帧的轮速**大小**相同（只差舵角 90°），因此轮速差护栏必须带 wz≠0；舵角护栏在 wz=0 也有效
 - **建议：** 若将来需要机器可校验的帧标注，应解冻 `types.py`，为 `WholeBodyTarget`/`SafeCommand` 增加显式 `twist_frame` 字段（需 DEC + 契约测试）
 - **状态：** OPEN（低危，已被文档与护栏覆盖；属契约表达力债）
+## ISSUE-011 机器人能力模型（底盘/机械臂限值）尚未收敛为单一真源
+- **现象：** 同一物理能力在多个模块各自以 TEMP 代理表达且互相不一致：T5 的工作空间盒（忽略底盘 yaw、站位区各内缩 20/30 cm）、T6 的 yaw 感知工作盒 + 底盘三角/梯形时间门、T7 的 standoff/关节偏置与速率、T8 的 `base_twist_axis_max`/`base_translation_speed_max`/racket 工作空间盒。T5 与 T7/T8 评审均指出这一漂移风险
+- **影响：** 换用实测 PiPER/Morph One 参数时需要逐模块改，容易漏改导致判据互相矛盾（例如决策层认为可打、安全层却 HOLD）
+- **建议（T12 之后处理）：** 抽一个 `robot_capability` 单一真源（`Param` 化：底盘速度/加速度限、机械臂工作空间盒、关节限位/速率、接触可达锥），由 decision/planning/safety 三方 import；配合 `measurement_requirements()` 统一暴露未实测项
+- **当前缓解：** 三方都提供 `measurement_requirements()`，未实测项在 `final` 模式一律报错（DEC-019），因此不会静默上线
+- **状态：** OPEN（中危，架构债；属 T12 后第一优先）
+
+### 文档注解待办（随 ISSUE-011 一并处理）
+- `docs/architecture/04_HIT_DECISION.md` S20 需补注：实现采用「窗首样本」保守变体（DEC-025）
