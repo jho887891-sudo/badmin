@@ -1,0 +1,81 @@
+# Parameterized badminton court for Isaac Sim / Isaac Lab.
+# Court Frame:
+#   origin = net center on ground
+#   +X = robot side -> opponent side
+#   +Y = left when robot faces +X
+#   +Z = up
+#
+# All units are SI. Geometry is authoritative; appearance is intentionally simple.
+
+schema_version: "1.0"
+
+court:
+  length_m: 13.40
+  width_m: 6.10
+  singles_width_m: 5.18
+  line_width_m: 0.04
+
+  # Project convention: these values are line center coordinates in Court Frame.
+  line_reference: "CENTERLINE"
+
+  short_service_x_m: 1.98
+  doubles_long_service_x_m: 5.94
+
+surrounding_floor:
+  length_m: 16.0
+  width_m: 9.0
+  visual_thickness_m: 0.02
+  collider_thickness_m: 0.05
+
+lines:
+  visual_thickness_m: 0.002
+
+net:
+  width_m: 6.10
+  center_height_m: 1.524
+  post_height_m: 1.55
+  vertical_depth_m: 0.760
+
+  # Finite segmented approximation of the sagging net surface.
+  # Even segment count guarantees a profile sample at y=0.
+  segments: 16
+  sag_profile: "QUADRATIC"
+
+  visual_thickness_m: 0.004
+  collider_thickness_m: 0.012
+  top_tape_height_m: 0.04
+  top_tape_thickness_m: 0.018
+
+  post_radius_m: 0.025
+
+  # Regression guard against the historical "ground-to-net invisible wall" bug.
+  minimum_allowed_bottom_z_m: 0.70
+
+frames:
+  robot_home_xyz_m: [-1.60, 0.0, 0.0]
+  opponent_home_xyz_m: [1.60, 0.0, 0.0]
+
+appearance:
+  # Appearance is deliberately low-complexity. Vision training may randomize it.
+  floor_rgb: [0.12, 0.34, 0.20]
+  court_line_rgb: [0.95, 0.95, 0.95]
+  net_rgb: [0.06, 0.06, 0.06]
+  net_opacity: 0.22
+  top_tape_rgb: [0.95, 0.95, 0.95]
+  post_rgb: [0.10, 0.10, 0.10]
+
+physics:
+  # Do not pretend unmeasured friction/restitution values are "real".
+  # Enable only after measuring / validating the actual floor.
+  ground_material:
+    enabled: false
+    static_friction: null
+    dynamic_friction: null
+    restitution: null
+
+  # Net contact material is also left uncalibrated by default.
+  net_material:
+    enabled: false
+    static_friction: null
+    dynamic_friction: null
+    restitution: null
