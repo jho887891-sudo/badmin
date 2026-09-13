@@ -30,8 +30,7 @@ format : glTF binary (Sketchfab autoconverted, texture 512 px embedded)
 
 **Produced visual**
 ```
-assets/third_party/shuttlecock_visual.usd      sha256 4e409c41c0d405fa1070fee968364335431563d1ad4eb8202ad8e9a7ef52d60b
-assets/third_party/textures/shuttle_basecolor.png  sha256 42c87519eb08d52ad1fb6a5ecba1e168f32167bc3a68cebcfc8728b28242e324
+assets/third_party/shuttlecock_visual.usd      sha256 e47066655b7f09a013b27bcfdd869ec86f2c845b4a62a268721d2fbb473c4227
 ```
 - defaultPrim `/ShuttlecockVisual`；metersPerUnit 1.0；upAxis Z
 - frame 约定：原点在球托平面中心，+Z 由球托指向裙边（与 `configs/shuttlecock.yaml` 一致）
@@ -39,7 +38,8 @@ assets/third_party/textures/shuttle_basecolor.png  sha256 42c87519eb08d52ad1fb6a
   - feather: x/y ±0.0309 m (裙尖 Ø **61.8 mm**，与配置 61.804 mm 一致) ，z 0.0006–0.0780 m
   - cork: x/y ±0.0178 m (Ø **35.6 mm**)，z 0.0002–0.0411 m
   - 总高 78.0 mm（配置参考总长 ≈ 79 mm）
-- material: UsdPreviewSurface + baseColor texture（来自 GLB 内嵌贴图）
+- material: 按 GLB 材质定义生成 —— 材质 0 `White` = **baseColorFactor 白色 (1,1,1)**、roughness 0.6、metallic 0、doubleSided=True
+  - 修正记录：首版导出误把 GLB 中属于**球拍拍线**的贴图（材质 1 `Strings`）绑到了羽毛球上，渲染成黑色；已改为按材质索引分别生成（羽毛球无贴图）。渲染复核为白色。
 
 **Final shuttlecock asset**
 ```
@@ -53,3 +53,14 @@ assets/shuttle/shuttlecock.usd   sha256 108ceb1aa0ca3084673b71338bfb2b598b237ef6
   are intentionally decoupled. Recorded here for traceability.
 - `shuttlecock_physics_proxy.obj` mentioned in `docs/SHUTTLECOCK.md` was **not** delivered in the download
   set; the collision proxy is generated procedurally from `shuttlecock.yaml` instead.
+## Visual verification (2026-09-13)
+
+Rendered standalone previews with the project camera pipeline (Isaac RTX, headless):
+
+| image | content |
+|---|---|
+| `outputs/evidence/shuttle_preview_side.png` | 侧视 1400×1000：球托在下、羽毛裙在上，16 片羽毛 + 羽毛杆笼，白色材质 |
+| `outputs/evidence/shuttle_preview_top.png` | 俯视 1400×1000 |
+
+Checked visually: **scale / orientation / material / mesh OK**（纹理不适用于羽毛球：GLB 唯一贴图属于拍线）。
+Renderer: `tools/render_shuttle_preview.py`；日志 `outputs/runs/shuttle_preview2.log`。

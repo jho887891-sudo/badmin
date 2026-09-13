@@ -64,20 +64,33 @@ def walk(i):
 walk(shuttle_root)
 print("kept nodes:", keep_nodes, "| meshes:", [m[1] for m in want_meshes])
 
-# ---------- extract texture ----------
-tex_path = None
-if js.get("images"):
-    img = js["images"][0]
+# ---------- materials (data-driven from the GLB) ----------
+used_mats = []
+for _, mi in want_meshes:
+    for prim in js["meshes"][mi]["primitives"]:
+        m = prim.get("material")
+        if m is not None and m not in used_mats:
+            used_mats.append(m)
+used_mats.sort()
+
+from pxr import Usd, UsdGeom, UsdShade, Sdf, Gf, Vt
+
+def _tex_index(mat_idx):
+    pbr = js["materials"][mat_idx].get("pbrMetallicRoughness", {}) or {}
+    bct = pbr.get("baseColorTexture")
+    return bct.get("index") if bct else None
+
+def _extract_texture(tex_index, tag):
+    tex = js["textures"][tex_index]
+    img = js["images"][tex["source"]]
     bv = js["bufferViews"][img["bufferView"]]
     blob = binbuf[bv.get("byteOffset", 0): bv.get("byteOffset", 0) + bv["byteLength"]]
     ext = ".png" if img.get("mimeType", "").endswith("png") else ".jpg"
     TEXDIR.mkdir(parents=True, exist_ok=True)
-    tex_path = TEXDIR / ("shuttle_basecolor" + ext)
-    tex_path.write_bytes(blob)
-    print("texture ->", tex_path, len(blob), "bytes")
-
-# ---------- author USD ----------
-from pxr import Usd, UsdGeom, UsdShade, Sdf, Gf, Vt
+    out = TEXDIR / ("%s%s" % (tag, ext))
+    out.write_bytes(blob)
+    print("texture ->", out, len(blob), "bytes")
+    return out
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
 stage = Usd.Stage.CreateNew(str(OUT))
@@ -89,21 +102,37 @@ root.GetPrim().CreateAttribute("project:sourceAsset", Sdf.ValueTypeNames.String,
 root.GetPrim().CreateAttribute("project:frameConvention", Sdf.ValueTypeNames.String, custom=True).Set(
     "origin at cork flat face centre; +Z from cork toward skirt; metres")
 
-mat = UsdShade.Material.Define(stage, "/ShuttlecockVisual/Looks/ShuttleMat")
-pbr = UsdShade.Shader.Define(stage, "/ShuttlecockVisual/Looks/ShuttleMat/PreviewSurface")
-pbr.CreateIdAttr("UsdPreviewSurface")
-pbr.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(0.55)
-pbr.CreateInput("metallic", Sdf.ValueTypeNames.Float).Set(0.0)
-if tex_path is not None:
-    st_reader = UsdShade.Shader.Define(stage, "/ShuttlecockVisual/Looks/ShuttleMat/stReader")
-    st_reader.CreateIdAttr("UsdPrimvarReader_float2")
-    st_reader.CreateInput("varname", Sdf.ValueTypeNames.Token).Set("st")
-    tex = UsdShade.Shader.Define(stage, "/ShuttlecockVisual/Looks/ShuttleMat/tex")
-    tex.CreateIdAttr("UsdUVTexture")
-    tex.CreateInput("file", Sdf.ValueTypeNames.Asset).Set(str(tex_path))
-    tex.CreateInput("st", Sdf.ValueTypeNames.Float2).ConnectToSource(st_reader.ConnectableAPI(), "result")
-    pbr.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).ConnectToSource(tex.ConnectableAPI(), "rgb")
-mat.CreateSurfaceOutput().ConnectToSource(pbr.ConnectableAPI(), "surface")
+mat_paths = {}
+for mi_idx in used_mats:
+    spec = js["materials"][mi_idx]
+    pbr = spec.get("pbrMetallicRoughness", {}) or {}
+    name = spec.get("name") or ("Mat%d" % mi_idx)
+    base = pbr.get("baseColorFactor", [1.0, 1.0, 1.0, 1.0])
+    rough = float(pbr.get("roughnessFactor", 1.0))
+    metal = float(pbr.get("metallicFactor", 1.0))
+    path = "/ShuttlecockVisual/Looks/%s" % str(name).replace(" ", "_")
+    mat = UsdShade.Material.Define(stage, path)
+    sh = UsdShade.Shader.Define(stage, path + "/PreviewSurface")
+    sh.CreateIdAttr("UsdPreviewSurface")
+    sh.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(rough)
+    sh.CreateInput("metallic", Sdf.ValueTypeNames.Float).Set(metal)
+    tex_index = _tex_index(mi_idx)
+    if tex_index is not None:
+        tex_file = _extract_texture(tex_index, "mat%d_basecolor" % mi_idx)
+        rd = UsdShade.Shader.Define(stage, path + "/stReader")
+        rd.CreateIdAttr("UsdPrimvarReader_float2")
+        rd.CreateInput("varname", Sdf.ValueTypeNames.Token).Set("st")
+        tx = UsdShade.Shader.Define(stage, path + "/tex")
+        tx.CreateIdAttr("UsdUVTexture")
+        tx.CreateInput("file", Sdf.ValueTypeNames.Asset).Set(str(tex_file))
+        tx.CreateInput("st", Sdf.ValueTypeNames.Float2).ConnectToSource(rd.ConnectableAPI(), "result")
+        sh.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).ConnectToSource(tx.ConnectableAPI(), "rgb")
+    else:
+        sh.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).Set(Gf.Vec3f(*[float(v) for v in base[:3]]))
+    mat.CreateSurfaceOutput().ConnectToSource(sh.ConnectableAPI(), "surface")
+    mat_paths[mi_idx] = mat
+    print("material[%d] '%s' -> %s  base=%s rough=%.2f metal=%.2f tex=%s" % (
+        mi_idx, name, path, [round(float(v),3) for v in base[:3]], rough, metal, tex_index))
 
 tot_tris = 0
 for name, mi in want_meshes:
@@ -112,10 +141,7 @@ for name, mi in want_meshes:
         pts = read_accessor(attrs["POSITION"])
         normals = read_accessor(attrs["NORMAL"]) if "NORMAL" in attrs else None
         uvs = read_accessor(attrs["TEXCOORD_0"]) if "TEXCOORD_0" in attrs else None
-        counts = [c[0] for c in read_accessor(prim["indices"])]
-        flat = []
-        for c in counts:
-            flat.extend(c)
+        flat = [c[0] for c in read_accessor(prim["indices"])]
         tot_tris += len(flat) // 3
         path = "/ShuttlecockVisual/%s" % name
         mesh = UsdGeom.Mesh.Define(stage, path)
@@ -129,7 +155,9 @@ for name, mi in want_meshes:
             pv = UsdGeom.PrimvarsAPI(mesh.GetPrim()).CreatePrimvar(
                 "st", Sdf.ValueTypeNames.TexCoord2fArray, UsdGeom.Tokens.vertex)
             pv.Set(Vt.Vec2fArray([Gf.Vec2f(*u) for u in uvs]))
-        UsdShade.MaterialBindingAPI.Apply(mesh.GetPrim()).Bind(mat)
+        UsdShade.MaterialBindingAPI.Apply(mesh.GetPrim()).Bind(mat_paths[prim.get("material", used_mats[0])])
+        if js["materials"][prim.get("material", used_mats[0])].get("doubleSided"):
+            mesh.CreateDoubleSidedAttr(True)
         # report
         xs = [p[0] for p in pts]; ys = [p[1] for p in pts]; zs = [p[2] for p in pts]
         print("  %-16s tris=%-5d x[%.4f,%.4f] y[%.4f,%.4f] z[%.4f,%.4f]" % (
