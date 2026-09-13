@@ -1,0 +1,57 @@
+schema_version: "1.0"
+
+reference:
+  name: "BWF-compliant feather shuttlecock / Darbois-Texier-2012 representative"
+  feathers_count: 16
+  bwf:
+    feather_length_range_m: [0.062, 0.070]
+    skirt_tip_diameter_range_m: [0.058, 0.068]
+    cork_diameter_range_m: [0.025, 0.028]
+    total_mass_range_kg: [0.00474, 0.00550]
+  selected_geometry:
+    feather_length_m: 0.066
+    cork_diameter_m: 0.0265
+    reference_cross_section_area_m2: 0.003
+  mass_distribution:
+    total_mass_kg: 0.005
+    cork_mass_kg: 0.003
+    skirt_mass_kg: 0.002
+  aerodynamics:
+    model: "AERODYNAMIC_LENGTH"
+    aerodynamic_length_m: 6.5
+    quadratic_drag_k_per_m: 0.15384615384615385
+
+frames:
+  convention: "origin at cork flat face center; +Z from cork toward skirt"
+  cork_tip_z_m: -0.01325
+  skirt_tip_z_m: 0.066
+
+physics_proxy:
+  cork_shape: "HEMISPHERE_CONVEX_HULL"
+  cork_rings: 6
+  cork_radial_segments: 24
+  skirt_shape: "OPEN_FRUSTUM_SHELL_SEGMENTS"
+  skirt_collision_segments: 16
+  skirt_shell_thickness_m: 0.0012
+
+visual:
+  mode: "EXTERNAL_REFERENCE"
+  required_for_final: true
+  local_asset_path: "assets/third_party/shuttlecock_visual.usd"
+  source_url: "https://sketchfab.com/3d-models/badminton-racket-and-shuttlecock-low-poly-795e4cca2e544d7ab86a8e5c7ded2362"
+  source_uid: "795e4cca2e544d7ab86a8e5c7ded2362"
+  title: "Badminton Racket And Shuttlecock (Low Poly)"
+  author: "game_travel"
+  license: "CC Attribution"
+  extraction_note: "Extract shuttlecock only and convert to USD without changing physical dimensions; record file hash in third-party asset manifest."
+
+contact_pair_parameters:
+  status: "REQUIRES_PAIR_CALIBRATION"
+  shuttle_ground: null
+  shuttle_net: null
+  shuttle_racket: null
+
+aerodynamics_runtime:
+  gravity_mps2: [0.0, 0.0, -9.80665]
+  wind_mps: [0.0, 0.0, 0.0]
+  rk4_internal_dt_s: 0.001
