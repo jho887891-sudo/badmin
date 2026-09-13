@@ -251,3 +251,10 @@
 - D7（自适应空转）：已派 T10 诊断（运行时已推入 prediction，实测 prediction_available=[True,True]）
 - 新增 DEC-019（契约字段提升 + final 参数门禁）、DEC-020（推入式通道 + 变异可杀断言纪律）
 - 启动最终回归 wave 4（后台）
+**（2026-09-13 目标达成待关闭：Robot Brain 8 层模块全部实现并通过评审收口）**
+- 最终全量回归：**26 套 / 460 项测试全绿**（wave 4）
+- 8 层 + 集成模块文件全部存在（已用 find 实测列出）；`final` 模式实测 `ok=False, errors=33`（逐层列出未实测参数）→ 门禁有效
+- 评审收口：6 份模块评审 + 1 份整体评审；T4 APPROVE；T2/T5/T7/T8/T9/T10 修复并回归绿；broad D1–D8 全关闭
+- 契约扩展 2 次（DEC-013、DEC-019），均带 DEC 条目与契约测试证据；冻结资产未改动；全程未使用 Isaac/GPU（纯 numpy）
+- 未实现/未实测项全部显式登记（ISSUE-006/007/008 + 各模块 measurement_requirements）
+- 验收报告：outputs/reports/brain_modules_acceptance.md（10 节）
