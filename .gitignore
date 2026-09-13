@@ -27,3 +27,5 @@ __pycache__/
 *.pyc
 # reviewer worktree mirrors (never part of the project)
 .review_remote/
+.review_remote2/
+.review_remote*/
