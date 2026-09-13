@@ -134,3 +134,26 @@ wave 5 在 wave 4 之后又落地了 `ShuttleMeasurement.valid_mask`（DEC-023�
 各层最终测试数（wave 5）：perception 36+7｜estimation 22+13+3｜prediction 17｜decision 41+27+7｜
 planning 26｜safety 38｜execution 39｜adaptation 33｜integration 11｜contracts 10+15+6+3｜
 simulation/robots 9+18+15｜assets 16+6+16+7+14+8。
+
+## 14. DEC-026 落地与验证（感知层哨兵化）
+
+决定（DEC-026）：合法的传感器事件（出视场、遮挡、曝光不足、窗口内无目标）一律返回**哨兵**，
+只有真正的非法输入才允许抛 `BrainBoundaryError`。D4 已修 detector；本轮 T1 完成同类路径：
+
+- `perception/stereo_geometry.py`：新增冻结 dataclass `CentroidResult`（`uv / valid / weight_sum /
+  threshold / peak / origin_uv`），`__post_init__` 强制不变式（`valid=True ⇒ uv 有限`；
+  `valid=False ⇒ uv 全 NaN`），并支持 `if result:`；`subpixel_centroid` 在空窗（全 0 / 全负 /
+  阈值高于峰值 / 1x1 全暗）返回 `valid=False + uv=NaN + weight_sum=0.0`，**绝不返回 (0,0) 假中心**
+- 非法输入（非 2-D、空 patch、NaN/Inf 像素、origin 非法、threshold 非有限）与 detector 侧非法输入仍抛错；
+  `triangulate` 对 NaN 对应点继续报错（D4 纪律保持）
+- 感知测试 36 → **39 项**；精度未退化（三角化 5.329e-15 m、patch→3D 1.639e-05 m、质心 1.554e-06 px）
+
+**协调者独立验证（本轮实测）**：
+```
+空窗 patch      -> CentroidResult(valid=False, uv=[nan nan], bool=False)
+亮斑 patch      -> valid=True, uv=[4. 3.]
+含 NaN 的 patch -> BrainBoundaryError（非法输入仍抛错）
+受影响套件      -> perception_geometry 39 OK / perception_module 7 OK / full_brain 11 OK / brain_types 10 OK
+```
+API 变更说明：`subpixel_centroid` 返回类型由 `(2,)` ndarray 改为 `CentroidResult`；
+T1 已 grep 确认 perception 包外无调用者，真实前端取 `result.uv` 即可。
