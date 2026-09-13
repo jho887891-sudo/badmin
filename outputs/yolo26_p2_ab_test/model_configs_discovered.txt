@@ -1,0 +1,14 @@
+wheel: ultralytics-8.4.150-py3-none-any.whl
+yolo26 configs:
+  26/yolo26-cls.yaml
+  26/yolo26-depth.yaml
+  26/yolo26-obb.yaml
+  26/yolo26-p2.yaml
+  26/yolo26-p6.yaml
+  26/yolo26-pose.yaml
+  26/yolo26-seg.yaml
+  26/yolo26-sem.yaml
+  26/yolo26.yaml
+  26/yoloe-26-seg.yaml
+  26/yoloe-26.yaml
+p2-named configs: ['yolo26-p2.yaml']

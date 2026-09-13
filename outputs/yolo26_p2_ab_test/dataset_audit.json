@@ -1,0 +1,22 @@
+{
+  "scanned_files": 404,
+  "dataset_yamls": [],
+  "dataset_yaml_count": 0,
+  "image_count": 21,
+  "image_examples": [
+    "outputs/evidence/desktop_10.png",
+    "outputs/evidence/preview_court_only.png",
+    "outputs/evidence/preview_court_only_top.png",
+    "outputs/evidence/preview_full_scene.png",
+    "outputs/evidence/preview_full_scene_top.png",
+    "outputs/evidence/racket_frames.png",
+    "outputs/evidence/racket_preview_face.png",
+    "outputs/evidence/racket_preview_threequarter.png",
+    "outputs/evidence/robot_closeup.png",
+    "outputs/evidence/scene_128env.png"
+  ],
+  "yolo_label_files": 0,
+  "yolo_label_examples": [],
+  "verdict": "DATASET_NOT_AVAILABLE",
+  "note": "assets/ and cache/ are excluded by design; no shuttlecock dataset is expected there"
+}

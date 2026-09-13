@@ -1,0 +1,2 @@
+status,reason,what_unblocks_it
+BLOCKED,DOWNSTREAM_NOT_AVAILABLE,"images + calibrated rig feeding the (implemented) subpixel localizer, triangulation and UKF"

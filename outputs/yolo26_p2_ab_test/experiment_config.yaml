@@ -1,0 +1,10 @@
+experiment: yolo26s vs yolo26s-p2 ablation for the 01 Perception coarse shuttle detector
+generated_utc: 2026-09-13T18:13:20Z
+variants: {"A_baseline": "yolo26s.yaml  (official, Detect P3/P4/P5)", "B_p2": "yolo26s-p2.yaml  (official, Detect P2/P3/P4/P5)"}
+scale: s
+weights_source: assets/external/_staging/F_yolo/weights/yolo26s.pt (COCO, AGPL-3.0)
+runtime: {"ultralytics": "8.4.150 (used via PYTHONPATH from the extracted wheel; NOT installed)", "torch": "2.10.0+cu128", "cuda_build": "12.8", "precision": "fp16", "device": "NVIDIA RTX A6000 (driver 550.163.01)"}
+imgsz_tested: [640, 960, 1280]
+latency_protocol: {"warmup": 100, "iters": 300, "batch_tested": [1, 8], "timing": "cuda events + torch.cuda.synchronize() around every step", "load_time_excluded": true}
+seed: 0
+no_env_modification: True

@@ -1,0 +1,2 @@
+status,reason,what_unblocks_it
+BLOCKED,TENSORRT_BLOCKED,TensorRT+onnxruntime installed in a separate env (must not be force-installed into the shared Isaac env)

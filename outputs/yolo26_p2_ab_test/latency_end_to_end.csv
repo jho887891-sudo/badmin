@@ -1,0 +1,2 @@
+status,reason,what_unblocks_it
+BLOCKED,DOWNSTREAM_NOT_AVAILABLE,real frames through decode/letterbox/H2D/ROI/localizer/stereo

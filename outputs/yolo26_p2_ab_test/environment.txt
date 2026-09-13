@@ -1,0 +1,40 @@
+# YOLO26s vs YOLO26s-P2 A/B - environment audit
+# generated: 2026-09-13T17:24:08Z  (UTC)
+# host: jxxy
+
+## OS
+PRETTY_NAME=Ubuntu 22.04.5 LTS
+VERSION=22.04.5 LTS (Jammy Jellyfish)
+KERNEL=5.15.0-190-generic
+ARCH=x86_64
+
+## Python / PyTorch / CUDA (from project venv, read-only)
+python_version = 3.12.13 | executable = /home/T7/ojh/robot_sim/env_isaaclab/bin/python
+torch_version = 2.10.0+cu128
+torch_cuda_build = 12.8
+cuda_available = True
+torch_cuda_device_count = 1
+torch_cuda_device_0 = NVIDIA RTX A6000
+numpy_version = 2.3.5
+cv2_version = 4.13.0
+PIL_version = 12.2.0
+yaml_version = 6.0.3
+scipy_version = 1.17.0
+matplotlib_version = 3.10.8
+onnxruntime_version = NOT_INSTALLED (ModuleNotFoundError)
+tensorrt_version = NOT_INSTALLED (ModuleNotFoundError)
+ultralytics_version = NOT_INSTALLED (ModuleNotFoundError)
+
+## NVIDIA driver / GPU (nvidia-smi, read-only)
+name, driver_version, memory.total [MiB], memory.used [MiB], memory.free [MiB], utilization.gpu [%], compute_mode
+NVIDIA RTX A6000, 550.163.01, 49140 MiB, 13051 MiB, 35404 MiB, 4 %, Default
+
+## CUDA runtime reported by driver
+| NVIDIA-SMI 550.163.01             Driver Version: 550.163.01     CUDA Version: 12.4     |
+
+## Current GPU processes (READ-ONLY snapshot; nothing is terminated)
+pid, process_name, used_gpu_memory [MiB]
+671232, python, 12970 MiB
+
+## Disk
+/dev/vdb2       7.1T  5.6T  1.5T  80% /home/T7
