@@ -34,7 +34,8 @@ from shuttle_aerodynamics import acceleration, k_from_aerodynamic_length, rk4_st
 from badminton_brain.adaptation.online_adaptation import OnlineAdaptation  # noqa: E402
 from badminton_brain.interfaces import AdaptationModule, interface_layer_of  # noqa: E402
 from badminton_brain.status import AssetStatus  # noqa: E402
-from badminton_brain.types import BrainBoundaryError, Feedback, Layer, UnifiedState  # noqa: E402
+from badminton_brain.types import (BrainBoundaryError, Feedback, Layer,  # noqa: E402
+                                   PredictedTrajectory, UnifiedState)
 
 K_BASE = k_from_aerodynamic_length(6.5)          # literature feather shuttle L = 6.5 m
 GRAVITY = np.array([0.0, 0.0, -9.80665])
@@ -73,6 +74,18 @@ def rk4_position(position, velocity, duration_s: float) -> np.ndarray:
     p, _ = rk4_step(np.asarray(position, dtype=float)[0], np.asarray(velocity, dtype=float)[0],
                     duration_s, k_per_m=K_BASE, gravity=GRAVITY)
     return p[None, :]
+
+
+def make_prediction(positions, timestamp: float, times) -> PredictedTrajectory:
+    """Build a PredictedTrajectory whose grid is ABSOLUTE simulation time (times[0] == timestamp)."""
+    positions = np.asarray(positions, dtype=float)
+    n, t = positions.shape[0], positions.shape[1]
+    times = np.asarray(times, dtype=float)
+    return PredictedTrajectory(times=times, position=positions,
+                               velocity=np.zeros((n, t, 3)),
+                               landing_point=positions[:, -1, :].copy(),
+                               arrival_time=np.full(n, float(times[-1])),
+                               timestamp=float(timestamp))
 
 
 def orbit_velocity(step: int, speed: float = 4.0) -> np.ndarray:
@@ -537,6 +550,144 @@ class ResetTests(unittest.TestCase):
         module = OnlineAdaptation(num_envs=2)
         with self.assertRaises(BrainBoundaryError):
             module.reset([5])
+
+
+class PredictionResidualTests(unittest.TestCase):
+    """The slow loop computes the residual itself from the prediction pushed by the application.
+
+    Order: the application pushes the trajectory with set_prediction() and the module compares it
+    with the state that arrives on the next step, over the inter-step interval (D2).  An explicit
+    Feedback.prediction_error still wins when a measurement arrives late.
+    """
+
+    def test_residual_is_computed_from_the_pushed_prediction(self) -> None:
+        module = OnlineAdaptation(num_envs=1, estimate=('drag_scale',))
+        position = np.array([[0.0, 0.0, 3.0]])
+        velocity = orbit_velocity(0)
+        offset = np.array([[0.06, 0.0, 0.0]])       # the prediction is 6 cm ahead of the truth
+
+        first = module.process(Feedback(prediction_error=None, timestamp=0.0),
+                               make_state(position, velocity, 0.0))
+        self.assertFalse(bool(first['updated'][0]))
+        self.assertEqual(first['residual_source'][0], 'none')
+
+        module.set_prediction(make_prediction(np.stack([position, position + offset], axis=1),
+                                              0.0, [0.0, DT]))
+        self.assertTrue(bool(module.diagnostics()['prediction_available'][0]))
+
+        second = module.process(Feedback(prediction_error=None, timestamp=DT),
+                                make_state(position, velocity, DT))
+        self.assertTrue(bool(second['updated'][0]), 'a pushed prediction must drive the update')
+        self.assertEqual(second['residual_source'][0], 'prediction')
+        np.testing.assert_allclose(module.residual_ledger()[0, -1], offset[0], atol=1e-12)
+        self.assertAlmostEqual(float(second['residual'][0]),
+                               float(np.linalg.norm(offset)), places=12)
+        # predicted ahead of the measurement along +v means the model under-estimates drag
+        self.assertGreater(float(module.drag_scale[0]), 1.0)
+
+        inline = OnlineAdaptation(num_envs=1, estimate=('drag_scale',))
+        inline.process(Feedback(prediction_error=None, timestamp=0.0),
+                       make_state(position, velocity, 0.0))
+        inline_out = inline.process(
+            Feedback(prediction_error=None, timestamp=DT), make_state(position, velocity, DT),
+            prediction=make_prediction(np.stack([position, position + offset], axis=1),
+                                       0.0, [0.0, DT]))
+        self.assertTrue(bool(inline_out['updated'][0]), 'the inline prediction= idiom must work too')
+        np.testing.assert_allclose(inline.residual_ledger()[0, -1], offset[0], atol=1e-12)
+
+    def test_missing_prediction_does_not_update_and_is_visible_in_diagnostics(self) -> None:
+        module = OnlineAdaptation(num_envs=2, estimate=('drag_scale',))
+        self.assertFalse(np.any(module.diagnostics()['prediction_available']))
+        position = np.zeros((2, 3)) + np.array([0.0, 0.0, 3.0])
+        velocity = orbit_velocity(0).repeat(2, axis=0)
+        module.process(Feedback(prediction_error=None, timestamp=0.0),
+                       make_state(position, velocity, 0.0))
+        out = module.process(Feedback(prediction_error=None, timestamp=DT),
+                             make_state(position, velocity, DT))
+        self.assertFalse(np.any(out['updated']))
+        self.assertEqual(list(out['residual_source']), ['none', 'none'])
+        self.assertTrue(np.all(np.isnan(out['residual'])))
+        np.testing.assert_array_equal(module.residual_counts(), [0, 0])
+
+        offset = np.array([0.06, 0.0, 0.0])
+        module.set_prediction(make_prediction(
+            np.stack([position, position + offset], axis=1), 0.0, [0.0, DT]))
+        self.assertTrue(np.all(module.diagnostics()['prediction_available']))
+        module.set_prediction(None)
+        self.assertFalse(np.any(module.diagnostics()['prediction_available']),
+                         'set_prediction(None) clears the cache')
+
+    def test_explicit_prediction_error_takes_precedence(self) -> None:
+        position = np.array([[0.0, 0.0, 3.0]])
+        velocity = orbit_velocity(0)
+        module = OnlineAdaptation(num_envs=1, estimate=('drag_scale',))
+        mirror = OnlineAdaptation(num_envs=1, estimate=('drag_scale',))
+        for other in (module, mirror):
+            other.process(Feedback(prediction_error=None, timestamp=0.0),
+                          make_state(position, velocity, 0.0))
+        big = np.array([[0.5, 0.0, 0.0]])            # what the pushed prediction would imply
+        module.set_prediction(make_prediction(np.stack([position, position + big], axis=1),
+                                              0.0, [0.0, DT]))
+        exact = np.array([[0.01, 0.0, 0.0]])         # the late measurement that really arrived
+        out = module.process(Feedback(prediction_error=exact, timestamp=DT),
+                             make_state(position, velocity, DT))
+        mirror_out = mirror.process(Feedback(prediction_error=exact, timestamp=DT),
+                                    make_state(position, velocity, DT))
+        self.assertTrue(bool(out['updated'][0]))
+        self.assertEqual(out['residual_source'][0], 'feedback')
+        np.testing.assert_allclose(module.residual_ledger()[0, -1], exact[0], atol=1e-12)
+        self.assertEqual(float(module.drag_scale[0]), float(mirror.drag_scale[0]),
+                         'the explicit residual must give exactly the prediction-free result')
+        self.assertTrue(bool(mirror_out['updated'][0]))
+
+    def test_same_step_push_falls_back_to_the_previous_prediction(self) -> None:
+        module = OnlineAdaptation(num_envs=1, estimate=('drag_scale',))
+        position = np.array([[0.0, 0.0, 3.0]])
+        velocity = orbit_velocity(0)
+        older = np.array([[0.06, 0.0, 0.0]])
+        module.set_prediction(make_prediction(np.stack([position, position + older], axis=1),
+                                              0.0, [0.0, DT]))
+        module.process(Feedback(prediction_error=None, timestamp=0.0),
+                       make_state(position, velocity, 0.0))
+        # the application pushes the prediction of THIS step as well: its grid starts at the current
+        # instant, so it cannot be compared with the state of the same instant and must not be used
+        newer = np.array([[-9.0, 0.0, 0.0]])
+        module.set_prediction(make_prediction(np.stack([position, position + newer], axis=1),
+                                              DT, [DT, 2 * DT]))
+        out = module.process(Feedback(prediction_error=None, timestamp=DT),
+                             make_state(position, velocity, DT))
+        self.assertTrue(bool(out['updated'][0]))
+        np.testing.assert_allclose(module.residual_ledger()[0, -1], older[0], atol=1e-12)
+
+    def test_reset_clears_the_prediction_cache(self) -> None:
+        module = OnlineAdaptation(num_envs=2, estimate=('drag_scale',))
+        position = np.zeros((2, 3)) + np.array([0.0, 0.0, 3.0])
+        velocity = orbit_velocity(0).repeat(2, axis=0)
+        offset = np.array([0.06, 0.0, 0.0])
+        module.process(Feedback(prediction_error=None, timestamp=0.0),
+                       make_state(position, velocity, 0.0))
+        module.set_prediction(make_prediction(np.stack([position, position + offset], axis=1),
+                                              0.0, [0.0, DT]))
+        self.assertTrue(np.all(module.diagnostics()['prediction_available']))
+
+        module.reset([0])
+
+        available = module.diagnostics()['prediction_available']
+        self.assertFalse(bool(available[0]), 'reset must clear the prediction cache of env 0')
+        self.assertTrue(bool(available[1]))
+        out = module.process(Feedback(prediction_error=None, timestamp=DT),
+                             make_state(position, velocity, DT))
+        self.assertFalse(bool(out['updated'][0]))
+        self.assertEqual(out['residual_source'][0], 'none')
+        self.assertTrue(bool(out['updated'][1]))
+
+        # a fresh push for both environments restores the loop for env 0 as well
+        module.set_prediction(make_prediction(np.stack([position, position + offset], axis=1),
+                                              DT, [DT, 2 * DT]))
+        out2 = module.process(Feedback(prediction_error=None, timestamp=2 * DT),
+                              make_state(position, velocity, 2 * DT))
+        self.assertTrue(np.all(out2['updated']))
+        self.assertTrue(np.all(out2['residual_source'] == 'prediction'))
 
 
 if __name__ == '__main__':

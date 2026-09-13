@@ -172,3 +172,19 @@
 - **验证：** T8 新增 `set_context`/`context_snapshot`（38 项绿）；决策适配器 `set_now` 使 30 s 陈旧状态被判定为 STALE（7 项绿）；T10 待其修复回归
 - **优点：** 不改冻结契约即可让时钟语义正确；推入点集中在应用层
 - **缺点：** 运行时循环必须显式推入（否则退化为消息时间戳，已在 docstring 警示）
+## DEC-017 单一真源跨层引用：src/ 允许只读引用 simulation/ 的规范实现
+- **日期：** 2026-09-13
+- **背景：** T7/T9 实现时发现任务书写的 `src/badminton_brain/morph_one/kinematics.py` 不存在；四舵轮运动学的规范实现（已实现已测）在 `simulation/robots/badminton_robot/morph_one/kinematics.py`。同时 T9 复用 `DriveMode/WheelId/PiperCfg.joint_names` 单一真源
+- **最终决定：** 允许 `src/` **只读**引用 `simulation/` 的规范实现与枚举（通过惰性加载 helper，不改写、不复制）；禁止在 `src/` 下另建同名副本。理由是复制会造成两个真源（正是本项目反复出现的问题）
+- **验证：** T7/T9 均断言 `adapter.kinematics is <simulation 模块>`（同一对象），并有回归测试防止漂移
+- **优点：** 单一真源；无重复公式
+- **缺点：** `src/` 出现对 `simulation` 的路径依赖（已文档化，且无 Isaac 依赖、已实测）
+- **未来是否允许修改：** 若将来把运动学整体迁入 `src/`，须一次性迁移 + 全量回归，不允许长期并存两份
+
+## DEC-018 零参构造与 TEMP 默认几何：开发可用、final 必须拒绝
+- **日期：** 2026-09-13
+- **背景：** T9/T7/T8 的模块需要零参构造（`Module(N)`）才能被 `full_brain` 装配，但真实几何/限值未实测
+- **最终决定：** 允许模块用 `TEMP_PARAMETERIZED_PROXY` 默认值零参构造（并在构造时发出 RuntimeWarning + 把 status 写进参数溯源）；**`validate_architecture(mode='final')` 与各模块的 `unresolved_limits()/measurement_requirements()` 必须把这些项报为未解决**；禁止把 TEMP 值标成 VERIFIED_*
+- **验证：** `test_full_brain`（9 项）在 development 模式全绿；`test_final_mode_refuses_unresolved_stage_rates` 与 PPO 占位拒绝用例通过；T8 的 `SafetyShield()` 默认即拒绝启动（REQUIRES_MEASUREMENT），显式 `temp_proxy()` 才可运行
+- **优点：** 现在就能开发与集成；上线前不会被 TEMP 蒙混过关
+- **缺点：** 运行时会有 TEMP 警告噪声（有意保留，避免"静默使用未实测值"）

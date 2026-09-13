@@ -14,7 +14,15 @@ This is *not* online learning of a network.  It is a bounded, slow parameter ada
         -> residual ledger (last K prediction errors per environment)
 
 Conventions (fixed, because the frozen Feedback message carries no richer channel):
-  * residual e = predicted - measured position, the sign convention of Feedback.prediction_error;
+  * residual e = predicted - measured position, the sign convention of Feedback.prediction_error.
+    The confidence path is the pushed prediction: the application layer calls set_prediction(
+    trajectory) every step (same push-before-process idiom as SafetyContext) and this module
+    compares the prediction pushed for the previous step against the state of the current step,
+    both in absolute simulation time (PredictedTrajectory.times[0] == trajectory.timestamp).
+    A pushed prediction is usable only when its timestamp is strictly older than the current state
+    and its horizon still covers it; the newest usable one wins, so a push before or after
+    process() both work.  Feedback.prediction_error, when present (a late real-rig measurement),
+    always takes precedence over the pushed prediction;
   * the observation interval is the INTER-STEP interval dt = state.timestamp - previous state
     timestamp, maintained by this module.  In the pipeline Feedback.timestamp equals the
     UnifiedState timestamp (both are the step time, S43), so the same-step difference is identically
@@ -51,7 +59,7 @@ import numpy as np
 
 from ..interfaces import AdaptationModule
 from ..status import AssetStatus, Param, UNRESOLVED_STATUSES
-from ..types import BrainBoundaryError, Feedback, Layer, UnifiedState
+from ..types import BrainBoundaryError, Feedback, Layer, PredictedTrajectory, UnifiedState
 
 #: literature feather-shuttle aerodynamic length used by src/trajectory/shuttle_aerodynamics.py
 #: (gravity does not appear in the sensitivities: only the drag / wind / delay terms of
@@ -153,6 +161,9 @@ class OnlineAdaptation(AdaptationModule):
         self._prev_position = np.zeros((0, 3))
         self._prev_velocity = np.zeros((0, 3))
         self._prev_valid = np.zeros(0, dtype=bool)
+        self._prediction_slots: list = []
+        self._last_dt = np.zeros(0)
+        self._last_source: list = []
         if self.num_envs is not None:
             self._allocate(self.num_envs)
 
@@ -178,6 +189,9 @@ class OnlineAdaptation(AdaptationModule):
         self._prev_position = np.full((n, 3), np.nan)
         self._prev_velocity = np.full((n, 3), np.nan)
         self._prev_valid = np.zeros(n, dtype=bool)
+        self._prediction_slots = []
+        self._last_dt = np.full(n, np.nan)
+        self._last_source = ['none'] * n
 
     def _ensure_envs(self, num_envs: int) -> None:
         if self.num_envs is None:
@@ -234,6 +248,65 @@ class OnlineAdaptation(AdaptationModule):
                 % (flat.shape[0], num_envs))
         return np.any(flat.astype(bool), axis=1)
 
+    # ------------------------------------------------------- pushed prediction
+
+    def set_prediction(self, trajectory) -> None:
+        """Push the current PredictedTrajectory (call it before process, once per control step).
+
+        Pass None to clear the cache.  The module keeps the last two pushes: the newest one that is
+        strictly older than the current state and still covers it is the one used for the residual.
+        """
+        if trajectory is None:
+            self._prediction_slots = []
+            return None
+        prepared = self._prepare_prediction(trajectory)
+        self._prediction_slots.insert(0, prepared)
+        del self._prediction_slots[2:]
+        return None
+
+    def _prepare_prediction(self, trajectory: PredictedTrajectory) -> Dict[str, Any]:
+        if not isinstance(trajectory, PredictedTrajectory):
+            raise BrainBoundaryError(
+                "set_prediction expects a PredictedTrajectory, got %s" % type(trajectory).__name__)
+        times = np.asarray(trajectory.times, dtype=float)
+        positions = np.asarray(trajectory.position, dtype=float)
+        num_envs = int(positions.shape[0])
+        self._ensure_envs(num_envs)
+        if times.ndim != 1 or times.shape[0] < 2:
+            raise BrainBoundaryError(
+                "a pushed prediction needs at least two time samples, got shape %s" % (times.shape,))
+        if positions.ndim != 3 or positions.shape[1] != times.shape[0] or positions.shape[2] != 3:
+            raise BrainBoundaryError(
+                "pushed prediction position must be (N, T, 3) matching times, got %s"
+                % (positions.shape,))
+        if not np.all(np.diff(times) > 0.0):
+            raise BrainBoundaryError("pushed prediction times must be strictly increasing")
+        return {'times': times, 'positions': positions,
+                'timestamp': float(trajectory.timestamp),
+                'valid': np.ones(num_envs, dtype=bool)}
+
+    def _prediction_candidates(self, inline) -> list:
+        """Newest first: an inline prediction for this call, then the two pushed slots."""
+        candidates = []
+        if inline is not None:
+            candidates.append(self._prepare_prediction(inline))
+        candidates.extend(self._prediction_slots)
+        return candidates
+
+    def _prediction_residual(self, candidates, env: int, position: np.ndarray,
+                             now: float):
+        """predicted - measured position [m] from the newest usable prediction, else None."""
+        for slot in candidates:
+            if not bool(slot['valid'][env]):
+                continue
+            times = slot['times']
+            if not (slot['timestamp'] < now <= float(times[-1]) + 1e-12):
+                continue        # made at this instant (nothing to compare) or already past its horizon
+            predicted = np.array([float(np.interp(now, times, slot['positions'][env, :, axis]))
+                                  for axis in range(3)])
+            return predicted - np.asarray(position, dtype=float)
+        return None
+
     # ------------------------------------------------------------------ ledger
 
     def _push(self, env: int, error: np.ndarray) -> None:
@@ -281,7 +354,7 @@ class OnlineAdaptation(AdaptationModule):
 
     # ------------------------------------------------------------------ update
 
-    def process(self, feedback: Feedback, state: UnifiedState) -> Any:
+    def process(self, feedback: Feedback, state: UnifiedState, prediction=None) -> Any:
         if not isinstance(feedback, Feedback):
             raise BrainBoundaryError(
                 "OnlineAdaptation.process expects a Feedback, got %s" % type(feedback).__name__)
@@ -310,25 +383,36 @@ class OnlineAdaptation(AdaptationModule):
 
         errors = self._normalize_error(feedback.prediction_error, velocity, num_envs)
         blocked = self._contact_gate(feedback.contact_detected, num_envs)
+        candidates = self._prediction_candidates(prediction)
 
         residual = np.full(num_envs, np.nan)
         updated = np.zeros(num_envs, dtype=bool)
         limited = np.zeros(num_envs, dtype=bool)
         clamped = np.zeros(num_envs, dtype=bool)
+        source = ['none'] * num_envs
 
-        if errors is not None:
-            for env in range(num_envs):
-                error = errors[env]
-                if not np.all(np.isfinite(error)):
-                    continue                # a broken sample must not poison the estimate
-                residual[env] = float(np.linalg.norm(error))
-                self._push(env, error)
-                if not usable[env] or blocked[env]:
-                    continue
-                limited[env], clamped[env] = self._update(env, error, velocity[env],
-                                                          float(dt[env]))
-                self.updates[env] += 1
-                updated[env] = True
+        for env in range(num_envs):
+            error = None
+            if errors is not None:
+                # an explicit residual (a late real-rig measurement) always takes precedence; a
+                # corrupt one is rejected rather than silently replaced by the pushed prediction
+                source[env] = 'feedback'
+                if np.all(np.isfinite(errors[env])):
+                    error = errors[env]
+            else:
+                predicted = self._prediction_residual(candidates, env, position[env], now)
+                if predicted is not None:
+                    source[env] = 'prediction'
+                    error = predicted
+            if error is None or not np.all(np.isfinite(error)):
+                continue                    # no usable residual: record nothing, update nothing
+            residual[env] = float(np.linalg.norm(error))
+            self._push(env, error)
+            if not usable[env] or blocked[env]:
+                continue
+            limited[env], clamped[env] = self._update(env, error, velocity[env], float(dt[env]))
+            self.updates[env] += 1
+            updated[env] = True
 
         # snapshot the state for the next interval, whatever the residual quality was
         self._prev_timestamp[:] = now
@@ -338,8 +422,10 @@ class OnlineAdaptation(AdaptationModule):
 
         self.limited = limited
         self.clamped = clamped
+        self._last_dt = dt.copy()
+        self._last_source = list(source)
         return self._correction(dt=dt, residual=residual, updated=updated, limited=limited,
-                                clamped=clamped, state_jump=jump)
+                                clamped=clamped, state_jump=jump, residual_source=source)
 
     def _update(self, env: int, error: np.ndarray, velocity: np.ndarray,
                 dt: float) -> Tuple[bool, bool]:
@@ -406,8 +492,8 @@ class OnlineAdaptation(AdaptationModule):
     # ------------------------------------------------------------------ output
 
     def _correction(self, *, dt: np.ndarray, residual: np.ndarray, updated: np.ndarray,
-                    limited: np.ndarray, clamped: np.ndarray,
-                    state_jump: np.ndarray) -> Dict[str, Any]:
+                    limited: np.ndarray, clamped: np.ndarray, state_jump: np.ndarray,
+                    residual_source) -> Dict[str, Any]:
         return {
             'num_envs': int(self.num_envs or 0),
             'drag_scale': self.drag_scale.copy(),
@@ -417,6 +503,7 @@ class OnlineAdaptation(AdaptationModule):
             'dt_s': np.asarray(dt, dtype=float).copy(),
             'state_jump_m': np.asarray(state_jump, dtype=float),
             'residual': np.asarray(residual, dtype=float),
+            'residual_source': np.asarray(list(residual_source), dtype=object),
             'residual_mean': self.residual_mean(),
             'updated': np.asarray(updated, dtype=bool),
             'limited': np.asarray(limited, dtype=bool),
@@ -432,7 +519,40 @@ class OnlineAdaptation(AdaptationModule):
                                 updated=np.zeros(n, dtype=bool),
                                 limited=np.zeros(n, dtype=bool),
                                 clamped=np.zeros(n, dtype=bool),
-                                state_jump=np.full(n, np.nan))
+                                state_jump=np.full(n, np.nan),
+                                residual_source=['none'] * n)
+
+    def diagnostics(self) -> Dict[str, Any]:
+        """Slow-loop state for the application layer (read-only, no side effects)."""
+        n = self.num_envs or 0
+        available = np.zeros(n, dtype=bool)
+        timestamp = np.full(n, np.nan)
+        horizon_end = np.full(n, np.nan)
+        for slot in self._prediction_slots:
+            fresh = slot['valid'] & ~available
+            timestamp[fresh] = slot['timestamp']
+            horizon_end[fresh] = float(slot['times'][-1])
+            available |= slot['valid']
+        age = np.full(n, np.nan)
+        covered = self._prev_valid & available
+        age[covered] = self._prev_timestamp[covered] - timestamp[covered]
+        return {
+            'num_envs': n,
+            'prediction_available': available,
+            'prediction_timestamp': timestamp,
+            'prediction_horizon_end_s': horizon_end,
+            'prediction_age_s': age,
+            'prediction_slots': len(self._prediction_slots),
+            'previous_state_valid': self._prev_valid.copy(),
+            'previous_timestamp': self._prev_timestamp.copy(),
+            'last_dt_s': self._last_dt.copy(),
+            'last_residual_source': list(self._last_source) if self._last_source
+                                    else ['none'] * n,
+            'residual_counts': self.residual_counts(),
+            'residual_mean': self.residual_mean(),
+            'updates': self.updates.astype(int).copy(),
+            'estimates': self.estimates(),
+        }
 
     def estimates(self) -> Dict[str, Any]:
         """Copy of the current slow estimates (drag scale / wind / delay)."""
@@ -467,6 +587,10 @@ class OnlineAdaptation(AdaptationModule):
             self._prev_position[env] = np.nan
             self._prev_velocity[env] = np.nan
             self._prev_valid[env] = False
+            for slot in self._prediction_slots:
+                slot['valid'][env] = False
+        self._prediction_slots = [slot for slot in self._prediction_slots
+                                  if bool(np.any(slot['valid']))]
         return None
 
     def previous_state(self) -> Dict[str, np.ndarray]:
