@@ -97,3 +97,11 @@
 - **优点：** 训练框架可用且核心环境与 2026-09-08 验证一致
 - **缺点：** 冻结清单将随未来合理升级而更新（需记录）
 - **未来是否允许修改：** 允许 —— 条件：先记录风险与影响范围
+## DEC-009 Robot 模块以 BADMINTON_ROBOT.md 为 Source of Truth（含 TEMP 制度与 Phase Gate）
+- **日期：** 2026-09-13
+- **背景：** 新增整机 Robot 模块设计规范（1671 行），明确 Frozen Decisions（Court Frame / PiPER 冻结 / 球拍 FixedJoint / Morph One 四转四驱拓扑 / env_origin 不泄漏）与资产真实性等级制度
+- **最终决定：** 1) Robot 模块实现严格按该规范的 Phase 0→10 推进，未过当前 Phase 不进入下一 Phase；2) TEMP 参数必须显式标记（TEMP_PARAMETERIZED_PROXY / REQUIRES_MEASUREMENT），禁止把未知真实值补成"真实值"；3) 采用 TDD（RED→GREEN→Refactor）；4) 每个 Phase 以规范 §67 格式汇报，禁止只回 "Done"；5) 现阶段 NO PPO / NO DirectRLEnv / NO ManagerBasedRLEnv
+- **原因：** 结构真实、未知显式、资产可替换、接口稳定、128-env 原生
+- **优点：** Morph One 真资产到位后可无痛替换，上层 API 不变
+- **缺点：** 大量参数与最终 USD 会长期处于 BLOCKED（这是设计意图）
+- **未来是否允许修改：** 需用户显式批准（Frozen Decisions 不得自行修改）

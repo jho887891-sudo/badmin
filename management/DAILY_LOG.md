@@ -139,3 +139,10 @@
 - nan=0 / inf=0 / reset_fail=0（reset_ok=119）/ cross_env_collision=0 / contact_events=61,440 / cuda_fatal=0 / physx_fatal=0 / anomalies=0 → passed=true
 - 产物（远端 outputs/t08_20260910_171556/，本地 evidence/t08_soak/）：results.json、run.log、soak.csv(482 行)、gpu_stats.txt
 - 另：截图相机 bug 已定位（USD xformOp:orient 需 GfQuatd；set_world_poses 未生效）并修复，重拍待做；先前的 screenshots.json 可见性断言已撤回
+
+**（2026-09-13 BADMINTON_ROBOT.md 规范接入 + Phase 0 审计）**
+- 收到 Robot 模块设计规范 BADMINTON_ROBOT.md（1671 行，Source of Truth，文档自述"待用户审阅"）
+- 归位：docs/simulation/BADMINTON_ROBOT.md；docs 重组为 docs/architecture/（01–08 + COORDINATE_SYSTEM/SIMULATION_ENVIRONMENT/INTEGRATION_TESTING/ROBOT_BRAIN）+ docs/simulation/
+- Phase 0 审计（只读）：冻结软件 ✅（Isaac Sim 6.0.1.0 / Isaac Lab v3.0.0-beta2.patch1 / py3.12.13 / torch 2.10.0+cu128）；PiPER 资产 ✅（joints root_joint+joint1..6，7 bodies，mpu=1.0）；场景约定 ✅（240 Hz、Court Frame、env_spacing 15.0）；球拍视觉 ✅ 存在、final 被 REQUIRES_MEASUREMENT 阻塞（符合设计）；现有测试 **59 项全通过**（16+14+7+16+6）
+- 发现缺口：docs/architecture/MODULE_INTERFACES.md 缺失（规范 §64/Appendix C 要求先读）；Morph One 资产不存在（规范允许 TEMP，但拓扑必须四转四驱）；规范里的资产路径与仓库实际路径不一致（需 adapter/映射）
+- 未进入 Phase 1（等用户确认规范 + 补 MODULE_INTERFACES.md）
