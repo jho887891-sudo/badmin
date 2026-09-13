@@ -287,3 +287,8 @@
 - 包含：`AGENTS.md` `env.sh` `configs/` `docs/` `experiments/` `management/` `outputs/` `scripts/` `simulation/` `src/` `tests/` `tools/`
 - 排除：`assets/`（用户要求，670 MB；包内 assets 条目数实测 0）、`env_isaaclab/`（Python venv，机器相关且体积大）、`IsaacLab/`（第三方源码克隆）、`cache/`、`home/`（机器状态）、`.pytest_cache/`、`__pycache__/`、`*.pyc/*.pyo/*.log`
 - 说明：首次用 `zip -r ... -x` 全树排除时因遍历 `assets/`（670 MB、文件极多，NTFS via fuseblk 很慢）超时；改为**显式文件清单 + `zip -@`** 后 295 文件秒级完成（该残留进程已终止）
+**（2026-09-13 收官确认：wave 7 全绿 26/463）**
+- 全量回归 wave 7 实测：**suites_passed=26 suites_failed=0 tests_total=463**（DEC-026 感知哨兵化之后；相对 wave 6 的 460 增加 3 项，即新增的哨兵语义测试）
+- 四次全量回归一致（wave 4/5/6 = 460，wave 7 = 463）→ 契约扩展、场景真值修正、测试卫生、感知 API 变更均无回归
+- DEC-026 已由协调者独立验证：空窗 → CentroidResult(valid=False, uv=NaN)；亮斑 → valid=True；含 NaN patch → 仍抛 BrainBoundaryError
+- 验收报告更新至 15 节（新增第 14 节 DEC-026 落地验证、第 15 节四次回归一致）
