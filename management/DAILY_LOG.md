@@ -172,3 +172,13 @@
 - TDD：RED（先空壳 → 断言级失败 failures=6 / failures=10+errors=5）→ GREEN 分 2 片（10/10、15/15）→ 全量回归 **11 套 134 项全绿** → REFACTOR（共享词汇）→ 再回归全绿
 - 报告：`outputs/reports/architecture_implementation.md`；`src/README.md` 更新
 - 未实现（明确）：各层算法本体；所有模块 is_implemented=False，final 模式报错
+
+**（2026-09-13 严格按 superpowers 实现 Robot Brain 模块：计划 + 并行派发）**
+- 加载 skill：`writing-plans`、`dispatching-parallel-agents`、`subagent-driven-development`、`test-driven-development`
+- 计划落盘：`docs/superpowers/plans/2026-09-13-brain-modules.md`（T1–T12，含文件结构、验收点、环境约束、规则、ledger）
+- 目标更新：goal 改为"实现 8 层模块"，revision 2，max_goal_rounds=24，已 resume
+- 并行派发 10 个全新 implementer 子智能体（各自独立文件、纯 numpy、无 GPU）：
+  T1 感知几何 40cee11d｜T2 机器人 EKF c053066a｜T3 羽毛球 UKF eca65f2d｜T4 物理预测 6ba71651｜T8 Safety 143d8024
+  T5 可行性门 6606ef65｜T6 拦截搜索 44cd9c69｜T7 规划器 61717545｜T9 执行适配器 c95b6743｜T10 在线自适应 fa3c36ec
+- 协调者本人在做 T11：`tests/badminton_brain/test_full_brain.py` 骨架已就位（RED：apps.full_brain 未实现）
+- 后续（SDD 连续执行）：等各 agent 回报 → 每任务派独立评审子智能体 → 集成 T11 → 全量回归 → T12 整体评审与记录
