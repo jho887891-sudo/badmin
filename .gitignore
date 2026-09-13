@@ -29,3 +29,6 @@ __pycache__/
 .review_remote/
 .review_remote2/
 .review_remote*/
+# any agent scratch/probe/patch script at the repo root or in tools/
+_*.py
+tools/_*.py

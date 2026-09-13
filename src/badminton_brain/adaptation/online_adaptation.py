@@ -66,6 +66,10 @@ from ..types import BrainBoundaryError, Feedback, Layer, PredictedTrajectory, Un
 #:  a = g - k|v - wind|(v - wind) depend on the estimated parameters)
 AERODYNAMIC_LENGTH_M = 6.5
 
+#: Honest label for the returned correction: nothing inside the closed loop consumes it yet.
+NO_IN_LOOP_CONSUMER = ('none: no in-loop consumer yet - the correction and the residual ledger are '
+                       'published for the offline residual/learning loop (S11) and for telemetry')
+
 
 class OnlineAdaptation(AdaptationModule):
     """Slow-loop correction of the shuttle drag scale, wind and prediction delay."""
@@ -90,6 +94,7 @@ class OnlineAdaptation(AdaptationModule):
                  max_step_drag_scale: float = 0.1,
                  max_step_wind_mps: float = 0.2,
                  max_step_delay_s: float = 0.005,
+                 residual_deadband_m: float = 0.0,
                  eps: float = 1e-9) -> None:
         unknown = [name for name in estimate if name not in self.PARAMETERS]
         if unknown:
@@ -118,6 +123,7 @@ class OnlineAdaptation(AdaptationModule):
         self.max_step_drag_scale = float(max_step_drag_scale)
         self.max_step_wind_mps = float(max_step_wind_mps)
         self.max_step_delay_s = float(max_step_delay_s)
+        self.residual_deadband_m = float(residual_deadband_m)
 
         self.params: Dict[str, Param] = {
             'aerodynamic_length_m': Param(
@@ -146,6 +152,11 @@ class OnlineAdaptation(AdaptationModule):
                                     "TEMP: vision/actuation latency band; requires measurement"),
             'ledger_size': Param(self.ledger_size, AssetStatus.TEMP_PARAMETERIZED_PROXY,
                                  "TEMP: engineering choice for the residual window"),
+            'residual_deadband_m': Param(
+                self.residual_deadband_m, AssetStatus.TEMP_PARAMETERIZED_PROXY,
+                "TEMP: 0.0 keeps every measured residual; the real prediction-residual floor "
+                "measured on the rig (canonical T11 scenario shows 1.5e-2 m with a "
+                "physics-consistent truth) must replace it"),
         }
 
         self.drag_scale = np.zeros(0)
@@ -164,6 +175,13 @@ class OnlineAdaptation(AdaptationModule):
         self._prediction_slots: list = []
         self._last_dt = np.zeros(0)
         self._last_source: list = []
+        self._last_available = np.zeros(0, dtype=bool)
+        self._last_skipped: list = []
+        self._last_residual = np.zeros(0)
+        self._last_updated = np.zeros(0, dtype=bool)
+        self._last_limited = np.zeros(0, dtype=bool)
+        self._last_clamped = np.zeros(0, dtype=bool)
+        self._last_jump = np.zeros(0)
         self._used_prediction_timestamp = np.zeros(0)
         if self.num_envs is not None:
             self._allocate(self.num_envs)
@@ -193,6 +211,13 @@ class OnlineAdaptation(AdaptationModule):
         self._prediction_slots = []
         self._last_dt = np.full(n, np.nan)
         self._last_source = ['none'] * n
+        self._last_available = np.zeros(n, dtype=bool)
+        self._last_skipped = ['no_residual'] * n
+        self._last_residual = np.full(n, np.nan)
+        self._last_updated = np.zeros(n, dtype=bool)
+        self._last_limited = np.zeros(n, dtype=bool)
+        self._last_clamped = np.zeros(n, dtype=bool)
+        self._last_jump = np.full(n, np.nan)
         self._used_prediction_timestamp = np.full(n, np.nan)
 
     def _ensure_envs(self, num_envs: int) -> None:
@@ -392,6 +417,8 @@ class OnlineAdaptation(AdaptationModule):
         clamped = np.zeros(num_envs, dtype=bool)
         source = ['none'] * num_envs
         used = np.full(num_envs, np.nan)
+        available = np.zeros(num_envs, dtype=bool)
+        skipped = ['no_residual'] * num_envs
 
         for env in range(num_envs):
             error = None
@@ -401,6 +428,8 @@ class OnlineAdaptation(AdaptationModule):
                 source[env] = 'feedback'
                 if np.all(np.isfinite(errors[env])):
                     error = errors[env]
+                else:
+                    skipped[env] = 'nonfinite_residual'
             else:
                 predicted, used_timestamp = self._prediction_residual(candidates, env,
                                                                       position[env], now)
@@ -408,15 +437,27 @@ class OnlineAdaptation(AdaptationModule):
                     source[env] = 'prediction'
                     error = predicted
                     used[env] = used_timestamp
-            if error is None or not np.all(np.isfinite(error)):
-                continue                    # no usable residual: record nothing, update nothing
+            if error is None:
+                continue                    # no residual at all: record nothing, update nothing
+            if not np.all(np.isfinite(error)):
+                skipped[env] = 'nonfinite_residual'
+                continue
             residual[env] = float(np.linalg.norm(error))
-            self._push(env, error)
-            if not usable[env] or blocked[env]:
+            available[env] = True
+            self._push(env, error)          # every finite residual is recorded, updated or not
+            if not usable[env]:
+                skipped[env] = 'no_interval'
+                continue
+            if blocked[env]:
+                skipped[env] = 'contact'
+                continue
+            if residual[env] < self.residual_deadband_m:
+                skipped[env] = 'below_deadband'
                 continue
             limited[env], clamped[env] = self._update(env, error, velocity[env], float(dt[env]))
             self.updates[env] += 1
             updated[env] = True
+            skipped[env] = 'none'
 
         # snapshot the state for the next interval, whatever the residual quality was
         self._prev_timestamp[:] = now
@@ -428,9 +469,17 @@ class OnlineAdaptation(AdaptationModule):
         self.clamped = clamped
         self._last_dt = dt.copy()
         self._last_source = list(source)
+        self._last_available = available.copy()
+        self._last_skipped = list(skipped)
+        self._last_residual = residual.copy()
+        self._last_updated = updated.copy()
+        self._last_limited = limited.copy()
+        self._last_clamped = clamped.copy()
+        self._last_jump = jump.copy()
         self._used_prediction_timestamp = used
         return self._correction(dt=dt, residual=residual, updated=updated, limited=limited,
-                                clamped=clamped, state_jump=jump, residual_source=source)
+                                clamped=clamped, state_jump=jump, residual_source=source,
+                                available=available, skipped=skipped)
 
     def _update(self, env: int, error: np.ndarray, velocity: np.ndarray,
                 dt: float) -> Tuple[bool, bool]:
@@ -498,7 +547,7 @@ class OnlineAdaptation(AdaptationModule):
 
     def _correction(self, *, dt: np.ndarray, residual: np.ndarray, updated: np.ndarray,
                     limited: np.ndarray, clamped: np.ndarray, state_jump: np.ndarray,
-                    residual_source) -> Dict[str, Any]:
+                    residual_source, available: np.ndarray, skipped) -> Dict[str, Any]:
         return {
             'num_envs': int(self.num_envs or 0),
             'drag_scale': self.drag_scale.copy(),
@@ -509,6 +558,14 @@ class OnlineAdaptation(AdaptationModule):
             'state_jump_m': np.asarray(state_jump, dtype=float),
             'residual': np.asarray(residual, dtype=float),
             'residual_source': np.asarray(list(residual_source), dtype=object),
+            # a finite residual was obtained this step (it may still be below the deadband)
+            'residual_available': np.asarray(available, dtype=bool),
+            # why the parameters did not move: none | no_residual | nonfinite_residual |
+            # no_interval | contact | below_deadband
+            'update_skipped': np.asarray(list(skipped), dtype=object),
+            'saturated': self._saturated(),
+            'unexplained_residual': self._unexplained(residual),
+            'consumer': NO_IN_LOOP_CONSUMER,
             'residual_mean': self.residual_mean(),
             'updated': np.asarray(updated, dtype=bool),
             'limited': np.asarray(limited, dtype=bool),
@@ -520,12 +577,42 @@ class OnlineAdaptation(AdaptationModule):
     def correction(self) -> Dict[str, Any]:
         """Current correction without consuming a feedback (read-only query)."""
         n = self.num_envs or 0
-        return self._correction(dt=np.full(n, np.nan), residual=np.full(n, np.nan),
-                                updated=np.zeros(n, dtype=bool),
-                                limited=np.zeros(n, dtype=bool),
-                                clamped=np.zeros(n, dtype=bool),
-                                state_jump=np.full(n, np.nan),
-                                residual_source=['none'] * n)
+        return self._correction(dt=self._last_dt.copy(), residual=self._last_residual.copy(),
+                                updated=self._last_updated.copy(),
+                                limited=self._last_limited.copy(),
+                                clamped=self._last_clamped.copy(),
+                                state_jump=self._last_jump.copy(),
+                                residual_source=list(self._last_source),
+                                available=self._last_available.copy(),
+                                skipped=list(self._last_skipped))
+
+    def _saturated(self) -> np.ndarray:
+        """True where an estimated parameter currently sits on one of its declared bounds."""
+        n = self.num_envs or 0
+        out = np.zeros(n, dtype=bool)
+        if n == 0:
+            return out
+        tol = 1e-9
+        if 'drag_scale' in self.estimate_names:
+            low, high = self.drag_scale_bounds
+            out |= (self.drag_scale <= low + tol) | (self.drag_scale >= high - tol)
+        if 'wind' in self.estimate_names:
+            low, high = self.wind_bounds_mps
+            out |= np.any((self.wind <= low + tol) | (self.wind >= high - tol), axis=1)
+        if 'delay' in self.estimate_names:
+            low, high = self.delay_bounds_s
+            out |= (self.delay_s <= low + tol) | (self.delay_s >= high - tol)
+        return out
+
+    def _unexplained(self, residual: np.ndarray) -> np.ndarray:
+        """A bound is active while a residual persists: no parameter can absorb it any more.
+
+        That is a statement about the data, not about the cause: it can also mean the scenario or
+        the estimator is inconsistent with the prediction model.
+        """
+        residual = np.asarray(residual, dtype=float)
+        persistent = np.isfinite(residual) & (residual > max(self.residual_deadband_m, 0.0))
+        return self._saturated() & persistent
 
     def diagnostics(self) -> Dict[str, Any]:
         """Slow-loop state for the application layer (read-only, no side effects)."""
@@ -556,6 +643,12 @@ class OnlineAdaptation(AdaptationModule):
             'last_dt_s': self._last_dt.copy(),
             'last_residual_source': list(self._last_source) if self._last_source
                                     else ['none'] * n,
+            'residual_available': self._last_available.copy(),
+            'update_skipped': list(self._last_skipped) if self._last_skipped
+                              else ['no_residual'] * n,
+            'saturated': self._saturated(),
+            'unexplained_residual': self._unexplained(self._last_residual),
+            'consumer': NO_IN_LOOP_CONSUMER,
             'residual_counts': self.residual_counts(),
             'residual_mean': self.residual_mean(),
             'updates': self.updates.astype(int).copy(),
@@ -621,4 +714,4 @@ class OnlineAdaptation(AdaptationModule):
                 if param.status in UNRESOLVED_STATUSES}
 
 
-__all__ = ["OnlineAdaptation", "AERODYNAMIC_LENGTH_M"]
+__all__ = ["OnlineAdaptation", "AERODYNAMIC_LENGTH_M", "NO_IN_LOOP_CONSUMER"]

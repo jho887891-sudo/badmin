@@ -373,6 +373,16 @@ class HorizonTruncationTests(unittest.TestCase):
         self.assertEqual(decision.reason, HitReason.NO_LANDING_IN_HORIZON.value)
         self.assertNotEqual(decision.reason, HitReason.OUTSIDE_RESPONSIBILITY.value)
 
+    def test_a_poisoned_flag_falls_back_to_the_samples(self) -> None:
+        # The flag is part of a mutable message: a NaN must not be read as "landed" (same lesson
+        # as review C1).  With the flag unusable, the samples decide - and they show no landing.
+        trajectory = make_trajectory(p0=(1.2, 0.0, 1.8), v0=(-1.2, 0.0, 1.5), horizon=0.545,
+                                     landing=(0.55, 0.0, 0.0), landed=False)
+        trajectory.landed_within_horizon[0] = np.nan
+        decision = self.gate.evaluate(make_state(), trajectory)
+        self.assertEqual(decision.reason, HitReason.NO_LANDING_IN_HORIZON.value)
+        self.assertNotEqual(decision.reason, HitReason.OUTSIDE_RESPONSIBILITY.value)
+
     def test_clipped_flight_that_lands_out_of_bounds_is_not_judged_by_the_projection(self) -> None:
         # Samples are playable (x ~ -1.0, z ~ 0.4) but the clipped point is out of bounds: the
         # projection may not veto the ball.

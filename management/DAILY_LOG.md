@@ -240,3 +240,14 @@
 - 协调者接线：apps/full_brain.py 新增 FullBrainRuntime（每步把 prediction 推入自适应层、可推 SafetyContext/时钟）；T11 增至 11/11 绿，实测 prediction_available=[True,True] → 慢环闭环真正转起来
 - T9 评审 REQUEST CHANGES（缺 measurement_requirements、TEMP 无警告、几何未走单一真源、一处空测试）→ 已派修
 - 产出 T12 验收报告：outputs/reports/brain_modules_acceptance.md（8 层交付/回归/架构规则/评审闭环/裁决/诚实边界/复现）
+**（2026-09-13 轮2 续8：broad 评审处置）**
+- broad 评审结论：REQUEST CHANGES，但**契约层本身干净**（层边界运行时强制、Safety 不可绕过、无 env_origin 泄漏、TEMP 由 Param 结构性保证、物理/运动学单一真源）；问题全在跨模块组合
+- D1（HIGH，time_s 语义）：裁决为绝对仿真时间 → T6 改为绝对 + T7 改为 `t_go = time_s - state.timestamp`（now=3 与 12 输出逐位相同），26/26 绿
+- D2（HIGH，截断点当落点）：已派 T5；并把 `landed_within_horizon` 提升为契约字段（DEC-019）
+- D3/D8（T11 空转与无断言测试）：我修复 —— estop 测试改用会动的桩规划器建立非零基线 + 差异化断言；reset 测试改为 spy 断言 8 层收到且只收到请求 env_ids（11/11 绿）
+- D4（出视场击穿管线）：T1 修复（出视场=正常传感器事件，valid=False，不再抛错），36/36 绿，并有端到端证据 `PIPELINE SURVIVED OUT-OF-VIEW: True`
+- D5（球拍位姿与安全工作空间 TEMP 冲突）：我把估计器的 TEMP 球拍偏移改为 (0.30,0,1.20)，落到 TEMP 工作空间盒内
+- D6（final 门禁看不见未实测参数）：我在 validation.py 增加对每层 `measurement_requirements()`/`unresolved_limits()` 的查询，final 计 error；实测把频率填成已解析后 `final ok=False` 并逐层列出未实测参数
+- D7（自适应空转）：已派 T10 诊断（运行时已推入 prediction，实测 prediction_available=[True,True]）
+- 新增 DEC-019（契约字段提升 + final 参数门禁）、DEC-020（推入式通道 + 变异可杀断言纪律）
+- 启动最终回归 wave 4（后台）

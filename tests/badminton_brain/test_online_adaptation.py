@@ -32,6 +32,8 @@ sys.path.insert(0, str(ROOT / 'src' / 'trajectory'))
 from shuttle_aerodynamics import acceleration, k_from_aerodynamic_length, rk4_step  # noqa: E402
 
 from badminton_brain.adaptation.online_adaptation import OnlineAdaptation  # noqa: E402
+from badminton_brain.apps.full_brain import build_full_runtime  # noqa: E402
+from badminton_brain.types import RobotSensorState  # noqa: E402
 from badminton_brain.interfaces import AdaptationModule, interface_layer_of  # noqa: E402
 from badminton_brain.status import AssetStatus  # noqa: E402
 from badminton_brain.types import (BrainBoundaryError, Feedback, Layer,  # noqa: E402
@@ -693,6 +695,160 @@ class PredictionResidualTests(unittest.TestCase):
                               make_state(position, velocity, 2 * DT))
         self.assertTrue(np.all(out2['updated']))
         self.assertTrue(np.all(out2['residual_source'] == 'prediction'))
+
+
+class SlowLoopTransparencyTests(unittest.TestCase):
+    """D7: the slow loop must never look dead, and it must say why it did not update."""
+
+    def test_correction_reports_the_last_step_instead_of_nan(self) -> None:
+        module = OnlineAdaptation(num_envs=1, estimate=('drag_scale',))
+        position = np.array([[0.0, 0.0, 3.0]])
+        velocity = orbit_velocity(0)
+        offset = np.array([[0.06, 0.0, 0.0]])
+        fresh = module.correction()
+        self.assertTrue(np.all(np.isnan(fresh['residual'])), 'nothing observed yet')
+        self.assertFalse(np.any(fresh['updated']))
+        self.assertEqual(list(fresh['residual_source']), ['none'])
+
+        module.process(Feedback(prediction_error=None, timestamp=0.0),
+                       make_state(position, velocity, 0.0))
+        module.set_prediction(make_prediction(np.stack([position, position + offset], axis=1),
+                                              0.0, [0.0, DT]))
+        module.process(Feedback(prediction_error=None, timestamp=DT),
+                       make_state(position, velocity, DT))
+
+        seen = module.correction()
+        self.assertAlmostEqual(float(seen['residual'][0]), float(np.linalg.norm(offset)),
+                               places=12)
+        self.assertTrue(bool(seen['updated'][0]))
+        self.assertEqual(seen['residual_source'][0], 'prediction')
+        self.assertTrue(bool(seen['residual_available'][0]))
+        self.assertAlmostEqual(float(seen['dt_s'][0]), DT, places=12)
+
+    def test_output_declares_the_consumer_and_the_residual_availability(self) -> None:
+        module = OnlineAdaptation(num_envs=2, estimate=('drag_scale',))
+        position = np.zeros((2, 3)) + np.array([0.0, 0.0, 3.0])
+        velocity = orbit_velocity(0).repeat(2, axis=0)
+        out = module.process(Feedback(prediction_error=None, timestamp=0.0),
+                             make_state(position, velocity, 0.0))
+        self.assertIn('consumer', out)
+        self.assertIn('no in-loop consumer', out['consumer'])
+        self.assertIn('consumer', module.diagnostics())
+        self.assertEqual(module.diagnostics()['consumer'], out['consumer'])
+        np.testing.assert_array_equal(out['residual_available'], [False, False])
+        np.testing.assert_array_equal(out['update_skipped'], np.asarray(['no_residual'] * 2, dtype=object))
+        self.assertTrue(out['consumer'].strip())
+
+    def test_no_valid_residual_is_explicitly_marked_not_silently_nan(self) -> None:
+        module = OnlineAdaptation(num_envs=1, estimate=('drag_scale',))
+        position = np.array([[0.0, 0.0, 3.0]])
+        velocity = orbit_velocity(0)
+        module.process(Feedback(prediction_error=None, timestamp=0.0),
+                       make_state(position, velocity, 0.0))
+        out = module.process(Feedback(prediction_error=None, timestamp=DT),
+                             make_state(position, velocity, DT))
+        self.assertTrue(np.isnan(out['residual'][0]), 'no residual, reported as NaN on purpose')
+        self.assertFalse(bool(out['residual_available'][0]))
+        self.assertEqual(out['update_skipped'][0], 'no_residual')
+        self.assertFalse(bool(out['updated'][0]))
+        self.assertEqual(int(module.residual_counts()[0]), 0, 'nothing recorded, nothing updated')
+
+        # a non-finite explicit residual is reported as such, not as a missing one
+        bad = module.process(Feedback(prediction_error=np.array([[np.nan, 0.0, 0.0]]),
+                                      timestamp=2 * DT),
+                             make_state(position, velocity, 2 * DT))
+        self.assertFalse(bool(bad['residual_available'][0]))
+        self.assertEqual(bad['update_skipped'][0], 'nonfinite_residual')
+
+    def test_contact_and_missing_interval_have_their_own_skip_reasons(self) -> None:
+        module = OnlineAdaptation(num_envs=1, estimate=('drag_scale',))
+        position = np.array([[0.0, 0.0, 3.0]])
+        velocity = orbit_velocity(0)
+        error = np.array([[0.05, 0.0, 0.0]])
+        first = module.process(Feedback(prediction_error=error, timestamp=0.0),
+                               make_state(position, velocity, 0.0))
+        self.assertEqual(first['update_skipped'][0], 'no_interval')
+        repeat = module.process(Feedback(prediction_error=error, timestamp=0.0),
+                                make_state(position, velocity, 0.0))
+        self.assertEqual(repeat['update_skipped'][0], 'no_interval')
+        contact = module.process(Feedback(prediction_error=error,
+                                          contact_detected=np.array([True]), timestamp=DT),
+                                 make_state(position, velocity, DT))
+        self.assertEqual(contact['update_skipped'][0], 'contact')
+        self.assertTrue(bool(contact['residual_available'][0]), 'the residual is still recorded')
+        self.assertEqual(int(module.residual_counts()[0]), 3)
+        self.assertEqual(int(module.updates[0]), 0)
+
+    def test_deadband_records_but_never_adapts_on_sub_threshold_residuals(self) -> None:
+        module = OnlineAdaptation(num_envs=1, estimate=('drag_scale',),
+                                  residual_deadband_m=0.01)
+        position = np.array([[0.0, 0.0, 3.0]])
+        velocity = orbit_velocity(0)
+        tiny = np.array([[0.005, 0.0, 0.0]])         # below the declared floor
+        module.process(Feedback(prediction_error=tiny, timestamp=0.0),
+                       make_state(position, velocity, 0.0))
+        out = module.process(Feedback(prediction_error=tiny, timestamp=DT),
+                             make_state(position, velocity, DT))
+        self.assertAlmostEqual(float(module.drag_scale[0]), 1.0, places=15)
+        self.assertEqual(out['update_skipped'][0], 'below_deadband')
+        self.assertTrue(bool(out['residual_available'][0]))
+        self.assertEqual(int(module.residual_counts()[0]), 2)
+        big = module.process(Feedback(prediction_error=np.array([[0.5, 0.0, 0.0]]),
+                                      timestamp=2 * DT),
+                             make_state(position, velocity, 2 * DT))
+        self.assertTrue(bool(big['updated'][0]), 'above the floor the loop must adapt')
+
+    def test_unexplainable_residual_is_reported_when_estimates_saturate(self) -> None:
+        module = OnlineAdaptation(num_envs=1, estimate=('drag_scale',),
+                                  drag_scale_bounds=(0.5, 2.0), max_step_drag_scale=0.2)
+        position = np.array([[0.0, 0.0, 3.0]])
+        velocity = orbit_velocity(0)
+        # a residual that never goes away while drag saturates: not a parameter error any more
+        for step in range(20):
+            out = module.process(Feedback(prediction_error=np.array([[0.5, 0.0, 0.0]]),
+                                          timestamp=step * DT),
+                                 make_state(position, velocity, step * DT))
+        self.assertAlmostEqual(float(module.drag_scale[0]), 2.0, places=9)
+        self.assertTrue(bool(out['clamped'][0]))
+        self.assertTrue(bool(out['unexplained_residual'][0]),
+                        'a bound plus a persisting residual must be flagged')
+        self.assertTrue(bool(module.diagnostics()['unexplained_residual'][0]))
+
+    def test_end_to_end_full_runtime_keeps_the_slow_loop_alive(self) -> None:
+        """The T11 runtime pushes the per-step prediction; the slow loop must actually update."""
+        num_envs = 2
+        start = np.array([5.20, 0.30, 2.10])
+        velocity = np.array([-8.0, -0.10, 1.20])
+
+        def truth(n, timestamp):
+            return np.stack([start + velocity * timestamp for _ in range(n)])
+
+        runtime = build_full_runtime(num_envs=num_envs, truth_provider=truth)
+        adaptation = runtime.registry.get(Layer.ADAPTATION)
+        self.assertIsInstance(adaptation, OnlineAdaptation)
+        steps = 12
+        for step in range(steps):
+            t = 0.05 * step
+            sensors = RobotSensorState(
+                base_pose=np.tile(np.array([-1.6, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]), (num_envs, 1)),
+                joint_pos=np.zeros((num_envs, 6)), joint_vel=np.zeros((num_envs, 6)),
+                timestamp=t, odom_twist=np.zeros((num_envs, 3)),
+                imu_yaw_rate=np.zeros((num_envs,)))
+            runtime.step(sensors)
+        self.assertTrue(np.all(adaptation.updates >= steps - 1),
+                        'the runtime push must drive the slow loop every step')
+        self.assertTrue(np.all(adaptation.residual_counts() > 0))
+        ledger = adaptation.residual_ledger()
+        self.assertTrue(np.all(np.isfinite(ledger[:, -(steps - 1):])))
+        # bounded, whatever the scenario does to the parameters
+        self.assertTrue(np.all(adaptation.drag_scale >= adaptation.drag_scale_bounds[0]))
+        self.assertTrue(np.all(adaptation.drag_scale <= adaptation.drag_scale_bounds[1]))
+        self.assertTrue(np.all(np.abs(adaptation.wind) <= adaptation.wind_bounds_mps[1]))
+        self.assertTrue(np.all(np.abs(adaptation.delay_s) <= adaptation.delay_bounds_s[1]))
+        diagnostics = adaptation.diagnostics()
+        for key in ('consumer', 'saturated', 'unexplained_residual', 'residual_available',
+                    'update_skipped'):
+            self.assertIn(key, diagnostics, key)
 
 
 if __name__ == '__main__':

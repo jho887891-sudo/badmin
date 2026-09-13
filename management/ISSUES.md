@@ -115,3 +115,15 @@
 ### ISSUE-006 追加说明（2026-09-13）
 - 模块化架构已按 ROBOT_BRAIN.md 实现，但**消息字段集属临时契约**：层名/输入输出类型/顺序已固定，
   字段细节待 `docs/architecture/MODULE_INTERFACES.md` 到位后核对；若该文档给出不同字段名，只需改 `src/badminton_brain/types.py` 与测试，管线与接口不变
+## ISSUE-007 reason 词表存在两份（HitReason / InterceptReason）
+- **现象：** 决策层两个模块各自定义同源 reason 枚举（T5 `HitReason`、T6 `InterceptReason`），语义一致但代码独立
+- **风险：** 后续新增词条时两侧漂移，上层按字符串分支可能漏判
+- **当前处置：** 保留（DEC-022），已在测试中固定两侧词表；T12 复核时核对交集与拼写
+- **归属：** 决策层（T5/T6 文件所有者）
+- **状态：** OPEN（低危，计划性技术债）
+
+## ISSUE-008 感知有效性掩码未贯穿到估计层
+- **现象：** T1 的 `StereoPerceptionModule` 对无效行填 `[0,0,0]` 并暴露 `last_valid_mask`，但**下游无人消费**；因此「球出视场」与「球在原点」当前不可区分（T1 报告残留风险，D4 修复后出视场不再崩溃但有此语义缺口）
+- **影响：** 球出视场时估计层可能把 (0,0,0) 当测量使用（T3 UKF 会把状态往原点拉）
+- **建议：** 在 `ShuttleMeasurement` 上增加可选 `valid_mask (N,)` 契约字段（需 DEC），或在估计层消费 `perception.last_valid_mask`
+- **状态：** OPEN（中危，需在接入真机/长回合前解决）

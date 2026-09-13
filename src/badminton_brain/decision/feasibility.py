@@ -17,7 +17,14 @@ Criteria, each independently testable (order = evaluation order):
  4. landing inside the court    OUT_OF_BOUNDS            (configs/court.yaml geometry)
  5. landing on our half         OUTSIDE_RESPONSIBILITY
  6. flight already over         NO_TIME_MARGIN
- 7. workspace box + arrival     UNREACHABLE, NO_TIME_MARGIN
+ 7. workspace box + arrival     UNREACHABLE, NO_TIME_MARGIN, NO_LANDING_IN_HORIZON
+
+Criteria 4 and 5 need a *landing*, not a predicted end point.  A predictor may clip its horizon:
+the T4 predictor then reports the last sample projected onto the ground and sets the contract flag
+landed_within_horizon = False (DEC-019).  The gate believes a landing only when that flag is true,
+or - flag absent - when the samples themselves reach the ground plane z = 0; otherwise the landing
+gates are suspended and the verdict comes from the samples alone (review finding D2: a ball at
+z = 1.16 m still on the opponent side was reported as "lands on the opponent side").
 
 Input validity is re-checked here, not trusted from the message constructors (S17): types.py only
 validates when a message is built, and messages stay mutable, so EVERY array the gate reads
@@ -69,6 +76,10 @@ from .travel_model import min_travel_times_s as _base_travel_times
 _TEMP = AssetStatus.TEMP_PARAMETERIZED_PROXY
 _TRACE = AssetStatus.TRACEABLE_REFERENCE
 
+# Numerical guard only - NOT a physical threshold: the court ground plane is z = 0 in the Court
+# Frame (COORDINATE_SYSTEM.md), so this only absorbs interpolation round-off.
+_GROUND_EPS_M = 1e-6
+
 
 class HitReason(str, Enum):
     """Stable reason vocabulary (04_HIT_DECISION.md S9/S14); the value string is the contract.
@@ -78,6 +89,10 @@ class HitReason(str, Enum):
     bound); it is the only addition.
     FEASIBLE is the gate-level accept code (S150 uses FEASIBLE/INFEASIBLE for gate outcomes);
     T6 replaces it with BEST_INTERCEPT_FOUND once a real intercept is selected.
+    NO_LANDING_IN_HORIZON is the other addition: it reports the doc's WAIT situation (S10 -
+    information insufficient, a better prediction may still arrive).  It is returned when the
+    prediction is still airborne at the end of its horizon, no sample is inside the racket box
+    yet, and the landing is therefore unknown (review D2, DEC-019 flag landed_within_horizon).
     """
     FEASIBLE = 'FEASIBLE'
     INVALID_STATE = 'INVALID_STATE'
@@ -91,6 +106,7 @@ class HitReason(str, Enum):
     OUTSIDE_RESPONSIBILITY = 'OUTSIDE_RESPONSIBILITY'
     UNREACHABLE = 'UNREACHABLE'
     NO_TIME_MARGIN = 'NO_TIME_MARGIN'
+    NO_LANDING_IN_HORIZON = 'NO_LANDING_IN_HORIZON'
 
 
 def _temp(value, source: str) -> Param:
@@ -285,23 +301,29 @@ class HitFeasibilityGate:
         if median_vx >= -_value(limits.vx_min_approach_mps, 'vx_min_approach_mps'):
             return self._reject(HitReason.WRONG_DIRECTION, t_now)
 
-        # 4./5. landing validity in the Court Frame
-        landing = np.asarray(trajectory.landing_point[env_id], dtype=float)
-        half_length = _value(limits.court_half_length_m, 'court_half_length_m')
-        half_width = limits.court_half_width_m()
-        if abs(float(landing[0])) > half_length or abs(float(landing[1])) > half_width:
-            return self._reject(HitReason.OUT_OF_BOUNDS, t_now)
-        net_x = _value(limits.net_x_m, 'net_x_m')
-        if float(landing[0]) > net_x + _value(limits.responsibility_x_margin_m,
-                                              'responsibility_x_margin_m'):
-            return self._reject(HitReason.OUTSIDE_RESPONSIBILITY, t_now)
+        # 4./5. landing validity in the Court Frame (S23 Landing Gate) - but ONLY when the
+        # prediction actually contains a landing.  A predictor with a clipped horizon reports the
+        # last sample projected onto the ground together with landed_within_horizon = False
+        # (DEC-019); judging that projection rejected balls that were still in the air (review D2).
+        positions = np.asarray(trajectory.position[env_id], dtype=float)
+        landing_known = self._landing_is_known(trajectory, env_id, positions)
+        if landing_known:
+            landing = np.asarray(trajectory.landing_point[env_id], dtype=float)
+            half_length = _value(limits.court_half_length_m, 'court_half_length_m')
+            half_width = limits.court_half_width_m()
+            if abs(float(landing[0])) > half_length or abs(float(landing[1])) > half_width:
+                return self._reject(HitReason.OUT_OF_BOUNDS, t_now)
+            net_x = _value(limits.net_x_m, 'net_x_m')
+            if float(landing[0]) > net_x + _value(limits.responsibility_x_margin_m,
+                                                  'responsibility_x_margin_m'):
+                return self._reject(HitReason.OUTSIDE_RESPONSIBILITY, t_now)
 
         # 6. the predicted flight must not be over already
         if float(trajectory.arrival_time[env_id]) <= t_now:
             return self._reject(HitReason.NO_TIME_MARGIN, t_now)
 
         # 7. workspace box + arrival-time lower bound (base travel + arm slew + latency)
-        reason = self._workspace_and_time_reason(state, trajectory, env_id, t_now)
+        reason = self._workspace_and_time_reason(state, trajectory, env_id, t_now, landing_known)
         if reason is not None:
             return self._reject(reason, t_now)
         return HitDecision(True, HitReason.FEASIBLE.value, t_now)
@@ -354,8 +376,27 @@ class HitFeasibilityGate:
             return HitReason.INVALID_PREDICTION
         return None
 
+    def _landing_is_known(self, trajectory: PredictedTrajectory, env_id: int,
+                          positions: np.ndarray) -> bool:
+        """True when landing_point is a real landing, not a horizon-clipped projection.
+
+        The contract flag landed_within_horizon (DEC-019) is authoritative when present and
+        finite; when it is absent (None) or unusable, the samples decide: a landing exists only
+        if the trajectory actually reaches the court ground plane z = 0.
+        """
+        flag = getattr(trajectory, 'landed_within_horizon', None)
+        if flag is not None:
+            try:
+                values = np.asarray(flag, dtype=float).reshape(-1)
+            except (TypeError, ValueError):
+                values = np.empty(0, dtype=float)
+            if values.shape[0] > env_id and math.isfinite(float(values[env_id])):
+                return bool(values[env_id] > 0.0)
+        return bool(float(positions[-1, 2]) <= _GROUND_EPS_M)
+
     def _workspace_and_time_reason(self, state: UnifiedState, trajectory: PredictedTrajectory,
-                                   env_id: int, t_now: float) -> Optional[HitReason]:
+                                   env_id: int, t_now: float,
+                                   landing_known: bool = True) -> Optional[HitReason]:
         limits = self.limits
         positions = np.asarray(trajectory.position[env_id], dtype=float)
         times = np.asarray(trajectory.times, dtype=float)
@@ -378,7 +419,10 @@ class HitFeasibilityGate:
                   & (positions[:, 2] >= z_min) & (positions[:, 2] <= z_max)
                   & (positions[:, 0] <= net_x))   # the racket must not cross the net plane
         if not bool(np.any(in_box)):
-            return HitReason.UNREACHABLE
+            # Nothing in the racket box.  Without a landing the ball may still drop into reach
+            # later, so the honest verdict is "not known yet" (WAIT), never a confident
+            # UNREACHABLE built on a horizon-clipped projection (review D2).
+            return HitReason.UNREACHABLE if landing_known else HitReason.NO_LANDING_IN_HORIZON
 
         # cheapest legal base placement: clamp the current base into the valid set
         target_x = np.clip(base[0], low_x, high_x)
