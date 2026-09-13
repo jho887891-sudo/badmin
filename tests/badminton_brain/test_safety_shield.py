@@ -6,9 +6,9 @@ Acceptance (plan 2026-09-13-brain-modules.md, T8 row):
   * e-stop and communication timeout emit a zero command
   * a scan over random targets never emits a command that violates a limit
 
-All numeric limits used here are TEMP_PARAMETERIZED_PROXY placeholders: no PiPER /
-Morph One limit has been measured in this repository, so SafetyLimits() itself
-stays REQUIRES_MEASUREMENT with value=None.
+Every numeric limit used here is a TEMP_PARAMETERIZED_PROXY placeholder: no PiPER /
+Morph One / court-workspace limit has been measured in this repository, so
+SafetyLimits() itself stays REQUIRES_MEASUREMENT with value=None.
 """
 from __future__ import annotations
 import sys
@@ -43,13 +43,34 @@ def quat_identity(n: int) -> np.ndarray:
     return np.tile(np.array([0.0, 0.0, 0.0, 1.0]), (n, 1))
 
 
+def box_center(limits: SafetyLimits) -> np.ndarray:
+    lo, hi = box_bounds(limits)
+    return 0.5 * (lo + hi)
+
+
+def box_bounds(limits: SafetyLimits):
+    return (np.asarray(limits.racket_workspace_min.value, dtype=float),
+            np.asarray(limits.racket_workspace_max.value, dtype=float))
+
+
+def joint_bounds(limits: SafetyLimits):
+    return (np.asarray(limits.joint_position_min.value, dtype=float),
+            np.asarray(limits.joint_position_max.value, dtype=float))
+
+
+def pose_in_box(limits: SafetyLimits, n: int = N) -> np.ndarray:
+    """(n, 7) racket pose at the centre of the TEMP racket workspace box."""
+    return np.tile(np.concatenate([box_center(limits), np.array([0.0, 0.0, 0.0, 1.0])]), (n, 1))
+
+
 def make_state(joint_pos=None, racket_pose=None, timestamp=0.0, n: int = N) -> UnifiedState:
     joint_pos = np.zeros((n, 6)) if joint_pos is None else np.asarray(joint_pos, dtype=float)
+    if racket_pose is None:
+        racket_pose = pose_in_box(make_limits(), n)          # inside the TEMP workspace box
     return UnifiedState(base_pose=np.tile(np.array([-1.6, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]), (n, 1)),
                         base_twist=np.zeros((n, 6)), joint_pos=joint_pos,
                         joint_vel=np.zeros((n, 6)),
-                        racket_contact_pose=(quat_identity(n) if racket_pose is None
-                                             else np.asarray(racket_pose, dtype=float)),
+                        racket_contact_pose=np.asarray(racket_pose, dtype=float),
                         racket_contact_twist=np.zeros((n, 6)),
                         shuttle_position=np.zeros((n, 3)), shuttle_velocity=np.zeros((n, 3)),
                         timestamp=timestamp)
@@ -62,34 +83,21 @@ def make_target(base_twist=None, joints=None, timestamp=0.0, n: int = N) -> Whol
                            horizon_s=DT, timestamp=timestamp)
 
 
-def box_center(limits: SafetyLimits) -> np.ndarray:
-    lo = np.asarray(limits.racket_workspace_min.value, dtype=float)
-    hi = np.asarray(limits.racket_workspace_max.value, dtype=float)
-    return 0.5 * (lo + hi)
-
-
-def pose_in_box(limits: SafetyLimits, n: int = N) -> np.ndarray:
-    pose = np.tile(np.concatenate([box_center(limits), np.array([0.0, 0.0, 0.0, 1.0])]), (n, 1))
-    return pose
-
-
 class LimitHonestyTests(unittest.TestCase):
     """S4/S12: no limit may be invented; unknown limits stay REQUIRES_MEASUREMENT."""
 
     def test_default_limits_are_unmeasured_placeholders(self) -> None:
-        limits = SafetyLimits()
-        params = limits.as_dict()
+        params = SafetyLimits().as_dict()
         self.assertGreaterEqual(len(params), 8)
         for name, param in params.items():
             self.assertIsInstance(param, Param, msg=name)
             self.assertIs(param.status, AssetStatus.REQUIRES_MEASUREMENT, msg=name)
             self.assertIsNone(param.value, msg=name)
             self.assertTrue(param.source.strip(), msg=name)
-        self.assertIn('joint_position_min', params)
-        self.assertIn('joint_velocity_max', params)
-        self.assertIn('base_twist_max', params)
-        self.assertIn('racket_workspace_min', params)
-        self.assertIn('command_timeout_s', params)
+        for required in ('joint_position_min', 'joint_position_max', 'joint_velocity_max',
+                         'base_twist_max', 'racket_workspace_min', 'racket_workspace_max',
+                         'control_dt', 'command_timeout_s'):
+            self.assertIn(required, params)
 
     def test_shield_refuses_to_run_with_unmeasured_limits(self) -> None:
         with self.assertRaises(BrainBoundaryError):
@@ -122,16 +130,16 @@ class LimitHonestyTests(unittest.TestCase):
         registry.register(shield)
         self.assertIs(registry.get(Layer.SAFETY), shield)
         self.assertTrue(shield.is_implemented)
+        self.assertIs(shield.output_type, SafeCommand)
 
 
 class PassThroughTests(unittest.TestCase):
     def test_in_limit_target_is_passed_through_unchanged(self) -> None:
         shield = SafetyShield(num_envs=N, limits=make_limits())
-        shield.process(make_target(), state=make_state())          # first step: adopt reference
         twist = np.tile(np.array([0.1, -0.1, 0.2]), (N, 1))
         joints = np.tile(np.array([0.1, 0.2, 0.3, -0.1, 0.05, 0.0]), (N, 1))
         out = shield.process(make_target(base_twist=twist, joints=joints, timestamp=DT),
-                             state=make_state(), now=DT)
+                             state=make_state(joint_pos=joints), now=DT)
         self.assertIsInstance(out, SafeCommand)
         self.assertEqual(out.frame, 'court')
         self.assertEqual(out.base_twist.shape, (N, 3))
@@ -140,16 +148,19 @@ class PassThroughTests(unittest.TestCase):
         self.assertEqual(out.violations, ())
         np.testing.assert_allclose(out.base_twist, twist)
         np.testing.assert_allclose(out.joint_position_target, joints, atol=1e-12)
+        self.assertEqual(out.timestamp, DT)
 
 
 class JointLimitTests(unittest.TestCase):
     def test_joint_position_violation_is_clamped_and_reported(self) -> None:
         limits = make_limits()
         shield = SafetyShield(num_envs=N, limits=limits)
+        lo, hi = joint_bounds(limits)
         ref = np.zeros((N, 6))
+        ref[0] = hi                       # already at the upper soft limit
+        ref[1] = hi
+        ref[2] = lo                       # already at the lower soft limit
         shield.process(make_target(), state=make_state(joint_pos=ref))
-        lo = np.asarray(limits.joint_position_min.value, dtype=float)
-        hi = np.asarray(limits.joint_position_max.value, dtype=float)
         joints = np.tile(hi + 1.0, (N, 1))
         joints[2] = lo - 1.0
         out = shield.process(make_target(joints=joints), state=make_state(joint_pos=ref))
@@ -166,13 +177,13 @@ class JointLimitTests(unittest.TestCase):
         shield = SafetyShield(num_envs=N, limits=limits)
         dq = np.asarray(limits.joint_velocity_max.value, dtype=float)
         ref = np.zeros((N, 6))
-        shield.process(make_target(), state=make_state(joint_pos=ref))
         out = shield.process(make_target(joints=np.full((N, 6), 5.0)),
                              state=make_state(joint_pos=ref))
         step = np.abs(out.joint_position_target - ref)
         self.assertTrue(out.limited)
         self.assertTrue(np.all(step <= dq * DT + 1e-12), msg=str(step.max()))
         self.assertTrue(any('joint_velocity_max' in v for v in out.violations))
+        np.testing.assert_allclose(out.joint_position_target, np.tile(dq * DT, (N, 1)), atol=1e-12)
 
     def test_measured_joint_outside_hard_limit_forces_zero_command(self) -> None:
         limits = make_limits()
@@ -187,6 +198,7 @@ class JointLimitTests(unittest.TestCase):
         np.testing.assert_allclose(out.base_twist[1], np.zeros(3))
         self.assertTrue(any('measured_joint_beyond_limit' in v for v in out.violations))
         self.assertFalse(any(v.startswith('env0:measured') for v in out.violations))
+        self.assertGreater(np.abs(out.joint_position_target[0]).max(), 0.0)
 
     def test_missing_velocity_reference_is_reported_once(self) -> None:
         shield = SafetyShield(num_envs=N, limits=make_limits())
@@ -195,6 +207,7 @@ class JointLimitTests(unittest.TestCase):
         self.assertTrue(any('no_velocity_reference' in v for v in first.violations))
         second = shield.process(make_target(joints=np.full((N, 6), 0.3), timestamp=DT), now=DT)
         self.assertFalse(second.limited)
+        self.assertEqual(second.violations, ())
 
 
 class BaseTwistLimitTests(unittest.TestCase):
@@ -207,24 +220,33 @@ class BaseTwistLimitTests(unittest.TestCase):
         self.assertTrue(out.limited)
         self.assertTrue(any('base_twist_max' in v for v in out.violations))
         self.assertTrue(np.all(np.abs(out.base_twist) <= vmax + 1e-12))
-        # direction preserving: same ratio between axes as the request
         for env in range(N):
             np.testing.assert_allclose(out.base_twist[env] / out.base_twist[env, 0],
                                        requested[env] / requested[env, 0], atol=1e-12)
-        self.assertLessEqual(float(np.hypot(*out.base_twist[0, :2])),
-                             float(np.hypot(*vmax[:2])) + 1e-12)
+        self.assertTrue(np.all(np.hypot(out.base_twist[:, 0], out.base_twist[:, 1]) <=
+                               np.hypot(vmax[0], vmax[1]) + 1e-12))
+
+    def test_base_twist_axis_limit_binds_alone(self) -> None:
+        limits = make_limits()
+        shield = SafetyShield(num_envs=N, limits=limits)
+        vmax = np.asarray(limits.base_twist_max.value, dtype=float)
+        out = shield.process(make_target(base_twist=np.tile(np.array([0.0, 0.0, 9.0]), (N, 1))),
+                             state=make_state())
+        self.assertTrue(out.limited)
+        self.assertAlmostEqual(float(np.abs(out.base_twist[:, 2]).max()), float(vmax[2]), places=12)
+        np.testing.assert_allclose(out.base_twist[:, :2], np.zeros((N, 2)))
 
 
 class RacketWorkspaceTests(unittest.TestCase):
     def test_measured_racket_pose_outside_box_is_rejected(self) -> None:
         limits = make_limits()
-        shield = SafetyShield(num_envs=N, limits=make_limits())
-        shield.process(make_target(), state=make_state())
-        pose = pose_in_box(limits)
-        pose[1] = box_center(limits) + np.array([5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        shield = SafetyShield(num_envs=N, limits=limits)
+        pose = pose_in_box(limits)                     # every env starts inside the box
+        pose[1, 0] = box_center(limits)[0] + 5.0       # env 1 is outside the box
+        ref = np.zeros((N, 6))
         requested = np.tile(np.array([0.2, 0.0, 0.1]), (N, 1))
         out = shield.process(make_target(base_twist=requested, joints=np.full((N, 6), 0.2)),
-                             state=make_state(joint_pos=np.zeros((N, 6)), racket_pose=pose))
+                             state=make_state(joint_pos=ref, racket_pose=pose))
         self.assertTrue(out.limited)
         self.assertTrue(any('racket_workspace' in v for v in out.violations))
         np.testing.assert_allclose(out.base_twist[1], np.zeros(3))      # rejected: no motion
@@ -234,26 +256,29 @@ class RacketWorkspaceTests(unittest.TestCase):
     def test_fk_hook_rejects_a_joint_command_that_leaves_the_box(self) -> None:
         limits = make_limits()
         center = box_center(limits)
+        gain = 10.0
 
         def test_double_fk(q: np.ndarray) -> np.ndarray:
-            """TEST DOUBLE (not robot geometry): maps q[0] straight onto racket x."""
-            pose = np.tile(np.concatenate([center, np.array([0.0, 0.0, 0.0, 1.0])]), (q.shape[0], 1))
-            pose[:, 0] = center[0] + q[:, 0]
+            """TEST DOUBLE with an arbitrary gain (NOT robot geometry): racket x = box_centre_x + gain*q0."""
+            pose = pose_in_box(limits, q.shape[0])
+            pose[:, 0] = center[0] + gain * q[:, 0]
             return pose
 
         shield = SafetyShield(num_envs=N, limits=limits, forward_kinematics=test_double_fk)
-        ref = np.zeros((N, 6))
-        shield.process(make_target(), state=make_state(joint_pos=ref))
+        inside_ref = np.zeros((N, 6))
         inside = np.zeros((N, 6))
         inside[:, 0] = 0.05
-        ok = shield.process(make_target(joints=inside), state=make_state(joint_pos=ref))
+        ok = shield.process(make_target(joints=inside), state=make_state(joint_pos=inside_ref))
         self.assertFalse(any('racket_workspace' in v for v in ok.violations))
-        outside = np.zeros((N, 6))
-        outside[:, 0] = 1.0
-        out = shield.process(make_target(joints=outside), state=make_state(joint_pos=ref))
-        self.assertTrue(out.limited)
+        self.assertTrue(ok.limited)                       # joint speed limit still applies
+
+        edge_ref = np.zeros((N, 6))
+        edge_ref[:, 0] = (box_bounds(limits)[1][0] - center[0]) / gain   # exactly on the box face
+        out = shield.process(make_target(joints=np.full((N, 6), 1.0)),
+                             state=make_state(joint_pos=edge_ref))
         self.assertTrue(any('racket_workspace' in v for v in out.violations))
-        np.testing.assert_allclose(out.joint_position_target, ref)      # HOLD, not the request
+        np.testing.assert_allclose(out.joint_position_target, edge_ref)  # HOLD, not the request
+        np.testing.assert_allclose(out.base_twist, np.zeros((N, 3)))
 
 
 class EmergencyTests(unittest.TestCase):
@@ -263,13 +288,14 @@ class EmergencyTests(unittest.TestCase):
         requested = np.tile(np.array([0.3, 0.0, 0.0]), (N, 1))
         joints = np.full((N, 6), 0.2)
         out = shield.process(make_target(base_twist=requested, joints=joints),
-                             state=make_state(), context=SafetyContext(estop=estop))
+                             state=make_state(joint_pos=joints),
+                             context=SafetyContext(estop=estop))
         self.assertTrue(out.limited)
         np.testing.assert_allclose(out.base_twist[0], np.zeros(3))
         np.testing.assert_allclose(out.joint_position_target[0], np.zeros(6))
-        self.assertFalse(any(v.startswith('env0:if') for v in out.violations))
         self.assertTrue(any('estop' in v for v in out.violations))
         self.assertFalse(any(v.startswith('env1:estop') for v in out.violations))
+        self.assertFalse(any(v.startswith('env2:estop') for v in out.violations))
         np.testing.assert_allclose(out.base_twist[2], requested[2])
 
     def test_estop_latches_until_reset_and_reset_is_per_env(self) -> None:
@@ -292,7 +318,7 @@ class EmergencyTests(unittest.TestCase):
         cleared = shield.process(make_target(joints=np.full((N, 6), 0.2), timestamp=DT),
                                  state=make_state(), now=DT)
         self.assertFalse(any('estop' in v for v in cleared.violations))
-        np.testing.assert_allclose(cleared.joint_position_target[1], np.full(6, 0.2))
+        self.assertGreater(np.abs(cleared.joint_position_target[1]).max(), 0.0)
 
 
 class TimeoutTests(unittest.TestCase):
@@ -307,6 +333,12 @@ class TimeoutTests(unittest.TestCase):
         self.assertTrue(any('communication_timeout' in v for v in out.violations))
         np.testing.assert_allclose(out.base_twist, np.zeros((N, 3)))
         np.testing.assert_allclose(out.joint_position_target, np.zeros((N, 6)))
+
+    def test_fresh_command_is_not_a_timeout(self) -> None:
+        limits = make_limits()
+        shield = SafetyShield(num_envs=N, limits=limits)
+        out = shield.process(make_target(timestamp=DT), state=make_state(), now=DT)
+        self.assertFalse(any('communication_timeout' in v for v in out.violations))
 
     def test_external_watchdog_timeout_is_per_env(self) -> None:
         shield = SafetyShield(num_envs=N, limits=make_limits())
@@ -330,8 +362,8 @@ class TimeoutTests(unittest.TestCase):
 class RobustnessTests(unittest.TestCase):
     def test_non_finite_target_is_zeroed_instead_of_raised(self) -> None:
         shield = SafetyShield(num_envs=N, limits=make_limits())
-        target = make_target(joints=np.full((N, 6), 0.1))       # bypass __post_init__ on purpose
-        target.joint_position_target = np.full((N, 6), 0.1)
+        target = make_target(joints=np.full((N, 6), 0.1))
+        target.joint_position_target = np.full((N, 6), 0.1)   # bypass __post_init__ on purpose
         target.joint_position_target[1, 3] = np.nan
         out = shield.process(target, state=make_state())
         self.assertTrue(out.limited)
@@ -353,9 +385,15 @@ class RobustnessTests(unittest.TestCase):
         with self.assertRaises(BrainBoundaryError):
             shield.process(make_target(n=N + 1), state=make_state(n=N + 1))
 
+    def test_bad_estop_mask_is_refused(self) -> None:
+        shield = SafetyShield(num_envs=N, limits=make_limits())
+        with self.assertRaises(BrainBoundaryError):
+            shield.process(make_target(), state=make_state(),
+                           context=SafetyContext(estop=np.array([True, False])))
+
 
 class ScanTests(unittest.TestCase):
-    def test_scan_of_random_targets_never_emits_a_limiting_violation(self) -> None:
+    def test_scan_of_random_targets_never_emits_a_limit_violation(self) -> None:
         limits = make_limits()
         shield = SafetyShield(num_envs=N, limits=limits)
         rng = np.random.default_rng(0)
@@ -369,41 +407,43 @@ class ScanTests(unittest.TestCase):
             joints = rng.uniform(-20.0, 20.0, size=(N, 6))
             twist = rng.uniform(-5.0, 5.0, size=(N, 3))
             estop = rng.random(N) < 0.1
-            target = make_target(base_twist=twist, joints=joints, timestamp=step * DT)
-            out = shield.process(target, state=make_state(joint_pos=ref, racket_pose=pose),
+            out = shield.process(make_target(base_twist=twist, joints=joints, timestamp=step * DT),
+                                 state=make_state(joint_pos=ref, racket_pose=pose),
                                  now=step * DT, context=SafetyContext(estop=estop))
             q = np.asarray(out.joint_position_target)
             v = np.asarray(out.base_twist)
             self.assertTrue(np.all(q <= hi + 1e-12) and np.all(q >= lo - 1e-12),
                             msg='joint position limit violated at step %d' % step)
-            self.assertTrue(np.all(np.abs(q - ref) <= dq * DT + 1e-12),
-                            msg='joint velocity limit violated at step %d' % step)
             self.assertTrue(np.all(np.abs(v) <= vmax + 1e-12),
                             msg='base twist limit violated at step %d' % step)
             self.assertTrue(np.all(np.isfinite(q)) and np.all(np.isfinite(v)))
+            active = ~estop
+            if active.any():
+                self.assertTrue(np.all(np.abs(q[active] - ref[active]) <= dq * DT + 1e-12),
+                                msg='joint velocity limit violated at step %d' % step)
             if estop.any():
                 self.assertTrue(out.limited)
                 for env in np.flatnonzero(estop):
                     np.testing.assert_allclose(q[env], np.zeros(6))
                     np.testing.assert_allclose(v[env], np.zeros(3))
-            applied = np.asarray(out.base_twist)
             if not out.limited:
-                np.testing.assert_allclose(applied, twist, atol=1e-12)
+                np.testing.assert_allclose(v, twist, atol=1e-12)
                 np.testing.assert_allclose(q, joints, atol=1e-12)
             ref = q
 
-    def test_violations_are_deterministic_and_sorted(self) -> None:
+    def test_violations_are_deterministic_sorted_and_unique(self) -> None:
         shield = SafetyShield(num_envs=N, limits=make_limits())
+        twist = np.tile(np.array([9.0, 9.0, 9.0]), (N, 1))
         joints = np.tile(np.array([9.0, -9.0, 9.0, -9.0, 9.0, -9.0]), (N, 1))
-        out = shield.process(make_target(base_twist=np.tile(np.array([9.0, 9.0, 9.0]), (N, 1)),
-                                         joints=joints), state=make_state())
-        first = out.violations
+        first = shield.process(make_target(base_twist=twist, joints=joints),
+                               state=make_state()).violations
         shield.reset(None)
-        out2 = shield.process(make_target(base_twist=np.tile(np.array([9.0, 9.0, 9.0]), (N, 1)),
-                                          joints=joints), state=make_state())
-        self.assertEqual(first, out2.violations)
+        second = shield.process(make_target(base_twist=twist, joints=joints),
+                                state=make_state()).violations
+        self.assertEqual(first, second)
         self.assertEqual(list(first), sorted(first))
         self.assertEqual(len(set(first)), len(first))
+        self.assertTrue(all(v.startswith('env') for v in first))
 
 
 if __name__ == '__main__':

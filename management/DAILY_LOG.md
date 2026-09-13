@@ -182,3 +182,11 @@
   T5 可行性门 6606ef65｜T6 拦截搜索 44cd9c69｜T7 规划器 61717545｜T9 执行适配器 c95b6743｜T10 在线自适应 fa3c36ec
 - 协调者本人在做 T11：`tests/badminton_brain/test_full_brain.py` 骨架已就位（RED：apps.full_brain 未实现）
 - 后续（SDD 连续执行）：等各 agent 回报 → 每任务派独立评审子智能体 → 集成 T11 → 全量回归 → T12 整体评审与记录
+
+**（2026-09-13 轮2：并行实现进行中，实测状态）**
+- 已落盘模块测试实测：safety_shield 26 OK｜expert_planner 18 OK｜online_adaptation 15 OK｜physics_predictor 16 OK
+- 仍在收敛：execution_adapter 24（failures=9 errors=11）｜feasibility 25（failures=1）｜shuttle_ukf 11（errors=11，模块编辑中）
+- 未落盘：perception（T1）；T11 full_brain 4 errors（预期：缺 perception/decision/execution）
+- 全量回归实测：17 套 224 项，5 套 FAIL（含 T11）—— 均为进行中状态，非最终结论
+- T4 已交付（RED: ModuleNotFoundError→断言级；GREEN 16/16；与 rollout 逐点差 0.0；landing Δpoint=1.03e-5 m、Δt=1.98e-6 s）→ **已派独立评审子智能体 cde60461**
+- 协调者工具：`tools/run_all_tests.py` 作为全量回归门（本轮用它取得上述实测）

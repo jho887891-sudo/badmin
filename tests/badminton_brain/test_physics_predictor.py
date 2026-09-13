@@ -57,7 +57,7 @@ def make_state(position, velocity, timestamp: float = 0.0) -> UnifiedState:
     n = pos.shape[0]
     return UnifiedState(
         base_pose=np.tile(np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]), (n, 1)),
-        base_twist=np.zeros((n, 3)),
+        base_twist=np.zeros((n, 6)),
         joint_pos=np.zeros((n, 6)),
         joint_vel=np.zeros((n, 6)),
         racket_contact_pose=np.zeros((n, 7)),
@@ -112,7 +112,7 @@ class DragParameterProvenanceTests(unittest.TestCase):
 
 
 class RolloutAgreementTests(unittest.TestCase):
-    def test_single_trajectory_matches_rollout_within_1e-9(self) -> None:
+    def test_single_trajectory_matches_rollout_within_1e_9(self) -> None:
         predictor = PhysicsTrajectoryPredictor(horizon_s=HORIZON_S, dt_s=DT_S)
         traj = predictor.process(make_state(POS, VEL))
         ref = reference_rollout(POS, VEL)
@@ -124,7 +124,7 @@ class RolloutAgreementTests(unittest.TestCase):
         self.assertLessEqual(float(np.max(np.abs(traj.position[0] - ref['position']))), 1e-9)
         self.assertLessEqual(float(np.max(np.abs(traj.velocity[0] - ref['velocity']))), 1e-9)
 
-    def test_batched_trajectories_each_match_their_own_rollout_within_1e-9(self) -> None:
+    def test_batched_trajectories_each_match_their_own_rollout_within_1e_9(self) -> None:
         predictor = PhysicsTrajectoryPredictor(horizon_s=HORIZON_S, dt_s=DT_S)
         traj = predictor.process(make_state(BATCH_POS, BATCH_VEL))
         n = BATCH_POS.shape[0]
@@ -232,10 +232,10 @@ class ContractAndConfigTests(unittest.TestCase):
         predictor = PhysicsTrajectoryPredictor(horizon_s=HORIZON_S, dt_s=DT_S)
         with self.assertRaises(BrainBoundaryError):
             predictor.process(np.zeros((2, 3)))
-        empty = UnifiedState(shuttle_position=np.zeros((2, 3)), shuttle_velocity=np.zeros((2, 3)),
-                             timestamp=0.0)
+        stripped = make_state(POS, VEL)   # a contract-valid state whose shuttle was dropped
+        stripped.shuttle_position = None
         with self.assertRaises(BrainBoundaryError):
-            predictor.process(empty)
+            predictor.process(stripped)
 
     def test_module_declares_the_prediction_layer_interface(self) -> None:
         predictor = PhysicsTrajectoryPredictor(horizon_s=HORIZON_S, dt_s=DT_S)
