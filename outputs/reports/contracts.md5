@@ -1,0 +1,14 @@
+# Frozen-contract baseline (evidence for reviewers: the remote repo has no git)
+# generated 2026-09-13 11:33:37 UTC
+# path  sha256  mtime
+src/badminton_brain/types.py                                             b42c18a9532a1f55db715d0d97df4d8bfdf96a49ceefa7c36e3fe405d2c2dad4  2026-09-13 11:31:12
+src/badminton_brain/interfaces.py                                        38217f7a47839ded973dafc9e1c2669bd7c291b43c006f60a5164be0d2aab5b9  2026-09-13 10:15:51
+src/badminton_brain/registry.py                                          9c3c5a367e4649202ed86c851962549b63a4dbeaaedfa392c22b33f43e3da883  2026-09-13 10:16:22
+src/badminton_brain/pipeline.py                                          7c8f171a69d440227eb2153d55e18175a262699c823638569b166d99de2eac57  2026-09-13 10:16:25
+src/badminton_brain/validation.py                                        c94e3315fb19f09356839edf8a3886217598d13b5588e47421fca5c072283e8d  2026-09-13 10:16:28
+src/common/status.py                                                     355fe55264dec3f44cb9109335a40dcd5bee23e1ab54dd17111d51ec33a48ce9  2026-09-13 10:12:34
+src/trajectory/shuttle_aerodynamics.py                                   7ac86eac1a60b6658f02a608a9d4cb777a7938fb510b1b46c1a91e0f506e0e52  2026-09-13 07:56:14
+simulation/robots/badminton_robot/morph_one/kinematics.py                72e050da8ba46d845481b2bf1375d7255a3e07f571d7574ddddb13a33f05d11b  2026-09-13 09:59:16
+configs/court.yaml                                                       781ce79ba0e8707ad23ecac3f5d743844fb195108aa51d0eb33a79a78b75cb45  2026-09-13 07:21:46
+configs/shuttlecock.yaml                                                 9b4db9422fe7cffc75ebbcd73393b59869e54fd6adcd880f80dfd5acd6bfa94c  2026-09-13 07:56:08
+configs/racket.yaml                                                      974d462a7c86b886e6f58fdd94b69d650bbbfebc80a281db91afb150a16317cb  2026-09-13 08:45:23

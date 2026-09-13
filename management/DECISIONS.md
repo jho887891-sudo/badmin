@@ -156,3 +156,19 @@
 - **优点：** 契约不变、执行层无隐式状态
 - **缺点：** 一个字段的坐标系与消息其余字段不同，必须靠文档与测试护栏维持
 - **未来是否允许修改：** 允许，但必须同时改 T7/T9 两个模块与双方的护栏测试
+## DEC-015 Feedback 残差语义拆分：prediction_error（预测残差）vs tracking_residual（执行残差）
+- **日期：** 2026-09-13
+- **背景：** T10 评审实测：执行适配器把「底盘 twist 跟踪残差（m/s）」写进 `Feedback.prediction_error`，而自适应层按「羽毛球位置误差（米）」消费 → 喂 5.0 即把三参数全部推到步长上限
+- **最终决定：** 1) `Feedback.prediction_error` = **预测残差**（预测的羽毛球位置/速度 − 实测，单位米 / 米每秒），由估计/预测侧或应用层提供，**执行层不得伪造**；2) 新增**可选**字段 `Feedback.tracking_residual (N,)` = 执行跟踪残差（底盘 twist/关节可实现性），由执行层填写
+- **配套：** T9 已改写入 `tracking_residual` 且 `prediction_error=None`（30 项测试）；T10 改为「应用层推入预测轨迹 `set_prediction()` + 步间 dt」自行计算残差，若 `prediction_error` 非 None 则优先采用；契约测试的假执行模块同步改为新语义
+- **验证：** `test_brain_types`(10)/`test_brain_pipeline`(15)/`test_execution_adapter`(30) 全绿
+- **优点：** 两类残差不再互相污染；自适应增益语义恢复
+- **缺点：** 闭环需要应用层承担一次推入调用（与 SafetyContext 同一模式，已文档化）
+
+## DEC-016 时间基准：消息自带时间戳 + 应用层推入运行时钟
+- **日期：** 2026-09-13
+- **背景：** 两处评审发现同一根因——冻结管线不提供「当前时间」：Safety 的 `now` 缺省 None（急停/超时不可达）、T10 用同一步内 dt（恒 0）故永不更新、T5 门无法判定陈旧状态
+- **最终决定：** 1) 所有消息继续携带仿真时间戳（S43）；2) **应用层负责把运行时钟推入需要的模块**：`SafetyShield.set_context(SafetyContext(now=...))`、`FeasibilityDecisionModule.set_now(now)/now_provider=`；3) 自适应层用**步间 dt**（上一拍状态时间戳 → 本拍），不用同一步内 dt
+- **验证：** T8 新增 `set_context`/`context_snapshot`（38 项绿）；决策适配器 `set_now` 使 30 s 陈旧状态被判定为 STALE（7 项绿）；T10 待其修复回归
+- **优点：** 不改冻结契约即可让时钟语义正确；推入点集中在应用层
+- **缺点：** 运行时循环必须显式推入（否则退化为消息时间戳，已在 docstring 警示）

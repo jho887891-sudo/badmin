@@ -19,3 +19,9 @@ logs/
 *.onnx
 *.engine
 *.urdf.bak
+# scratch / probe files created by reviewers and agents during work must never be committed
+_scratch_*.py
+_probe_*.py
+_*_probe*.py
+__pycache__/
+*.pyc

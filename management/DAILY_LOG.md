@@ -214,3 +214,18 @@
 - 协调者裁决（已入 plan ledger + DECISIONS）：DEC-014 base_twist 机体系；times 绝对仿真时间（T4 已改，17/17 绿）；SafetyContext 由应用层推入（T11 将加 estop 端到端测试）
 - 发现的流程问题：我曾把**本地过期文件 scp 回远端**覆盖了自己的补丁 → 已改为一律"远端改完立即同步回本地"
 - 未决：T9 护栏测试（已派）、T5/T9/T10 评审结论待回、T12 整体评审与最终回归
+
+**（2026-09-13 轮2 续4：整体评审 + 仓库卫生）**
+- 按 SDD 派 **broad reviewer**（bac9c744）：跨模块一致性（契约纪律/坐标系/时间基/单一真源/TEMP 纪律/假 PASS/全量回归/可维护性）
+- 修复中：T2（死测试+协方差断言）、T8（SafetyContext 接线 + 两处越限反例）、T9（机体系护栏测试）
+- 评审进行中：T5、T9、T10、broad
+- 仓库卫生：删除评审残留 `_t5_probe2.py` 等；本地新增 `.gitignore`（`_scratch_*`、`_probe_*`、`__pycache__`）
+- 启动第二轮全量回归（每套 180s 超时，后台 job）
+
+**（2026-09-13 轮2 续5：评审修复收口）**
+- T8（38/38 绿）：`set_context`/`context_snapshot` 上线；急停/超时经冻结管线端到端可达；两处越限反例已修（兜底姿态取限位盒内点；HOLD 目标逐个 FK 盒内校验）；`base_twist_max` 拆为逐轴 + 合成速度
+- T9（30/30 绿）：按 DEC-015 改写入 `tracking_residual`，`prediction_error=None`
+- T5 评审发现**阻断级** NaN 逃逸（预测样本含 NaN 时判 FEASIBLE）→ 已派修；并派 C3 重复真源收敛
+- T10 评审：D1 雅可比错误（gain/θ）→ 已派修；D2/D3 由 DEC-015/016 裁决
+- 协调者：契约测试假执行模块改新语义（15/15 绿）；决策适配器加 `set_now`（7/7 绿）；生成 `outputs/reports/contracts.md5`（冻结契约 sha256 基线，弥补远端无 git）
+- 新增 DEC-015（残差语义拆分）、DEC-016（时间基准与运行时钟推入）

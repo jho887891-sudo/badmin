@@ -13,11 +13,19 @@ Criteria, each independently testable (order = evaluation order):
 
  1. input validity / freshness  INVALID_STATE, INVALID_PREDICTION, STALE_STATE, STALE_PREDICTION
  2. shuttle speed window        SHUTTLE_TOO_FAST, SHUTTLE_TOO_SLOW
- 3. approach direction          WRONG_DIRECTION
+ 3. approach direction          WRONG_DIRECTION            (S19: median(vx) over a short window)
  4. landing inside the court    OUT_OF_BOUNDS            (configs/court.yaml geometry)
  5. landing on our half         OUTSIDE_RESPONSIBILITY
  6. flight already over         NO_TIME_MARGIN
  7. workspace box + arrival     UNREACHABLE, NO_TIME_MARGIN
+
+Input validity is re-checked here, not trusted from the message constructors (S17): types.py only
+validates when a message is built, and messages stay mutable, so EVERY array the gate reads
+(state and prediction) must be finite.  A NaN would otherwise make every comparison below False
+and the gate would report a bogus FEASIBLE (review finding C1).
+
+Reason stability: each rejection is one of the fixed HitReason members; INVALID_PREDICTION covers
+mismatched/empty/non-finite prediction samples and INVALID_STATE the same for the unified state.
 
 Frames and geometry: everything is Court Frame (COORDINATE_SYSTEM.md S3): origin at the net
 centre on the ground, +X toward the opponent, +Y robot-left, +Z up.  Court bounds come from
@@ -31,6 +39,10 @@ some legal base placement puts it in that box; the required arrival time is then
 decision_latency + base minimum travel time (triangle/trapezoid profile, S62-S64 of
 04_HIT_DECISION.md) + arm slew lower bound + safety margin.  The gate accepts when at least one
 predicted sample is both inside the reachable volume and reachable in time.
+
+Single source of truth (review ruling C3): the base minimum-travel-time model is implemented once
+in decision/travel_model.py and imported here (base_min_travel_time_s / min_travel_times_s) and
+by intercept_search.py - neither decision module may carry a private copy again.
 
 Known unknowns (plan rule 3): every kinematic / timing threshold is
 AssetStatus.TEMP_PARAMETERIZED_PROXY with its source, and measurement_requirements() returns the
@@ -48,6 +60,11 @@ import numpy as np
 
 from ..status import UNRESOLVED_STATUSES, AssetStatus, Param
 from ..types import HitDecision, PredictedTrajectory, UnifiedState
+# Review C3: the base minimum-travel-time model lives in decision/travel_model.py only; the names
+# below are re-exports kept for API compatibility (base_min_travel_time_s is in __all__).
+from .travel_model import min_travel_time_s as base_min_travel_time_s
+from .travel_model import min_travel_times_s
+from .travel_model import min_travel_times_s as _base_travel_times
 
 _TEMP = AssetStatus.TEMP_PARAMETERIZED_PROXY
 _TRACE = AssetStatus.TRACEABLE_REFERENCE
@@ -96,9 +113,13 @@ class FeasibilityLimits:
     shuttle_speed_max_mps: Param = field(default_factory=lambda: _temp(
         25.0, 'TEMP proxy: playable incoming speed ceiling of the slow-speed rig; replace with the '
               'measured racket-exit/incoming envelope (04_HIT_DECISION.md S7 RobotCapabilityModel)'))
-    direction_tolerance_mps: Param = field(default_factory=lambda: _temp(
-        0.0, 'TEMP proxy: approaching means vx < 0 strictly; a positive tolerance may be needed '
+    vx_min_approach_mps: Param = field(default_factory=lambda: _temp(
+        0.0, 'TEMP proxy: the short-window median(vx) must stay below -this value (approaching); '
+             '0.0 means strictly incoming, a positive value would demand a minimum approach speed '
              'once the measured shuttle-velocity noise is known'))
+    direction_window_s: Param = field(default_factory=lambda: _temp(
+        0.10, 'TEMP proxy: length of the short future window used by the median(vx) approach test '
+              '(04_HIT_DECISION.md S19); replace with the measured prediction reliability horizon'))
     # --- freshness / latency budget --------------------------------------------
     max_state_age_s: Param = field(default_factory=lambda: _temp(
         0.05, 'TEMP proxy: estimation freshness budget placeholder; replace with the measured '
@@ -180,33 +201,6 @@ class FeasibilityLimits:
         raise ValueError("boundary_mode must be 'doubles' or 'singles', got %r" % (self.boundary_mode,))
 
 
-def base_min_travel_time_s(distance_m: float, v_max_mps: float, a_max_mps2: float) -> float:
-    """Minimum time for the base to cover distance_m with a triangle/trapezoid profile.
-
-    Model: 04_HIT_DECISION.md S62-S64.  d <= v^2/a -> T = 2*sqrt(d/a); otherwise
-    T = d/v + v/a.  Lower bound only (no jerk, no steering time) - it is a gate, not a planner.
-    """
-    d = float(distance_m)
-    v = float(v_max_mps)
-    a = float(a_max_mps2)
-    if d < 0.0:
-        raise ValueError('distance_m must be >= 0')
-    if not (math.isfinite(v) and math.isfinite(a)) or v <= 0.0 or a <= 0.0:
-        raise ValueError('v_max_mps and a_max_mps2 must be finite and positive')
-    if d <= 0.0:
-        return 0.0
-    if d <= v * v / a:
-        return 2.0 * math.sqrt(d / a)
-    return d / v + v / a
-
-
-def _base_travel_times(distance: np.ndarray, v_max: float, a_max: float) -> np.ndarray:
-    """Vectorised form of base_min_travel_time_s (same formula, elementwise)."""
-    d = np.maximum(np.asarray(distance, dtype=float), 0.0)
-    critical = v_max * v_max / a_max
-    return np.where(d <= critical, 2.0 * np.sqrt(d / a_max), d / v_max + v_max / a_max)
-
-
 def _value(param: Param, name: str) -> float:
     """Read a limit; an unknown limit must never silently decide (plan rule 3)."""
     if param.value is None:
@@ -239,8 +233,12 @@ class HitFeasibilityGate:
         state       UnifiedState (estimation output, Court Frame)
         trajectory  PredictedTrajectory (prediction output, absolute times)
         env_id      which batch element to decide
-        now         simulation time used for freshness and arrival budgets; defaults to the
-                    newest message timestamp so a fresh pair is never rejected as stale.
+        now         simulation time used for both the freshness ages (S18) and the arrival-time
+                    budgets.  When omitted the gate degrades to
+                    max(state.timestamp, trajectory.timestamp) - the newest message timestamp -
+                    so a freshly published pair is never rejected as stale; a caller that owns a
+                    real clock (the decision adapter's set_now/now_provider) must pass it,
+                    otherwise staleness cannot be detected at all.
         """
         limits = self.limits
         if not isinstance(state, UnifiedState):
@@ -268,11 +266,23 @@ class HitFeasibilityGate:
         # peak over the window would only measure the free-fall acceleration near the ground.
         velocity = np.asarray(trajectory.velocity[env_id], dtype=float)
         incoming_speed = float(np.linalg.norm(velocity[0]))
+        if not math.isfinite(incoming_speed):          # defence in depth behind _input_reason
+            return self._reject(HitReason.INVALID_PREDICTION, t_now)
         if incoming_speed > _value(limits.shuttle_speed_max_mps, 'shuttle_speed_max_mps'):
             return self._reject(HitReason.SHUTTLE_TOO_FAST, t_now)
         if incoming_speed < _value(limits.shuttle_speed_min_mps, 'shuttle_speed_min_mps'):
             return self._reject(HitReason.SHUTTLE_TOO_SLOW, t_now)
-        if float(velocity[0, 0]) >= _value(limits.direction_tolerance_mps, 'direction_tolerance_mps'):
+        # S19: the approach verdict uses median(vx) over a short *future* window, so a single
+        # noisy prediction sample cannot flip the decision.  The window starts at the first
+        # predicted sample; a non-positive window degrades to that first sample.
+        times = np.asarray(trajectory.times, dtype=float)
+        window_end = float(times[0]) + max(_value(limits.direction_window_s,
+                                                  'direction_window_s'), 0.0)
+        window = velocity[times <= window_end]
+        if window.shape[0] == 0:
+            window = velocity[:1]
+        median_vx = float(np.median(window[:, 0]))
+        if median_vx >= -_value(limits.vx_min_approach_mps, 'vx_min_approach_mps'):
             return self._reject(HitReason.WRONG_DIRECTION, t_now)
 
         # 4./5. landing validity in the Court Frame
@@ -297,7 +307,12 @@ class HitFeasibilityGate:
         return HitDecision(True, HitReason.FEASIBLE.value, t_now)
 
     def evaluate_batch(self, state, trajectory, now: Optional[float] = None) -> Tuple[HitDecision, ...]:
-        """One HitDecision per environment (batch element), in env order."""
+        """One HitDecision per environment (batch element), in env order.
+
+        The now argument has exactly the semantics of evaluate() and is forwarded unchanged to
+        every environment; when omitted, every environment uses the same per-message fallback
+        (max(state.timestamp, trajectory.timestamp)).
+        """
         if not isinstance(state, UnifiedState) or state.shuttle_position is None:
             return (self.evaluate(state, trajectory, 0, now),)
         count = int(np.asarray(state.shuttle_position).shape[0])
@@ -324,9 +339,13 @@ class HitFeasibilityGate:
         if not 0 <= env_id < int(np.asarray(state.shuttle_position).shape[0]):
             return HitReason.INVALID_STATE
 
+        # Sample arrays get exactly the same judgement as the state arrays above: types.py only
+        # checks finiteness when a message is *built*, and messages are mutable, so a poisoned
+        # array must be caught here or every NaN comparison below would silently be False.
         samples = (trajectory.position, trajectory.velocity, trajectory.landing_point,
                    trajectory.arrival_time, trajectory.times)
-        if any(a is None for a in samples):
+        if any(a is None for a in samples) or any(
+                not np.all(np.isfinite(np.asarray(a, dtype=float))) for a in samples):
             return HitReason.INVALID_PREDICTION
         horizon = int(np.asarray(trajectory.position).shape[1])
         if horizon < 1 or int(np.asarray(trajectory.times).shape[0]) != horizon:
@@ -377,4 +396,5 @@ class HitFeasibilityGate:
         return HitReason.NO_TIME_MARGIN
 
 
-__all__ = ["FeasibilityLimits", "HitFeasibilityGate", "HitReason", "base_min_travel_time_s"]
+__all__ = ["FeasibilityLimits", "HitFeasibilityGate", "HitReason", "base_min_travel_time_s",
+           "min_travel_times_s"]

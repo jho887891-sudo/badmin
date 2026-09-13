@@ -70,6 +70,8 @@ import numpy as np
 
 from ..status import UNRESOLVED_STATUSES, AssetStatus, Param
 from ..types import BestIntercept, BrainBoundaryError, PredictedTrajectory, UnifiedState
+# Review C3: the base minimum-travel-time model has exactly one implementation (decision layer).
+from .travel_model import min_travel_time_s
 
 _TEMP = AssetStatus.TEMP_PARAMETERIZED_PROXY
 _MEASURE = AssetStatus.REQUIRES_MEASUREMENT
@@ -300,26 +302,6 @@ def _sigmoid(value: float) -> float:
         return 1.0 / (1.0 + math.exp(-value))
     exponential = math.exp(value)
     return exponential / (1.0 + exponential)
-
-
-def min_travel_time_s(distance_m: float, v_max_mps: float, a_max_mps2: float) -> float:
-    """Minimum 1-D travel time under |v| <= v_max and |a| <= a_max (S62-S64).
-
-    Triangle profile while ``d <= v_max^2 / a_max`` (S63), trapezoid profile beyond it (S64).
-    """
-    distance = abs(float(distance_m))
-    v_max = float(v_max_mps)
-    a_max = float(a_max_mps2)
-    if not math.isfinite(v_max) or not math.isfinite(a_max):
-        raise BrainBoundaryError('v_max_mps and a_max_mps2 must be finite')
-    if v_max <= 0.0 or a_max <= 0.0:
-        raise BrainBoundaryError('v_max_mps and a_max_mps2 must be > 0')
-    if not math.isfinite(distance) or distance <= 0.0:
-        return 0.0
-    cruise_distance = v_max * v_max / a_max
-    if distance <= cruise_distance:
-        return 2.0 * math.sqrt(distance / a_max)
-    return 2.0 * v_max / a_max + (distance - cruise_distance) / v_max
 
 
 def quaternion_from_rotation(rotation: Any) -> np.ndarray:
