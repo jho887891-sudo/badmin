@@ -1,0 +1,16 @@
+kite	14
+bird	9
+clock	9
+umbrella	5
+bottle	2
+person	2
+potted plant	1
+snowboard	1
+vase	1
+stop sign	1
+toilet	1
+fork	1
+car	1
+sports ball	1
+boat	1
+negatives_fp_per_frame	0.0000
