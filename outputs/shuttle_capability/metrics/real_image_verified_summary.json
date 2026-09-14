@@ -1,0 +1,15 @@
+{
+  "reviewed_images": 59,
+  "positive_verified": 10,
+  "negative_verified": 6,
+  "needs_box_fix": 29,
+  "excluded_nonphoto": 14,
+  "verified_recall_any": 0.9,
+  "verified_recall_sports_ball": 0.0,
+  "negative_fp_frames": 6,
+  "negative_total": 6,
+  "verified_size_range_px": [
+    829.8,
+    1572.8
+  ]
+}

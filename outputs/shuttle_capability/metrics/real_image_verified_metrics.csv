@@ -1,0 +1,17 @@
+file,kind,equiv_size_px,best_iou_any,best_iou_sports_ball,hit_any,hit_sports_ball,n_pred
+real_001.jpg,positive,990.0,0.7527,0.0,1,0,1
+real_002.jpg,positive,829.8,0.7747,0.1152,1,0,5
+real_004.jpg,negative,,,,,,2
+real_008.jpg,positive,1572.8,0.2815,0.0,0,0,4
+real_014.jpg,positive,990.0,0.7527,0.0,1,0,1
+real_015.jpg,positive,829.8,0.7747,0.1152,1,0,5
+real_017.jpg,positive,870.0,0.5016,0.0566,1,0,7
+real_020.jpg,positive,1056.5,0.5162,0.0,1,0,2
+real_025.jpg,negative,,,,,,4
+real_037.jpg,positive,990.0,0.7527,0.0,1,0,1
+real_038.jpg,positive,829.8,0.7747,0.1152,1,0,5
+real_040.jpg,negative,,,,,,2
+real_042.jpg,positive,1044.3,0.6187,0.0,1,0,3
+real_056.jpg,negative,,,,,,2
+real_058.jpg,negative,,,,,,12
+real_059.jpg,negative,,,,,,18
