@@ -149,3 +149,55 @@ synthetic_3d/images/                 # 84 张能力测试图（含 SYNTHETIC_BLU
 synthetic_3d/negatives/              # 40 张无球帧
 annotations/synthetic_3d/            # YOLO 格式精确 GT
 ```
+
+## I. 真实图片能力测试（新增，协议 §12）— 来源：Wikimedia Commons（自由许可）
+
+数据获取（合法公开来源，已记录元数据 `real_images_metadata.csv`）：
+- 下载 **59 张**真实图片；许可分布：CC BY-SA 4.0 (20)、Public domain (15)、CC BY 2.0 (6)、
+  CC BY-SA 3.0 (6)、CC0 (6)、CC BY-SA 2.5 (3)、CC BY 4.0 (1)、GODL-India (1)、No restrictions (1)
+- 记录字段：file / title / license / artist / 原始宽高 / 字节数 / Commons 页面 URL / 检索词
+
+GT（标注来源必须声明）：`gt_source = auto_threshold_union`（白-低饱和连通域并集 + 4 px 外扩），
+**`verified_by_agent = False`**（尚未逐张目视确认）→ 本组数字标记为 **PROVISIONAL_GT**。
+
+### 实测（`yolo26s.pt`, imgsz=1280, conf≥0.05, IoU≥0.5）
+
+| 尺寸桶 | n | recall_any | recall_sports_ball | max_conf |
+|---|---|---|---|---|
+| >32px | 49 | 0.408 | **0.000** | 0.948 |
+
+- **全部 49 张都落在 >32px 桶**（59.3 – 1858.3 px）：公开图库被**影棚产品特写**主导，
+  没有小目标真实样本 —— 这正是必须依赖**真实视频帧**才可能覆盖小尺寸的原因。
+- `recall_sports_ball = 0.000`：即使球大到 59–1858 px，模型也**从未**以 sports ball 类且 IoU≥0.5 命中。
+- `recall_any = 0.408` 与合成集同源问题：是**无关类别的框**碰巧与 GT 重叠（max_conf 0.948 说明模型确实自信地检测到了*某个东西*，但不是羽毛球类）。
+
+### 与合成结果的一致性（协议 §34 Q11 的部分回答）
+
+合成（>32px, c≥0.05）：recall_any 0.94；真实（>32px, c≥0.05）：recall_any 0.41。
+真实场景更难（背景复杂、姿态自然、无合成轮廓的纯净度），但**两者的 sports ball recall 都≈0** —— 
+结论一致：**COCO 模型不具备羽毛球检测能力**。
+
+## J. 真实视频能力测试（协议 §13）— **BLOCKED（临时）**
+
+- 已检索到 **19 段自由许可的真实羽毛球视频**（Commons：CC0 / CC BY 3.0 / CC BY-SA 4.0，含比赛与训练场景，
+  列表见 `real_video_candidates.csv`，其中最小的 1.1 MB、最大 752 MB）。
+- **下载受阻**：Wikimedia 对连续请求返回 **HTTP 429（rate limited）**，多次退避重试仍失败。
+  → 标记 `REAL_VIDEO_DOWNLOAD_RATE_LIMITED`，将在更长退避（≥30 min）或换用其他自由来源后继续。
+- 视频侧（连续性/漏检长度/重捕获/运动模糊真值）**尚未产生任何数字**，不编造。
+
+## K. 当前判定（更新）
+
+**`CURRENT_MODEL_NEEDS_TRAINING`** —— 依据（全部实测）：
+1. 无 shuttlecock 类（nc=80）；
+2. 合成集：可用置信度（c≥0.25）下 ≤24px 全为 0，24–32px 0.33，>32px 0.44；
+3. **真实集：即使 59–1858 px，sports ball recall = 0.000**；
+4. 低阈值命中经类别归属分析证实为无关类别幻觉（kite/bird/clock/…）；
+5. 提高输入分辨率（640→1280）不改变结论。
+
+### 下一步（无阻塞部分可立即继续）
+
+1. **真实图片 GT 目视确认**（把 PROVISIONAL_GT 升级为 verified）——我可以逐张过复核图；
+2. **构造真实小目标样本**：用已下载的真实**球场/比赛照片**做背景，把 3D 羽毛球按受控像素尺寸合成进去
+   （记录 source_type=SYNTHETIC_ON_REAL_BG，与纯合成、真实分开统计）；
+3. **视频**：等限流解除后下载 → 抽帧 → 逐帧目视定位球 → 标注 → 跑当前模型（real-video 能力 + 连续性）；
+4. 上述完成后进入**失败驱动训练集构建 → 清洗 → 训练 baseline（不上 P2）→ 同一冻结测试集重测**。
