@@ -32,3 +32,19 @@ __pycache__/
 # any agent scratch/probe/patch script at the repo root or in tools/
 _*.py
 tools/_*.py
+_scratch_*.png
+_probe_*.png
+
+# bulk generated image sets and background pools: regenerable, and the repository tracks
+# their manifests, reports and audit sheets instead (same policy as the P3 image set).
+# Regenerate with:
+#   python experiments/shuttle_capability/14_render_hifi.py --split train --n 400 --seed 1
+#   python experiments/shuttle_capability/14_render_hifi.py --split val   --n 120 --seed 2
+outputs/shuttle_capability/train_data/*/images/
+outputs/shuttle_capability/train_data/*/labels/
+outputs/shuttle_capability/train_data/bg_train/
+outputs/shuttle_capability/train_data/bg_val/
+outputs/shuttle_capability/train_data/bg_excluded/
+outputs/shuttle_capability/real_images/backgrounds/
+outputs/shuttle_capability/real_images/raw/
+outputs/shuttle_capability/synthetic_3d/

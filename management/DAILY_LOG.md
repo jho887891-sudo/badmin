@@ -292,3 +292,14 @@
 - 四次全量回归一致（wave 4/5/6 = 460，wave 7 = 463）→ 契约扩展、场景真值修正、测试卫生、感知 API 变更均无回归
 - DEC-026 已由协调者独立验证：空窗 → CentroidResult(valid=False, uv=NaN)；亮斑 → valid=True；含 NaN patch → 仍抛 BrainBoundaryError
 - 验收报告更新至 15 节（新增第 14 节 DEC-026 落地验证、第 15 节四次回归一致）
+
+**（2026-09-14 P4-A：校准合成训练集 + 渲染器单一真源）**
+- **回答「为什么不用羽毛球三维模型」时发现问题前提不成立**：该 GLB 的羽毛球网格（`Obj_Feather` 3490v/1920f + `Obj_Cork` 3008v/1502f）**只有 POSITION + NORMAL，没有 UV、没有贴图**（`material[0] "White"` 无 baseColorTexture）；GLB 内唯一贴图属于**球拍线**。→ 几何在用（顶点法线也开始用），但"用真外观"在数据上不存在
+- 新建渲染器单一真源 `tools/shuttle_render.py`（TDD）：授权法线重心插值平滑着色、3x 超采样抗锯齿、GT 足迹判据、**闭环尺寸标定**、合成（阴影/运动模糊/噪声）、泄漏与空图门禁、Unicode I/O
+- **46 项单元测试全绿**；**3 个关键变异全部 KILLED**（DEC-020）——首个变异曾 **SURVIVED**，由此挖出 ISSUE-022
+- 产出训练集 **train 400 + val 120**：实测 **2.45–32.00 px**（median 8.94），尺寸控制中位误差 **0.4%**、100% 落在 ±15% 内；从 manifest 重渲染**逐位复现**（差 0.0000）
+- **修复 6 个缺陷**（2 个高危）：ISSUE-017 训练背景 `tbg_011.jpg` 与冻结 P3 集 `bg_021.jpg` **同源**（标题/URL + 像素相关 r=1.0000）；ISSUE-021 背景池混入 3 张球场示意图、1 张文字表格、2 张全黑帧、**1 张含 9+ 真实羽毛球**的照片（标注污染）；ISSUE-018 尺寸从未受控；ISSUE-022 标定测量倍率错配；ISSUE-023 阴影自遮挡 + 白羽球比背景暗；ISSUE-019 manifest 漏记参数；ISSUE-020 Windows 非 ASCII 路径/编码
+- **三道硬门禁上线**（失败即不渲染）：split 隔离 `25/6/0`、冻结集内容比对 `0 duplicated`、空图检测
+- 背景池由 32+7 清理为 **25+6**（7 张移入 `bg_excluded/`，元数据逐条记录理由）；冻结 P3 背景（30 张）首次落入本地 SSOT
+- 纪律：全程 TDD + 变异验证；纯 numpy/OpenCV，**未占用 GPU、未启动 Isaac**；产物本地 SSOT，**远端尚未同步**（报告 §7 显式登记）
+- 报告：`outputs/shuttle_capability/reports/P4A_REPORT.md`；审计图 `gt_audit_train.png` `bg_pool_audit.png` `bg_tbg006_real_shuttles.png`
