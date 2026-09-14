@@ -18,6 +18,7 @@ from __future__ import annotations
 import math
 import sys
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import List, Optional, Sequence, Tuple
 
@@ -27,6 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_GLB = (ROOT / "assets" / "external" / "_staging" / "D_racket_shuttle"
                / "original" / "badminton_racket_and_shuttlecock_low_poly.glb")
 SHUTTLE_MESH_NAMES = ("Obj_Feather", "Obj_Cork")
+SHUTTLECOCK_CONFIG = ROOT / "configs" / "shuttlecock.yaml"
 
 # Modelled albedo (there is no texture in the asset to sample).
 FEATHER_ALBEDO = np.array([0.93, 0.94, 0.90], dtype=np.float64)
@@ -41,9 +43,9 @@ WRAP = 0.5          # diffuse wrap width (feathers are thin, light wraps around 
 FEATHER_TRANSLUCENCY = 0.30   # backlight transmitted through the feather skirt
 CORK_TRANSLUCENCY = 0.0
 
-# Measured from the GLB: 77.8 mm is the LENGTH axis (foreshortened when the shuttle flies
-# toward the camera), while the projected silhouette is driven by the 61.9 mm skirt.
-SHUTTLE_LENGTH_M = 0.0778
+# The sizing seed comes from configs/shuttlecock.yaml via canonical_length_m() (the
+# configured model is 79.25 mm end to end); the projected silhouette is driven by the
+# ~61.8 mm skirt.  Only the seed is a constant here - the loop measures the real footprint.
 MIN_DISTANCE_M = 0.3
 # A ground-truth box is the object's FOOTPRINT: every pixel the shuttle touches belongs to
 # it.  Requiring half coverage instead would erase the target entirely below ~4 px, which is
@@ -67,6 +69,52 @@ def _shuttle_glb_helpers():
         sys.path.insert(0, tools_dir)
     from usd_glb_common import iter_mesh_nodes, parse_glb, read_accessor  # noqa: E402
     return iter_mesh_nodes, parse_glb, read_accessor
+
+
+@dataclass(frozen=True)
+class ShuttleSpec:
+    """Canonical BWF shuttlecock geometry, as configured by the project's model."""
+    feathers_count: int
+    feather_length_m: float
+    cork_diameter_m: float
+    cork_tip_z_m: float
+    skirt_tip_z_m: float
+    total_length_m: float
+    skirt_tip_diameter_m: float
+
+
+def load_shuttle_spec(config_path: Path = SHUTTLECOCK_CONFIG) -> ShuttleSpec:
+    """Read the canonical shuttlecock geometry from the project model's config.
+
+    This is the project's single source of truth for how big a shuttlecock is, and the
+    renderer must not carry its own copy of that number - ISSUE-013 is exactly that failure
+    mode.  It also gives the imported visual something to be checked against, which nothing
+    else did: configs/shuttlecock.yaml declares the visual an EXTERNAL_REFERENCE.
+    """
+    tools_dir = str(ROOT / "tools")
+    if tools_dir not in sys.path:
+        sys.path.insert(0, tools_dir)
+    from build_shuttlecock import build_physics_description, load_config  # noqa: E402
+    cfg = load_config(Path(config_path))
+    desc = build_physics_description(cfg)
+    reference = cfg["reference"]
+    cork_tip_z = float(desc["frame"]["cork_tip_m"][2])
+    skirt_tip_z = float(desc["frame"]["skirt_axis_point_m"][2])
+    return ShuttleSpec(
+        feathers_count=int(reference["feathers_count"]),
+        feather_length_m=float(reference["selected_geometry"]["feather_length_m"]),
+        cork_diameter_m=float(reference["selected_geometry"]["cork_diameter_m"]),
+        cork_tip_z_m=cork_tip_z,
+        skirt_tip_z_m=skirt_tip_z,
+        total_length_m=skirt_tip_z - cork_tip_z,
+        skirt_tip_diameter_m=2.0 * float(desc["skirt_tip_radius_m"]),
+    )
+
+
+@lru_cache(maxsize=1)
+def canonical_length_m() -> float:
+    """Longest dimension of the configured shuttlecock, cached for the sizing seed."""
+    return load_shuttle_spec().total_length_m
 
 
 def load_shuttle_parts(glb_path: Path = DEFAULT_GLB) -> List[Part]:
@@ -251,7 +299,7 @@ def calibrate_distance(parts: Sequence[Part], rotation: np.ndarray, target_px: f
         raise ValueError("target_px must be > 0")
     # Coverage is pure geometry, so calibration does not depend on the lighting.
     flat_light = np.array([0.0, 0.0, -1.0])
-    distance = max(float(K[0]) * SHUTTLE_LENGTH_M / target_px, MIN_DISTANCE_M)
+    distance = max(float(K[0]) * canonical_length_m() / target_px, MIN_DISTANCE_M)
     best_distance, best_error = distance, float("inf")
     for _ in range(max_iterations):
         _rgb, alpha = render_shuttle(parts, rotation, distance, pixel_xy, K, width, height,
@@ -493,7 +541,8 @@ def render_sample(parts: Sequence[Part], background: np.ndarray, *, target_px: f
     ys, xs = np.nonzero(mask)
     record = {
         "file": name + ".jpg", "split": split, "source_type": "SYNTHETIC_HIFI_3D",
-        "background": background_name, "target_px": round(float(target_px), 3),
+        # Exact, like the composite parameters: the calibration loop replays from this value.
+        "background": background_name, "target_px": float(target_px),
         "equiv_size_px": round(math.sqrt(bw * width * bh * height), 3),
         "distance_m": round(float(distance), 4),
         "bbox_w_px": int(xs.max() - xs.min() + 1),

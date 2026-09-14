@@ -36,6 +36,7 @@ from shuttle_render import (  # noqa: E402
     imread_unicode,
     imwrite_unicode,
     load_shuttle_parts,
+    load_shuttle_spec,
     prepare_background,
     render_sample,
     mask_from_coverage,
@@ -54,6 +55,39 @@ SHUTTLE_EXTENT_M = 0.0778  # measured from the GLB (combined bbox, metres)
 def light_from_above_and_behind() -> np.ndarray:
     v = np.array([0.40, -0.50, -0.75], dtype=np.float64)
     return v / np.linalg.norm(v)
+
+
+class ShuttleSpecTests(unittest.TestCase):
+    """The renderer must take the shuttlecock's size from the project model, not from a
+    constant of its own: this repository logs duplicated constants as a defect (ISSUE-013),
+    and the visual asset is an EXTERNAL_REFERENCE that nothing else cross-checks."""
+
+    def test_reference_geometry_comes_from_the_project_config(self) -> None:
+        spec = load_shuttle_spec()
+        self.assertEqual(spec.feathers_count, 16)
+        self.assertAlmostEqual(spec.feather_length_m, 0.066, places=9)
+        self.assertAlmostEqual(spec.cork_diameter_m, 0.0265, places=9)
+        self.assertAlmostEqual(spec.total_length_m, 0.01325 + 0.066, places=9)
+
+    def test_configured_skirt_diameter_is_inside_the_bwf_range(self) -> None:
+        spec = load_shuttle_spec()
+        self.assertGreaterEqual(spec.skirt_tip_diameter_m, 0.058)
+        self.assertLessEqual(spec.skirt_tip_diameter_m, 0.068)
+
+    def test_imported_visual_is_dimensionally_consistent_with_the_model(self) -> None:
+        """A swapped visual would otherwise silently mis-size every sample."""
+        spec = load_shuttle_spec()
+        feather, cork = load_shuttle_parts()
+        allv = np.vstack([feather.verts, cork.verts])
+        length = float(allv[:, 2].max() - allv[:, 2].min())
+        skirt = feather.verts[:, :2].max(axis=0) - feather.verts[:, :2].min(axis=0)
+        skirt_dia = float(np.mean(skirt))
+        self.assertLessEqual(abs(skirt_dia - spec.skirt_tip_diameter_m) / spec.skirt_tip_diameter_m,
+                             0.05, f"visual skirt {skirt_dia:.4f} m vs model "
+                                   f"{spec.skirt_tip_diameter_m:.4f} m")
+        self.assertLessEqual(abs(length - spec.total_length_m) / spec.total_length_m, 0.05,
+                             f"visual length {length:.4f} m vs model "
+                             f"{spec.total_length_m:.4f} m")
 
 
 class LoadPartsTests(unittest.TestCase):
@@ -404,6 +438,23 @@ class CompositeAndSampleTests(unittest.TestCase):
         self.assertIsInstance(sample.record["noise_sigma"], float)
         self.assertGreater(sample.record["noise_sigma"], 0.0)
         self.assertIn("noise_seed", sample.record)
+
+    def test_sample_record_stores_replay_parameters_exactly(self) -> None:
+        """target_px drives the calibration loop, so it is a replay input like noise_sigma.
+        Recorded rounded to 3 decimals it changed a pixel at train_00399 (mean|d| 1.03e-4)."""
+        target = 10.6975706472
+        sample = render_sample(self.parts, self.bg, target_px=target, seed=17,
+                               split="train", name="n")
+        self.assertEqual(sample.record["target_px"], target)
+
+    def test_replaying_a_sample_from_its_record_is_bit_exact(self) -> None:
+        target = 18.4597529756   # a target that demonstrably flipped on rounding
+        first = render_sample(self.parts, self.bg, target_px=target, seed=18,
+                              split="train", name="n")
+        again = render_sample(self.parts, self.bg, target_px=first.record["target_px"],
+                              seed=18, split="train", name="n")
+        np.testing.assert_array_equal(again.alpha, first.alpha)
+        np.testing.assert_array_equal(again.image, first.image)
 
     def test_sample_is_deterministic_for_a_seed(self) -> None:
         a = render_sample(self.parts, self.bg, target_px=10.0, seed=13,

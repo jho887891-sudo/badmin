@@ -303,3 +303,11 @@
 - 背景池由 32+7 清理为 **25+6**（7 张移入 `bg_excluded/`，元数据逐条记录理由）；冻结 P3 背景（30 张）首次落入本地 SSOT
 - 纪律：全程 TDD + 变异验证；纯 numpy/OpenCV，**未占用 GPU、未启动 Isaac**；产物本地 SSOT，**远端尚未同步**（报告 §7 显式登记）
 - 报告：`outputs/shuttle_capability/reports/P4A_REPORT.md`；审计图 `gt_audit_train.png` `bg_pool_audit.png` `bg_tbg006_real_shuttles.png`
+
+**（2026-09-14 P4-A 续：用户质疑「不是有羽毛球模型吗」→ 复查项目模型，修 ISSUE-024/025）**
+- **用户质疑成立但需澄清**：项目**确有**自建羽毛球模型（`tools/build_shuttlecock.py` + `configs/shuttlecock.yaml`：16 羽毛、BWF 尺寸、软木半球凸包 + 裙部开口锥壳、质量分布、气动长度）。它是**物理资产**，其视觉体按项目自身策略**必须是外链** —— 四条代码证据：`configs` 的 `visual.mode: EXTERNAL_REFERENCE` 指向 `assets/third_party/shuttlecock_visual.usd`（即导入 GLB 提取物）；`build_shuttlecock.py:136-137` 非 EXTERNAL_REFERENCE 直接抛错；`:337` 程序化网格 `MakeInvisible()` 不可见；`:416-433` 程序化视觉仅 `TEMP_ProceduralDebug`（球+锥）。→ **用 GLB 渲染符合项目策略，不是绕过模型**
+- **但质疑暴露两个真实缺陷（ISSUE-024）**：① 渲染器自带尺寸常数 `SHUTTLE_LENGTH_M = 0.0778`（正是本仓库 ISSUE-013 登记的失败模式）→ 改为 `load_shuttle_spec()` 从配置读取；② **无人校验外部视觉体与项目模型尺寸一致** → 新增测试
+- **实测一致性（支持"视觉体与模型对得上"）**：裙径 **61.9 mm vs 61.8 mm（差 0.16%）**、总长 77.8 mm vs **79.25 mm（差 1.83%）**
+- **连带影响**：标定种子 0.0778→0.07925（+1.86%），约 27% 样本落点差 ±1px → 为保持可复现契约**重新生成数据集**并复验
+- **又抓出 ISSUE-025**：记录把 `target_px` 舍入到 3 位小数（与 ISSUE-019 同类，上轮漏项）。实测 `train_00399` 用记录值回放差 **0.000103**、用精确值差 **0.000000** → 图像正确、记录精度错。因其可由 CLI 确定性配方精确重导，**不重渲染**直接回填 train 397/400 + val 120/120 行，回放复验全为 **0.000000**
+- 最终：**51 项测试全绿**；数据集验证 **ALL CHECKS PASSED**（train 400：2.45–32.86 px，median 8.94，尺寸控制中位 0.3%；val 120：2.45–31.40 px）

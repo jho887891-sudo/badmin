@@ -11,7 +11,7 @@
 - 产出可直接用于 nc=1 训练的集合：**train 400 张 + val 120 张**，逐张带精确 GT（YOLO 单类）
 - 实测像素尺寸覆盖 **2.45 – 32.00 px**（median 8.94），尺寸控制误差中位 **0.4%**、90 分位 4.1%
 - 三道数据隔离门禁全部通过，与冻结测试集重复背景 **0**
-- `tools/shuttle_render.py` **46 项单元测试全绿**；**3 个关键变异全部被测试杀死**（DEC-020 纪律）
+- `tools/shuttle_render.py` **51 项单元测试全绿**；**3 个关键变异全部被测试杀死**（DEC-020 纪律）
 - 从 manifest 记录重渲染可**逐位复现**存盘图像（差值 0.0000，去除 JPEG 变量后）
 
 ## 1. 关键更正：这个 3D 模型**没有**外观数据
@@ -29,6 +29,37 @@
 **结论：几何在用（且顶点法线也在用），但"用模型的真实外观"在数据上不存在** —— 没有 UV 就没有贴图映射。
 外观只能建模。本管线因此使用：**授权顶点法线**（重心插值 → 逐像素平滑着色，旧渲染器完全没用它、
 自己叉乘算平面法线）+ 建模的双面 wrapped 漫反射 + 环境光下限 + 羽毛透光。
+
+## 1.1 项目自建的羽毛球模型是什么，以及为何不能用它当渲染网格
+
+项目**确有**自建羽毛球模型：`tools/build_shuttlecock.py` + `configs/shuttlecock.yaml`
+（16 羽毛、BWF 尺寸区间、软木半球凸包 + 裙部开口锥壳、质量分布、气动长度）。
+
+但它的定位是**物理资产**，其视觉体按项目自身策略必须是外链 —— 以下四条均取自项目代码，不是推断：
+
+| 位置 | 内容 | 含义 |
+|---|---|---|
+| `configs/shuttlecock.yaml` | `visual.mode: EXTERNAL_REFERENCE`；`local_asset_path: assets/third_party/shuttlecock_visual.usd` | 视觉体的唯一真源就是**导入 GLB 的提取物** |
+| `build_shuttlecock.py:136-137` | `if visual.get("mode") != "EXTERNAL_REFERENCE": raise ValueError` | 换成别的视觉策略会**直接抛错** |
+| `build_shuttlecock.py:337` | `UsdGeom.Imageable(mesh.GetPrim()).MakeInvisible()` | 程序化网格是**碰撞几何，不可见** |
+| `build_shuttlecock.py:416-433` | `TEMP_ProceduralDebug`（Sphere + Cone），需 `--allow-temp-procedural-visual` | 程序化视觉只是**临时调试替身**，注释要求 final 前替换 |
+
+**因此用 GLB 做渲染符合项目自身策略，不是绕过模型。** 但该质疑暴露了两个真实缺陷（ISSUE-024）：
+
+1. 渲染器**自带**尺寸常数 `SHUTTLE_LENGTH_M = 0.0778`（硬编码实测值）—— 这正是本仓库登记的失败模式（ISSUE-013）
+   → 已改为 `load_shuttle_spec()` 从 `configs/shuttlecock.yaml` 读取（经项目自有的 `load_config`/`build_physics_description`）
+2. **此前没有任何检查确认外部视觉体与项目 BWF 模型尺寸一致** —— 换掉视觉体就会静默错标所有样本
+   → 已加测试 `test_imported_visual_is_dimensionally_consistent_with_the_model`
+
+**实测一致性（支持"这个视觉体与项目模型对得上"）：**
+
+| 量 | 项目配置模型 | 导入视觉体实测 | 差 |
+|---|---|---|---|
+| 裙尖直径 | 61.80 mm | 61.90 mm | **0.16%** |
+| 总长（软木尖→裙尖） | 79.25 mm | 77.80 mm | 1.83% |
+
+**连带影响：** 标定种子由 0.0778 → 0.07925（+1.86%），实测约 27% 样本最终落点差 ±1px（最大 1.006 px）。
+种子只影响迭代起点（终点由实测足迹决定），但为保持"manifest 记录可逐位复现"的契约，**数据集已按新种子重新生成**。
 
 ## 2. 交付物
 
@@ -49,10 +80,10 @@
 | 项 | train | val |
 |---|---|---|
 | 张数 | 400 | 120 |
-| 尺寸 min / median / max (px) | 2.45 / 8.94 / 32.00 | 2.45 / 9.38 / 30.40 |
-| 尺寸控制比 median / p10 / p90 | 1.004 / 0.958 / 1.041 | 1.007 / 0.965 / 1.042 |
+| 尺寸 min / median / max (px) | 2.45 / 8.94 / **32.86** | 2.45 / 9.16 / **31.40** |
+| 尺寸控制比 median / p10 / p90 | 1.003 / 0.960 / 1.041 | 1.005 / 0.961 / 1.040 |
 | 落在目标 ±15% 内 | **100.0%** | **100.0%** |
-| `<4px` / `4-8px` / `8-16px` / `>=16px` | 3.8% / 38.2% / 50.5% / 7.5% | 4.2% / 35.0% / 50.0% / 10.8% |
+| `<4px` / `4-8px` / `8-16px` / `>=16px` | 3.8% / 39.0% / 49.5% / 7.8% | 4.2% / 35.0% / 49.2% / 11.7% |
 | 背景池 | 25 张（真实照片） | 6 张（真实照片） |
 | 图像 | 960x960 JPEG q92 | 同 |
 
@@ -82,16 +113,19 @@ light_azimuth_deg, shadow_gain, motion_px, motion_angle_deg, noise_sigma, noise_
 | ISSUE-021 | 训练背景池未做目视核验，混入非照片、全黑帧与**含 9+ 真实羽毛球**的照片 | **高（标注污染）** |
 | ISSUE-022 | 尺寸标定在 `supersample=2` 测量而 `3` 渲染，8px 目标实得 10px —— 比不标定更差 | 中 |
 | ISSUE-023 | 接触阴影盖在物体自己身上（最暗 -26.1%）；白羽球最暗面只有 80/255（比背景还暗） | 中 |
+| ISSUE-024 | 渲染器自带尺寸常数；无人校验外部视觉体与项目模型一致 | 中 |
+| ISSUE-025 | 记录把 `target_px` 舍入到 3 位小数，回放差 1 个像素 | 低 |
 | ISSUE-019 | manifest 漏记 `noise_sigma`、`background` 存成样本名 | 中 |
 | ISSUE-020 | Windows 非 ASCII 路径 `cv2.imread` 静默失败；CSV 默认 GBK 编码 | 中 |
 
 ## 6. 验证证据
 
-- **单元测试**：`python tests/tools/test_shuttle_render.py` → **Ran 46 tests ... OK**
+- **单元测试**：`python tests/tools/test_shuttle_render.py` → **Ran 51 tests ... OK**
 - **变异测试（DEC-020）**：3 个关键变异全部 **KILLED** ——
   ① 标定打回朴素公式 → 尺寸测试红；② 泄漏门禁阈值抬到 1.01 → 泄漏测试红；
   ③ 记录重新加 `round()` → 可复现性测试红。（首轮 ① 曾 **SURVIVED**，导致发现 ISSUE-022）
 - **数据集验证**：`ALL CHECKS PASSED`（计数一致 / 标注合法 / 无空帧 / 背景来源正确 / 池隔离 / 尺寸控制 / 逐位复现）
+- **可复现性**：5 个抽样（含此前失败的 train_00399）`mean|stored − replayed| = 0.000000`
 - **目视审计**：分 6 个尺寸桶各取中位样本，GT 框 **6/6 贴合**；修复后 6.9/9.5/13.4/19.8px 均为明确发亮的羽毛球
 - **背景池审计**：`bg_pool_audit.png` 逐张目视 → 剔除 7 张（详见 ISSUE-021）
 

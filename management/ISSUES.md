@@ -218,7 +218,9 @@
 - **处置：** ① 阴影按物体尺寸缩放（偏移 `clip(0.8×extent, 1, 8)`、模糊 `clip(0.35×extent, 0.6, 4)`）并乘以 `(alpha <= 0)` **禁止落在物体自身**；② `AMBIENT` 0.34→0.56、`KEY` 0.66→0.44，使最暗白羽面 ≥ 128（中间调）
 - **护栏：** 新增 `test_contact_shadow_never_darkens_the_shuttle_itself`（物体像素与无阴影逐位相同、且背景上阴影仍可见）与 `test_the_darkest_white_feather_face_is_not_darker_than_mid_grey`（RED 实测 80.1 < 128）
 - **修复后目视复验：** 6.9/9.5/13.4/19.8 px 样本均为明确发亮的羽毛球（修复前 13.4 px 为暗块）
-- **状态：** RESOLVED（有测试护栏） 训练背景池未做目视核验：混入非照片、全黑帧与**含真实羽毛球**的图片（**RESOLVED 2026-09-14**）
+- **状态：** RESOLVED（有测试护栏）
+
+## ISSUE-021 训练背景池未做目视核验：混入非照片、全黑帧与**含真实羽毛球**的图片（**RESOLVED 2026-09-14**）
 - **现象：** P4 训练背景池（`bg_train` 32 + `bg_val` 7，2026-09-14 建立）**从未经过 P0 式逐张目视核验**，实际混入 7 张不合格图：
   - **非照片 4 张**：`tbg_001.png`/`tbg_003.png`（球场线条示意图）、`tbg_002.png`（球场 SVG 渲染图）、`tbg_017.jpg`（赛程/文字表格）
   - **全黑帧 2 张**：`tbg_018.jpg`、`tbg_005.png`（透明源图铺平为黑底，实测 mean=0.0 / std=0.0）
@@ -228,3 +230,24 @@
 - **流程教训：** P3 的 30 张冻结背景当初做了目视核验并写进报告，训练池却没有 —— **凡进入数据管线的图像，无论训练集还是测试集，都必须过同一道目视核验**，且核验必须留证据（接触表 + 结论），不能只靠"来源看起来干净"
 - **残余风险（显式登记）：** 剩余 25+6 张背景的核验尺度相当于 300px 缩略接触表；`tbg_006` 的真球在该尺度下**可见**（说明该方法有效），但未做全分辨率逐张复核。后续应补一次全分辨率核验再进入正式训练
 - **状态：** RESOLVED（污染项已隔离 + 门禁已自动化；全分辨率复核待补）
+
+## ISSUE-024 渲染器自带羽毛球尺寸常数，且无人校验外部视觉体与项目模型是否一致（**RESOLVED 2026-09-14**）
+- **现象：** `tools/shuttle_render.py` 把尺寸标定种子写成**硬编码实测值** `SHUTTLE_LENGTH_M = 0.0778`（从导入 GLB 包围盒量得）。这正是本仓库登记过的失败模式（ISSUE-013：L=6.5 m 在三个模块各有一份副本）
+- **触发：** 用户质疑「不是有羽毛球模型吗」→ 复查确认项目**确有自建模型**：`tools/build_shuttlecock.py` + `configs/shuttlecock.yaml`（16 羽毛、BWF 尺寸、软木半球凸包 + 裙部开口锥壳、质量分布、气动参数）
+- **关键澄清（避免误判）：** 该模型是**物理资产**，其视觉体按项目自身策略必须是外链，因此用 GLB 渲染**不是绕过模型**：
+  - `configs/shuttlecock.yaml`：`visual.mode: EXTERNAL_REFERENCE`、`local_asset_path: assets/third_party/shuttlecock_visual.usd`（即导入 GLB 的提取物）
+  - `build_shuttlecock.py:136-137`：`visual.mode` 不是 `EXTERNAL_REFERENCE` 就**直接抛错**
+  - `build_shuttlecock.py:337`：程序化网格 `MakeInvisible()` —— 是**碰撞几何，不可见**
+  - `build_shuttlecock.py:416-433`：程序化视觉仅为 `TEMP_ProceduralDebug`（球+锥），需显式开关，注释要求 final 前替换
+- **真实缺陷（已修）：** ① 渲染器不应自带尺寸常数 → 改为 `load_shuttle_spec()` 经项目自有的 `load_config`/`build_physics_description` 读取配置，`canonical_length_m()` 缓存；② **此前没有任何检查确认外部视觉体与项目 BWF 模型尺寸一致** —— 一旦换掉视觉体，所有样本会被静默错误定标
+- **证据：** 新增 `ShuttleSpecTests`（3 项）。实测导入视觉体与配置模型高度一致：**裙径 61.9 mm vs 61.8 mm（差 0.16%）**、总长 77.8 mm vs **79.25 mm（差 1.83%）**，容差 5%
+- **连带影响（显式登记）：** 种子由 0.0778 → 0.07925（+1.86%），实测约 27% 样本最终落点差 **±1px**（最大 1.006 px，小尺寸端量化格）→ 为保持「manifest 记录可逐位复现」契约，**数据集已重新生成并复验**
+- **状态：** RESOLVED（有测试护栏；数据集按新种子重生成）
+
+## ISSUE-025 记录把 `target_px` 舍入到 3 位小数，破坏逐位回放（**RESOLVED 2026-09-14**）
+- **现象：** `render_sample()` 记录 `target_px` 时用了 `round(..., 3)`。但 `target_px` 是**回放输入**（驱动标定循环），与已修的 `shadow_gain`/`noise_sigma`/`motion_angle_deg`（ISSUE-019）同类，上一轮修复漏了它
+- **影响量化：** 1e-4 px 的差异会翻转标定的停止点，从而改变一个像素的覆盖。实测 `train_00399` 用**记录值**回放差 **0.000103**，用**精确值**回放差 **0.000000** → 图像本身正确，错的是记录精度
+- **为何测试没抓到：** 既有的 `test_sample_record_reproduces_the_exact_image` 只回放 `composite()` 的参数，没有从记录**整样本重渲染**，因此覆盖不到 `target_px`
+- **处置：** ① `target_px` 改为精确存储；② 新增 `test_sample_record_stores_replay_parameters_exactly` 与 `test_replaying_a_sample_from_its_record_is_bit_exact`（从记录值整样本重渲染并断言逐位相同）
+- **已交付数据集的修复方式（不重渲染）：** `target_px` 由 CLI 的确定性配方（`default_rng(seed).lognormal(log 9, 0.5, n)` 后 clip）可精确重导 → 回填 train 397/400、val 120/120 行；回填后 5 个抽样（含 `train_00399`）回放**全为 0.000000**，数据集验证恢复 `ALL CHECKS PASSED`
+- **状态：** RESOLVED（有测试护栏；记录已回填并复验）
