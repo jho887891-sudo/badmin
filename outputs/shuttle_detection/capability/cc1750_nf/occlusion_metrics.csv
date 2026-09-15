@@ -1,0 +1,4 @@
+occlusion,n_samples,n_evaluable,n_negative,n_missing_ground_truth,n_detector_errors,n_ground_truth,n_predictions,tp,fp,fn,precision,recall,f1,mAP50,mAP50-95,top1_hit_rate,topk_hit_rate,gt_covered_rate,mean_center_error_px,n_center_error,mean_confidence,n_confidence,mean_matched_confidence,n_matched_confidence,mean_best_iou,iou_threshold,top_k,notes
+none,1710,1710,0,0,0,1710,4335,815,3520,895,0.188005,0.476608,0.269644,0.256607,0.196137,0.34386,0.476608,0.283041,4.445876,815,0.670147,1661,0.652675,815,0.411289,0.5,5,
+light,20,20,0,0,0,20,31,2,29,18,0.064516,0.1,0.078431,0.013614,0.001361,0.05,0.1,0.0,3.705997,2,0.516332,17,0.389692,2,0.058135,0.5,5,
+partial,20,20,0,0,0,20,34,0,34,20,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,NOT_COMPUTABLE: no matched candidate in this group,0,0.496157,17,NOT_COMPUTABLE: no matched candidate in this group,0,0.024089,0.5,5,mean_center_error_px: no matched candidate in this group; mean_matched_confidence: no matched candidate in this group

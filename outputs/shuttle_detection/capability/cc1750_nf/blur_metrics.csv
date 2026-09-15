@@ -1,0 +1,5 @@
+blur,n_samples,n_evaluable,n_negative,n_missing_ground_truth,n_detector_errors,n_ground_truth,n_predictions,tp,fp,fn,precision,recall,f1,mAP50,mAP50-95,top1_hit_rate,topk_hit_rate,gt_covered_rate,mean_center_error_px,n_center_error,mean_confidence,n_confidence,mean_matched_confidence,n_matched_confidence,mean_best_iou,iou_threshold,top_k,notes
+none,1690,1690,0,0,0,1690,4277,807,3470,883,0.188684,0.477515,0.270488,0.25957,0.198393,0.346746,0.477515,0.284615,4.476577,807,0.669326,1642,0.655322,807,0.412224,0.5,5,
+light,20,20,0,0,0,20,45,4,41,16,0.088889,0.2,0.123077,0.032403,0.012006,0.05,0.2,0.05,1.962713,4,0.571741,20,0.484239,4,0.169506,0.5,5,
+medium,20,20,0,0,0,20,47,3,44,17,0.06383,0.15,0.089552,0.015478,0.007725,0.05,0.15,0.1,1.742554,3,0.57907,19,0.360187,3,0.139629,0.5,5,
+heavy,20,20,0,0,0,20,31,3,28,17,0.096774,0.15,0.117647,0.022631,0.009161,0.05,0.15,0.0,1.708079,3,0.632575,14,0.282374,3,0.105404,0.5,5,

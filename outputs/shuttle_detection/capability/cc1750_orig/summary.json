@@ -1,0 +1,221 @@
+{
+  "manifest": {
+    "path": "outputs/shuttle_capability/controlled_capability/manifest.csv",
+    "sha256": "e0a4fd8b40a3ba0f3d704c34e566ec19ab58504bb373eda5d3944346fae801ef",
+    "columns": [
+      "file",
+      "split",
+      "source_type",
+      "bbox_w_px",
+      "bbox_h_px",
+      "pos_x_px",
+      "pos_y_px",
+      "yaw_deg",
+      "pitch_deg",
+      "roll_deg",
+      "pose_bucket",
+      "position_bucket",
+      "blur_bucket",
+      "occlusion_bucket",
+      "background",
+      "light_azimuth_deg",
+      "equivalent_size_px",
+      "sweep",
+      "repeat",
+      "seed",
+      "crop_seed",
+      "target_px",
+      "equiv_size_px",
+      "distance_m",
+      "motion_px",
+      "motion_angle_deg",
+      "occlusion_fraction",
+      "occlusion_target_fraction",
+      "noise_sigma",
+      "noise_seed",
+      "shadow_gain",
+      "coverage_sum",
+      "solid_px",
+      "imgsz",
+      "supersample",
+      "focal_px",
+      "camera_id",
+      "is_negative"
+    ],
+    "n_rows": 1750
+  },
+  "n_samples": 1750,
+  "n_evaluable": 1750,
+  "n_negative": 0,
+  "n_missing_ground_truth": 0,
+  "n_detector_errors": 0,
+  "counts_by_split": {
+    "fixed_core_test": 1750
+  },
+  "iou_threshold": 0.5,
+  "top_k": 5,
+  "min_confidence": 0.0,
+  "expected_class": 0,
+  "gt_coverage_fraction": 0.9,
+  "ap_iou_thresholds": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95
+  ],
+  "dimensions": {
+    "size_bucket": {
+      "status": "derived",
+      "source": "derived from manifest column 'equivalent_size_px'",
+      "reason": null,
+      "file": "size_bucket_metrics.csv",
+      "n_groups": 8,
+      "n_labelled": 1750,
+      "n_unlabelled": 0
+    },
+    "pose": {
+      "status": "manifest_column",
+      "source": "manifest column 'pose_bucket'",
+      "reason": null,
+      "file": "pose_metrics.csv",
+      "n_groups": 9,
+      "n_labelled": 1750,
+      "n_unlabelled": 0
+    },
+    "position": {
+      "status": "manifest_column",
+      "source": "manifest column 'position_bucket'",
+      "reason": null,
+      "file": "position_metrics.csv",
+      "n_groups": 9,
+      "n_labelled": 1750,
+      "n_unlabelled": 0
+    },
+    "blur": {
+      "status": "manifest_column",
+      "source": "manifest column 'blur_bucket'",
+      "reason": null,
+      "file": "blur_metrics.csv",
+      "n_groups": 4,
+      "n_labelled": 1750,
+      "n_unlabelled": 0
+    },
+    "occlusion": {
+      "status": "manifest_column",
+      "source": "manifest column 'occlusion_bucket'",
+      "reason": null,
+      "file": "occlusion_metrics.csv",
+      "n_groups": 3,
+      "n_labelled": 1750,
+      "n_unlabelled": 0
+    },
+    "background": {
+      "status": "manifest_column",
+      "source": "manifest column 'background'",
+      "reason": null,
+      "file": "background_metrics.csv",
+      "n_groups": 30,
+      "n_labelled": 1750,
+      "n_unlabelled": 0
+    }
+  },
+  "not_computed": [],
+  "not_computed_metrics": [
+    {
+      "dimension": "size_bucket",
+      "group": "<4",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "<4",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "4-6",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "4-6",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_007.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_007.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_020.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_020.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    }
+  ],
+  "warnings": [],
+  "overall": {
+    "overall": "ALL",
+    "n_samples": 1750,
+    "n_evaluable": 1750,
+    "n_negative": 0,
+    "n_missing_ground_truth": 0,
+    "n_detector_errors": 0,
+    "n_ground_truth": 1750,
+    "n_predictions": 3055,
+    "tp": 298,
+    "fp": 2757,
+    "fn": 1452,
+    "precision": 0.097545,
+    "recall": 0.170286,
+    "f1": 0.124037,
+    "mAP50": 0.040133,
+    "mAP50-95": 0.016791,
+    "top1_hit_rate": 0.138857,
+    "topk_hit_rate": 0.168,
+    "gt_covered_rate": 0.010286,
+    "mean_center_error_px": 1.853759,
+    "n_center_error": 298,
+    "mean_confidence": 0.433905,
+    "n_confidence": 1456,
+    "mean_matched_confidence": 0.467623,
+    "n_matched_confidence": 298,
+    "mean_best_iou": 0.127384,
+    "iou_threshold": 0.5,
+    "top_k": 5,
+    "notes": ""
+  },
+  "outputs": {
+    "predictions": "predictions.csv",
+    "summary": "summary.json",
+    "size_bucket": "size_bucket_metrics.csv",
+    "pose": "pose_metrics.csv",
+    "position": "position_metrics.csv",
+    "blur": "blur_metrics.csv",
+    "occlusion": "occlusion_metrics.csv",
+    "background": "background_metrics.csv"
+  }
+}
