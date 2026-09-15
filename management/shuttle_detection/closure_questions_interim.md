@@ -50,12 +50,38 @@ Two of them, and they are not symmetric:
 **Below 4 px it is not merely unreliable but meaningless** in this test set, and that was verified by
 looking at the images rather than inferred from the score.
 
-## 5. 三维数据结果 — CANNOT BE CLOSED YET
+## 5. 三维数据结果
 
-The frozen `SYNTHETIC_3D` set (84 images) exists and is audited, but the controlled capability work
-superseded it as the primary evidence and it has not been re-evaluated against the current model.
-Reporting a number from it now would be quoting a stale artefact, which has already caused two
-published errors this phase. It is on the list for the post-retrain evaluation batch.
+**Measured, and it closes.** The frozen `SYNTHETIC_3D` set is 84 images on FLAT synthetic backgrounds
+in 1280 px frames, sizes 4-72 px, rendered directly from the 3D asset rather than composited on real
+photographs. Both models, same protocol:
+
+| bucket | n | orig recall | nf recall |
+|---|---|---|---|
+| `<4 px` | 21 | 0.000 | 0.000 |
+| `4-6 px` | 7 | 0.000 | 0.000 |
+| `6-8 px` | 8 | 0.625 | 0.500 |
+| `8-12 px` | 7 | 0.714 | **0.857** |
+| `12-16 px` | 7 | 1.000 | 1.000 |
+| `16-24 px` | 10 | 1.000 | 1.000 |
+| `24-32 px` | 6 | 1.000 | 1.000 |
+| `>32 px` | 18 | 0.611 | **1.000** |
+
+| overall | orig | nf |
+|---|---|---|
+| recall | 0.5238 | **0.6071** |
+| mAP50 | 0.4817 | **0.5971** |
+| precision | 0.4231 | **0.5368** |
+
+Three things follow. First, the near-field data return improved this set too, taking the `>32 px`
+bucket from 0.611 to 1.000 - an INDEPENDENT confirmation of the near-field finding on a different
+renderer path and a different background family. Second, the floor agrees exactly: `<4 px` and `4-6 px`
+are 0.000 for both models, the same floor seen everywhere else. Third, a plain 3D-rendered view of the
+asset is considerably EASIER than the same asset composited on a real photograph - 0.607 here against
+0.480 on the 2070-row real-background set - which is the domain gap showing up as a number rather than
+as an opinion.
+
+The one regression is `6-8 px` (0.625 -> 0.500) on n=8, which is inside the noise for that group.
 
 ## 6. 真实图片结果
 
@@ -177,7 +203,8 @@ The measurements that WOULD justify P2, stated in advance so the decision is not
 1. Round 2 large-target data is generating; the retrain and the three-protocol retest have not run.
 2. The hard-negative pool is built but not yet trained on, so the false-positive answer is a diagnosis
    and a plan, not yet a result.
-3. The `SYNTHETIC_3D` frozen set has not been re-evaluated (question 5).
+3. ~~The `SYNTHETIC_3D` frozen set has not been re-evaluated.~~ CLOSED: measured, recall 0.607
+   (nf) against 0.524 (orig), with the `>32 px` bucket moved 0.611 -> 1.000.
 4. `bg_001` is anomalously hard for a reason none of these measurements explains.
 5. Plan 5 needs camera intrinsics, image resolution, stereo baseline, the required working distance,
    the latency budget and the deployment GPU from the human partner.
