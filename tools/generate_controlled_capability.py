@@ -28,6 +28,7 @@ from pathlib import Path
 REPO_DEFAULT = Path(__file__).resolve().parents[1]
 
 BACKGROUND_GLOBS = ("*.jpg", "*.jpeg", "*.png")
+CONDITION_COUNTS_NAME = "condition_counts.csv"
 
 # calibrate_distance() is left at its own 5% tolerance. Tightening it to 2% was tried
 # and measured: it did NOT tighten the pinned size in the pose sweep (0.57 px of
@@ -150,25 +151,62 @@ def main() -> int:
     if args.limit:
         plan = plan[: args.limit]
 
+    if not args.only and not args.merge_existing:
+        # A rebuild replaces the set, so stale images and labels from the previous
+        # revision (whose names no longer appear in the new manifest) are removed
+        # rather than left to look like part of it.
+        for directory, patterns in ((image_dir, ("*.jpg", "*.jpeg", "*.png")),
+                                    (label_dir, ("*.txt",))):
+            for pattern in patterns:
+                for stale in directory.glob(pattern):
+                    stale.unlink()
+
     parts = load_shuttle_parts()
-    cache: dict[str, np.ndarray] = {}
+    # Rendering is the expensive half of this generator and it is a pure function of
+    # its arguments, so the repeats of one condition reuse one render: they differ in
+    # the background crop and the noise draw, both of which are applied after the
+    # render. The cache key is every argument that reaches render_shuttle() and
+    # calibrate_distance(), so a hit is the same image, not a similar one.
+    cache: dict[tuple, tuple] = {}
+    background_cache: dict[str, np.ndarray] = {}
     rows: list[dict] = []
     print("rendering " + str(len(plan)) + " controlled samples into " + str(out_dir))
 
+    def stimulus(sample, target_px: float, rotation, pixel_xy, k_matrix, light):
+        """The calibrated render for one (pose, size, position, camera, light) key."""
+        key = (
+            float(sample.yaw_deg), float(sample.pitch_deg), float(sample.roll_deg),
+            round(float(target_px), 9), float(pixel_xy[0]), float(pixel_xy[1]),
+            int(sample.width), int(sample.height), float(sample.focal_px),
+            int(sample.supersample), float(sample.light_azimuth_deg),
+        )
+        if key not in cache:
+            distance = calibrate_distance(
+                parts, rotation, target_px, pixel_xy, k_matrix, sample.width,
+                sample.height, measure_supersample=sample.supersample,
+            )
+            rgb, alpha = render_shuttle(
+                parts, rotation, distance, pixel_xy, k_matrix, sample.width,
+                sample.height, light_dir=light, supersample=sample.supersample,
+            )
+            cache[key] = (distance, rgb, alpha, cc.footprint_measurement(alpha, sample.width, sample.height))
+        return cache[key]
+
     for index, sample in enumerate(plan, start=1):
-        if sample.background not in cache:
+        if sample.background not in background_cache:
             loaded = imread_unicode(cc.BACKGROUND_DIR / sample.background)
             if loaded is None:
                 raise SystemExit("cannot read background " + sample.background)
-            cache[sample.background] = loaded
-        # The crop is pinned per background, not per row and not per sweep: an unpinned
-        # crop would move the scene behind the target and turn a size sweep into a
-        # background sweep, and a per-sweep crop would leave the size, pose, position,
-        # blur and occlusion curves standing on five different patches of the same
-        # photograph, which is not comparable across curves.
-        crop_rng = np.random.default_rng(cc.stable_seed("background-crop", sample.background))
+            background_cache[sample.background] = loaded
+        # The crop is NOT fixed any more: repeats of a condition have to differ in
+        # something other than the conditioned variable, and a fresh crop of the same
+        # background is exactly that. What IS fixed is the crop SEQUENCE - crop_seed
+        # depends on the sweep and the repeat index only - so no condition in a sweep is
+        # measured on a luckier scene than another, and the background column itself
+        # stays pinned to one image.
+        crop_rng = np.random.default_rng(sample.crop_seed)
         background = prepare_background(
-            cache[sample.background], sample.width, sample.height, crop_rng
+            background_cache[sample.background], sample.width, sample.height, crop_rng
         )
 
         focal = sample.focal_px
@@ -193,20 +231,17 @@ def main() -> int:
                 for value in cc.SIZE_BUCKET_TARGETS_PX[requested_bucket]
                 if abs(value - sample.target_px) > 1e-9
             )
-        measurement = None
-        for attempt, target_px in enumerate(candidates):
-            distance = calibrate_distance(
-                parts, rotation, target_px, pixel_xy, k_matrix, sample.width,
-                sample.height, measure_supersample=sample.supersample,
-            )
-            rgb, alpha = render_shuttle(
-                parts, rotation, distance, pixel_xy, k_matrix, sample.width,
-                sample.height, light_dir=light, supersample=sample.supersample,
-            )
-            measurement = cc.footprint_measurement(alpha, sample.width, sample.height)
-            inside = cc.size_bucket(measurement["equivalent_size_px"]) == requested_bucket
-            if inside or attempt == len(candidates) - 1:
+        target_px = candidates[0]
+        distance, rgb, alpha, measurement = stimulus(
+            sample, target_px, rotation, pixel_xy, k_matrix, light
+        )
+        for attempt in range(1, len(candidates)):
+            if cc.size_bucket(measurement["equivalent_size_px"]) == requested_bucket:
                 break
+            target_px = candidates[attempt]
+            distance, rgb, alpha, measurement = stimulus(
+                sample, target_px, rotation, pixel_xy, k_matrix, light
+            )
 
         image = composite(
             background, rgb, alpha,
@@ -288,10 +323,48 @@ def main() -> int:
         for row in merged_rows:
             writer.writerow(row)
 
-    return report(merged_rows, settings, manifest_path, cc)
+    return report(
+        merged_rows, settings, manifest_path, cc,
+        enforce_counts=not (args.only or args.limit),
+    )
 
 
-def report(rows, settings, manifest_path: Path, cc) -> int:
+def write_condition_counts(rows, out_dir: Path, cc, settings, *, enforce: bool):
+    """Write the sample count and error bar of every conditioned group next to the manifest.
+
+    A curve without its sample size is a claim rather than a measurement: at n=3 a
+    binomial proportion carries a 95% half-width of 57%, and at n=1 it carries none at
+    all. Every group is written with its n and that half-width so a reader never has to
+    go looking for it, and with the count the sweep requires.
+    """
+    counts = cc.measured_condition_counts(rows)
+    expected = cc.expected_conditions(settings)
+    path = out_dir / CONDITION_COUNTS_NAME
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(
+            ["sweep", "condition", "n_samples", "half_width_95", "required", "meets_required"]
+        )
+        for sweep in cc.SWEEP_IDS:
+            if sweep not in counts and sweep not in expected:
+                continue
+            required = cc.REPLICATES_PER_GROUP[sweep]
+            groups = counts.get(sweep, {})
+            labels = list(groups)
+            for label in expected.get(sweep, ()):
+                if label not in groups:
+                    labels.append(label)
+            for label in sorted(labels):
+                n = int(groups.get(label, 0))
+                writer.writerow([
+                    sweep, label, n, f"{cc.proportion_half_width(n):.4f}", required,
+                    "yes" if n >= required else "no",
+                ])
+    violations = cc.verify_group_counts(counts, expected) if enforce else []
+    return path, counts, violations
+
+
+def report(rows, settings, manifest_path: Path, cc, *, enforce_counts: bool = True) -> int:
     """Check the finished manifest by measurement and print what was produced."""
     failures: list[str] = []
     print("")
@@ -334,6 +407,30 @@ def report(rows, settings, manifest_path: Path, cc) -> int:
         empty = [value for value in vocabulary if counts.get(value, 0) == 0]
         if empty:
             failures.append(name + " has no sample for: " + ", ".join(empty))
+
+    counts_path, counts, count_violations = write_condition_counts(
+        rows, manifest_path.parent, cc, settings, enforce=enforce_counts
+    )
+    print("")
+    print("conditioned groups (n, and the 95% half-width of a proportion at that n):")
+    for sweep in cc.SWEEP_IDS:
+        groups = counts.get(sweep, {})
+        if not groups:
+            continue
+        required = cc.REPLICATES_PER_GROUP[sweep]
+        print(
+            "  " + sweep + " (need " + str(required) + " each): "
+            + "; ".join(
+                label + " n=" + str(groups[label])
+                + " +/-" + f"{cc.proportion_half_width(groups[label]) * 100:.1f}%"
+                for label in sorted(groups)
+            )
+        )
+    print("  wrote " + counts_path.name)
+    if enforce_counts:
+        failures.extend(count_violations)
+    else:
+        print("  NOTE: partial run (--only/--limit), group counts not enforced")
 
     for violation in cc.verify_measured_pins(rows):
         failures.append(violation)

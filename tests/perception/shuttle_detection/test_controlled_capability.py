@@ -36,16 +36,21 @@ if str(TOOLS) not in sys.path:
     sys.path.insert(0, str(TOOLS))
 
 from src.perception.shuttle_detection.controlled_capability import (  # noqa: E402
+    BACKGROUND_DIR,
     BLUR_LEVELS,
     NEAR_FIELD_MARGIN_PX,
+    ORIENTATIONS_PER_FAMILY,
+    REPLICATES_PER_GROUP,
+    TARGET_HALF_WIDTH,
     NEAR_FIELD_MIN_DISTANCE_M,
-    NEAR_FIELD_REPEATS,
+    LIGHT_AZIMUTHS_DEG,
     NEAR_FIELD_SIZES_PX,
     NEAR_FIELD_SUPERSAMPLE,
     OCCLUDER_SIDE,
     MANIFEST_COLUMNS,
     OCCLUSION_LEVELS,
     OCCLUSION_TARGET_FRACTIONS,
+    POSE_BUCKETS,
     POSE_FAMILIES,
     POSITION_TARGETS,
     REQUIRED_MANIFEST_COLUMNS,
@@ -60,9 +65,16 @@ from src.perception.shuttle_detection.controlled_capability import (  # noqa: E4
     end_toward_camera,
     light_vector,
     long_axis_camera_space,
+    expected_conditions,
+    measured_condition_counts,
     merge_manifest_rows,
     near_field_camera,
     occlusion_bucket,
+    planned_condition_counts,
+    proportion_half_width,
+    required_half_width,
+    verify_group_counts,
+    verify_matched_nuisance,
     position_pixel_centre,
     position_stays_inside_frame,
     size_bucket,
@@ -626,7 +638,7 @@ class NearFieldPlanTests(unittest.TestCase):
         counts = Counter(row.target_px for row in self.rows())
         self.assertEqual(set(counts), set(NEAR_FIELD_SIZES_PX))
         for target, count in counts.items():
-            self.assertGreaterEqual(count, NEAR_FIELD_REPEATS, str(target))
+            self.assertGreaterEqual(count, REPLICATES_PER_GROUP["S7"], str(target))
 
     def test_every_near_field_box_stays_inside_its_own_frame(self) -> None:
         rows = self.rows()
@@ -674,6 +686,178 @@ class ManifestMergeTests(unittest.TestCase):
         merge_manifest_rows(existing, new)
         self.assertEqual(existing[0]["sweep"], "S1")
         self.assertEqual(new[0]["sweep"], "S7")
+
+
+class ReplicateTests(unittest.TestCase):
+    """Error bars, not just counts.
+
+    A conditioned group of one is not a measurement: a binomial proportion at n=3 has
+    a 95% half-width of 57%, so "cork_end_on recall 0.0" from a single row is noise.
+    These tests hold the set to the replicate counts that make a curve readable, and
+    to the nuisance design that makes the replicates independent.
+    """
+
+    def test_the_required_replicates_meet_the_precision_target(self) -> None:
+        self.assertEqual(
+            REPLICATES_PER_GROUP,
+            {"S1": 40, "S2": 40, "S3": 40, "S4": 20, "S5": 20, "S6a": 3, "S6b": 20, "S7": 40},
+        )
+        # The two sizes the brief asks for: ~15% at n=40, and 20 rows for the level
+        # sweeps, which buys 21.9% and is reported as such.
+        self.assertLessEqual(required_half_width("S1"), 0.16)
+        self.assertLessEqual(required_half_width("S2"), 0.16)
+        self.assertLessEqual(required_half_width("S3"), 0.16)
+        self.assertLessEqual(required_half_width("S7"), 0.16)
+        self.assertLessEqual(required_half_width("S4"), TARGET_HALF_WIDTH)
+        self.assertLessEqual(required_half_width("S5"), TARGET_HALF_WIDTH)
+        self.assertLessEqual(required_half_width("S6b"), TARGET_HALF_WIDTH)
+
+    def test_the_half_width_is_the_worst_case_binomial_one(self) -> None:
+        self.assertAlmostEqual(proportion_half_width(40), 1.96 * math.sqrt(0.25 / 40), places=12)
+        self.assertAlmostEqual(proportion_half_width(3), 0.566, places=3)
+        for smaller, larger in zip((3, 10, 20, 40), (10, 20, 40, 400)):
+            self.assertGreater(
+                proportion_half_width(smaller), proportion_half_width(larger)
+            )
+
+    def test_every_conditioned_group_in_the_plan_reaches_its_required_count(self) -> None:
+        counts = planned_condition_counts(plan())
+        self.assertEqual(
+            verify_group_counts(counts, expected_conditions(settings())), []
+        )
+        total = sum(sum(groups.values()) for groups in counts.values())
+        self.assertEqual(total, len(plan()))
+        # Every condition times its required replicates. With the pool's thirty
+        # backgrounds this is the 1750-image set; the test settings carry four.
+        self.assertEqual(
+            total,
+            len(SIZE_BUCKETS) * REPLICATES_PER_GROUP["S1"]
+            + len(POSE_BUCKETS) * REPLICATES_PER_GROUP["S2"]
+            + len(POSITION_TARGETS) * REPLICATES_PER_GROUP["S3"]
+            + len(BLUR_LEVELS) * REPLICATES_PER_GROUP["S4"]
+            + len(OCCLUSION_LEVELS) * REPLICATES_PER_GROUP["S5"]
+            + len(BACKGROUNDS) * REPLICATES_PER_GROUP["S6a"]
+            + len(LIGHT_AZIMUTHS_DEG) * REPLICATES_PER_GROUP["S6b"]
+            + len(NEAR_FIELD_SIZES_PX) * REPLICATES_PER_GROUP["S7"],
+        )
+
+    def test_the_conditioned_groups_are_the_conditioned_columns(self) -> None:
+        counts = planned_condition_counts(plan())
+        # Eight size buckets, eight pose families, nine positions, four blur levels,
+        # three occlusion levels, thirty backgrounds, eight azimuths, nine rungs.
+        # The test settings carry four backgrounds rather than the pool's thirty.
+        self.assertEqual(
+            [len(counts[sweep]) for sweep in SWEEP_IDS], [8, 8, 9, 4, 3, 4, 8, 9]
+        )
+
+    def test_verify_group_counts_reports_a_short_group(self) -> None:
+        counts = planned_condition_counts(plan())
+        counts["S3"]["bottom"] = 1
+        violations = verify_group_counts(counts, expected_conditions(settings()))
+        self.assertTrue(any("S3" in v and "bottom" in v for v in violations), violations)
+
+    def test_verify_group_counts_reports_a_missing_and_an_unexpected_group(self) -> None:
+        counts = planned_condition_counts(plan())
+        del counts["S4"]["heavy"]
+        counts["S4"]["nonexistent"] = 20
+        violations = verify_group_counts(counts, expected_conditions(settings()))
+        self.assertTrue(any("heavy" in v for v in violations), violations)
+        self.assertTrue(any("nonexistent" in v for v in violations), violations)
+
+    def test_repeats_share_the_crop_sequence_and_differ_in_noise(self) -> None:
+        """The nuisance realisation must be matched across conditions, not the same.
+
+        Every conditioned group draws the SAME sequence of background crops, so no
+        bucket is measured on a luckier scene than another; within a group the rows
+        differ by the noise draw, so the replicates are not copies of one image.
+        """
+        rows = plan()
+        self.assertEqual(verify_matched_nuisance(rows), [])
+        for sweep in SWEEP_IDS:
+            group = [s for s in rows if s.sweep == sweep]
+            self.assertGreater(len({s.crop_seed for s in group}), 1, sweep)
+            self.assertEqual(len({s.noise_seed for s in group}), len(group), sweep)
+
+    def test_verify_matched_nuisance_reports_a_group_on_its_own_scene(self) -> None:
+        rows = list(plan())
+        for index, sample in enumerate(rows):
+            if sample.sweep == "S3" and sample.repeat == 0:
+                rows[index] = sample.__class__(
+                    **{**sample.__dict__, "crop_seed": sample.crop_seed + 1}
+                )
+                break
+        violations = verify_matched_nuisance(rows)
+        self.assertTrue(any("S3" in v and "crop" in v for v in violations), violations)
+
+    def test_measured_condition_counts_group_by_the_measured_condition(self) -> None:
+        rows = [
+            {"sweep": "S1", "equivalent_size_px": "3.0", "target_px": "3.0"},
+            {"sweep": "S1", "equivalent_size_px": "5.0", "target_px": "5.0"},
+            {"sweep": "S2", "pose_bucket": "side"},
+        ]
+        counts = measured_condition_counts(rows)
+        self.assertEqual(counts["S1"], {"<4": 1, "4-6": 1})
+        self.assertEqual(counts["S2"], {"side": 1})
+
+    def test_every_pose_family_offers_enough_distinct_orientations(self) -> None:
+        for family, rows in POSE_FAMILIES.items():
+            self.assertGreaterEqual(len(rows), ORIENTATIONS_PER_FAMILY, family)
+            seen = {
+                (row["yaw_deg"], row["pitch_deg"], row["roll_deg"]) for row in rows
+            }
+            self.assertEqual(len(seen), len(rows), family)
+
+
+class CommittedManifestTests(unittest.TestCase):
+    """The shipped manifest has to carry the replicates its curves need.
+
+    This is the check that turns "enough samples" from a hope into a test: it reads
+    the manifest that is actually committed and holds every conditioned group to its
+    required count and to an error bar a reader can use.
+    """
+
+    MANIFEST = ROOT / "outputs" / "shuttle_capability" / "controlled_capability" / "manifest.csv"
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import csv
+
+        if not cls.MANIFEST.is_file():
+            raise unittest.SkipTest("controlled capability manifest is not present")
+        with cls.MANIFEST.open(newline="", encoding="utf-8") as handle:
+            cls.rows = list(csv.DictReader(handle))
+        # The expectations come from the frozen inputs - the audited background pool and
+        # the ladder constants - never from the manifest being checked: reading the
+        # vocabulary out of the file under test would accept a condition that is simply
+        # missing from it.
+        pool = tuple(sorted(path.name for path in BACKGROUND_DIR.glob("*.jpg")))
+        if len(pool) < 2:
+            raise unittest.SkipTest("the audited background pool is not present")
+        cls.settings = ControlSettings(background=pool[0], backgrounds=pool)
+
+    def test_every_conditioned_group_reaches_its_required_count(self) -> None:
+        counts = measured_condition_counts(self.rows)
+        expected = expected_conditions(self.settings)
+        violations = verify_group_counts(counts, expected)
+        self.assertEqual(violations, [], "; ".join(violations))
+
+    def test_every_conditioned_group_carries_a_usable_error_bar(self) -> None:
+        counts = measured_condition_counts(self.rows)
+        for sweep, groups in counts.items():
+            if sweep == "S6a":
+                # The background sweep is a nuisance variable, cut deliberately; it is the
+                # only group that does not carry a per-condition error bar worth reading.
+                continue
+            for label, count in groups.items():
+                self.assertLessEqual(
+                    proportion_half_width(count),
+                    required_half_width(sweep),
+                    f"{sweep}/{label} has n={count}",
+                )
+
+    def test_the_shipped_rows_keep_their_controls(self) -> None:
+        self.assertEqual(verify_measured_pins(self.rows), [])
+        self.assertEqual({row["split"] for row in self.rows}, {"fixed_core_test"})
 
 
 class OcclusionTests(unittest.TestCase):

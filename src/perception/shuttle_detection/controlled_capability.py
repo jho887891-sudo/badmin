@@ -131,34 +131,51 @@ def size_bucket(equivalent_size_px: float) -> str:
 # than assumed: the shuttle's length axis is its local z, the cork sits at low z and
 # the feather skirt at high z, and the camera looks down +z, so R = identity
 # presents the CORK end and a 180 degree pitch about x presents the FEATHER end.
+# A family is a DISTRIBUTION of orientations, not one hand-picked matrix: a capability
+# curve built on a single orientation per family cannot separate "the detector cannot
+# do side views" from "the detector was unlucky with one side view".
+ORIENTATIONS_PER_FAMILY = 8
+
 POSE_FAMILIES: dict[str, tuple[dict[str, float], ...]] = {
-    "cork_end_on": ({"yaw_deg": 0.0, "pitch_deg": 0.0, "roll_deg": 0.0},),
-    "feather_end_on": ({"yaw_deg": 0.0, "pitch_deg": 180.0, "roll_deg": 0.0},),
-    "side": (
-        {"yaw_deg": 0.0, "pitch_deg": 90.0, "roll_deg": 0.0},
-        {"yaw_deg": 90.0, "pitch_deg": 0.0, "roll_deg": 0.0},
-        {"yaw_deg": 180.0, "pitch_deg": 90.0, "roll_deg": 0.0},
+    # Cork end toward the camera: a narrow cone around the end-on axis, so the family
+    # means "end-on" rather than one exact matrix.
+    "cork_end_on": tuple(
+        {"yaw_deg": yaw, "pitch_deg": pitch, "roll_deg": 0.0}
+        for yaw, pitch in ((0.0, 0.0), (10.0, 0.0), (-10.0, 0.0), (0.0, 10.0),
+                           (0.0, -10.0), (8.0, 8.0), (-8.0, -8.0), (5.0, -5.0))
     ),
-    "oblique": (
-        {"yaw_deg": 35.0, "pitch_deg": 30.0, "roll_deg": 0.0},
-        {"yaw_deg": -35.0, "pitch_deg": 30.0, "roll_deg": 0.0},
-        {"yaw_deg": 45.0, "pitch_deg": 35.0, "roll_deg": 25.0},
-        {"yaw_deg": -45.0, "pitch_deg": -35.0, "roll_deg": -25.0},
+    "feather_end_on": tuple(
+        {"yaw_deg": yaw, "pitch_deg": 180.0 + pitch, "roll_deg": 0.0}
+        for yaw, pitch in ((0.0, 0.0), (10.0, 0.0), (-10.0, 0.0), (0.0, 10.0),
+                           (0.0, -10.0), (8.0, 8.0), (-8.0, -8.0), (5.0, -5.0))
+    ),
+    # Side views, both the vertical (pitch) and the horizontal (yaw) one, each with a
+    # little tilt so the family is a set of views and not two poses.
+    "side": tuple(
+        {"yaw_deg": yaw, "pitch_deg": pitch, "roll_deg": 0.0}
+        for yaw, pitch in ((0.0, 90.0), (15.0, 90.0), (-15.0, 90.0), (0.0, 75.0),
+                           (90.0, 0.0), (105.0, 0.0), (75.0, 0.0), (90.0, 15.0))
+    ),
+    "oblique": tuple(
+        {"yaw_deg": yaw, "pitch_deg": pitch, "roll_deg": roll}
+        for yaw, pitch, roll in ((35.0, 30.0, 0.0), (-35.0, 30.0, 0.0), (35.0, -30.0, 0.0),
+                                 (-35.0, -30.0, 0.0), (45.0, 35.0, 25.0), (-45.0, 35.0, -25.0),
+                                 (25.0, 45.0, 10.0), (-25.0, -45.0, -10.0))
     ),
     "yaw_only": tuple(
         {"yaw_deg": angle, "pitch_deg": 0.0, "roll_deg": 0.0}
-        for angle in (30.0, 60.0, 90.0, 120.0)
+        for angle in (30.0, 60.0, 90.0, 120.0, 150.0, -30.0, -60.0, -90.0)
     ),
     "pitch_only": tuple(
         {"yaw_deg": 0.0, "pitch_deg": angle, "roll_deg": 0.0}
-        for angle in (30.0, 60.0, 90.0, 120.0)
+        for angle in (30.0, 60.0, 90.0, 120.0, 150.0, -30.0, -60.0, -90.0)
     ),
     # Roll about the shuttle's own axis is only visible when that axis is not
     # pointing at the camera, so the roll family is pinned to a true side view and
     # rolls from there. The other two angles never move.
     "roll_only": tuple(
         {"yaw_deg": 0.0, "pitch_deg": 90.0, "roll_deg": angle}
-        for angle in (30.0, 60.0, 90.0, 120.0)
+        for angle in (20.0, 40.0, 60.0, 80.0, 100.0, 120.0, 140.0, 160.0)
     ),
     # A tumbling shuttle mid-flight: the intermediate orientations between the named
     # ones, at a tilted axis so no row is axis-aligned.
@@ -531,7 +548,9 @@ REQUIRED_MANIFEST_COLUMNS: tuple[str, ...] = (
 
 EXTRA_MANIFEST_COLUMNS: tuple[str, ...] = (
     "sweep",
+    "repeat",
     "seed",
+    "crop_seed",
     "target_px",
     "equiv_size_px",
     "distance_m",
@@ -587,7 +606,6 @@ MEASURED_MANIFEST_COLUMNS: tuple[str, ...] = (
 NEAR_FIELD_SIZES_PX: tuple[float, ...] = (
     64.0, 96.0, 128.0, 192.0, 256.0, 384.0, 512.0, 768.0, 1024.0,
 )
-NEAR_FIELD_REPEATS = 3
 
 # One camera for the whole ladder, so the only thing that changes between rungs is
 # the target size. A per-rung frame or focal length would be a second variable inside
@@ -699,6 +717,207 @@ def merge_manifest_rows(
 
 
 # --------------------------------------------------------------------------- #
+# Replicates and the error bar they buy
+# --------------------------------------------------------------------------- #
+
+# A conditioned group of one is not a measurement. The 95% half-width of a binomial
+# proportion near 0.5 is 1.96*sqrt(0.25/n), which is 57% at n=3 and 15.5% at n=40: both
+# "recall 0.0" and "recall 1.0" from a single row are noise. These counts are the
+# minimum number of rows per conditioned group in the shipped manifest, and
+# verify_group_counts() holds the manifest to them.
+#
+# The background sweep is the one deliberate exception: background is a nuisance
+# variable whose job here is to show spread, not to carry a curve of its own, so it is
+# cut to three per image. Nothing else is cut, and the size sweeps in particular are
+# the largest groups in the set.
+REPLICATES_PER_GROUP: dict[str, int] = {
+    "S1": 40,   # 8 size buckets x 40
+    "S2": 40,   # 8 pose families x 40
+    "S3": 40,   # 9 positions x 40
+    "S4": 20,   # 4 blur levels x 20
+    "S5": 20,   # 3 occlusion levels x 20
+    "S6a": 3,   # 30 backgrounds x 3
+    "S6b": 20,  # 8 light azimuths x 20
+    "S7": 40,   # 9 near-field rungs x 40
+}
+
+# The worst-case 95% half-width the SMALLEST required group carries. n=40 gives 15.5%,
+# which is what "about 15%" means in practice; the groups sized at 20 (blur, occlusion
+# and light) carry 21.9% and are reported with that number rather than hidden behind
+# it. Every group is checked against its own sweep's number by required_half_width().
+TARGET_HALF_WIDTH = 0.22
+
+Z_95 = 1.96
+
+
+def required_half_width(sweep: str) -> float:
+    """The 95% half-width the required count of one sweep buys."""
+    return proportion_half_width(REPLICATES_PER_GROUP[sweep])
+
+
+def proportion_half_width(n: int, z: float = Z_95) -> float:
+    """Worst-case 95% half-width of a binomial proportion measured on n samples.
+
+    p = 0.5 is the worst case, so this is an upper bound on the error bar a group of
+    that size can carry; it is the number to print next to a recall rather than a
+    point estimate on its own.
+    """
+    if n <= 0:
+        return 1.0
+    return float(z) * math.sqrt(0.25 / float(n))
+
+
+# Which manifest column carries the conditioned variable of each sweep. S1 and S7 are
+# keyed by the target size instead, because their condition is the size itself.
+CONDITION_COLUMNS: dict[str, str] = {
+    "S2": "pose_bucket",
+    "S3": "position_bucket",
+    "S4": "blur_bucket",
+    "S5": "occlusion_bucket",
+    "S6a": "background",
+    "S6b": "light_azimuth_deg",
+}
+
+
+def _condition_label(value: Any) -> str:
+    """One spelling for a condition label, so counts and expectations can be compared."""
+    number = _numeric(value)
+    return value if number is None else f"{number:g}"
+
+
+def condition_of(sweep: str, row: Mapping[str, Any], *, measured: bool) -> str | None:
+    """The conditioned group one row belongs to.
+
+    For S1 the group is the MEASURED size bucket, not the requested one: a row whose
+    calibration landed in the neighbouring bucket is evidence about that bucket. S7 has
+    no bucket to land in (every rung is ">32"), so its group is the rung it asked for.
+    """
+    if sweep == "S1":
+        value = row.get("equivalent_size_px") if measured else row.get("target_px")
+        number = _numeric(value)
+        return None if number is None else size_bucket(number)
+    if sweep == "S7":
+        return _condition_label(row.get("target_px"))
+    column = CONDITION_COLUMNS.get(sweep)
+    if column is None:
+        return None
+    value = row.get(column)
+    return None if value is None or str(value).strip() == "" else _condition_label(value)
+
+
+def _count_by_sweep(pairs: Sequence[tuple[str, str | None]]) -> dict[str, dict[str, int]]:
+    counts: dict[str, dict[str, int]] = {}
+    for sweep, label in pairs:
+        if label is None:
+            continue
+        group = counts.setdefault(sweep, {})
+        group[label] = group.get(label, 0) + 1
+    return counts
+
+
+def planned_condition_counts(samples: Sequence[PlannedSample]) -> dict[str, dict[str, int]]:
+    """Rows per conditioned group, as planned."""
+    return _count_by_sweep(
+        [(sample.sweep, condition_of(sample.sweep, sample.as_manifest_row(), measured=False))
+         for sample in samples]
+    )
+
+
+def measured_condition_counts(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, int]]:
+    """Rows per conditioned group, as recorded in a manifest."""
+    return _count_by_sweep(
+        [(str(row.get("sweep", "")), condition_of(str(row.get("sweep", "")), row, measured=True))
+         for row in rows]
+    )
+
+
+def expected_conditions(settings: "ControlSettings") -> dict[str, tuple[str, ...]]:
+    """Every conditioned group the plan is supposed to fill."""
+    return {
+        "S1": SIZE_BUCKETS,
+        "S2": POSE_BUCKETS,
+        "S3": tuple(POSITION_TARGETS),
+        "S4": tuple(name for name, _ in BLUR_LEVELS),
+        "S5": tuple(name for name, _ in OCCLUSION_LEVELS),
+        "S6a": tuple(settings.backgrounds),
+        "S6b": tuple(_condition_label(value) for value in settings.light_azimuths_deg),
+        "S7": tuple(_condition_label(value) for value in settings.near_field_sizes_px),
+    }
+
+
+def verify_group_counts(
+    counts: Mapping[str, Mapping[str, int]], expected: Mapping[str, Sequence[str]]
+) -> list[str]:
+    """Report every conditioned group that is short, missing or unexpected.
+
+    This is what turns "enough samples" into a check: a group under its required count
+    is reported with the error bar it actually carries, so a reader never has to
+    discover the sample size after believing a number.
+    """
+    violations: list[str] = []
+    for sweep in SWEEP_IDS:
+        labels = expected.get(sweep)
+        if labels is None:
+            continue
+        required = REPLICATES_PER_GROUP.get(sweep, 0)
+        got = counts.get(sweep, {})
+        for label in labels:
+            count = int(got.get(label, 0))
+            if count < required:
+                violations.append(
+                    sweep + ": condition " + str(label) + " has " + str(count)
+                    + " rows, " + str(required) + " required (95% half-width at n="
+                    + str(count) + " is " + f"{proportion_half_width(count) * 100:.1f}" + "%)"
+                )
+        known = {str(label) for label in labels}
+        for label in sorted(got):
+            if label not in known:
+                violations.append(
+                    sweep + ": unexpected condition " + str(label) + " with "
+                    + str(int(got[label])) + " rows"
+                )
+    return violations
+
+
+def verify_matched_nuisance(samples: Sequence[PlannedSample]) -> list[str]:
+    """Report a conditioned group drawn on its own nuisance realisations.
+
+    Replicates must differ in the ways that are NOT the conditioned variable, and the
+    ways they differ have to be the SAME for every condition: if one size bucket drew
+    its background crops from one part of the photograph and another bucket from a
+    different part, the two buckets differ in scene as well as in size, and the curve
+    measures the scene. The crop sequence is therefore shared across the conditions of
+    a sweep, and this check is what keeps it shared.
+    """
+    violations: list[str] = []
+    for sweep in SWEEP_IDS:
+        rows = [sample for sample in samples if sample.sweep == sweep]
+        if not rows:
+            continue
+        sequences: dict[str, list[int]] = {}
+        for sample in rows:
+            label = condition_of(sweep, sample.as_manifest_row(), measured=False)
+            if label is None:
+                continue
+            sequences.setdefault(label, []).append(int(sample.crop_seed))
+        if len(sequences) < 2:
+            continue
+        frozen = {label: tuple(sorted(values)) for label, values in sequences.items()}
+        tally: dict[tuple[int, ...], int] = {}
+        for sequence in frozen.values():
+            tally[sequence] = tally.get(sequence, 0) + 1
+        common = max(tally, key=lambda key: (tally[key], len(key)))
+        for label in sorted(frozen):
+            if frozen[label] != common:
+                violations.append(
+                    sweep + ": condition " + label + " draws a different background crop "
+                    "sequence (" + str(len(frozen[label])) + " draws) than the "
+                    + str(tally[common]) + " condition(s) sharing the sweep's sequence"
+                )
+    return violations
+
+
+# --------------------------------------------------------------------------- #
 # The plan
 # --------------------------------------------------------------------------- #
 
@@ -728,7 +947,6 @@ class ControlSettings:
     # The near-field ladder (S7) is a second size sweep over large targets; it carries
     # its own frame and lens, which are constant across the whole ladder.
     near_field_sizes_px: tuple[float, ...] = NEAR_FIELD_SIZES_PX
-    near_field_repeats: int = NEAR_FIELD_REPEATS
     near_field_frame_px: int = NEAR_FIELD_FRAME_PX
     near_field_focal_px: float = NEAR_FIELD_FOCAL_PX
     near_field_supersample: int = NEAR_FIELD_SUPERSAMPLE
@@ -755,8 +973,6 @@ class ControlSettings:
             raise ValueError("the light sweep needs at least two azimuths to vary over")
         if self.background not in self.backgrounds:
             raise ValueError("the pinned background must be one of the swept backgrounds")
-        if self.near_field_repeats < 1:
-            raise ValueError("the near-field ladder needs at least one repeat per rung")
         near_field_camera(
             self.near_field_sizes_px,
             frame_px=self.near_field_frame_px,
@@ -791,6 +1007,8 @@ class PlannedSample:
     blur_bucket: str
     occlusion_bucket: str
     occlusion_target_fraction: float
+    repeat: int
+    crop_seed: int
     noise_sigma: float
     noise_seed: int
     shadow_gain: float
@@ -848,6 +1066,8 @@ class PlannedSample:
                 "blur_bucket": self.blur_bucket,
                 "occlusion_bucket": self.occlusion_bucket,
                 "occlusion_target_fraction": self.occlusion_target_fraction,
+                "repeat": self.repeat,
+                "crop_seed": self.crop_seed,
                 "background": self.background,
                 "light_azimuth_deg": self.light_azimuth_deg,
                 "motion_px": self.motion_px,
@@ -897,6 +1117,7 @@ def _sample(
     motion_px: float,
     occlusion_name: str,
     occlusion_target_fraction: float,
+    repeat: int = 0,
     frame_px: int | None = None,
     focal_px: float | None = None,
     supersample: int | None = None,
@@ -920,6 +1141,11 @@ def _sample(
         blur_bucket=_blur_bucket_of(motion_px),
         occlusion_bucket=occlusion_name,
         occlusion_target_fraction=float(occlusion_target_fraction),
+        repeat=int(repeat),
+        # Shared by repeat index across the conditions of a sweep, so every condition
+        # sees the same sequence of scenes; the noise seed above is unique per row, so
+        # the repeats are not copies of one image.
+        crop_seed=stable_seed("crop", sweep, int(repeat)),
         noise_sigma=float(settings.noise_sigma),
         noise_seed=seed,
         shadow_gain=float(settings.shadow_gain),
@@ -957,75 +1183,90 @@ def build_plan(settings: ControlSettings) -> list[PlannedSample]:
         kwargs.setdefault("occlusion_target_fraction", 0.0)
         samples.append(_sample(settings, **kwargs))
 
-    # S1 size: pose, background, position, light and blur all held.
+    # S1 size: pose, background, position, light and blur all held. The repeats walk
+    # the bucket's own candidate targets, so a bucket is measured over a range of
+    # sizes inside it rather than at one request that happened to be reachable.
     for bucket in SIZE_BUCKETS:
-        for index, target in enumerate(
-            SIZE_BUCKET_TARGETS_PX[bucket][:SIZE_REPEATS_PER_BUCKET]
-        ):
+        targets = SIZE_BUCKET_TARGETS_PX[bucket][:SIZE_REPEATS_PER_BUCKET]
+        for repeat in range(REPLICATES_PER_GROUP["S1"]):
             add(
-                name="s1_size_" + BUCKET_SLUGS[bucket] + "_" + str(index),
+                name="s1_size_" + BUCKET_SLUGS[bucket] + "_" + str(repeat),
                 sweep="S1",
                 varied=("target_px",),
-                target_px=target,
+                target_px=targets[repeat % len(targets)],
+                repeat=repeat,
             )
 
-    # S2 pose: size, background, position, light and blur all held.
+    # S2 pose: size, background, position, light and blur all held. Each family is
+    # sampled over its own orientations, so what a family measures is the family.
     for family in POSE_BUCKETS:
-        for index, pose in enumerate(POSE_FAMILIES[family]):
+        orientations = POSE_FAMILIES[family]
+        for repeat in range(REPLICATES_PER_GROUP["S2"]):
             add(
-                name="s2_pose_" + family + "_" + str(index),
+                name="s2_pose_" + family + "_" + str(repeat),
                 sweep="S2",
                 varied=("yaw_deg", "pitch_deg", "roll_deg", "pose_bucket"),
-                pose=pose,
+                pose=orientations[repeat % len(orientations)],
                 pose_bucket=family,
+                repeat=repeat,
             )
 
     # S3 position: size, pose, background, light and blur all held.
     for position in POSITION_TARGETS:
-        add(
-            name="s3_position_" + position,
-            sweep="S3",
-            varied=("position_bucket",),
-            position_bucket=position,
-        )
+        for repeat in range(REPLICATES_PER_GROUP["S3"]):
+            add(
+                name="s3_position_" + position + "_" + str(repeat),
+                sweep="S3",
+                varied=("position_bucket",),
+                position_bucket=position,
+                repeat=repeat,
+            )
 
     # S4 blur: size, pose, background, position and light all held.
     for blur_name, motion_px in BLUR_LEVELS:
-        add(
-            name="s4_blur_" + blur_name,
-            sweep="S4",
-            varied=("blur_bucket", "motion_px"),
-            motion_px=motion_px,
-        )
+        for repeat in range(REPLICATES_PER_GROUP["S4"]):
+            add(
+                name="s4_blur_" + blur_name + "_" + str(repeat),
+                sweep="S4",
+                varied=("blur_bucket", "motion_px"),
+                motion_px=motion_px,
+                repeat=repeat,
+            )
 
     # S5 occlusion: size, pose, background, position, light and blur all held.
     for occlusion_name, _representative in OCCLUSION_LEVELS:
-        for index, fraction in enumerate(OCCLUSION_TARGET_FRACTIONS[occlusion_name]):
+        fractions = OCCLUSION_TARGET_FRACTIONS[occlusion_name]
+        for repeat in range(REPLICATES_PER_GROUP["S5"]):
             add(
-                name="s5_occlusion_" + occlusion_name + "_" + str(index),
+                name="s5_occlusion_" + occlusion_name + "_" + str(repeat),
                 sweep="S5",
                 varied=("occlusion_bucket", "occlusion_target_fraction"),
                 occlusion_name=occlusion_name,
-                occlusion_target_fraction=fraction,
+                occlusion_target_fraction=fractions[repeat % len(fractions)],
+                repeat=repeat,
             )
 
     # S6a background: size, pose, position, blur and the light all held.
     for index, background in enumerate(settings.backgrounds):
-        add(
-            name="s6a_background_" + str(index).zfill(2),
-            sweep="S6a",
-            varied=("background",),
-            background=background,
-        )
+        for repeat in range(REPLICATES_PER_GROUP["S6a"]):
+            add(
+                name="s6a_background_" + str(index).zfill(2) + "_" + str(repeat),
+                sweep="S6a",
+                varied=("background",),
+                background=background,
+                repeat=repeat,
+            )
 
     # S6b light: size, pose, position, blur and the background all held.
     for azimuth in settings.light_azimuths_deg:
-        add(
-            name="s6b_light_" + str(int(round(azimuth))).zfill(3),
-            sweep="S6b",
-            varied=("light_azimuth_deg",),
-            light_azimuth_deg=azimuth,
-        )
+        for repeat in range(REPLICATES_PER_GROUP["S6b"]):
+            add(
+                name="s6b_light_" + str(int(round(azimuth))).zfill(3) + "_" + str(repeat),
+                sweep="S6b",
+                varied=("light_azimuth_deg",),
+                light_azimuth_deg=azimuth,
+                repeat=repeat,
+            )
 
     # S7 near field: the same control as S1 -- pose, background, position, light and
     # blur held -- over the large targets the main sweep cannot reach. Repeated at each
@@ -1038,7 +1279,7 @@ def build_plan(settings: ControlSettings) -> list[PlannedSample]:
         supersample=settings.near_field_supersample,
     )
     for target in settings.near_field_sizes_px:
-        for repeat in range(settings.near_field_repeats):
+        for repeat in range(REPLICATES_PER_GROUP["S7"]):
             add(
                 name="s7_near_field_" + str(int(round(target))).zfill(4) + "_" + str(repeat),
                 sweep="S7",
@@ -1047,6 +1288,7 @@ def build_plan(settings: ControlSettings) -> list[PlannedSample]:
                 frame_px=camera.frame_px,
                 focal_px=camera.focal_px,
                 supersample=camera.supersample,
+                repeat=repeat,
             )
     return samples
 
