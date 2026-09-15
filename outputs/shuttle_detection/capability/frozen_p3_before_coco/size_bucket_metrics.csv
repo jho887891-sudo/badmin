@@ -1,0 +1,8 @@
+size_bucket,n_samples,n_evaluable,n_negative,n_missing_ground_truth,n_detector_errors,n_ground_truth,n_predictions,tp,fp,fn,precision,recall,f1,mAP50,mAP50-95,top1_hit_rate,topk_hit_rate,gt_covered_rate,mean_center_error_px,n_center_error,mean_confidence,n_confidence,mean_matched_confidence,n_matched_confidence,mean_best_iou,iou_threshold,top_k,notes
+8-12,50,50,0,0,0,50,654,7,647,43,0.010703,0.14,0.019886,0.001807,0.000591,0.1,0.14,0.3,1.112434,7,0.674126,48,0.211436,7,0.103949,0.5,5,
+6-8,28,28,0,0,0,28,553,2,551,26,0.003617,0.071429,0.006885,0.000375,9.4e-05,0.035714,0.035714,0.392857,1.272656,2,0.802315,27,0.200393,2,0.045329,0.5,5,
+4-6,24,24,0,0,0,24,391,1,390,23,0.002558,0.041667,0.004819,0.000168,6.7e-05,0.041667,0.041667,0.208333,0.684687,1,0.730316,21,0.077345,1,0.04701,0.5,5,
+16-24,21,21,0,0,0,21,303,2,301,19,0.006601,0.095238,0.012346,0.000929,0.000577,0.0,0.0,0.285714,1.369365,2,0.744514,19,0.33889,2,0.077377,0.5,5,
+12-16,19,19,0,0,0,19,288,6,282,13,0.020833,0.315789,0.039088,0.010736,0.006176,0.157895,0.210526,0.210526,1.265446,6,0.642111,16,0.259041,6,0.24802,0.5,5,
+<4,16,16,0,0,0,16,279,0,279,16,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.25,NOT_COMPUTABLE: no matched candidate in this group,0,0.734201,14,NOT_COMPUTABLE: no matched candidate in this group,0,0.000171,0.5,5,mean_center_error_px: no matched candidate in this group; mean_matched_confidence: no matched candidate in this group
+24-32,2,2,0,0,0,2,3,1,2,1,0.333333,0.5,0.4,0.168317,0.117822,0.5,0.5,0.0,1.592242,1,0.69558,2,0.566711,1,0.407125,0.5,5,

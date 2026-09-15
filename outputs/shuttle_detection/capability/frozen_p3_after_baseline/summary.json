@@ -1,0 +1,229 @@
+{
+  "manifest": {
+    "path": "outputs/shuttle_capability/metrics/p3_real_bg_manifest.csv",
+    "sha256": "2b7728ffe1c811f696da961c51ade84150a6eb95606e7936341cfc78ec59aaab",
+    "columns": [
+      "file",
+      "source_type",
+      "background",
+      "distance_m",
+      "yaw_deg",
+      "pitch_deg",
+      "roll_deg",
+      "bbox_w_px",
+      "bbox_h_px",
+      "equivalent_size_px",
+      "bucket",
+      "pos_x_px",
+      "pos_y_px",
+      "edge_distance_px"
+    ],
+    "n_rows": 160
+  },
+  "n_samples": 160,
+  "n_evaluable": 160,
+  "n_negative": 0,
+  "n_missing_ground_truth": 0,
+  "n_detector_errors": 0,
+  "counts_by_split": {
+    "unspecified": 160
+  },
+  "iou_threshold": 0.5,
+  "top_k": 5,
+  "min_confidence": 0.0,
+  "expected_class": 0,
+  "gt_coverage_fraction": 0.9,
+  "ap_iou_thresholds": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95
+  ],
+  "dimensions": {
+    "size_bucket": {
+      "status": "derived",
+      "source": "derived from manifest column 'equivalent_size_px'",
+      "reason": null,
+      "file": "size_bucket_metrics.csv",
+      "n_groups": 7,
+      "n_labelled": 160,
+      "n_unlabelled": 0
+    },
+    "pose": {
+      "status": "derived",
+      "source": "derived from yaw_deg/pitch_deg/roll_deg via dataset_audit.bucket_pose",
+      "reason": null,
+      "file": "pose_metrics.csv",
+      "n_groups": 2,
+      "n_labelled": 160,
+      "n_unlabelled": 0
+    },
+    "position": {
+      "status": "not_computed",
+      "source": "",
+      "reason": "position requires an image size (imgsz or img_w_px/img_h_px) to place the target",
+      "file": "position_metrics.csv",
+      "n_groups": 0,
+      "n_labelled": 0,
+      "n_unlabelled": 0
+    },
+    "blur": {
+      "status": "not_computed",
+      "source": "",
+      "reason": "no blur_bucket/blur column in the manifest, and the value cannot be derived from the image",
+      "file": "blur_metrics.csv",
+      "n_groups": 0,
+      "n_labelled": 0,
+      "n_unlabelled": 0
+    },
+    "occlusion": {
+      "status": "not_computed",
+      "source": "",
+      "reason": "no occlusion_bucket column in the manifest, and the value cannot be derived from the image",
+      "file": "occlusion_metrics.csv",
+      "n_groups": 0,
+      "n_labelled": 0,
+      "n_unlabelled": 0
+    },
+    "background": {
+      "status": "manifest_column",
+      "source": "manifest column 'background'",
+      "reason": null,
+      "file": "background_metrics.csv",
+      "n_groups": 30,
+      "n_labelled": 160,
+      "n_unlabelled": 0
+    }
+  },
+  "not_computed": [
+    {
+      "dimension": "position",
+      "reason": "position requires an image size (imgsz or img_w_px/img_h_px) to place the target",
+      "file": "position_metrics.csv"
+    },
+    {
+      "dimension": "blur",
+      "reason": "no blur_bucket/blur column in the manifest, and the value cannot be derived from the image",
+      "file": "blur_metrics.csv"
+    },
+    {
+      "dimension": "occlusion",
+      "reason": "no occlusion_bucket column in the manifest, and the value cannot be derived from the image",
+      "file": "occlusion_metrics.csv"
+    }
+  ],
+  "not_computed_metrics": [
+    {
+      "dimension": "size_bucket",
+      "group": "<4",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "<4",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_001.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_001.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_002.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_002.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_004.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_004.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_025.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_025.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    }
+  ],
+  "warnings": [
+    "WARNING: position requires an image size (imgsz or img_w_px/img_h_px) to place the target; position_metrics.csv will have no data rows",
+    "WARNING: no blur_bucket/blur column in the manifest, and the value cannot be derived from the image; blur_metrics.csv will have no data rows",
+    "WARNING: no occlusion_bucket column in the manifest, and the value cannot be derived from the image; occlusion_metrics.csv will have no data rows"
+  ],
+  "overall": {
+    "overall": "ALL",
+    "n_samples": 160,
+    "n_evaluable": 160,
+    "n_negative": 0,
+    "n_missing_ground_truth": 0,
+    "n_detector_errors": 0,
+    "n_ground_truth": 160,
+    "n_predictions": 681,
+    "tp": 71,
+    "fp": 610,
+    "fn": 89,
+    "precision": 0.104258,
+    "recall": 0.44375,
+    "f1": 0.168847,
+    "mAP50": 0.159392,
+    "mAP50-95": 0.063706,
+    "top1_hit_rate": 0.325,
+    "topk_hit_rate": 0.425,
+    "gt_covered_rate": 0.2875,
+    "mean_center_error_px": 1.166015,
+    "n_center_error": 71,
+    "mean_confidence": 0.560261,
+    "n_confidence": 145,
+    "mean_matched_confidence": 0.515986,
+    "n_matched_confidence": 71,
+    "mean_best_iou": 0.342111,
+    "iou_threshold": 0.5,
+    "top_k": 5,
+    "notes": ""
+  },
+  "outputs": {
+    "predictions": "predictions.csv",
+    "summary": "summary.json",
+    "size_bucket": "size_bucket_metrics.csv",
+    "pose": "pose_metrics.csv",
+    "position": "position_metrics.csv",
+    "blur": "blur_metrics.csv",
+    "occlusion": "occlusion_metrics.csv",
+    "background": "background_metrics.csv"
+  }
+}

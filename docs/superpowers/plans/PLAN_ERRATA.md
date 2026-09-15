@@ -70,6 +70,33 @@ That directory cannot exist while E3 is unresolved.
 `outputs/shuttle_detection/training/baseline_synthetic_only/weights/best.pt`, and the report must
 state plainly that this is the synthetic-only baseline.
 
+## E6 — `2026-09-15-shuttle-controlled-capability.md`, Task 2 Step 1: the example contradicts itself
+
+The step's test asserts:
+
+```python
+gt = (10, 10, 14, 14)
+candidates = [{"bbox": (30, 30, 35, 35), "confidence": 0.9},
+              {"bbox": (9, 9, 15, 15), "confidence": 0.7}]
+m = match_top_k(gt, candidates, k=2)
+assert m["top1_hit"] is False
+assert m["topk_hit"] is True
+```
+
+At the conventional match threshold IoU >= 0.5 that second assertion cannot hold. Measured:
+
+```
+intersection 16   area_gt 16   area_candidate 36   IoU 0.4444   passes 0.5? False
+```
+
+**Instead:** the implementation keeps IoU >= 0.5 (the threshold the controller specified and the
+conventional choice) and does two things the plan did not ask for: it records BOTH readings of the
+plan's example in `test_plan_example_boxes_at_default_threshold_and_at_a_looser_one`
+(False at 0.5, True at `iou_threshold=0.3`), and it proves the top-1 / top-k disjunction the
+example was TRYING to demonstrate with a candidate box that genuinely reaches 0.5. The disjunction
+is the point of spec 03 section 6, and it is now tested with boxes that actually satisfy the
+threshold.
+
 ## E5 — tech stack lists that name unavailable packages
 
 `2026-09-15-shuttle-data-asset-readiness.md`, `...-baseline-training.md` and
