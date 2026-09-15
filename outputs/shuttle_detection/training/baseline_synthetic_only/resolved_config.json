@@ -1,0 +1,17 @@
+{
+  "run_name": "baseline_synthetic_only",
+  "data_root": "/home/T7/dgut/robot_sim",
+  "config_path": "/home/T7/dgut/robot_sim/configs/shuttle_detection/baseline.yaml",
+  "dataset_yaml": "/home/T7/dgut/robot_sim/outputs/shuttle_detection/training/baseline_synthetic_only/dataset/dataset.yaml",
+  "train_manifest": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/train_data/manifest_train_synthetic.csv",
+  "val_manifest": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/train_data/manifest_val_synthetic.csv",
+  "model": "yolo26s.pt",
+  "nc": 1,
+  "name": "shuttlecock",
+  "imgsz": 640,
+  "seed": 17,
+  "epochs": 100,
+  "batch": 16,
+  "optimizer": "auto",
+  "lr0": 0.01
+}

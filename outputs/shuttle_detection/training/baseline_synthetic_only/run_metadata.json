@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "status": "BASELINE_SYNTHETIC_ONLY_TRAINED",
+  "run_name": "baseline_synthetic_only",
+  "created_at": "2026-09-15T07:17:29Z",
+  "started_at": "2026-09-15T07:01:25Z",
+  "finished_at": "2026-09-15T07:17:29Z",
+  "code_commit": "0358200f96c0d46479592865f9db6af0782a1618",
+  "code_dirty": false,
+  "host": {
+    "hostname": "jxxy",
+    "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+    "python": "3.12.13"
+  },
+  "model": "yolo26s.pt",
+  "model_structure": "yolo26s.pt",
+  "init_weights": "yolo26s.pt",
+  "data_version": "sha256:3f97775cd4ff46f1",
+  "data_root": "/home/T7/dgut/robot_sim",
+  "manifests": [
+    {
+      "name": "manifest_train_synthetic.csv",
+      "path": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/train_data/manifest_train_synthetic.csv",
+      "exists": true,
+      "sha256": "6b8fe394cbe9308646e8bbfe4cedcece4fc9b227e97e1b083b36f026822199f4",
+      "bytes": 94649,
+      "rows": 500
+    },
+    {
+      "name": "manifest_val_synthetic.csv",
+      "path": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/train_data/manifest_val_synthetic.csv",
+      "exists": true,
+      "sha256": "71b0e5f340dc3c9fb3e8cc7a2de2ed442f853ab82e68132b4c3e5c5ac303c9bd",
+      "bytes": 27583,
+      "rows": 144
+    }
+  ],
+  "sampling_ratio": {
+    "synthetic": 0.807453,
+    "real": 0.0,
+    "negative": 0.192547,
+    "other": 0.0,
+    "total": 644,
+    "counts": {
+      "SYNTHETIC_HIFI_3D": 520,
+      "NEGATIVE": 124
+    }
+  },
+  "imgsz": 640,
+  "batch": 16,
+  "optimizer": "auto",
+  "lr0": 0.01,
+  "epochs": 100,
+  "augmentation": {
+    "hsv_h": 0.015,
+    "hsv_s": 0.7,
+    "hsv_v": 0.4,
+    "degrees": 0.0,
+    "translate": 0.1,
+    "scale": 0.5,
+    "shear": 0.0,
+    "perspective": 0.0,
+    "flipud": 0.0,
+    "fliplr": 0.5,
+    "bgr": 0.0,
+    "mosaic": 1.0,
+    "mixup": 0.0,
+    "copy_paste": 0.0,
+    "erasing": 0.4,
+    "close_mosaic": 10
+  },
+  "seed": 17,
+  "gpu": {
+    "available": true,
+    "name": "NVIDIA RTX A6000",
+    "device_count": 1,
+    "source": "torch"
+  },
+  "wall_time_sec": 963.42,
+  "peak_vram_mb": 4594.799,
+  "best_weight": "/home/T7/dgut/robot_sim/outputs/shuttle_detection/training/baseline_synthetic_only/weights/best.pt",
+  "last_weight": "/home/T7/dgut/robot_sim/outputs/shuttle_detection/training/baseline_synthetic_only/weights/last.pt",
+  "config_path": "/home/T7/dgut/robot_sim/configs/shuttle_detection/baseline.yaml",
+  "config_sha256": "ee0b5b25e0303056b996b60296c21aa9fea01b46a0d19de09941ee7c1cd78a34",
+  "config": {
+    "model": "yolo26s.pt",
+    "nc": 1,
+    "name": "shuttlecock",
+    "imgsz": 640,
+    "seed": 17,
+    "epochs": 100,
+    "batch": 16,
+    "optimizer": "auto",
+    "lr0": 0.01
+  },
+  "extra": {
+    "weights_dir": "/home/T7/dgut/robot_sim/outputs/shuttle_detection/training/baseline_synthetic_only/weights",
+    "results_csv": "/home/T7/dgut/robot_sim/outputs/shuttle_detection/training/baseline_synthetic_only/results.csv",
+    "args_yaml": "/home/T7/dgut/robot_sim/outputs/shuttle_detection/training/baseline_synthetic_only/args.yaml"
+  },
+  "code_commit_source": "controller: the remote training host is deliberately not a git checkout (the sync excludes .git), so the trainer records null for the commit. The local single source of truth supplies it, and it describes the exact tree that was archived and uploaded to the host.",
+  "final_metrics": {
+    "epoch": 100,
+    "precision": 0.87128,
+    "recall": 0.45833,
+    "mAP50": 0.55025,
+    "mAP50_95": 0.2532,
+    "source": "results.csv final row on the remote training host"
+  },
+  "weights_sha256": {
+    "best.pt": "ff62e5401804938236a2a3f9e3384c75010638c991a71a703be0b6aaab6823a7",
+    "last.pt": "d2eb8a0d51ce51b82015dfb158d7ed09daae0cf60c286828872ef634a2bbabf0",
+    "note": "hashed on the remote after training; weights stay on the host, only the hashes are recorded"
+  },
+  "code_commit_proof": {
+    "method": "git hash-object --stdin-paths over every tracked file in the uploaded archive, compared with git ls-tree of the commit (hash-object applies the same clean filter, so core.autocrlf=true does not create a false mismatch)",
+    "tracked_files_in_archive": 370,
+    "identical_to_commit": 370,
+    "different": 0,
+    "generated_data_files": 1441,
+    "verdict": "the archived tree is byte-identical to commit 0358200f96c0 for every tracked file"
+  }
+}
