@@ -1,0 +1,3 @@
+sample_id,code,severity,detail
+<manifest>,MANIFEST_COLUMN_MISSING,WARNING,optional column missing: camera_id
+<manifest>,SOURCE_TYPE_NON_CANONICAL,WARNING,source_type='SYNTHETIC_HIFI_3D' family=SYNTHETIC_3D in 540 sample(s) of manifest_train_full.csv
