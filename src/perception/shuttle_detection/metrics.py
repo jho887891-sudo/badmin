@@ -120,6 +120,7 @@ Box = tuple[float, float, float, float]
 # Manifest columns that carry the ground truth. The controlled manifests record a
 # box centre and its extents rather than corners (the renderer knows both), so both
 # spellings of each field are accepted.
+MANIFEST_EQUIVALENT_SIZE_COLUMNS: tuple[str, ...] = ("equivalent_size_px", "equiv_size_px")
 MANIFEST_BBOX_WIDTH_COLUMNS: tuple[str, ...] = ("bbox_w_px", "bbox_width_px")
 MANIFEST_BBOX_HEIGHT_COLUMNS: tuple[str, ...] = ("bbox_h_px", "bbox_height_px")
 MANIFEST_CENTER_X_COLUMNS: tuple[str, ...] = ("pos_x_px", "bbox_cx_px")
@@ -163,7 +164,7 @@ def gt_box_from_center_size(
     return (cx - width / 2.0, cy - height / 2.0, cx + width / 2.0, cy + height / 2.0)
 
 
-def _manifest_float(row: Any, names: tuple[str, ...]) -> float | None:
+def manifest_number(row: Any, names: tuple[str, ...]) -> float | None:
     """First readable number among the named columns, or None.
 
     A blank cell, a missing column and a value that is not a number all return
@@ -196,15 +197,33 @@ def ground_truth_box_from_row(row: Any) -> Box | None:
     sample -- but it cannot be matched against, so it is reported as unknown rather
     than as a box at the origin.
     """
-    width = _manifest_float(row, MANIFEST_BBOX_WIDTH_COLUMNS)
-    height = _manifest_float(row, MANIFEST_BBOX_HEIGHT_COLUMNS)
-    center_x = _manifest_float(row, MANIFEST_CENTER_X_COLUMNS)
-    center_y = _manifest_float(row, MANIFEST_CENTER_Y_COLUMNS)
+    width = manifest_number(row, MANIFEST_BBOX_WIDTH_COLUMNS)
+    height = manifest_number(row, MANIFEST_BBOX_HEIGHT_COLUMNS)
+    center_x = manifest_number(row, MANIFEST_CENTER_X_COLUMNS)
+    center_y = manifest_number(row, MANIFEST_CENTER_Y_COLUMNS)
     if width is None or height is None or center_x is None or center_y is None:
         return None
     if width <= 0.0 or height <= 0.0:
         return None
     return gt_box_from_center_size(center_x, center_y, width, height)
+
+
+def equivalent_size_from_row(row: Any) -> float | None:
+    """The target size of a manifest row, or None when the row records no box.
+
+    A manifest that carries equivalent_size_px has already made the choice of size
+    metric; otherwise it is recomputed here from the box extents, so a manifest
+    written before the column existed still yields a size curve instead of an
+    empty one.
+    """
+    recorded = manifest_number(row, MANIFEST_EQUIVALENT_SIZE_COLUMNS)
+    if recorded is not None and recorded > 0.0:
+        return recorded
+    width = manifest_number(row, MANIFEST_BBOX_WIDTH_COLUMNS)
+    height = manifest_number(row, MANIFEST_BBOX_HEIGHT_COLUMNS)
+    if width is None or height is None or width <= 0.0 or height <= 0.0:
+        return None
+    return equivalent_size_px(width, height)
 
 
 def iou_xyxy(box_a: Any, box_b: Any) -> float:
