@@ -924,6 +924,128 @@ def verify_single_variable(samples: Sequence[PlannedSample]) -> list[str]:
 
 
 # --------------------------------------------------------------------------- #
+# Checking the rendered manifest, not the intention behind it
+# --------------------------------------------------------------------------- #
+
+# The recorded controls: every manifest column a sweep is supposed to hold, with the
+# tolerance at which two rows still count as held. Anything not listed here is either
+# the varied variable of some sweep, or a measured outcome of it (bbox extents, the
+# target centre, the distance) and is deliberately not pinned.
+PINNED_MANIFEST_COLUMNS: dict[str, float] = {
+    "target_px": 0.0,
+    "yaw_deg": 0.0,
+    "pitch_deg": 0.0,
+    "roll_deg": 0.0,
+    "pose_bucket": 0.0,
+    "position_bucket": 0.0,
+    "background": 0.0,
+    "light_azimuth_deg": 0.0,
+    "motion_px": 0.0,
+    "blur_bucket": 0.0,
+    "occlusion_bucket": 0.0,
+    "occlusion_target_fraction": 0.0,
+    "occlusion_fraction": 0.0,
+}
+
+# The one variable each sweep is allowed to move, as manifest column names. Where a
+# sweep moves a measured quantity it is named separately from the input that drives
+# it, so "the occluder covered more of the object" is not confused with "the request
+# asked for more occlusion".
+VARIED_MANIFEST_COLUMNS: dict[str, tuple[str, ...]] = {
+    "S1": ("target_px", "equivalent_size_px"),
+    "S2": ("yaw_deg", "pitch_deg", "roll_deg", "pose_bucket"),
+    "S3": ("position_bucket", "pos_x_px", "pos_y_px"),
+    "S4": ("blur_bucket", "motion_px"),
+    "S5": ("occlusion_bucket", "occlusion_target_fraction", "occlusion_fraction"),
+    "S6a": ("background",),
+    "S6b": ("light_azimuth_deg",),
+}
+
+
+def _numeric(value: Any) -> float | None:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def verify_measured_pins(rows: Sequence[Mapping[str, Any]]) -> list[str]:
+    """Report pinned manifest columns that did not stay put inside a sweep.
+
+    The plan is checked before rendering; this is the same question asked of the
+    rows that were actually written, which is the only version of it a reader can
+    verify. Continuous columns are compared against the sweep's own spread rather
+    than against an exact equality, so a genuine drift is reported while the last
+    decimal place of a float is not.
+    """
+    violations: list[str] = []
+    for sweep in SWEEP_IDS:
+        sweep_rows = [row for row in rows if str(row.get("sweep", "")) == sweep]
+        if not sweep_rows:
+            continue
+        varied = set(VARIED_MANIFEST_COLUMNS.get(sweep, ()))
+        for column, tolerance in PINNED_MANIFEST_COLUMNS.items():
+            if column in varied:
+                continue
+            values = [row.get(column, "") for row in sweep_rows]
+            if len(set(map(str, values))) <= 1:
+                continue
+            numbers = [_numeric(value) for value in values]
+            if all(number is not None for number in numbers):
+                spread = max(numbers) - min(numbers)
+                if spread <= float(tolerance):
+                    continue
+                violations.append(
+                    sweep
+                    + ": pinned column "
+                    + column
+                    + " spread "
+                    + f"{spread:.6g}"
+                    + " over "
+                    + str(len(sweep_rows))
+                    + " rows"
+                )
+            else:
+                violations.append(
+                    sweep
+                    + ": pinned column "
+                    + column
+                    + " takes "
+                    + str(len(set(map(str, values))))
+                    + " values "
+                    + repr(sorted(set(map(str, values))))
+                )
+    return violations
+
+
+def distribution(rows: Sequence[Mapping[str, Any]], column: str) -> dict[str, int]:
+    """Count rows by the value of one column, for the post-generation report."""
+    counts: dict[str, int] = {}
+    for row in rows:
+        key = str(row.get(column, ""))
+        counts[key] = counts.get(key, 0) + 1
+    return counts
+
+
+def bbox_inside_frame(row: Mapping[str, Any], width: int, height: int) -> bool:
+    """Whether a recorded ground-truth box lies wholly inside the frame."""
+    centre_x = _numeric(row.get("pos_x_px"))
+    centre_y = _numeric(row.get("pos_y_px"))
+    bbox_w = _numeric(row.get("bbox_w_px"))
+    bbox_h = _numeric(row.get("bbox_h_px"))
+    if None in (centre_x, centre_y, bbox_w, bbox_h):
+        return False
+    half_w = (bbox_w - 1.0) / 2.0
+    half_h = (bbox_h - 1.0) / 2.0
+    return bool(
+        centre_x - half_w >= 0.0
+        and centre_y - half_h >= 0.0
+        and centre_x + half_w <= float(width) - 1.0
+        and centre_y + half_h <= float(height) - 1.0
+    )
+
+
+# --------------------------------------------------------------------------- #
 # Ground truth from a rendered mask
 # --------------------------------------------------------------------------- #
 

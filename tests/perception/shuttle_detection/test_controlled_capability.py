@@ -56,6 +56,7 @@ from src.perception.shuttle_detection.controlled_capability import (  # noqa: E4
     position_pixel_centre,
     position_stays_inside_frame,
     size_bucket,
+    verify_measured_pins,
     verify_single_variable,
 )
 
@@ -414,6 +415,68 @@ class PlanTests(unittest.TestCase):
         self.assertEqual([s.seed for s in first], [s.seed for s in second])
         self.assertEqual(len({s.seed for s in first}), len(first))
         self.assertEqual(len({s.noise_sigma for s in first}), 1)
+
+
+class MeasuredPinTests(unittest.TestCase):
+    """The plan says what should be pinned; the manifest says what was.
+
+    Rendering happens after the plan, so the only evidence that a sweep really held
+    its other variables is the recorded rows themselves. These are the checks the
+    generator runs over the finished manifest.
+    """
+
+    @staticmethod
+    def rendered_rows():
+        rows = []
+        for index, sample in enumerate(plan()):
+            row = sample.as_manifest_row()
+            row["bbox_w_px"] = 16
+            row["bbox_h_px"] = 16
+            row["pos_x_px"] = 480
+            row["pos_y_px"] = 480
+            row["equivalent_size_px"] = 16.0
+            row["equiv_size_px"] = 16.0
+            row["distance_m"] = 2.0 + 0.001 * index
+            row["occlusion_fraction"] = sample.occlusion_target_fraction
+            rows.append(row)
+        return rows
+
+    def test_a_clean_manifest_has_no_violations(self) -> None:
+        self.assertEqual(verify_measured_pins(self.rendered_rows()), [])
+
+    def test_a_pinned_background_that_drifted_is_reported(self) -> None:
+        rows = self.rendered_rows()
+        for row in rows:
+            if row["sweep"] == "S1":
+                row["background"] = "bg_009.jpg"
+                break
+        violations = verify_measured_pins(rows)
+        self.assertTrue(any("S1" in v and "background" in v for v in violations), violations)
+
+    def test_a_pinned_pose_that_drifted_is_reported(self) -> None:
+        rows = self.rendered_rows()
+        for row in rows:
+            if row["sweep"] == "S3":
+                row["pitch_deg"] = 31.0
+                break
+        violations = verify_measured_pins(rows)
+        self.assertTrue(any("S3" in v and "pitch_deg" in v for v in violations), violations)
+
+    def test_the_measured_occlusion_fraction_may_move_in_the_occlusion_sweep(self) -> None:
+        rows = self.rendered_rows()
+        for index, row in enumerate(rows):
+            if row["sweep"] == "S5":
+                row["occlusion_fraction"] = 0.1 + 0.05 * index
+        self.assertEqual(verify_measured_pins(rows), [])
+
+    def test_an_occlusion_fraction_outside_its_sweep_is_reported(self) -> None:
+        rows = self.rendered_rows()
+        for row in rows:
+            if row["sweep"] == "S2":
+                row["occlusion_fraction"] = 0.3
+                break
+        violations = verify_measured_pins(rows)
+        self.assertTrue(any("occlusion_fraction" in v for v in violations), violations)
 
 
 class OcclusionTests(unittest.TestCase):
