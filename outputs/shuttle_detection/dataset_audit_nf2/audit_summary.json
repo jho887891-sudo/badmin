@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "issue_count": 2,
+  "error_count": 0,
+  "warning_count": 2,
+  "n_samples": 640,
+  "n_manifests": 1,
+  "dataset_root": ".",
+  "dataset_version": "sha256:34e4f9733c3f10c9",
+  "dataset_version_scope": "manifest+image-content",
+  "dataset_version_note": "identifies the audited manifest bytes and the content hash of every audited image",
+  "manifests": [
+    {
+      "path": "outputs\\shuttle_capability\\train_data\\manifest_train_nearfield2.csv",
+      "name": "manifest_train_nearfield2.csv",
+      "sha256": "a2f90e009f28db747bad5b1ee0850b4ef44ea7708d471183412dbd08fc2588d2",
+      "rows": 640,
+      "columns": [
+        "file",
+        "split",
+        "source_type",
+        "background",
+        "target_px",
+        "equiv_size_px",
+        "distance_m",
+        "bbox_w_px",
+        "bbox_h_px",
+        "pos_x_px",
+        "pos_y_px",
+        "coverage_sum",
+        "solid_px",
+        "yaw_deg",
+        "pitch_deg",
+        "roll_deg",
+        "light_azimuth_deg",
+        "shadow_gain",
+        "motion_px",
+        "motion_angle_deg",
+        "noise_sigma",
+        "noise_seed",
+        "imgsz",
+        "supersample",
+        "is_negative"
+      ]
+    }
+  ],
+  "source_group_columns": [
+    "background"
+  ],
+  "splits_present": [
+    "train"
+  ],
+  "bound_for_training": true,
+  "counts_by_split": {
+    "train": 640
+  },
+  "counts_by_severity": {
+    "WARNING": 2
+  },
+  "counts_by_code": {
+    "MANIFEST_COLUMN_MISSING": 1,
+    "SOURCE_TYPE_NON_CANONICAL": 1
+  },
+  "distribution_dimensions": [
+    "split",
+    "source_type",
+    "camera_id",
+    "size_bucket",
+    "blur_bucket",
+    "pose_bucket",
+    "is_negative"
+  ],
+  "checks": {
+    "asset_consistency": "NOT_CHECKED_BY_THIS_AUDIT",
+    "near_duplicate_content": "NOT_CHECKED_BY_THIS_AUDIT",
+    "label_integrity": "RAN",
+    "corrupt_image_decode": "RAN",
+    "cross_split_duplicate_content": "RAN",
+    "within_split_exact_duplicate": "RAN",
+    "source_group_leakage": "RAN",
+    "distribution": "RAN"
+  },
+  "checklist": {
+    "asset_consistency": "NOT_CHECKED_BY_THIS_AUDIT",
+    "label_integrity": "PASS",
+    "data_cleaning": "PASS",
+    "pool_isolation": "PASS",
+    "distribution_quantified": "PASS"
+  }
+}
