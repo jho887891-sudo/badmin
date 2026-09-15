@@ -1,0 +1,17 @@
+dimension,value,count
+split,train,400
+source_type,SYNTHETIC_3D,400
+camera_id,unspecified,400
+size_bucket,8-16px,198
+size_bucket,4-8px,156
+size_bucket,16-32px,28
+size_bucket,<4px,15
+size_bucket,>=32px,3
+blur_bucket,sharp,135
+blur_bucket,slight,125
+blur_bucket,heavy,76
+blur_bucket,moderate,64
+pose_bucket,steep,349
+pose_bucket,tilted,50
+pose_bucket,axis_aligned,1
+is_negative,False,400
