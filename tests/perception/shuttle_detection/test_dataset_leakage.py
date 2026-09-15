@@ -483,5 +483,127 @@ class AuditDatasetTests(unittest.TestCase):
         self.assertEqual(report.summary["warning_count"], 6)
 
 
+class AuditSummaryContractTests(unittest.TestCase):
+    """What the summary may and may not let a reader conclude.
+
+    F1: auditing several pools together to produce one inventory is legitimate, so a
+    held-out row must not be a hard ERROR -- but PASS must not be readable as "this
+    pooled set is safe to train on" either.
+    F2: a check that did not run must say so instead of leaving pool_isolation at PASS.
+    F6: dataset_version must identify the images, not only the manifest bytes.
+    """
+
+    def build_pool(self, root: Path, name: str, split: str, payload: bytes, background: str):
+        row = write_sample(root, name, split, payload, background)
+        return write_manifest(root / (split + "_manifest.csv"), [row])
+
+    def test_a_held_out_split_mixed_with_a_training_split_only_warns(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            train_manifest = self.build_pool(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            core_manifest = self.build_pool(root, "core_00000", "fixed_core_test", OTHER_PNG, "bg_core_1")
+            report = audit_dataset([train_manifest, core_manifest], dataset_root=root)
+            mixed = [i for i in report.issues if i.code == "HELD_OUT_SPLIT_WITH_TRAINING_SPLIT"]
+            self.assertEqual(len(mixed), 1)
+            self.assertEqual(mixed[0].severity, "WARNING")
+            self.assertEqual(report.result.error_count, 0)
+            self.assertTrue(report.result.passed)
+            self.assertFalse(report.summary["bound_for_training"])
+
+    def test_splits_present_always_names_every_split_in_the_audit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            train_manifest = self.build_pool(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            core_manifest = self.build_pool(root, "core_00000", "fixed_core_test", OTHER_PNG, "bg_core_1")
+            report = audit_dataset([train_manifest, core_manifest], dataset_root=root)
+            self.assertEqual(report.summary["splits_present"], ["train", "fixed_core_test"])
+
+    def test_a_trainable_pair_is_bound_for_training(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            train_manifest = self.build_pool(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            val_manifest = self.build_pool(root, "val_00000", "val", OTHER_PNG, "bg_val_1")
+            report = audit_dataset([train_manifest, val_manifest], dataset_root=root)
+            self.assertEqual(report.summary["splits_present"], ["train", "val"])
+            self.assertTrue(report.summary["bound_for_training"])
+            self.assertEqual(
+                [i for i in report.issues if i.code == "HELD_OUT_SPLIT_WITH_TRAINING_SPLIT"], []
+            )
+
+    def test_a_single_training_split_audit_is_bound_for_training(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = self.build_pool(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            report = audit_dataset([manifest], dataset_root=root)
+            self.assertEqual(report.summary["splits_present"], ["train"])
+            self.assertTrue(report.summary["bound_for_training"])
+
+    def test_skipping_image_hashing_is_reported_as_not_run(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = self.build_pool(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            report = audit_dataset([manifest], dataset_root=root, hash_images=False)
+            checks = report.summary["checks"]
+            self.assertEqual(checks["cross_split_duplicate_content"], "NOT_RUN")
+            self.assertEqual(checks["within_split_exact_duplicate"], "NOT_RUN")
+            self.assertEqual(report.summary["checklist"]["pool_isolation"], "NOT_RUN")
+
+    def test_checks_report_what_actually_ran_by_default(self) -> None:
+        from src.perception.shuttle_detection.dataset_audit import image_decoder_available
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = self.build_pool(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            report = audit_dataset([manifest], dataset_root=root)
+            checks = report.summary["checks"]
+            self.assertEqual(checks["label_integrity"], "RAN")
+            self.assertEqual(checks["distribution"], "RAN")
+            self.assertEqual(checks["cross_split_duplicate_content"], "RAN")
+            self.assertEqual(checks["within_split_exact_duplicate"], "RAN")
+            self.assertEqual(
+                checks["corrupt_image_decode"], "RAN" if image_decoder_available() else "NOT_RUN"
+            )
+            self.assertEqual(checks["asset_consistency"], "NOT_CHECKED_BY_THIS_AUDIT")
+            self.assertEqual(checks["near_duplicate_content"], "NOT_CHECKED_BY_THIS_AUDIT")
+            self.assertEqual(report.summary["checklist"]["pool_isolation"], "PASS")
+
+    def test_skipping_image_decoding_is_reported_as_not_run(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = self.build_pool(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            report = audit_dataset([manifest], dataset_root=root, decode_images=False)
+            self.assertEqual(report.summary["checks"]["corrupt_image_decode"], "NOT_RUN")
+            self.assertEqual(report.summary["checklist"]["data_cleaning"], "NOT_RUN")
+
+    def test_dataset_version_changes_when_only_the_images_change(self) -> None:
+        """Two datasets with byte-identical manifests must not share a version."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root_a = Path(tmp) / "a"
+            root_b = Path(tmp) / "b"
+            manifest_a = self.build_pool(root_a, "train_00000", "train", TINY_PNG, "bg_train_1")
+            manifest_b = self.build_pool(root_b, "train_00000", "train", OTHER_PNG, "bg_train_1")
+            self.assertEqual(manifest_a.read_bytes(), manifest_b.read_bytes())
+            report_a = audit_dataset([manifest_a], dataset_root=root_a)
+            report_b = audit_dataset([manifest_b], dataset_root=root_b)
+            self.assertNotEqual(
+                report_a.summary["dataset_version"], report_b.summary["dataset_version"]
+            )
+
+    def test_dataset_version_scope_is_declared(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = self.build_pool(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            bound = audit_dataset([manifest], dataset_root=root)
+            self.assertEqual(bound.summary["dataset_version_scope"], "manifest+image-content")
+            self.assertTrue(bound.summary["dataset_version_note"])
+
+            unbound = audit_dataset([manifest], dataset_root=root, hash_images=False)
+            self.assertEqual(unbound.summary["dataset_version_scope"], "manifest-only")
+            self.assertTrue(unbound.summary["dataset_version_note"])
+            self.assertNotEqual(
+                bound.summary["dataset_version"], unbound.summary["dataset_version"]
+            )
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -72,10 +72,31 @@ CODE_SOURCE_TYPE_NON_CANONICAL = "SOURCE_TYPE_NON_CANONICAL"
 CODE_DUPLICATE_SAMPLE_ID = "DUPLICATE_SAMPLE_ID"
 CODE_CROSS_SPLIT_DUPLICATE = "CROSS_SPLIT_DUPLICATE"
 CODE_SOURCE_GROUP_LEAKAGE = "SOURCE_GROUP_LEAKAGE"
-CODE_COLUMN_VALUE_UNPARSEABLE = "COLUMN_VALUE_UNPARSEABLE"
+CODE_HELD_OUT_SPLIT_MIXED = "HELD_OUT_SPLIT_WITH_TRAINING_SPLIT"
+CODE_IMAGE_DECODE_SKIPPED = "IMAGE_DECODE_CHECK_SKIPPED"
 
 # A manifest-level finding has no single sample to blame.
 MANIFEST_SCOPE = "<manifest>"
+
+# Splits a training run may draw from, and splits that must never be trained on as
+# a whole (spec section 6). Auditing both together is legitimate -- it produces one
+# inventory -- but the pooled result is then a report, not a training set, which is
+# what summary["bound_for_training"] records.
+TRAINING_SPLITS: tuple[str, ...] = ("train", "val")
+HELD_OUT_SPLITS: tuple[str, ...] = ("fixed_core_test", "challenge_test")
+
+# Status vocabulary for summary["checks"]. A check that did not run must be
+# visible as NOT_RUN: leaving a composite at PASS would claim verification that
+# never happened.
+CHECK_RAN = "RAN"
+CHECK_NOT_RUN = "NOT_RUN"
+CHECK_NOT_CHECKED = "NOT_CHECKED_BY_THIS_AUDIT"
+
+# What summary["dataset_version"] identifies. Hashing the manifest alone cannot
+# distinguish two datasets that share identical manifests but different images, so
+# the scope is part of the token and is stated next to it.
+DATASET_VERSION_SCOPE_IMAGE = "manifest+image-content"
+DATASET_VERSION_SCOPE_MANIFEST = "manifest-only"
 
 _TRUTHY = {"1", "true", "yes", "y", "t"}
 
@@ -441,17 +462,33 @@ def _count_label_boxes(label_path: Path) -> int:
     return sum(1 for line in text.splitlines() if line.strip())
 
 
-def _decode_image_issues(sample_id: str, image_path: Path, row: Mapping[str, str]) -> list[AuditIssue]:
-    """Decode the raster when Pillow is importable, and cross-check its size.
+_DECODER_AVAILABLE: bool | None = None
+
+
+def image_decoder_available() -> bool:
+    """Whether this host can decode images at all (Pillow), memoised.
 
     Pillow is optional: the audit must run on hosts that only have the standard
-    library, where this check is skipped rather than failed.
+    library. A skipped corrupt-image check is then reported as NOT_RUN instead of
+    being silently dropped, so the check runner and the summary both ask here.
     """
+    global _DECODER_AVAILABLE
+    if _DECODER_AVAILABLE is None:
+        try:
+            from PIL import Image  # noqa: F401,PLC0415 - optional dependency
+
+            _DECODER_AVAILABLE = True
+        except Exception:
+            _DECODER_AVAILABLE = False
+    return _DECODER_AVAILABLE
+
+
+def _decode_image_issues(sample_id: str, image_path: Path, row: Mapping[str, str]) -> list[AuditIssue]:
+    """Decode the raster when a decoder exists, and cross-check its size."""
     issues: list[AuditIssue] = []
-    try:
-        from PIL import Image  # noqa: PLC0415 - optional dependency
-    except Exception:
+    if not image_decoder_available():
         return issues
+    from PIL import Image  # noqa: PLC0415 - guarded by image_decoder_available()
     try:
         with Image.open(image_path) as image:
             size = image.size
@@ -797,15 +834,39 @@ def _pick_group_column(columns: Sequence[str]) -> str | None:
     return None
 
 
-def _dataset_version(manifest_infos: Sequence[Mapping[str, Any]]) -> str:
-    """Order-independent identity of the manifest set that was audited."""
-    payload = "\n".join(
+def _dataset_version(
+    manifest_infos: Sequence[Mapping[str, Any]],
+    image_pairs: Sequence[tuple[str, str]],
+    scope: str,
+) -> str:
+    """Order-independent identity of what was audited.
+
+    The manifest bytes alone identify the annotations, not the pixels: two runs
+    that share a manifest and differ only in the rendered images would collide. The
+    per-sample content hashes are therefore part of the token, and the scope marker
+    guarantees that a manifest-only token can never be mistaken for an
+    image-bound one.
+    """
+    lines = [scope]
+    lines.extend(
         sorted(
             str(info["name"]) + ":" + str(info["sha256"]) + ":" + str(info["rows"])
             for info in manifest_infos
         )
     )
-    return "sha256:" + hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
+    lines.extend(sorted(sample_id + ":" + digest for sample_id, digest in image_pairs))
+    return "sha256:" + hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest()[:16]
+
+
+def _composite_status(found_problem: bool, check_ran: bool) -> str:
+    """PASS/FAIL for a composite checklist entry, or NOT_RUN if it could not run.
+
+    A real defect always wins: FAIL is reported even when a sibling check was
+    skipped, because the finding does not depend on the skipped check.
+    """
+    if found_problem:
+        return "FAIL"
+    return "PASS" if check_ran else CHECK_NOT_RUN
 
 
 def _leakage_rows(
@@ -863,7 +924,19 @@ def audit_dataset(
     id_rows: list[tuple[str, str]] = []
     manifest_infos: list[dict[str, Any]] = []
     group_columns: set[str] = set()
+    image_pairs: list[tuple[str, str]] = []
     total_rows = 0
+
+    decode_check_ran = bool(decode_images and image_decoder_available())
+    if decode_images and not decode_check_ran:
+        issues.append(
+            AuditIssue(
+                MANIFEST_SCOPE,
+                CODE_IMAGE_DECODE_SKIPPED,
+                "WARNING",
+                "no image decoder (Pillow) on this host: corrupt-image detection did not run",
+            )
+        )
 
     for manifest_path in manifest_paths:
         rows, columns = read_manifest(manifest_path)
@@ -915,6 +988,8 @@ def audit_dataset(
             content_hash = ""
             if hash_images and sample.image_path:
                 content_hash = _file_sha256(Path(sample.image_path))
+            if content_hash:
+                image_pairs.append((sample.sample_id, content_hash))
             hash_rows.append((sample.sample_id, sample.split, content_hash))
             group_rows.append(
                 (
@@ -984,11 +1059,56 @@ def audit_dataset(
     leakage_issues = find_cross_split_duplicates(hash_rows) + find_source_group_leakage(group_rows)
     issues.extend(leakage_issues)
 
+    split_counts = Counter(str(row["split"]) for row in inventory)
+    splits_present = [split for split in SPLITS if split in split_counts] + sorted(
+        split for split in split_counts if split and split not in SPLITS
+    )
+    training_splits_present = [split for split in splits_present if split in TRAINING_SPLITS]
+    held_out_splits_present = [split for split in splits_present if split in HELD_OUT_SPLITS]
+
+    # Auditing several pools together is how a complete inventory is produced, so a
+    # held-out row is not an ERROR here. It does mean the pooled set must never be
+    # trained on as a whole, which the WARNING and bound_for_training both state --
+    # the hard refusal belongs to the training-path dataset builder, not to the audit.
+    bound_for_training = not (training_splits_present and held_out_splits_present)
+    if not bound_for_training:
+        issues.append(
+            AuditIssue(
+                MANIFEST_SCOPE,
+                CODE_HELD_OUT_SPLIT_MIXED,
+                "WARNING",
+                "this audit mixes training splits ("
+                + ", ".join(training_splits_present)
+                + ") with held-out splits ("
+                + ", ".join(held_out_splits_present)
+                + "); the pooled inventory is for reporting only and is not a training set",
+            )
+        )
+
     result = AuditResult.from_issues(issues)
     distribution = summarize_distribution(inventory)
     severity_counts = Counter(issue.severity for issue in issues)
     code_counts = Counter(issue.code for issue in issues)
-    split_counts = Counter(str(row["split"]) for row in inventory)
+    group_check_ran = bool(group_columns)
+    version_scope = (
+        DATASET_VERSION_SCOPE_IMAGE if hash_images else DATASET_VERSION_SCOPE_MANIFEST
+    )
+    version_note = (
+        "identifies the audited manifest bytes and the content hash of every audited image"
+        if hash_images
+        else "identifies the manifest bytes only: image hashing was disabled, so two "
+        "datasets that differ only in image bytes share this version"
+    )
+    checks = {
+        "asset_consistency": CHECK_NOT_CHECKED,
+        "near_duplicate_content": CHECK_NOT_CHECKED,
+        "label_integrity": CHECK_RAN,
+        "corrupt_image_decode": CHECK_RAN if decode_check_ran else CHECK_NOT_RUN,
+        "cross_split_duplicate_content": CHECK_RAN if hash_images else CHECK_NOT_RUN,
+        "within_split_exact_duplicate": CHECK_RAN if hash_images else CHECK_NOT_RUN,
+        "source_group_leakage": CHECK_RAN if group_check_ran else CHECK_NOT_RUN,
+        "distribution": CHECK_RAN,
+    }
     label_codes = {
         CODE_LABEL_MISSING,
         CODE_LABEL_FORMAT,
@@ -1006,19 +1126,26 @@ def audit_dataset(
         "n_samples": len(inventory),
         "n_manifests": len(manifest_infos),
         "dataset_root": str(root),
-        "dataset_version": _dataset_version(manifest_infos),
+        "dataset_version": _dataset_version(manifest_infos, image_pairs, version_scope),
+        "dataset_version_scope": version_scope,
+        "dataset_version_note": version_note,
         "manifests": manifest_infos,
         "source_group_columns": sorted(group_columns),
+        "splits_present": splits_present,
+        "bound_for_training": bound_for_training,
         "counts_by_split": dict(split_counts),
         "counts_by_severity": dict(severity_counts),
         "counts_by_code": dict(code_counts),
         "distribution_dimensions": list(BUCKET_DIMENSIONS),
+        "checks": checks,
         "checklist": {
-            "asset_consistency": "NOT_CHECKED_BY_THIS_AUDIT",
-            "label_integrity": "PASS" if label_ok else "FAIL",
-            "data_cleaning": "PASS" if result.error_count == 0 else "FAIL",
-            "pool_isolation": "PASS" if not leakage_issues else "FAIL",
-            "distribution_quantified": "PASS" if inventory else "FAIL",
+            "asset_consistency": CHECK_NOT_CHECKED,
+            "label_integrity": _composite_status(not label_ok, True),
+            "data_cleaning": _composite_status(result.error_count > 0, decode_check_ran),
+            "pool_isolation": _composite_status(
+                bool(leakage_issues), hash_images and group_check_ran
+            ),
+            "distribution_quantified": _composite_status(not inventory, True),
         },
     }
 
