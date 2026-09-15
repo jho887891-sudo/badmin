@@ -77,3 +77,26 @@ not an excuse for the model, and it is one more reason the calibrated controlled
 The FP counts, confidences and per-background breakdown come from `frozen_p3_after_baseline/`,
 specifically `predictions.csv`, `size_bucket_metrics.csv` and `background_metrics.csv`. The crop
 sheet is `fp_top24.jpg`; the full-resolution check is `p3_fullres_check.jpg`.
+## 7. Addendum — visual characterisation of the worst backgrounds (added 2026-09-15)
+
+Looking at the six worst backgrounds side by side (`fp_backgrounds.jpg`) collapses the per-image
+table into **two scene types**:
+
+| Scene type | Backgrounds | FPs | What the model is firing on |
+|---|---|---|---|
+| Badminton halls with distant players in white | bg_009, bg_024, bg_015 | 89 + 55 + 45 | small light-coloured patches: distant players in white shirts, plus bright specks on a wood floor |
+| Group photographs of people in light blue / white shirts | bg_007, bg_006, bg_004 | 82 + 57 + 45 | rows of light shirts read as small light blobs at shuttle-like scale |
+
+So the concentration is even sharper than the per-background table suggests: **four of the six are
+two ceremonies photographed twice**, and the other three are two halls. The false-positive problem
+is not "many backgrounds are hard" - it is "the model was never taught that light clothing and
+distant white figures are not shuttlecocks".
+
+That is a specific, acquirable hard-negative requirement, which is what spec 06 section 6 asks for:
+new images containing **groups of people in light clothing**, **distant players in white in a hall**,
+and **bright specks on wooden and green floors** - the same CHARACTER as the failures, never the
+frozen images themselves.
+
+It also explains the confidence distribution: a shirt front at 8-16 px on a plain background is
+genuinely hard to distinguish from a shuttlecock by shape alone, which is why some of these reach
+0.9 confidence rather than being filtered by a threshold.
