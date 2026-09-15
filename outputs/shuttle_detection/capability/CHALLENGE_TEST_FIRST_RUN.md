@@ -64,3 +64,40 @@ and the target is at the small end.
 - The "scenes where both fire and hit" line printed by the analysis script is an artefact - every scene
   has rows in both C1 and C1n by construction - and is not reported as a finding.
 - The real positives remain 6 distinct photographs behind 10 rows.
+---
+
+## 5. Post-hoc integrity check: the challenge set partially overlaps the TRAINING pool
+
+The split was validated as disjoint from `fixed_core_test` when it was built. What nobody checked, because
+it did not exist yet, is its relationship to the training pool - and one was created afterwards, when 33 of
+the first hard-negative batch and later 53 of the second were added to training. C1 and C1n were built FROM
+that first batch of scenes, so the overlap is structural rather than accidental.
+
+Measured, by content signature against the 96 raw hard-negative sources:
+
+| Sweep | Rows | Matching a training source at r >= 0.90 |
+|---|---|---|
+| C1 | 66 | **8** |
+| C1n | 33 | **4** |
+
+Byte-identical images: **zero**. The overlap is at the scene level - the training negatives are centre
+crops of the same source photographs, so the model has seen part of each of those scenes as a negative.
+
+## 6. Does that change the conclusion? No - and the check was worth running to know that
+
+The discrimination finding was recomputed on the subset with no training overlap:
+
+| | all 33 scenes | **29 scenes with no training overlap** |
+|---|---|---|
+| recall on the 10 px target | 11/33 = 0.333 | **10/29 = 0.345** |
+| boxes on the same scenes when EMPTY | 32 = 0.97 per scene | **27 = 0.93 per scene** |
+
+Removing the contaminated scenes changes nothing material: recall is 0.345 against an empty-scene firing
+rate of 0.93 boxes per scene. **The "no discrimination on cluttered scenes" conclusion stands on the clean
+subset**, which is the version to quote.
+
+It is also worth stating what the contaminated rows show, because it is surprising: those scenes were
+TRAINED as hard negatives, and the model still places about one box on each of them. The training negatives
+are 960x960 centre crops, so the model learned the centre of those scenes and not their edges - which is a
+concrete reason why "collect more hard negatives" has diminishing returns when the negatives are crops
+rather than whole scenes.
