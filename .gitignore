@@ -56,6 +56,11 @@ outputs/shuttle_capability/synthetic_3d/
 #   python tools/generate_controlled_capability.py
 outputs/shuttle_capability/controlled_capability/images/
 outputs/shuttle_capability/controlled_capability/labels/
+# the challenge split: its own manifest and composition table are tracked, the images are
+# regenerable. Regenerate with:
+#   python tools/generate_challenge_test.py
+outputs/shuttle_capability/challenge_test/images/
+outputs/shuttle_capability/challenge_test/labels/
 # full-resolution review sheets: regenerable evidence, the committed JPEG is the overview
 outputs/shuttle_detection/background_review_sheets/
 

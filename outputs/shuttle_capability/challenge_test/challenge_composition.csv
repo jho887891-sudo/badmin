@@ -1,0 +1,7 @@
+sweep,source_category,n_rows,n_negative,size_min_px,size_median_px,size_max_px,pose_buckets,max_motion_px,backgrounds_used
+C1,extreme_background,66,0,10.0,10.0,10.0,1,0.0,33
+C1n,extreme_background,33,33,0.0,0.0,0.0,1,0.0,33
+C2,very_small_targets,40,0,1.0,2.0,3.0,1,0.0,33
+C3,fast_blur,24,0,18.0,18.0,18.0,1,20.0,24
+C4,extreme_pose,40,0,17.889,18.109,18.33,1,0.0,33
+C5,historical_failure,24,0,1099.998,1299.998,1524.0,1,0.0,24

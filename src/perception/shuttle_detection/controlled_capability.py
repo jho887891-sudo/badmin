@@ -1206,6 +1206,14 @@ class PlannedSample:
     height: int
     focal_px: float
     supersample: int
+    # Which pool the row belongs to. Defaults to the held-out core set; the challenge
+    # split is built by the same row machinery with its own value, so both pools carry
+    # one schema and one definition of a ground-truth box.
+    split: str = SPLIT
+    # A scene with no shuttle in it at all. Its label file is empty, which the audit
+    # treats as a legal hard negative, and the evaluator scores it as a false positive
+    # if the detector fires.
+    is_negative: bool = False
 
     @property
     def pixel_centre(self) -> tuple[float, float]:
@@ -1243,7 +1251,7 @@ class PlannedSample:
         row.update(
             {
                 "file": self.file_name,
-                "split": SPLIT,
+                "split": self.split,
                 "source_type": SOURCE_TYPE,
                 "sweep": self.sweep,
                 "seed": self.seed,
@@ -1269,7 +1277,7 @@ class PlannedSample:
                 "supersample": self.supersample,
                 "focal_px": self.focal_px,
                 "camera_id": CAMERA_ID,
-                "is_negative": False,
+                "is_negative": bool(self.is_negative),
             }
         )
         return row
@@ -1285,14 +1293,23 @@ def stable_seed(*parts: object) -> int:
     return int(zlib.crc32(text.encode("utf-8")) % (2 ** 31 - 1))
 
 
+# Blur beyond the core sweep's heaviest level gets its own group label instead of being
+# folded into "heavy": a challenge row at 20 px of smear is not the same stimulus as one at
+# 7 px, and the evaluator groups by this column.
+BLUR_BUCKET_BEYOND_CORE = "extreme"
+
+
 def _blur_bucket_of(motion_px: float) -> str:
-    for name, value in BLUR_LEVELS:
-        if abs(float(motion_px) - value) < 1e-9:
+    value = float(motion_px)
+    for name, level in BLUR_LEVELS:
+        if abs(value - level) < 1e-9:
             return name
+    if value > BLUR_LEVELS[-1][1]:
+        return BLUR_BUCKET_BEYOND_CORE
     raise ValueError("motion_px " + repr(motion_px) + " is not a declared blur level")
 
 
-def _sample(
+def sample_row(
     settings: ControlSettings,
     *,
     name: str,
@@ -1308,6 +1325,8 @@ def _sample(
     occlusion_name: str,
     occlusion_target_fraction: float,
     repeat: int = 0,
+    split: str = SPLIT,
+    is_negative: bool = False,
     crop_seed: int | None = None,
     frame_px: int | None = None,
     focal_px: float | None = None,
@@ -1346,6 +1365,8 @@ def _sample(
         height=int(settings.height if frame_px is None else frame_px),
         focal_px=float(settings.focal_px if focal_px is None else focal_px),
         supersample=int(settings.supersample if supersample is None else supersample),
+        split=str(split),
+        is_negative=bool(is_negative),
     )
 
 
@@ -1374,7 +1395,7 @@ def build_plan(settings: ControlSettings) -> list[PlannedSample]:
         kwargs.setdefault("motion_px", 0.0)
         kwargs.setdefault("occlusion_name", "none")
         kwargs.setdefault("occlusion_target_fraction", 0.0)
-        samples.append(_sample(settings, **kwargs))
+        samples.append(sample_row(settings, **kwargs))
 
     # S1 size: pose, background, position, light and blur all held. The repeats walk
     # the bucket's own candidate targets, so a bucket is measured over a range of
@@ -1619,7 +1640,9 @@ def _numeric(value: Any) -> float | None:
         return None
 
 
-def verify_measured_pins(rows: Sequence[Mapping[str, Any]]) -> list[str]:
+def verify_measured_pins(
+    rows: Sequence[Mapping[str, Any]], varied: Mapping[str, Sequence[str]] | None = None
+) -> list[str]:
     """Report pinned manifest columns that did not stay put inside a sweep.
 
     The plan is checked before rendering; this is the same question asked of the
@@ -1629,13 +1652,19 @@ def verify_measured_pins(rows: Sequence[Mapping[str, Any]]) -> list[str]:
     decimal place of a float is not.
     """
     violations: list[str] = []
-    for sweep in SWEEP_IDS:
+    mapping = dict(VARIED_MANIFEST_COLUMNS)
+    if varied:
+        mapping.update({key: tuple(value) for key, value in varied.items()})
+    present = {str(row.get("sweep", "")) for row in rows}
+    order = [sweep for sweep in SWEEP_IDS if sweep in present]
+    order.extend(sorted(present - set(order) - {""}))
+    for sweep in order:
         sweep_rows = [row for row in rows if str(row.get("sweep", "")) == sweep]
         if not sweep_rows:
             continue
-        varied = set(VARIED_MANIFEST_COLUMNS.get(sweep, ()))
+        varied_columns = set(mapping.get(sweep, ()))
         for column, tolerance in PINNED_MANIFEST_COLUMNS.items():
-            if column in varied:
+            if column in varied_columns:
                 continue
             values = [row.get(column, "") for row in sweep_rows]
             if len(set(map(str, values))) <= 1:
