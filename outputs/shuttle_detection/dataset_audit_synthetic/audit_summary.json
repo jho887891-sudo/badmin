@@ -1,0 +1,108 @@
+{
+  "passed": true,
+  "issue_count": 4,
+  "error_count": 0,
+  "warning_count": 4,
+  "n_samples": 644,
+  "n_manifests": 2,
+  "dataset_root": ".",
+  "dataset_version": "sha256:b5ca11145af1f9d4",
+  "manifests": [
+    {
+      "path": "outputs\\shuttle_capability\\train_data\\manifest_train_synthetic.csv",
+      "name": "manifest_train_synthetic.csv",
+      "sha256": "6b8fe394cbe9308646e8bbfe4cedcece4fc9b227e97e1b083b36f026822199f4",
+      "rows": 500,
+      "columns": [
+        "file",
+        "split",
+        "source_type",
+        "background",
+        "target_px",
+        "equiv_size_px",
+        "distance_m",
+        "bbox_w_px",
+        "bbox_h_px",
+        "pos_x_px",
+        "pos_y_px",
+        "coverage_sum",
+        "solid_px",
+        "yaw_deg",
+        "pitch_deg",
+        "roll_deg",
+        "light_azimuth_deg",
+        "shadow_gain",
+        "motion_px",
+        "motion_angle_deg",
+        "noise_sigma",
+        "noise_seed",
+        "imgsz",
+        "supersample",
+        "is_negative"
+      ]
+    },
+    {
+      "path": "outputs\\shuttle_capability\\train_data\\manifest_val_synthetic.csv",
+      "name": "manifest_val_synthetic.csv",
+      "sha256": "71b0e5f340dc3c9fb3e8cc7a2de2ed442f853ab82e68132b4c3e5c5ac303c9bd",
+      "rows": 144,
+      "columns": [
+        "file",
+        "split",
+        "source_type",
+        "background",
+        "target_px",
+        "equiv_size_px",
+        "distance_m",
+        "bbox_w_px",
+        "bbox_h_px",
+        "pos_x_px",
+        "pos_y_px",
+        "coverage_sum",
+        "solid_px",
+        "yaw_deg",
+        "pitch_deg",
+        "roll_deg",
+        "light_azimuth_deg",
+        "shadow_gain",
+        "motion_px",
+        "motion_angle_deg",
+        "noise_sigma",
+        "noise_seed",
+        "imgsz",
+        "supersample",
+        "is_negative"
+      ]
+    }
+  ],
+  "source_group_columns": [
+    "background"
+  ],
+  "counts_by_split": {
+    "train": 500,
+    "val": 144
+  },
+  "counts_by_severity": {
+    "WARNING": 4
+  },
+  "counts_by_code": {
+    "MANIFEST_COLUMN_MISSING": 2,
+    "SOURCE_TYPE_NON_CANONICAL": 2
+  },
+  "distribution_dimensions": [
+    "split",
+    "source_type",
+    "camera_id",
+    "size_bucket",
+    "blur_bucket",
+    "pose_bucket",
+    "is_negative"
+  ],
+  "checklist": {
+    "asset_consistency": "NOT_CHECKED_BY_THIS_AUDIT",
+    "label_integrity": "PASS",
+    "data_cleaning": "PASS",
+    "pool_isolation": "PASS",
+    "distribution_quantified": "PASS"
+  }
+}
