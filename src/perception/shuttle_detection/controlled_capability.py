@@ -596,7 +596,13 @@ class ControlSettings:
     shadow_gain: float = 0.0
     motion_angle_deg: float = 30.0
     pose_deg: tuple[float, float, float] = (35.0, 30.0, 0.0)
-    size_px: float = 16.0
+    # The size every non-size sweep pins. Deliberately in the middle of the 16-24
+    # bucket rather than on its 16.0 edge: the renderer's ground-truth footprint is a
+    # whole-pixel quantity, and a pose sweep pinned at 16.0 px measured 15.4-16.0 px,
+    # which put every pose row in the neighbouring "12-16" bucket while the position,
+    # blur, occlusion and background rows sat in "16-24" -- the same 16 px target
+    # scored differently in the size curve depending on which sweep it came from.
+    size_px: float = 18.0
 
     def __post_init__(self) -> None:
         if self.width <= 0 or self.height <= 0:
