@@ -6,7 +6,9 @@
   "n_samples": 644,
   "n_manifests": 2,
   "dataset_root": ".",
-  "dataset_version": "sha256:b5ca11145af1f9d4",
+  "dataset_version": "sha256:218f3f233f5ec6a2",
+  "dataset_version_scope": "manifest+image-content",
+  "dataset_version_note": "identifies the audited manifest bytes and the content hash of every audited image",
   "manifests": [
     {
       "path": "outputs\\shuttle_capability\\train_data\\manifest_train_synthetic.csv",
@@ -78,6 +80,11 @@
   "source_group_columns": [
     "background"
   ],
+  "splits_present": [
+    "train",
+    "val"
+  ],
+  "bound_for_training": true,
   "counts_by_split": {
     "train": 500,
     "val": 144
@@ -98,6 +105,16 @@
     "pose_bucket",
     "is_negative"
   ],
+  "checks": {
+    "asset_consistency": "NOT_CHECKED_BY_THIS_AUDIT",
+    "near_duplicate_content": "NOT_CHECKED_BY_THIS_AUDIT",
+    "label_integrity": "RAN",
+    "corrupt_image_decode": "RAN",
+    "cross_split_duplicate_content": "RAN",
+    "within_split_exact_duplicate": "RAN",
+    "source_group_leakage": "RAN",
+    "distribution": "RAN"
+  },
   "checklist": {
     "asset_consistency": "NOT_CHECKED_BY_THIS_AUDIT",
     "label_integrity": "PASS",

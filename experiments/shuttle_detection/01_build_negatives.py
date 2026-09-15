@@ -22,11 +22,36 @@ import csv
 import sys
 from pathlib import Path
 
+import cv2
 import numpy as np
 
 REPO = Path(__file__).resolve().parents[2]
 
 POSITIVE_COLUMNS = None  # taken from the source manifest
+
+
+def vary(crop: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+    """Make each negative distinct even when its source is smaller than the crop window.
+
+    prepare_background cannot crop a source that is at most the requested size - it upscales
+    and returns the whole frame - so a small background yields N identical negatives. An
+    audit with the duplicate check found exactly that: two groups of four byte-identical
+    negatives from tbg_026.jpg (800x465) and tbg_029.jpg (640x481), 8 wasted samples in 100.
+
+    Flips and a mild random zoom keep the frame shuttle-free (the property that matters) while
+    guaranteeing variation. Driven by the caller's seeded generator, so still reproducible.
+    """
+    h, w = crop.shape[:2]
+    out = crop
+    if rng.random() < 0.5:
+        out = out[:, ::-1]
+    scale = float(rng.uniform(0.75, 1.0))
+    if scale < 0.999:
+        ch, cw = int(round(h * scale)), int(round(w * scale))
+        y0 = int(rng.integers(0, max(1, h - ch + 1)))
+        x0 = int(rng.integers(0, max(1, w - cw + 1)))
+        out = cv2.resize(out[y0:y0 + ch, x0:x0 + cw], (w, h), interpolation=cv2.INTER_LINEAR)
+    return np.ascontiguousarray(out)
 
 
 def main() -> int:
@@ -65,7 +90,7 @@ def main() -> int:
                 print("  unreadable background", bg_path.name)
                 continue
             for k in range(args.per_background):
-                crop = prepare_background(bg, args.imgsz, args.imgsz, rng)
+                crop = vary(prepare_background(bg, args.imgsz, args.imgsz, rng), rng)
                 name = "neg_{}_{:05d}".format(split, made)
                 imwrite_unicode(img_dir / (name + ".jpg"), crop, quality=92)
                 (lab_dir / (name + ".txt")).write_text("", encoding="utf-8")
