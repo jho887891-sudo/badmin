@@ -17,41 +17,48 @@ from the S8 block design, which runs the same size ladder over 5 scenes x 8 repe
 
 ## 2. The answer: marginalised over scenes, there is no regression
 
-| bucket | n | orig | nf | delta |
-|---|---|---|---|---|
-| `<4 px` | 40 | 0.025 | 0.000 | -0.025 |
-| `4-6 px` | 40 | 0.275 | 0.250 | -0.025 |
-| `6-8 px` | 27 | 0.296 | **0.370** | **+0.074** (was published as -0.200) |
-| `8-12 px` | 53 | 0.453 | **0.434** | **-0.019** (was published as -0.175) |
-| `12-16 px` | 40 | 0.575 | 0.625 | +0.050 |
-| `16-24 px` | 40 | 0.575 | **0.825** | +0.250 |
-| `24-32 px` | 40 | 0.500 | **0.900** | +0.400 |
-| `>32 px` | 40 | 0.225 | **0.900** | +0.675 |
+**Version note.** The first run of this analysis used a controlled set synced BEFORE the S8 implementer
+landed its bucketing fix (commit bf7ca75), so its 6-8 bucket held 27 measured rows and 8-12 held 53.
+The numbers below are from a re-run against the corrected manifest, verified at 40 rows in every S8
+bucket by measured size. The earlier figures are kept in the right-hand column so the correction is
+visible rather than quietly overwritten; the conclusion is unchanged.
 
-At 6-8 px the marginalised effect is **positive**, and at 8-12 px it is **-0.019**, which is inside
-the noise. So the small-target cost of the data return was an artefact, and the frozen P3 set had it
-right all along.
+| bucket | n | orig | nf | delta | (stale-version run) |
+|---|---|---|---|---|---|
+| `<4 px` | 40 | 0.025 | 0.000 | -0.025 | same |
+| `4-6 px` | 40 | 0.275 | 0.250 | -0.025 | same |
+| `6-8 px` | **40** | 0.350 | **0.400** | **+0.050** | n=27, +0.074 |
+| `8-12 px` | **40** | 0.450 | **0.425** | **-0.025** | n=53, -0.019 |
+| `12-16 px` | 40 | 0.575 | 0.625 | +0.050 | same |
+| `16-24 px` | 40 | 0.575 | **0.825** | +0.250 | same |
+| `24-32 px` | 40 | 0.500 | **0.900** | +0.400 | same |
+| `>32 px` | 40 | 0.225 | **0.900** | +0.675 | same |
+
+At 6-8 px the marginalised effect is **positive**, and at 8-12 px it is **-0.025**, inside the noise.
+So the small-target cost of the data return was an artefact, and the frozen P3 set - measured across 30
+backgrounds - had it right all along.
 
 ## 3. Why, and the mechanism is the interesting part
 
 | scene | 6-8 px | 8-12 px | 12-16 px |
 |---|---|---|---|
-| **bg_001** | **0.00 -> 0.00** | **0.10 -> 0.10** | 0.12 -> 0.38 |
-| bg_006 | 0.20 -> 0.00 | 0.45 -> 0.27 | 0.50 -> 0.38 |
-| bg_011 | 0.60 -> 0.60 | 0.64 -> 0.64 | 0.75 -> 0.75 |
-| bg_019 | 0.50 -> 0.67 | 0.70 -> 0.80 | 1.00 -> 1.00 |
-| bg_029 | 0.20 -> 0.60 | 0.36 -> 0.36 | 0.50 -> 0.62 |
+| **bg_001** | **0.00 -> 0.00** | **0.12 -> 0.12** | 0.12 -> 0.38 |
+| bg_006 | 0.38 -> 0.12 | 0.38 -> 0.25 | 0.50 -> 0.38 |
+| bg_011 | 0.62 -> 0.62 | 0.62 -> 0.62 | 0.75 -> 0.75 |
+| bg_019 | 0.50 -> 0.75 | 0.75 -> 0.75 | 1.00 -> 1.00 |
+| bg_029 | 0.25 -> 0.50 | 0.38 -> 0.38 | 0.50 -> 0.62 |
 
-**bg_001 is the hardest of the five scenes by a wide margin: recall at 6-12 px is 0.00-0.10 for BOTH
-models.** The S1 size curve was measured entirely on bg_001. On a scene where both models sit near
-zero, tiny absolute changes become large relative ones, so S1 reported a dramatic -0.20 where the
-marginalised truth is +0.07.
+**bg_001 is the hardest of the five scenes by a wide margin: at 6-12 px its recall is 0.00-0.12 for
+BOTH models.** The S1 size curve was measured entirely on bg_001. Where both models sit near zero,
+tiny absolute changes become large relative ones, so S1 reported a dramatic -0.20 where the
+marginalised truth is +0.05.
 
-Two pieces of independent evidence already pointed this way and I noted them at the time without
-acting on them: the frozen P3 set disagreed, and the S8 implementer measured the STIMULUS side and
-found bg_001 is mid-pack on contrast (33.8 at 6-8 px against bg_019 at 13.6) with no scene losing
-contrast from 6-8 to 8-12 px. So bg_001 is not hard because its targets are faint - it is hard for a
-reason none of these measurements identifies, which is itself worth recording.
+The block design also settles the mechanism question the implementer framed in advance: it predicted
+that a regression appearing mainly on **bg_019**, the low-contrast scene, would be a visibility effect.
+The drop is in fact on **bg_006**, while bg_019 IMPROVES (0.50 -> 0.75), and the implementer's
+stimulus-side check found no scene loses contrast from 6-8 to 8-12 px. So this is not target
+visibility. **bg_001 is hard for a reason none of these measurements identifies, and that remains
+unexplained rather than explained away.**
 
 ## 4. What survives, and it is stronger than before
 
