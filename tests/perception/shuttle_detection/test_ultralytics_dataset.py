@@ -293,3 +293,32 @@ def test_building_a_dataset_configuration_does_not_import_ultralytics(tmp_path):
     train_manifest, val_manifest, _, _ = build_dataset(tmp_path)
     write_dataset_yaml(tmp_path / "out", train_manifest, val_manifest)
     assert "ultralytics" not in sys.modules
+
+def test_written_files_use_lf_line_endings(tmp_path):
+    """Training runs on a Linux host: a trailing CR would break every image path.
+
+    Windows text mode turns every written newline into CRLF, and Ultralytics on the
+    remote host would then look for "train_00000.jpg\r" and find nothing. The list
+    files must therefore be written with an explicit LF.
+    """
+    train_manifest, val_manifest, _, _ = build_dataset(tmp_path)
+    out = tmp_path / "out"
+    write_dataset_yaml(out, train_manifest, val_manifest)
+    for name in ("train.txt", "val.txt", DATASET_YAML_NAME):
+        raw = (out / name).read_bytes()
+        assert b"\r" not in raw
+        assert raw.endswith(b"\n")
+    assert (out / "train.txt").read_bytes().count(b"\n") == 1
+
+
+def test_the_module_states_that_it_must_run_on_the_training_host():
+    """The written configuration carries absolute paths of the generating machine.
+
+    That is only correct if the configuration was generated on the host that trains,
+    so the requirement belongs in the module documentation, not in a reviewer's head.
+    """
+    from src.perception.shuttle_detection import ultralytics_dataset
+
+    doc = ultralytics_dataset.__doc__ or ""
+    assert "training host" in doc
+    assert "absolute" in doc

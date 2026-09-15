@@ -19,6 +19,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import platform
+import socket
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -155,6 +157,20 @@ def detect_gpu() -> dict[str, Any]:
     return info
 
 
+def detect_host() -> dict[str, Any]:
+    """Identify the machine a record was produced on.
+
+    A run points at a dataset configuration whose paths are absolute on the machine
+    that generated it, so the record is only complete when it also names that machine:
+    copying a run directory to another host invalidates every path inside it.
+    """
+    return {
+        "hostname": socket.gethostname(),
+        "platform": platform.platform(),
+        "python": platform.python_version(),
+    }
+
+
 def _sha256_file(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -285,6 +301,7 @@ def make_metadata(
     data_root: Path | str | None = None,
     gpu: Mapping[str, Any] | str | None = None,
     code_commit: str | None = None,
+    host: Mapping[str, Any] | None = None,
     started_at: str | None = None,
     finished_at: str | None = None,
     wall_time_sec: float | None = None,
@@ -303,6 +320,10 @@ def make_metadata(
 
     The record is JSON-serialisable and deterministic for the same inputs and the same
     environment, which is what makes two runs comparable at all.
+
+    The generating host is recorded too: absolute dataset paths are only valid on the
+    machine that wrote them, so a record that does not name that machine cannot be
+    interpreted reliably afterwards.
     """
     commit = code_commit if code_commit is not None else detect_code_commit()
     if gpu is None:
@@ -329,6 +350,7 @@ def make_metadata(
         "finished_at": finished_at,
         "code_commit": commit,
         "code_dirty": detect_code_dirty() if code_commit is None else None,
+        "host": detect_host() if host is None else dict(host),
         "model": model,
         "model_structure": model_structure if model_structure is not None else model,
         "init_weights": _text_or_none(init_weights) if init_weights is not None else model,

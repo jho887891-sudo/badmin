@@ -19,6 +19,13 @@ Spec: docs/superpowers/specs/02_BASELINE_TRAINING_SPEC.md (section 2: nc=1, clas
 "shuttlecock") and 00_SHUTTLE_DETECTION_MASTER_SPEC.md (3.10: FIXED_CORE_TEST and
 CHALLENGE_TEST are never trained on directly).
 
+Generation host: the image lists and the dataset YAML contain absolute image paths of
+the machine that generated them, so a generated configuration is only valid there. It
+must therefore be generated on the training host itself, not on a workstation and
+copied over, and not from a checkout mounted at a different path. The files are also
+written with explicit LF line endings: the training host is Linux, where a trailing
+carriage return would turn every image path into a path that does not exist.
+
 Run this module's tests with:
     python tests/perception/shuttle_detection/test_ultralytics_dataset.py -v
 """
@@ -261,6 +268,18 @@ def _dedupe(lines: Iterable[str]) -> list[str]:
     return unique
 
 
+def _write_text_lf(path: Path, text: str) -> None:
+    """Write text with LF endings regardless of the platform.
+
+    Without an explicit newline argument, Python text mode translates every line
+    ending to os.linesep and writes CRLF on Windows. Ultralytics on the remote Linux
+    host would then read every image path with a trailing carriage return and fail to
+    find the image, so the newline is pinned instead of inherited from the platform.
+    """
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(text)
+
+
 def _pool_lines(source: Path | str, role: str, data_root: Path | None) -> list[str]:
     path = Path(source)
     if not path.is_file():
@@ -314,7 +333,7 @@ def write_dataset_yaml(
     written: dict[str, Path] = {}
     for role, lines in lines_by_pool.items():
         list_path = output / IMAGE_LIST_NAMES[role]
-        list_path.write_text("".join(line + "\n" for line in lines), encoding="utf-8")
+        _write_text_lf(list_path, "".join(line + "\n" for line in lines))
         written[role] = list_path
 
     document = {
@@ -325,10 +344,10 @@ def write_dataset_yaml(
         "names": dict(CLASS_NAMES),
     }
     dataset_yaml = output / dataset_name
-    dataset_yaml.write_text(
+    _write_text_lf(
+        dataset_yaml,
         "".join(line + "\n" for line in HEADER)
         + yaml.safe_dump(document, sort_keys=False, allow_unicode=True, default_flow_style=False),
-        encoding="utf-8",
     )
     return dataset_yaml
 

@@ -6,7 +6,7 @@ Usage:
         --config configs/shuttle_detection/baseline.yaml \
         --train-manifest manifest_train_synthetic.csv \
         --val-manifest manifest_val_synthetic.csv \
-        --data-root . \
+        --data-root /home/T7/dgut/robot_sim \
         --run-name baseline_synthetic_only
 
 Why this script exists: Ultralytics will happily train from any paths it is handed.
@@ -24,6 +24,16 @@ Exit codes:
     0  training finished and the metadata was written
     1  training started but failed (the failure is recorded in run_metadata.json)
     2  the run could not be prepared (bad config, missing manifest, held-out sample)
+
+Data root: --data-root is required and must exist. It is the base for relative inputs
+and the parent of outputs/shuttle_detection/training. It is never inferred from git:
+the remote training host holds the project at /home/T7/dgut/robot_sim, which is
+deliberately not a git checkout, so the plan's
+--data-root "$(git rev-parse --show-toplevel)" cannot be substituted there.
+
+Generation host: the dataset configuration contains absolute image paths of the
+machine that generated it, so this script belongs on the training host. The metadata
+records the generating host, and the run summary prints it, for that reason.
 
 Ultralytics is imported inside train() only, so preparing and inspecting a run works
 on a machine that has neither Ultralytics nor a GPU.
@@ -73,6 +83,10 @@ WEIGHTS_DIR_NAME = "weights"
 OUTPUT_SUBPATH: tuple[str, ...] = ("outputs", "shuttle_detection", "training")
 
 
+class RunPreparationError(RuntimeError):
+    """The run cannot be prepared from the arguments it was given."""
+
+
 @dataclass(frozen=True)
 class PreparedRun:
     """Everything a run needs before the first weight is touched."""
@@ -88,6 +102,7 @@ class PreparedRun:
     resolved_config_path: Path
     metadata_path: Path
     metadata: dict[str, Any]
+    host: dict[str, Any]
     metadata_arguments: dict[str, Any] = field(default_factory=dict)
 
 
@@ -121,9 +136,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--data-root",
-        default=".",
+        required=True,
         metavar="DIR",
-        help="project data root: image resolution base and the parent of outputs/",
+        help=(
+            "project data root; required and must exist, and never inferred from git "
+            "because the remote training host is deliberately not a git checkout"
+        ),
     )
     parser.add_argument(
         "--out-root",
@@ -155,10 +173,33 @@ def resolve_input(path: Path | str, data_root: Path | str) -> Path:
 def _check_run_name(run_name: str) -> str:
     name = str(run_name).strip()
     if not name:
-        raise ConfigError("run name must not be empty")
+        raise RunPreparationError("run name must not be empty")
     if any(separator in name for separator in ("/", chr(92))) or name in (".", ".."):
-        raise ConfigError("run name must be a plain directory name, got " + repr(run_name))
+        raise RunPreparationError(
+            "run name must be a plain directory name, got " + repr(run_name)
+        )
     return name
+
+
+def _check_data_root(data_root: Path | str) -> Path:
+    """The data root is required, must exist, and is never inferred from git.
+
+    The remote training host holds the project at /home/T7/dgut/robot_sim, which is
+    deliberately not a git checkout, so a git-derived default could not work there.
+    A wrong root would otherwise surface only after training, when the absolute image
+    paths in dataset.yaml turn out to name files that do not exist.
+    """
+    if data_root is None or not str(data_root).strip():
+        raise RunPreparationError(
+            "--data-root is required: it is the base for relative inputs and the parent "
+            "of the training output root"
+        )
+    root = Path(data_root)
+    if not root.exists():
+        raise RunPreparationError("data root does not exist: " + str(root))
+    if not root.is_dir():
+        raise RunPreparationError("data root is not a directory: " + str(root))
+    return root.resolve()
 
 
 def source_counts(manifests: Sequence[Path | str]) -> dict[str, int]:
@@ -199,7 +240,7 @@ def prepare_run(
     start; nothing is written in that case beyond the directories already created.
     """
     name = _check_run_name(run_name)
-    root = Path(data_root).resolve()
+    root = _check_data_root(data_root)
     config_file = resolve_input(config_path, root)
     train_file = resolve_input(train_manifest, root)
     val_file = resolve_input(val_manifest, root)
@@ -260,7 +301,24 @@ def prepare_run(
         resolved_config_path=resolved_path,
         metadata_path=metadata_path,
         metadata=metadata,
+        host=metadata["host"],
         metadata_arguments=arguments,
+    )
+
+
+def generation_host_notice(prepared: PreparedRun) -> str:
+    """One line naming the host whose absolute paths this run configuration holds.
+
+    dataset.yaml and the image lists are written with absolute paths, so a run is only
+    valid on the machine that generated it; whoever inspects the run later has to be
+    told which machine that was.
+    """
+    return (
+        "dataset configuration generated on host "
+        + str(prepared.host.get("hostname"))
+        + " at "
+        + str(prepared.dataset_dir)
+        + "; its absolute paths are only valid on that host"
     )
 
 
@@ -348,12 +406,20 @@ def main(argv: Sequence[str] | None = None) -> int:
             data_root=args.data_root,
             out_root=args.out_root,
         )
-    except (ConfigError, DatasetConfigError, ManifestError, FileNotFoundError, OSError) as error:
+    except (
+        RunPreparationError,
+        ConfigError,
+        DatasetConfigError,
+        ManifestError,
+        FileNotFoundError,
+        OSError,
+    ) as error:
         print("ERROR: " + str(error), file=sys.stderr)
         return EXIT_UNUSABLE_INPUT
 
     print("train_baseline: prepared " + prepared.run_name + " in " + str(prepared.run_dir))
     print("  data " + str(prepared.dataset_yaml))
+    print("  " + generation_host_notice(prepared))
 
     try:
         finished = train(prepared)

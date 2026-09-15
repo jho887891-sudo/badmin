@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import csv
 import json
+import socket
 import subprocess
 import sys
 from pathlib import Path
@@ -355,3 +356,64 @@ def test_cli_run_directory_follows_the_plan_layout(tmp_path):
     expected = tmp_path / "outputs" / "shuttle_detection" / "training" / "baseline_synthetic_only"
     assert prepared.run_dir == expected
     assert prepared.metadata_path == expected / METADATA_FILENAME
+
+def test_metadata_records_the_generating_host():
+    """Absolute paths inside a run are only valid on the machine that wrote them."""
+    metadata = make_metadata(seed=17, data_version="v1", model="yolo26s.pt")
+    assert metadata["host"]["hostname"] == socket.gethostname()
+    assert metadata["host"]["platform"]
+    assert metadata["host"]["python"]
+
+
+def test_cli_states_the_host_the_run_was_generated_on(tmp_path):
+    """The operator has to be told which machine the absolute paths belong to."""
+    from scripts.shuttle_detection import train_baseline
+
+    train_manifest, val_manifest = build_dataset(tmp_path)
+    prepared = train_baseline.prepare_run(
+        config_path=BASELINE_CONFIG_PATH,
+        train_manifest=train_manifest,
+        val_manifest=val_manifest,
+        run_name="host_notice",
+        data_root=tmp_path,
+        out_root=tmp_path / "out",
+    )
+    notice = train_baseline.generation_host_notice(prepared)
+    assert socket.gethostname() in notice
+    assert str(prepared.dataset_dir) in notice
+    assert "only valid" in notice
+
+
+def test_cli_requires_an_explicit_data_root(tmp_path):
+    """The remote project directory is not a git checkout, so the plan's
+
+    --data-root "$(git rev-parse --show-toplevel)" cannot be substituted there. The
+    data root is therefore required and is never inferred.
+    """
+    train_manifest, val_manifest = build_dataset(tmp_path)
+    completed = run_cli(
+        "--config", BASELINE_CONFIG,
+        "--train-manifest", str(train_manifest),
+        "--val-manifest", str(val_manifest),
+        "--run-name", "no_data_root",
+        "--out-root", str(tmp_path / "out"),
+    )
+    assert completed.returncode == 2
+    assert "--data-root" in completed.stderr
+
+
+def test_prepare_run_rejects_a_data_root_that_does_not_exist(tmp_path):
+    """A wrong data root would silently produce unusable absolute image paths."""
+    from scripts.shuttle_detection.train_baseline import RunPreparationError, prepare_run
+
+    train_manifest, val_manifest = build_dataset(tmp_path)
+    with pytest.raises(RunPreparationError) as error:
+        prepare_run(
+            config_path=BASELINE_CONFIG_PATH,
+            train_manifest=train_manifest,
+            val_manifest=val_manifest,
+            run_name="absent_root",
+            data_root=tmp_path / "absent",
+            out_root=tmp_path / "out",
+        )
+    assert "data root" in str(error.value)
