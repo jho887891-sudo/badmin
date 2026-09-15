@@ -108,6 +108,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+class ReportDestinationError(RuntimeError):
+    """The report destination cannot hold the reports (for example a plain file)."""
+
+
 def _write_csv(path: Path, fieldnames: Sequence[str], rows: Sequence[dict[str, Any]]) -> None:
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(fieldnames), extrasaction="ignore")
@@ -117,8 +121,17 @@ def _write_csv(path: Path, fieldnames: Sequence[str], rows: Sequence[dict[str, A
 
 
 def write_reports(report: DatasetAuditReport, out_dir: Path | str) -> list[Path]:
-    """Write the five reports and return their paths."""
+    """Write the five reports and return their paths.
+
+    Raises ReportDestinationError when the destination exists but is not a
+    directory, so a library caller gets a typed error instead of a FileExistsError
+    and the CLI can turn it into an error message.
+    """
     destination = Path(out_dir)
+    if destination.exists() and not destination.is_dir():
+        raise ReportDestinationError(
+            "report destination exists and is not a directory: " + str(destination)
+        )
     destination.mkdir(parents=True, exist_ok=True)
 
     inventory_path = destination / INVENTORY_REPORT
@@ -161,6 +174,18 @@ def write_reports(report: DatasetAuditReport, out_dir: Path | str) -> list[Path]
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
+
+    # Checked before the audit runs: a destination that cannot hold the reports
+    # makes the whole invocation unusable, and finding out at write time would
+    # waste the hashing pass and hide the real reason behind an OSError.
+    out_path = Path(args.out)
+    if out_path.exists() and not out_path.is_dir():
+        print(
+            "ERROR: --out must be a directory, but it exists as a file: " + str(out_path),
+            file=sys.stderr,
+        )
+        return EXIT_UNUSABLE_INPUT
+
     try:
         report = audit_dataset(
             args.manifest,
@@ -176,14 +201,26 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("ERROR: cannot read input: " + str(error), file=sys.stderr)
         return EXIT_UNUSABLE_INPUT
 
-    written = write_reports(report, args.out)
+    try:
+        written = write_reports(report, args.out)
+    except ReportDestinationError as error:
+        print("ERROR: " + str(error), file=sys.stderr)
+        return EXIT_UNUSABLE_INPUT
+    except OSError as error:
+        print("ERROR: cannot write reports: " + str(error), file=sys.stderr)
+        return EXIT_UNUSABLE_INPUT
+
     summary = report.summary
+    # trainable is printed next to passed on purpose: a pooled audit that mixes a
+    # held-out split with a training split passes with warnings only, and reading
+    # "passed=True" as "this set may be trained on" is exactly the mistake F1 forbids.
     print(
-        "audit_dataset: samples={0} errors={1} warnings={2} passed={3} version={4}".format(
+        "audit_dataset: samples={0} errors={1} warnings={2} passed={3} trainable={4} version={5}".format(
             summary["n_samples"],
             summary["error_count"],
             summary["warning_count"],
             summary["passed"],
+            summary["bound_for_training"],
             summary["dataset_version"],
         )
     )

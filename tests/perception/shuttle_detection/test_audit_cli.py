@@ -408,5 +408,95 @@ class UndecodableInputTests(unittest.TestCase):
             self.assertNotIn("Traceback", result.stderr)
 
 
+class OutputDestinationTests(unittest.TestCase):
+    """F4: an unusable --out is an error message, not a traceback."""
+
+    def test_out_pointing_at_an_existing_file_is_a_clean_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = build_clean_dataset(root)
+            occupied = root / "not_a_directory.txt"
+            occupied.write_text("occupied", encoding="utf-8")
+            captured = io.StringIO()
+            with redirect_stderr(captured):
+                rc = main(
+                    ["--manifest", str(manifest), "--dataset-root", str(root), "--out", str(occupied)]
+                )
+            self.assertEqual(rc, 2)
+            self.assertIn(str(occupied), captured.getvalue())
+            self.assertEqual(occupied.read_text(encoding="utf-8"), "occupied")
+
+    def test_write_reports_rejects_a_file_destination_with_a_typed_error(self) -> None:
+        """Library callers get a typed error rather than a bare FileExistsError."""
+        from scripts.shuttle_detection.audit_dataset import ReportDestinationError, write_reports
+        from src.perception.shuttle_detection.dataset_audit import audit_dataset
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = build_clean_dataset(root)
+            report = audit_dataset([manifest], dataset_root=root)
+            occupied = root / "file.txt"
+            occupied.write_text("x", encoding="utf-8")
+            with self.assertRaises(ReportDestinationError):
+                write_reports(report, occupied)
+
+    def test_documented_command_line_reports_a_bad_out_without_a_traceback(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = build_clean_dataset(root)
+            occupied = root / "not_a_directory.txt"
+            occupied.write_text("occupied", encoding="utf-8")
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "shuttle_detection" / "audit_dataset.py"),
+                    "--manifest", str(manifest),
+                    "--dataset-root", str(root),
+                    "--out", str(occupied),
+                ],
+                cwd=str(ROOT),
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 2, result.stderr)
+            self.assertNotIn("Traceback", result.stderr)
+
+
+class TrainingReadinessVisibilityTests(unittest.TestCase):
+    """F1: the CLI's own one-line summary must not read as "safe to train"."""
+
+    def test_a_mixed_audit_prints_trainable_false(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            train_row = write_sample(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            core_row = write_sample(root, "core_00000", "fixed_core_test", OTHER_PNG, "bg_core_1")
+            train_manifest = write_manifest(root / "manifest_train.csv", [train_row])
+            core_manifest = write_manifest(root / "manifest_core.csv", [core_row])
+            captured = io.StringIO()
+            with redirect_stdout(captured):
+                rc = main(
+                    [
+                        "--manifest", str(train_manifest),
+                        "--manifest", str(core_manifest),
+                        "--dataset-root", str(root),
+                        "--out", str(root / "out"),
+                    ]
+                )
+            self.assertEqual(rc, 0)
+            self.assertIn("trainable=False", captured.getvalue())
+
+    def test_a_trainable_audit_prints_trainable_true(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = build_clean_dataset(root)
+            captured = io.StringIO()
+            with redirect_stdout(captured):
+                rc = main(
+                    ["--manifest", str(manifest), "--dataset-root", str(root), "--out", str(root / "out")]
+                )
+            self.assertEqual(rc, 0)
+            self.assertIn("trainable=True", captured.getvalue())
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
