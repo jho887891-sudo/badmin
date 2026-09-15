@@ -281,6 +281,10 @@ OCCLUSION_TARGET_FRACTIONS: dict[str, tuple[float, ...]] = {
     "partial": (0.45, 0.55, 0.70),
 }
 
+# The occluder enters from a fixed side in every row: which side a hand or racket
+# crosses from is a second variable, and spec 03 section 7 allows exactly one.
+OCCLUDER_SIDE = "left"
+
 # Spec 03 section 4.5 asks for three levels; the MEASURED fraction decides which one
 # a row belongs to, so a row whose bisection missed still lands in the bucket its
 # image actually shows.
@@ -295,6 +299,181 @@ def occlusion_bucket(measured_fraction: float) -> str:
     if value < OCCLUSION_BUCKET_EDGES[1]:
         return OCCLUSION_LEVELS[1][0]
     return OCCLUSION_LEVELS[2][0]
+
+
+def _cv2():
+    import cv2
+
+    return cv2
+
+
+# The occluder is drawn in the image, not modelled in the 3D scene: the renderer has
+# no support for it, and a foreground object -- a racket frame, a hand, the net --
+# is exactly an opaque thing between the camera and the shuttle. What the manifest
+# needs is not that the occluder is photoreal, but that the fraction of the object
+# it hides is MEASURED from the pixels that were written.
+OCCLUDER_TONE_BGR = (44.0, 47.0, 52.0)
+OCCLUDER_FEATHER_PX = 0.8
+OCCLUDER_SEARCH_STEPS = 32
+
+
+@dataclass(frozen=True)
+class OcclusionResult:
+    """One occluded image plus what the occluder actually hid."""
+
+    image: np.ndarray
+    occluder_alpha: np.ndarray
+    measured_fraction: float
+    bucket: str
+    reach: float
+
+
+def _local_window(shape: tuple[int, int], bbox: tuple[int, int, int, int], side: str,
+                  reach: float, feather_px: float) -> tuple[int, int, int, int, int, int]:
+    """The rectangle the occluder bar occupies, plus a blur halo, as frame coords."""
+    height, width = int(shape[0]), int(shape[1])
+    x0, y0, x1, y1 = (int(value) for value in bbox)
+    box_w = x1 - x0 + 1
+    box_h = y1 - y0 + 1
+    if side in ("left", "right"):
+        span = int(round(reach * box_w))
+        pad = max(1, int(round(0.12 * box_h)))
+        bar_y0, bar_y1 = y0 - pad, y1 + pad
+        bar_x0, bar_x1 = (x0, x0 + span - 1) if side == "left" else (x1 - span + 1, x1)
+    elif side in ("top", "bottom"):
+        span = int(round(reach * box_h))
+        pad = max(1, int(round(0.12 * box_w)))
+        bar_x0, bar_x1 = x0 - pad, x1 + pad
+        bar_y0, bar_y1 = (y0, y0 + span - 1) if side == "top" else (y1 - span + 1, y1)
+    else:
+        raise ValueError("side must be left, right, top or bottom, got " + repr(side))
+    halo = max(2, int(math.ceil(4.0 * float(feather_px))))
+    return (
+        max(bar_x0, 0),
+        max(bar_y0, 0),
+        min(bar_x1, width - 1),
+        min(bar_y1, height - 1),
+        halo,
+        span,
+    )
+
+
+def occluder_alpha(shape: tuple[int, int], bbox: tuple[int, int, int, int], *, reach: float,
+                   side: str = OCCLUDER_SIDE, feather_px: float = OCCLUDER_FEATHER_PX
+                   ) -> np.ndarray:
+    """Coverage of a soft-edged bar that enters the object box from one side.
+
+    reach is the fraction of the box extent the bar spans; 0 draws nothing at all.
+    The blur only softens the bar's own edge -- the object coverage is measured on
+    the thresholded alpha, so a soft halo is never counted as occlusion.
+    """
+    cv2 = _cv2()
+    height, width = int(shape[0]), int(shape[1])
+    alpha = np.zeros((height, width), dtype=np.float32)
+    value = float(min(max(reach, 0.0), 1.0))
+    if value <= 0.0:
+        return alpha
+    bar_x0, bar_y0, bar_x1, bar_y1, halo, span = _local_window(shape, bbox, side, value, feather_px)
+    if span < 1 or bar_x1 < bar_x0 or bar_y1 < bar_y0:
+        return alpha
+    window_x0 = max(bar_x0 - halo, 0)
+    window_y0 = max(bar_y0 - halo, 0)
+    window_x1 = min(bar_x1 + halo, width - 1)
+    window_y1 = min(bar_y1 + halo, height - 1)
+    patch = np.zeros((window_y1 - window_y0 + 1, window_x1 - window_x0 + 1), dtype=np.float32)
+    patch[bar_y0 - window_y0: bar_y1 - window_y0 + 1,
+          bar_x0 - window_x0: bar_x1 - window_x0 + 1] = 1.0
+    if feather_px > 0.0:
+        patch = cv2.GaussianBlur(patch, (0, 0), float(feather_px))
+    alpha[window_y0: window_y1 + 1, window_x0: window_x1 + 1] = np.clip(patch, 0.0, 1.0)
+    return alpha
+
+
+def occluded_fraction(footprint: np.ndarray, alpha: np.ndarray) -> float:
+    """Fraction of the object footprint the drawn occluder hides."""
+    mask = np.asarray(footprint).astype(bool)
+    total = int(np.count_nonzero(mask))
+    if total == 0:
+        raise ValueError("the object footprint is empty, so no fraction is defined")
+    hidden = np.count_nonzero((np.asarray(alpha) >= 0.5) & mask)
+    return float(hidden) / float(total)
+
+
+def _occluder_tone(shape: tuple[int, int, int], seed: int) -> np.ndarray:
+    """A dark, faintly textured bar: flat black would be a synthetic giveaway."""
+    rng = np.random.default_rng(int(seed) % (2 ** 31 - 1))
+    base = np.array(OCCLUDER_TONE_BGR, dtype=np.float64).reshape(1, 1, 3)
+    noise = rng.normal(0.0, 6.0, (int(shape[0]), int(shape[1]), 1))
+    return np.clip(base + noise, 0.0, 255.0).astype(np.float32)
+
+
+def apply_occlusion(image: np.ndarray, footprint: np.ndarray, *, target_fraction: float,
+                    side: str = OCCLUDER_SIDE, feather_px: float = OCCLUDER_FEATHER_PX,
+                    seed: int = 0) -> OcclusionResult:
+    """Draw an occluder over the composited image and measure what it hid.
+
+    The bar is bisected until it covers target_fraction of the object footprint, and
+    the fraction that is RETURNED is measured from the alpha that was actually
+    composited -- the object footprint is not a rectangle, so a bar covering half the
+    box covers less than half the object, and recording the request instead of the
+    measurement would label the row with a number no image shows.
+
+    The ground-truth box is deliberately NOT shrunk to the visible part: the box
+    describes the object, and an occluded object is still that object.
+    """
+    img = np.asarray(image, dtype=np.uint8)
+    mask = np.asarray(footprint).astype(bool)
+    if img.ndim != 3:
+        raise ValueError("image must be HxWx3")
+    ys, xs = np.nonzero(mask)
+    if xs.size == 0:
+        raise ValueError("the object footprint is empty, so there is nothing to occlude")
+    bbox = (int(xs.min()), int(ys.min()), int(xs.max()), int(ys.max()))
+    target = float(target_fraction)
+    if not 0.0 <= target <= 1.0:
+        raise ValueError("target_fraction must be in [0, 1], got " + repr(target_fraction))
+    if target <= 0.0:
+        return OcclusionResult(
+            image=np.array(img, copy=True),
+            occluder_alpha=np.zeros(mask.shape, dtype=np.float32),
+            measured_fraction=0.0,
+            bucket=occlusion_bucket(0.0),
+            reach=0.0,
+        )
+
+    low, high = 0.0, 1.0
+    best_error = float("inf")
+    best_reach = 0.0
+    best_alpha = np.zeros(mask.shape, dtype=np.float32)
+    best_measured = 0.0
+    for _ in range(OCCLUDER_SEARCH_STEPS):
+        middle = 0.5 * (low + high)
+        alpha = occluder_alpha(mask.shape, bbox, reach=middle, side=side, feather_px=feather_px)
+        measured = occluded_fraction(mask, alpha)
+        error = abs(measured - target)
+        if error < best_error:
+            best_error = error
+            best_reach = middle
+            best_alpha = alpha
+            best_measured = measured
+        if measured < target:
+            low = middle
+        else:
+            high = middle
+
+    coverage = best_alpha[..., None]
+    tone = _occluder_tone(img.shape, seed)
+    composited = np.clip(
+        img.astype(np.float32) * (1.0 - coverage) + tone * coverage, 0.0, 255.0
+    ).astype(np.uint8)
+    return OcclusionResult(
+        image=composited,
+        occluder_alpha=best_alpha,
+        measured_fraction=best_measured,
+        bucket=occlusion_bucket(best_measured),
+        reach=best_reach,
+    )
+
 
 
 # Light directions in the renderer's convention: +x right, +y down, and the light
@@ -399,10 +578,6 @@ SWEEP_IDS: tuple[str, ...] = ("S1", "S2", "S3", "S4", "S5", "S6a", "S6b")
 # Rows per size bucket in the size sweep: one per candidate target, so the repeats
 # inside a bucket are different SIZE requests, not the same request rendered twice.
 SIZE_REPEATS_PER_BUCKET = 3
-
-# The occluder enters from a fixed side in every row: which side a hand or racket
-# crosses from is a second variable, and spec 03 section 7 allows exactly one.
-OCCLUDER_SIDE = "left"
 
 
 @dataclass(frozen=True)

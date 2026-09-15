@@ -36,8 +36,10 @@ if str(TOOLS) not in sys.path:
 
 from src.perception.shuttle_detection.controlled_capability import (  # noqa: E402
     BLUR_LEVELS,
+    OCCLUDER_SIDE,
     MANIFEST_COLUMNS,
     OCCLUSION_LEVELS,
+    OCCLUSION_TARGET_FRACTIONS,
     POSE_FAMILIES,
     POSITION_TARGETS,
     REQUIRED_MANIFEST_COLUMNS,
@@ -45,10 +47,12 @@ from src.perception.shuttle_detection.controlled_capability import (  # noqa: E4
     SIZE_BUCKET_TARGETS_PX,
     SWEEP_IDS,
     ControlSettings,
+    apply_occlusion,
     build_plan,
     end_toward_camera,
     light_vector,
     long_axis_camera_space,
+    occlusion_bucket,
     position_pixel_centre,
     position_stays_inside_frame,
     size_bucket,
@@ -410,6 +414,97 @@ class PlanTests(unittest.TestCase):
         self.assertEqual([s.seed for s in first], [s.seed for s in second])
         self.assertEqual(len({s.seed for s in first}), len(first))
         self.assertEqual(len({s.noise_sigma for s in first}), 1)
+
+
+class OcclusionTests(unittest.TestCase):
+    """Spec 03 section 4.5: none / light / partial, measured rather than assumed.
+
+    The renderer has no occlusion support, so the occluder is drawn over the
+    composited image and the fraction of the OBJECT FOOTPRINT it hides is measured.
+    A sweep that records the fraction it asked for instead of the fraction it drew
+    would report a curve against a variable nobody controlled.
+    """
+
+    @staticmethod
+    def scene(size: int = 240, radius: int = 45):
+        yy, xx = np.mgrid[0:size, 0:size]
+        footprint = ((xx - size / 2.0) ** 2 + (yy - size / 2.0) ** 2) <= radius ** 2
+        image = np.zeros((size, size, 3), np.uint8)
+        image[..., 0] = 200
+        image[..., 1] = 180
+        image[..., 2] = 160
+        return image, footprint
+
+    def test_measured_fraction_is_the_measured_fraction(self) -> None:
+        image, footprint = self.scene()
+        for target in (0.15, 0.25, 0.35, 0.45, 0.55, 0.70):
+            result = apply_occlusion(image, footprint, target_fraction=target, seed=7)
+            covered = np.count_nonzero((result.occluder_alpha >= 0.5) & footprint)
+            actual = covered / float(np.count_nonzero(footprint))
+            self.assertAlmostEqual(result.measured_fraction, actual, places=9)
+            self.assertLessEqual(abs(result.measured_fraction - target), 0.03, str(target))
+
+    def test_the_reported_bucket_follows_the_measured_fraction(self) -> None:
+        image, footprint = self.scene()
+        for target, expected in ((0.0, "none"), (0.15, "light"), (0.35, "light"), (0.55, "partial")):
+            result = apply_occlusion(image, footprint, target_fraction=target, seed=3)
+            self.assertEqual(result.bucket, expected, str(target))
+            self.assertEqual(result.bucket, occlusion_bucket(result.measured_fraction))
+
+    def test_an_unoccluded_run_returns_the_image_untouched(self) -> None:
+        image, footprint = self.scene()
+        result = apply_occlusion(image, footprint, target_fraction=0.0, seed=1)
+        self.assertEqual(result.measured_fraction, 0.0)
+        self.assertEqual(result.bucket, "none")
+        np.testing.assert_array_equal(result.image, image)
+        self.assertEqual(int(np.count_nonzero(result.occluder_alpha)), 0)
+
+    def test_pixels_the_occluder_does_not_reach_are_unchanged(self) -> None:
+        image, footprint = self.scene()
+        result = apply_occlusion(image, footprint, target_fraction=0.35, seed=5)
+        untouched = result.occluder_alpha <= 0.0
+        self.assertGreater(int(untouched.sum()), 0)
+        np.testing.assert_array_equal(result.image[untouched], image[untouched])
+
+    def test_the_occluder_actually_darkens_the_object_it_covers(self) -> None:
+        image, footprint = self.scene()
+        result = apply_occlusion(image, footprint, target_fraction=0.55, seed=5)
+        hidden = (result.occluder_alpha >= 0.5) & footprint
+        self.assertGreater(int(hidden.sum()), 0)
+        before = image[hidden].astype(np.int32).mean()
+        after = result.image[hidden].astype(np.int32).mean()
+        self.assertLess(after, before)
+
+    def test_the_side_decides_which_edge_is_covered(self) -> None:
+        image, footprint = self.scene()
+        left = apply_occlusion(image, footprint, target_fraction=0.25, side="left", seed=2)
+        right = apply_occlusion(image, footprint, target_fraction=0.25, side="right", seed=2)
+        centre_x = np.nonzero(footprint)[1].mean()
+        left_x = np.nonzero((left.occluder_alpha >= 0.5) & footprint)[1].mean()
+        right_x = np.nonzero((right.occluder_alpha >= 0.5) & footprint)[1].mean()
+        self.assertLess(left_x, centre_x)
+        self.assertGreater(right_x, centre_x)
+
+    def test_the_sweeps_occluder_side_is_a_constant(self) -> None:
+        self.assertIn(OCCLUDER_SIDE, ("left", "right", "top", "bottom"))
+
+    def test_occlusion_is_reproducible_for_a_seed(self) -> None:
+        image, footprint = self.scene()
+        first = apply_occlusion(image, footprint, target_fraction=0.45, seed=11)
+        second = apply_occlusion(image, footprint, target_fraction=0.45, seed=11)
+        third = apply_occlusion(image, footprint, target_fraction=0.45, seed=12)
+        np.testing.assert_array_equal(first.image, second.image)
+        self.assertEqual(first.measured_fraction, second.measured_fraction)
+        self.assertFalse(np.array_equal(first.image, third.image))
+
+    def test_no_swept_row_hides_the_whole_object(self) -> None:
+        """A fully hidden target is not an occluded target, it is a deleted one."""
+        biggest = max(max(values) for values in OCCLUSION_TARGET_FRACTIONS.values())
+        self.assertLess(biggest, 0.80)
+        image, footprint = self.scene()
+        result = apply_occlusion(image, footprint, target_fraction=biggest, seed=4)
+        self.assertLessEqual(result.measured_fraction, 0.80)
+        self.assertGreater(result.measured_fraction, 0.60)
 
 
 if __name__ == "__main__":
