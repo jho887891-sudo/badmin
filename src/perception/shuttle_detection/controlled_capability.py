@@ -739,6 +739,7 @@ REPLICATES_PER_GROUP: dict[str, int] = {
     "S6a": 3,   # 30 backgrounds x 3
     "S6b": 20,  # 8 light azimuths x 20
     "S7": 40,   # 9 near-field rungs x 40
+    "S8": 40,   # 8 size buckets x 40, each bucket spanning 5 scenes x 8 repeats
 }
 
 # The worst-case 95% half-width the SMALLEST required group carries. n=40 gives 15.5%,
@@ -792,7 +793,7 @@ def condition_of(sweep: str, row: Mapping[str, Any], *, measured: bool) -> str |
     calibration landed in the neighbouring bucket is evidence about that bucket. S7 has
     no bucket to land in (every rung is ">32"), so its group is the rung it asked for.
     """
-    if sweep == "S1":
+    if sweep in ("S1", BLOCK_SWEEP):
         value = row.get("equivalent_size_px") if measured else row.get("target_px")
         number = _numeric(value)
         return None if number is None else size_bucket(number)
@@ -842,6 +843,7 @@ def expected_conditions(settings: "ControlSettings") -> dict[str, tuple[str, ...
         "S6a": tuple(settings.backgrounds),
         "S6b": tuple(_condition_label(value) for value in settings.light_azimuths_deg),
         "S7": tuple(_condition_label(value) for value in settings.near_field_sizes_px),
+        BLOCK_SWEEP: SIZE_BUCKETS,
     }
 
 
@@ -918,14 +920,186 @@ def verify_matched_nuisance(samples: Sequence[PlannedSample]) -> list[str]:
 
 
 # --------------------------------------------------------------------------- #
+# S8: a size x background block design
+# --------------------------------------------------------------------------- #
+
+# Why this sweep exists: two measurements of the same question disagree. The controlled
+# size sweep S1, on one scene, shows detection falling by 0.200 from the 6-8 px bucket
+# and 0.175 from 8-12 px; the thirty-scene P3 set shows -0.036 and +0.020 over the same
+# buckets. The two differ in SIGN at 8-12 px, and one scene cannot tell a real size
+# effect from an unlucky scene. So the S1 ladder is repeated over several scenes as a
+# block: the size curve marginalised over scenes carries the same n = 40 per bucket as
+# S1, and each per-scene curve is published with its own n.
+#
+# The eight spec 03 buckets are untouched. S8 varies size AND scene, which is the point
+# of a block; both are declared as varied so the control checks still hold everything
+# else still, and S1 itself is left exactly as shipped.
+BLOCK_SWEEP = "S8"
+BLOCK_BACKGROUND_COUNT = 5
+BLOCK_REPEATS_PER_CELL = 8
+BLOCK_CELL_REQUIRED = BLOCK_REPEATS_PER_CELL
+# S1's scene is always in the block: without it the blocked curve cannot be compared
+# with the published one, and "was that scene unlucky?" cannot be asked at all.
+BLOCK_REQUIRED_BACKGROUND = "bg_001.jpg"
+
+
+def scene_busyness(image: np.ndarray) -> float:
+    """A scene's high-frequency energy, as a mean absolute neighbour difference.
+
+    Used for one purpose only: to spread the block's scenes over the pool instead of
+    taking four file-order neighbours of bg_001, which would all look alike. A flat
+    frame scores exactly 0.
+    """
+    array = np.asarray(image, dtype=np.float64)
+    if array.ndim == 3:
+        array = array.mean(axis=2)
+    if array.shape[0] < 2 or array.shape[1] < 2:
+        return 0.0
+    vertical = float(np.abs(np.diff(array, axis=0)).mean())
+    horizontal = float(np.abs(np.diff(array, axis=1)).mean())
+    return (vertical + horizontal) / 2.0
+
+
+def select_block_backgrounds(
+    pool: Sequence[Any],
+    *,
+    count: int = BLOCK_BACKGROUND_COUNT,
+    required: str = BLOCK_REQUIRED_BACKGROUND,
+) -> tuple[str, ...]:
+    """The scenes the blocked size sweep spans, or a refusal explaining what is missing.
+
+    The required scene is always included; the rest are taken at evenly spaced ranks of
+    a MEASURED scene statistic, so the block spans the pool rather than sampling one
+    corner of it.
+    """
+    renderer = _renderer()
+    paths = [Path(path) for path in pool]
+    if len(paths) < count:
+        raise ValueError(
+            "the pool has " + str(len(paths)) + " scenes, " + str(count) + " required"
+        )
+    scores: dict[str, float] = {}
+    for path in paths:
+        image = renderer.imread_unicode(path)
+        if image is None:
+            continue
+        scores[path.name] = scene_busyness(image)
+    if len(scores) < count:
+        raise ValueError(
+            "only " + str(len(scores)) + " of " + str(len(paths)) + " scenes could be read"
+        )
+    if required not in scores:
+        raise ValueError("the required scene " + repr(required) + " is not in the pool")
+    ordered = sorted(scores, key=lambda name: (scores[name], name))
+    others = [name for name in ordered if name != required]
+    wanted = int(count) - 1
+    if wanted > len(others):
+        raise ValueError("not enough scenes left besides " + repr(required))
+    chosen = {required}
+    if wanted > 0:
+        if wanted == 1:
+            chosen.add(others[len(others) // 2])
+        else:
+            for index in range(wanted):
+                chosen.add(others[round(index * (len(others) - 1) / (wanted - 1))])
+    return tuple(sorted(chosen))
+
+
+def target_contrast(image: np.ndarray, mask: np.ndarray) -> float:
+    """How visible the target is against its own scene: |target - surround| luminance.
+
+    This is a STIMULUS measurement, not a detection result, and it is here for one
+    reason: if a blocked size bucket detects differently from scene to scene, the first
+    thing to check is whether the target was equally visible in each scene. A per-scene
+    curve that differs while the contrast is the same is a detector effect; one that
+    differs where the contrast differs is a scene effect.
+    """
+    array = np.asarray(image, dtype=np.float64)
+    gray = array.mean(axis=2) if array.ndim == 3 else array
+    object_mask = np.asarray(mask).astype(bool)
+    if not object_mask.any():
+        raise ValueError("the object mask is empty, so there is no contrast to measure")
+    ys, xs = np.nonzero(object_mask)
+    side = max(int(xs.max() - xs.min() + 1), int(ys.max() - ys.min() + 1))
+    pad = max(2, int(round(0.5 * side)))
+    y0, y1 = max(0, int(ys.min()) - pad), min(gray.shape[0] - 1, int(ys.max()) + pad)
+    x0, x1 = max(0, int(xs.min()) - pad), min(gray.shape[1] - 1, int(xs.max()) + pad)
+    window = gray[y0:y1 + 1, x0:x1 + 1]
+    inside = object_mask[y0:y1 + 1, x0:x1 + 1]
+    surround = ~inside
+    if not inside.any() or not surround.any():
+        return 0.0
+    return float(abs(window[inside].mean() - window[surround].mean()))
+
+
+def block_cell_counts(
+    rows: Sequence[Mapping[str, Any]], sweep: str = BLOCK_SWEEP, *, measured: bool = True
+) -> dict[tuple[str, str], int]:
+    """Rows per (size bucket, scene) cell of a blocked sweep."""
+    cells: dict[tuple[str, str], int] = {}
+    for row in rows:
+        if str(row.get("sweep", "")) != sweep:
+            continue
+        bucket = condition_of(sweep, row, measured=measured)
+        background = _condition_label(row.get("background"))
+        if bucket is None or not background:
+            continue
+        key = (bucket, background)
+        cells[key] = cells.get(key, 0) + 1
+    return cells
+
+
+def verify_block_cells(
+    cells: Mapping[tuple[str, str], int],
+    buckets: Sequence[str],
+    backgrounds: Sequence[str],
+    *,
+    required: int = BLOCK_CELL_REQUIRED,
+) -> list[str]:
+    """Report every size x scene cell that is short, missing or unexpected.
+
+    The per-scene curves are the reason this sweep exists, so a cell with too few rows is
+    a hole in the evidence rather than a rounding detail - and it is reported with the
+    error bar it actually carries, because a per-scene bucket at n=8 carries 35% and must
+    not be read as if it carried S1's 15%.
+    """
+    violations: list[str] = []
+    for bucket in buckets:
+        for background in backgrounds:
+            count = int(cells.get((bucket, background), 0))
+            if count < required:
+                violations.append(
+                    "blocked size x scene cell " + str(bucket) + " @ " + str(background)
+                    + " has " + str(count) + " rows, " + str(required)
+                    + " required (95% half-width at n=" + str(count) + " is "
+                    + f"{proportion_half_width(count) * 100:.1f}" + "%)"
+                )
+    known_buckets = {str(bucket) for bucket in buckets}
+    known_backgrounds = {str(background) for background in backgrounds}
+    for key in sorted(cells):
+        if key[0] not in known_buckets or key[1] not in known_backgrounds:
+            violations.append(
+                "unexpected blocked cell " + str(key[0]) + " @ " + str(key[1])
+                + " with " + str(int(cells[key])) + " rows"
+            )
+    return violations
+
+
+# --------------------------------------------------------------------------- #
 # The plan
 # --------------------------------------------------------------------------- #
 
-SWEEP_IDS: tuple[str, ...] = ("S1", "S2", "S3", "S4", "S5", "S6a", "S6b", "S7")
+SWEEP_IDS: tuple[str, ...] = ("S1", "S2", "S3", "S4", "S5", "S6a", "S6b", "S7", "S8")
 
 # Rows per size bucket in the size sweep: one per candidate target, so the repeats
 # inside a bucket are different SIZE requests, not the same request rendered twice.
 SIZE_REPEATS_PER_BUCKET = 3
+
+# The sweeps whose rows are placed by a requested size, and which therefore have to walk
+# their bucket's other candidates when the rendered footprint lands in a neighbouring
+# bucket. The rendered footprint is a whole-pixel quantity, so a 7.5 px request can
+# measure 8.0 px and a row asking for "6-8" would otherwise be counted as "8-12".
+SIZE_DRIVEN_SWEEPS: tuple[str, ...] = ("S1", BLOCK_SWEEP)
 
 
 @dataclass(frozen=True)
@@ -950,6 +1124,9 @@ class ControlSettings:
     near_field_frame_px: int = NEAR_FIELD_FRAME_PX
     near_field_focal_px: float = NEAR_FIELD_FOCAL_PX
     near_field_supersample: int = NEAR_FIELD_SUPERSAMPLE
+    # The scenes the blocked size sweep spans. It must contain the scene the other
+    # sweeps pin, so the blocked curve and the published one share a scene.
+    block_backgrounds: tuple[str, ...] = ()
     # The size every non-size sweep pins. Deliberately in the middle of the 16-24
     # bucket rather than on its 16.0 edge: the renderer's ground-truth footprint is a
     # whole-pixel quantity, and a pose sweep pinned at 16.0 px measured 15.4-16.0 px,
@@ -973,6 +1150,19 @@ class ControlSettings:
             raise ValueError("the light sweep needs at least two azimuths to vary over")
         if self.background not in self.backgrounds:
             raise ValueError("the pinned background must be one of the swept backgrounds")
+        if len(self.block_backgrounds) != BLOCK_BACKGROUND_COUNT:
+            raise ValueError(
+                "the blocked size sweep needs exactly " + str(BLOCK_BACKGROUND_COUNT)
+                + " scenes, got " + str(len(self.block_backgrounds))
+            )
+        if self.background not in self.block_backgrounds:
+            raise ValueError(
+                "the blocked sweep must include " + repr(self.background)
+                + ", the scene the size sweep pins"
+            )
+        outside = [name for name in self.block_backgrounds if name not in self.backgrounds]
+        if outside:
+            raise ValueError("blocked scenes outside the pool: " + ", ".join(outside))
         near_field_camera(
             self.near_field_sizes_px,
             frame_px=self.near_field_frame_px,
@@ -1118,6 +1308,7 @@ def _sample(
     occlusion_name: str,
     occlusion_target_fraction: float,
     repeat: int = 0,
+    crop_seed: int | None = None,
     frame_px: int | None = None,
     focal_px: float | None = None,
     supersample: int | None = None,
@@ -1145,7 +1336,9 @@ def _sample(
         # Shared by repeat index across the conditions of a sweep, so every condition
         # sees the same sequence of scenes; the noise seed above is unique per row, so
         # the repeats are not copies of one image.
-        crop_seed=stable_seed("crop", sweep, int(repeat)),
+        crop_seed=(
+            stable_seed("crop", sweep, int(repeat)) if crop_seed is None else int(crop_seed)
+        ),
         noise_sigma=float(settings.noise_sigma),
         noise_seed=seed,
         shadow_gain=float(settings.shadow_gain),
@@ -1290,6 +1483,37 @@ def build_plan(settings: ControlSettings) -> list[PlannedSample]:
                 supersample=camera.supersample,
                 repeat=repeat,
             )
+
+    # S8 blocked size sweep: the S1 ladder over several scenes, everything else pinned
+    # exactly as S1 pins it (one pose, one light, centre, no blur, no occlusion, same
+    # frame and lens). Size and scene move together BY DESIGN - the marginal size curve
+    # is what is read against S1, and the per-scene curves are what settles whether S1's
+    # 6-12 px regression is a scene artefact or a real effect.
+    #
+    # The crop sequence is shared across the size buckets *within a scene*
+    # (crop_seed depends on the scene and the cell repeat only), so no bucket is measured
+    # on a luckier patch of a scene than another, and the requested-target composition of
+    # each bucket is the same as S1's.
+    for bucket in SIZE_BUCKETS:
+        targets = SIZE_BUCKET_TARGETS_PX[bucket][:SIZE_REPEATS_PER_BUCKET]
+        for background_index, background in enumerate(settings.block_backgrounds):
+            for cell_repeat in range(BLOCK_REPEATS_PER_CELL):
+                add(
+                    name="s8_block_" + BUCKET_SLUGS[bucket] + "_" + str(background_index)
+                    + "_" + str(cell_repeat),
+                    sweep=BLOCK_SWEEP,
+                    varied=("target_px", "background"),
+                    # Walking the same cycling sequence S1 walks, rather than restarting
+                    # it in every cell, gives each size bucket exactly S1's requested-target
+                    # composition (14/13/13 over the bucket's three candidates), which is
+                    # what makes the two size curves directly comparable.
+                    target_px=targets[
+                        (background_index * BLOCK_REPEATS_PER_CELL + cell_repeat) % len(targets)
+                    ],
+                    background=background,
+                    repeat=cell_repeat,
+                    crop_seed=stable_seed("crop", BLOCK_SWEEP, background_index, cell_repeat),
+                )
     return samples
 
 
@@ -1382,6 +1606,9 @@ VARIED_MANIFEST_COLUMNS: dict[str, tuple[str, ...]] = {
     "S6a": ("background",),
     "S6b": ("light_azimuth_deg",),
     "S7": ("target_px", "equivalent_size_px"),
+    # The block moves size AND scene by design; the control check still holds everything
+    # else (pose, light, position, frame, lens, blur, occlusion) constant.
+    "S8": ("target_px", "equivalent_size_px", "background"),
 }
 
 

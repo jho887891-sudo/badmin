@@ -37,6 +37,10 @@ if str(TOOLS) not in sys.path:
 
 from src.perception.shuttle_detection.controlled_capability import (  # noqa: E402
     BACKGROUND_DIR,
+    BLOCK_BACKGROUND_COUNT,
+    BLOCK_CELL_REQUIRED,
+    BLOCK_REPEATS_PER_CELL,
+    BLOCK_SWEEP,
     BLUR_LEVELS,
     NEAR_FIELD_MARGIN_PX,
     ORIENTATIONS_PER_FAMILY,
@@ -60,6 +64,11 @@ from src.perception.shuttle_detection.controlled_capability import (  # noqa: E4
     ControlSettings,
     apply_occlusion,
     bbox_inside_frame,
+    block_cell_counts,
+    scene_busyness,
+    target_contrast,
+    select_block_backgrounds,
+    verify_block_cells,
     build_plan,
     distribution,
     end_toward_camera,
@@ -86,7 +95,8 @@ from src.perception.shuttle_detection.controlled_capability import (  # noqa: E4
 # image is comparable with the data the baseline was trained on.
 WIDTH = HEIGHT = 960
 FOCAL_PX = 700.0
-BACKGROUNDS = ("bg_001.jpg", "bg_002.jpg", "bg_003.jpg", "bg_004.jpg")
+BACKGROUNDS = ("bg_001.jpg", "bg_002.jpg", "bg_003.jpg", "bg_004.jpg", "bg_005.jpg")
+BLOCK_BACKGROUNDS = BACKGROUNDS[:5]
 
 
 def settings() -> ControlSettings:
@@ -96,6 +106,7 @@ def settings() -> ControlSettings:
         focal_px=FOCAL_PX,
         background="bg_001.jpg",
         backgrounds=BACKGROUNDS,
+        block_backgrounds=BLOCK_BACKGROUNDS,
     )
 
 
@@ -328,7 +339,7 @@ class PlanTests(unittest.TestCase):
 
     def test_the_plan_covers_every_sweep_the_spec_asks_for(self) -> None:
         self.assertEqual(
-            SWEEP_IDS, ("S1", "S2", "S3", "S4", "S5", "S6a", "S6b", "S7")
+            SWEEP_IDS, ("S1", "S2", "S3", "S4", "S5", "S6a", "S6b", "S7", "S8")
         )
         # S7 is the near-field ladder, not a spec 03 section 4 variable: spec 03's own
         # sweeps are S1 to S6b, and S7 exists because the real positives are 838-1579 px
@@ -700,7 +711,8 @@ class ReplicateTests(unittest.TestCase):
     def test_the_required_replicates_meet_the_precision_target(self) -> None:
         self.assertEqual(
             REPLICATES_PER_GROUP,
-            {"S1": 40, "S2": 40, "S3": 40, "S4": 20, "S5": 20, "S6a": 3, "S6b": 20, "S7": 40},
+            {"S1": 40, "S2": 40, "S3": 40, "S4": 20, "S5": 20, "S6a": 3, "S6b": 20,
+             "S7": 40, "S8": 40},
         )
         # The two sizes the brief asks for: ~15% at n=40, and 20 rows for the level
         # sweeps, which buys 21.9% and is reported as such.
@@ -708,6 +720,7 @@ class ReplicateTests(unittest.TestCase):
         self.assertLessEqual(required_half_width("S2"), 0.16)
         self.assertLessEqual(required_half_width("S3"), 0.16)
         self.assertLessEqual(required_half_width("S7"), 0.16)
+        self.assertLessEqual(required_half_width("S8"), 0.16)
         self.assertLessEqual(required_half_width("S4"), TARGET_HALF_WIDTH)
         self.assertLessEqual(required_half_width("S5"), TARGET_HALF_WIDTH)
         self.assertLessEqual(required_half_width("S6b"), TARGET_HALF_WIDTH)
@@ -738,7 +751,8 @@ class ReplicateTests(unittest.TestCase):
             + len(OCCLUSION_LEVELS) * REPLICATES_PER_GROUP["S5"]
             + len(BACKGROUNDS) * REPLICATES_PER_GROUP["S6a"]
             + len(LIGHT_AZIMUTHS_DEG) * REPLICATES_PER_GROUP["S6b"]
-            + len(NEAR_FIELD_SIZES_PX) * REPLICATES_PER_GROUP["S7"],
+            + len(NEAR_FIELD_SIZES_PX) * REPLICATES_PER_GROUP["S7"]
+            + len(SIZE_BUCKETS) * REPLICATES_PER_GROUP["S8"],
         )
 
     def test_the_conditioned_groups_are_the_conditioned_columns(self) -> None:
@@ -747,7 +761,7 @@ class ReplicateTests(unittest.TestCase):
         # three occlusion levels, thirty backgrounds, eight azimuths, nine rungs.
         # The test settings carry four backgrounds rather than the pool's thirty.
         self.assertEqual(
-            [len(counts[sweep]) for sweep in SWEEP_IDS], [8, 8, 9, 4, 3, 4, 8, 9]
+            [len(counts[sweep]) for sweep in SWEEP_IDS], [8, 8, 9, 4, 3, 5, 8, 9, 8]
         )
 
     def test_verify_group_counts_reports_a_short_group(self) -> None:
@@ -830,10 +844,15 @@ class CommittedManifestTests(unittest.TestCase):
         # the ladder constants - never from the manifest being checked: reading the
         # vocabulary out of the file under test would accept a condition that is simply
         # missing from it.
-        pool = tuple(sorted(path.name for path in BACKGROUND_DIR.glob("*.jpg")))
-        if len(pool) < 2:
+        pool_paths = sorted(BACKGROUND_DIR.glob("*.jpg"))
+        pool = tuple(path.name for path in pool_paths)
+        if len(pool) < BLOCK_BACKGROUND_COUNT + 2:
             raise unittest.SkipTest("the audited background pool is not present")
-        cls.settings = ControlSettings(background=pool[0], backgrounds=pool)
+        cls.settings = ControlSettings(
+            background=pool[0],
+            backgrounds=pool,
+            block_backgrounds=select_block_backgrounds(pool_paths),
+        )
 
     def test_every_conditioned_group_reaches_its_required_count(self) -> None:
         counts = measured_condition_counts(self.rows)
@@ -855,9 +874,178 @@ class CommittedManifestTests(unittest.TestCase):
                     f"{sweep}/{label} has n={count}",
                 )
 
+    def test_every_block_cell_carries_its_eight_rows(self) -> None:
+        """The per-scene size curves are the reason S8 exists, so a hole is not a detail."""
+        cells = block_cell_counts(self.rows, measured=True)
+        violations = verify_block_cells(
+            cells, SIZE_BUCKETS, self.settings.block_backgrounds
+        )
+        self.assertEqual(violations, [], "; ".join(violations))
+        self.assertEqual(len(cells), len(SIZE_BUCKETS) * BLOCK_BACKGROUND_COUNT)
+
+    def test_the_block_rows_landed_in_the_bucket_they_asked_for(self) -> None:
+        """A row that drifted into a neighbouring bucket would be read as another bucket."""
+        for row in self.rows:
+            if row["sweep"] != BLOCK_SWEEP:
+                continue
+            self.assertEqual(
+                size_bucket(float(row["equivalent_size_px"])),
+                size_bucket(float(row["target_px"])),
+                row["file"],
+            )
+
     def test_the_shipped_rows_keep_their_controls(self) -> None:
         self.assertEqual(verify_measured_pins(self.rows), [])
         self.assertEqual({row["split"] for row in self.rows}, {"fixed_core_test"})
+
+
+class BlockDesignTests(unittest.TestCase):
+    """S8: the S1 size ladder run over several scenes, so a size curve cannot be a scene.
+
+    Two measurements of the same question disagree - the controlled S1 curve, on one
+    scene, shows a 6-12 px regression that the thirty-background P3 curve does not - and
+    the only way to tell a real effect from an unlucky scene is to repeat the size ladder
+    on scenes chosen for the purpose. The eight spec 03 buckets are untouched: S8 reuses
+    S1's ladder and differs only in how many scenes it spans.
+    """
+
+    def test_the_block_spans_several_scenes_and_includes_the_one_s1_used(self) -> None:
+        self.assertEqual(BLOCK_BACKGROUND_COUNT, 5)
+        self.assertEqual(len(BLOCK_BACKGROUNDS), BLOCK_BACKGROUND_COUNT)
+        # bg_001 is S1's scene; without it the blocked curve cannot be compared with the
+        # published one, and "was that scene unlucky?" cannot be asked.
+        self.assertIn("bg_001.jpg", BLOCK_BACKGROUNDS)
+
+    def test_scene_busyness_separates_a_flat_scene_from_a_busy_one(self) -> None:
+        flat = np.full((64, 64, 3), 120, dtype=np.uint8)
+        busy = np.zeros((64, 64, 3), dtype=np.uint8)
+        busy[::2, :, :] = 255
+        busy[:, ::2, :] = 255
+        self.assertLess(scene_busyness(flat), scene_busyness(busy))
+        self.assertEqual(scene_busyness(flat), 0.0)
+
+    def test_the_block_scenes_span_the_pool_rather_than_sitting_next_to_each_other(self) -> None:
+        import shuttle_render
+
+        pool = sorted(BACKGROUND_DIR.glob("*.jpg"))
+        if len(pool) < BLOCK_BACKGROUND_COUNT + 2:
+            self.skipTest("the audited background pool is not present")
+        chosen = select_block_backgrounds(pool)
+        self.assertEqual(len(chosen), BLOCK_BACKGROUND_COUNT)
+        self.assertIn("bg_001.jpg", chosen)
+        self.assertEqual(chosen, select_block_backgrounds(pool))
+        scores = {path.name: scene_busyness(shuttle_render.imread_unicode(path)) for path in pool}
+        spread = max(scores.values()) - min(scores.values())
+        chosen_spread = max(scores[name] for name in chosen) - min(scores[name] for name in chosen)
+        # Evenly spaced ranks must cover most of the pool's busyness range; four
+        # neighbours of bg_001 would cover almost none of it.
+        self.assertGreater(chosen_spread, 0.5 * spread)
+
+    def test_a_pool_too_small_for_the_block_is_refused(self) -> None:
+        pool = sorted(BACKGROUND_DIR.glob("*.jpg"))[:3]
+        if len(pool) < 3:
+            self.skipTest("the audited background pool is not present")
+        with self.assertRaises(ValueError):
+            select_block_backgrounds(pool)
+
+
+class TargetContrastTests(unittest.TestCase):
+    """The stimulus-level check that a per-scene difference in detection must clear."""
+
+    def test_a_bright_target_on_a_dark_scene_scores_high(self) -> None:
+        image = np.zeros((64, 64, 3), dtype=np.uint8)
+        mask = np.zeros((64, 64), dtype=bool)
+        mask[28:36, 28:36] = True
+        image[mask] = 220
+        self.assertGreater(target_contrast(image, mask), 100.0)
+
+    def test_a_target_the_same_tone_as_its_scene_scores_zero(self) -> None:
+        image = np.full((64, 64, 3), 128, dtype=np.uint8)
+        mask = np.zeros((64, 64), dtype=bool)
+        mask[28:36, 28:36] = True
+        self.assertAlmostEqual(target_contrast(image, mask), 0.0, places=6)
+
+    def test_an_empty_mask_is_refused(self) -> None:
+        with self.assertRaises(ValueError):
+            target_contrast(np.zeros((8, 8, 3), np.uint8), np.zeros((8, 8), dtype=bool))
+
+
+class BlockPlanTests(unittest.TestCase):
+    """The block has to be a controlled experiment, not two variables at once."""
+
+    @staticmethod
+    def rows():
+        return [sample for sample in plan() if sample.sweep == BLOCK_SWEEP]
+
+    def test_every_size_bucket_spans_every_block_scene(self) -> None:
+        rows = self.rows()
+        self.assertEqual(
+            len(rows), len(SIZE_BUCKETS) * BLOCK_BACKGROUND_COUNT * BLOCK_REPEATS_PER_CELL
+        )
+        cells = Counter((size_bucket(row.target_px), row.background) for row in rows)
+        self.assertEqual(len(cells), len(SIZE_BUCKETS) * BLOCK_BACKGROUND_COUNT)
+        for cell, count in cells.items():
+            self.assertEqual(count, BLOCK_REPEATS_PER_CELL, str(cell))
+        self.assertEqual({row.background for row in rows}, set(BLOCK_BACKGROUNDS))
+
+    def test_each_size_bucket_still_carries_forty_rows(self) -> None:
+        counts = planned_condition_counts(self.rows())
+        self.assertEqual(counts[BLOCK_SWEEP], {bucket: 40 for bucket in SIZE_BUCKETS})
+
+    def test_the_block_fills_the_required_counts(self) -> None:
+        expected = expected_conditions(settings())
+        self.assertIn(BLOCK_SWEEP, expected)
+        # The whole plan, not just S8's rows: verify_group_counts checks every sweep, so a
+        # partial count map would report the other seven sweeps as empty.
+        self.assertEqual(verify_group_counts(planned_condition_counts(plan()), expected), [])
+
+    def test_the_block_changes_only_the_size_and_the_scene(self) -> None:
+        rows = self.rows()
+        for field in ("yaw_deg", "pitch_deg", "roll_deg", "pose_bucket", "position_bucket",
+                      "light_azimuth_deg", "motion_px", "blur_bucket", "occlusion_bucket",
+                      "occlusion_target_fraction", "width", "height", "focal_px",
+                      "supersample"):
+            self.assertEqual(len({getattr(row, field) for row in rows}), 1, field)
+        self.assertEqual(rows[0].varied, ("target_px", "background"))
+
+    def test_the_block_reuses_s1s_targets_and_camera(self) -> None:
+        block = self.rows()
+        size_sweep = [sample for sample in plan() if sample.sweep == "S1"]
+        for bucket in SIZE_BUCKETS:
+            cell = [row.target_px for row in block if size_bucket(row.target_px) == bucket]
+            reference = [row.target_px for row in size_sweep if size_bucket(row.target_px) == bucket]
+            # Exactly S1's requested-target composition, scene for scene and repeat for
+            # repeat, which is what makes the two size curves directly comparable.
+            self.assertEqual(Counter(cell), Counter(reference), bucket)
+        for row in block:
+            self.assertEqual((row.width, row.height), (WIDTH, HEIGHT))
+            self.assertEqual(row.focal_px, FOCAL_PX)
+            self.assertEqual((row.yaw_deg, row.pitch_deg, row.roll_deg), (35.0, 30.0, 0.0))
+            self.assertEqual(row.position_bucket, "center")
+            self.assertEqual(row.light_azimuth_deg, 315.0)
+
+    def test_the_block_cells_are_counted(self) -> None:
+        rows = [row.as_manifest_row() for row in self.rows()]
+        cells = block_cell_counts(rows, BLOCK_SWEEP, measured=False)
+        self.assertEqual(len(cells), len(SIZE_BUCKETS) * BLOCK_BACKGROUND_COUNT)
+        self.assertEqual(set(cells.values()), {BLOCK_REPEATS_PER_CELL})
+        self.assertEqual(verify_block_cells(cells, SIZE_BUCKETS, BLOCK_BACKGROUNDS), [])
+
+    def test_a_short_cell_is_reported(self) -> None:
+        rows = [row.as_manifest_row() for row in self.rows()]
+        cells = block_cell_counts(rows, BLOCK_SWEEP, measured=False)
+        cells[("6-8", BLOCK_BACKGROUNDS[1])] = 2
+        violations = verify_block_cells(cells, SIZE_BUCKETS, BLOCK_BACKGROUNDS)
+        self.assertTrue(any("6-8" in v and BLOCK_BACKGROUNDS[1] in v for v in violations), violations)
+
+    def test_a_missing_cell_is_reported(self) -> None:
+        rows = [
+            row.as_manifest_row() for row in self.rows()
+            if not (row.background == BLOCK_BACKGROUNDS[2] and size_bucket(row.target_px) == "<4")
+        ]
+        cells = block_cell_counts(rows, BLOCK_SWEEP, measured=False)
+        violations = verify_block_cells(cells, SIZE_BUCKETS, BLOCK_BACKGROUNDS)
+        self.assertTrue(any("<4" in v and BLOCK_BACKGROUNDS[2] in v for v in violations), violations)
 
 
 class OcclusionTests(unittest.TestCase):

@@ -29,6 +29,7 @@ REPO_DEFAULT = Path(__file__).resolve().parents[1]
 
 BACKGROUND_GLOBS = ("*.jpg", "*.jpeg", "*.png")
 CONDITION_COUNTS_NAME = "condition_counts.csv"
+BLOCK_CELLS_NAME = "block_cells.csv"
 
 # calibrate_distance() is left at its own 5% tolerance. Tightening it to 2% was tried
 # and measured: it did NOT tighten the pinned size in the pose sweep (0.57 px of
@@ -129,12 +130,22 @@ def main() -> int:
         cc.BACKGROUND_DIR, cc.TRAINING_BACKGROUND_DIRS, find_blank_backgrounds,
         find_leaked_backgrounds,
     )
+    # The blocked size sweep spans scenes chosen by measurement, not by file order:
+    # bg_001 is kept because S1 used it, and the other four are spread over the pool's
+    # high-frequency energy so the block covers different kinds of scene.
+    block_backgrounds = cc.select_block_backgrounds(background_paths)
+    print(
+        "blocked size sweep scenes: "
+        + ", ".join(block_backgrounds)
+        + " (evenly spaced ranks of measured scene busyness)"
+    )
     settings = cc.ControlSettings(
         width=args.imgsz,
         height=args.imgsz,
         supersample=args.supersample,
         background=background_paths[0].name,
         backgrounds=tuple(path.name for path in background_paths),
+        block_backgrounds=block_backgrounds,
     )
     plan = cc.build_plan(settings)
     violations = cc.verify_single_variable(plan)
@@ -169,6 +180,7 @@ def main() -> int:
     # calibrate_distance(), so a hit is the same image, not a similar one.
     cache: dict[tuple, tuple] = {}
     background_cache: dict[str, np.ndarray] = {}
+    block_contrast: dict[str, float] = {}
     rows: list[dict] = []
     print("rendering " + str(len(plan)) + " controlled samples into " + str(out_dir))
 
@@ -225,7 +237,7 @@ def main() -> int:
         # bucket edges themselves are never moved.
         requested_bucket = cc.size_bucket(sample.target_px)
         candidates = (sample.target_px,)
-        if sample.sweep == "S1":
+        if sample.sweep in cc.SIZE_DRIVEN_SWEEPS:
             candidates = candidates + tuple(
                 value
                 for value in cc.SIZE_BUCKET_TARGETS_PX[requested_bucket]
@@ -259,6 +271,13 @@ def main() -> int:
             side=cc.OCCLUDER_SIDE,
             seed=sample.seed,
         )
+        if sample.sweep == cc.BLOCK_SWEEP:
+            # A stimulus-level number for the per-scene reading: if one scene's 6-12 px
+            # cells were simply less visible than another's, that is the first thing a
+            # reader of the per-scene curves needs to know.
+            block_contrast[sample.name] = round(
+                cc.target_contrast(occlusion.image, measurement["mask"]), 3
+            )
         imwrite_unicode(
             image_dir / (sample.name + ".jpg"), occlusion.image, quality=args.jpeg_quality
         )
@@ -326,6 +345,7 @@ def main() -> int:
     return report(
         merged_rows, settings, manifest_path, cc,
         enforce_counts=not (args.only or args.limit),
+        contrasts=block_contrast,
     )
 
 
@@ -340,11 +360,13 @@ def write_condition_counts(rows, out_dir: Path, cc, settings, *, enforce: bool):
     counts = cc.measured_condition_counts(rows)
     expected = cc.expected_conditions(settings)
     path = out_dir / CONDITION_COUNTS_NAME
+    block_cells = cc.block_cell_counts(rows, cc.BLOCK_SWEEP, measured=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
-        writer.writerow(
-            ["sweep", "condition", "n_samples", "half_width_95", "required", "meets_required"]
-        )
+        writer.writerow([
+            "sweep", "dimension", "condition", "n_samples", "half_width_95",
+            "required", "meets_required",
+        ])
         for sweep in cc.SWEEP_IDS:
             if sweep not in counts and sweep not in expected:
                 continue
@@ -357,14 +379,79 @@ def write_condition_counts(rows, out_dir: Path, cc, settings, *, enforce: bool):
             for label in sorted(labels):
                 n = int(groups.get(label, 0))
                 writer.writerow([
-                    sweep, label, n, f"{cc.proportion_half_width(n):.4f}", required,
-                    "yes" if n >= required else "no",
+                    sweep, "condition", label, n, f"{cc.proportion_half_width(n):.4f}",
+                    required, "yes" if n >= required else "no",
                 ])
+        # The block's cells are listed separately and at their own required count: the
+        # per-scene curves are read from these rows, and a cell at n=8 carries 35%, not
+        # the 15% the marginal size bucket carries.
+        if block_cells or cc.BLOCK_SWEEP in expected:
+            for bucket in cc.SIZE_BUCKETS:
+                for background in settings.block_backgrounds:
+                    n = int(block_cells.get((bucket, background), 0))
+                    writer.writerow([
+                        cc.BLOCK_SWEEP, "size_bucket x background",
+                        bucket + " @ " + background, n,
+                        f"{cc.proportion_half_width(n):.4f}", cc.BLOCK_CELL_REQUIRED,
+                        "yes" if n >= cc.BLOCK_CELL_REQUIRED else "no",
+                    ])
     violations = cc.verify_group_counts(counts, expected) if enforce else []
+    if enforce:
+        violations.extend(
+            cc.verify_block_cells(
+                block_cells, cc.SIZE_BUCKETS, settings.block_backgrounds
+            )
+        )
     return path, counts, violations
 
 
-def report(rows, settings, manifest_path: Path, cc, *, enforce_counts: bool = True) -> int:
+def write_block_cells(rows, contrasts, out_dir: Path, cc, settings) -> Path:
+    """Write the per (size, scene) cell diagnostic of the blocked sweep.
+
+    Two numbers a reader needs before comparing per-scene curves: how many rows the cell
+    has, and how visible the target was in it. A per-scene difference in detection is a
+    detector effect only if the target was equally visible in every scene; this is the
+    stimulus-side check of that precondition, and it is deliberately a separate file so
+    it is not mistaken for a detection result.
+    """
+    path = out_dir / BLOCK_CELLS_NAME
+    size_sums: dict[tuple[str, str], float] = {}
+    contrast_sums: dict[tuple[str, str], float] = {}
+    counts: dict[tuple[str, str], int] = {}
+    for row in rows:
+        if str(row.get("sweep", "")) != cc.BLOCK_SWEEP:
+            continue
+        key = (
+            cc.size_bucket(float(row["equivalent_size_px"])),
+            str(row["background"]),
+        )
+        counts[key] = counts.get(key, 0) + 1
+        size_sums[key] = size_sums.get(key, 0.0) + float(row["equivalent_size_px"])
+        name = Path(row["file"]).stem
+        if name in contrasts:
+            contrast_sums[key] = contrast_sums.get(key, 0.0) + contrasts[name]
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.writer(handle)
+        writer.writerow([
+            "sweep", "size_bucket", "background", "n_samples", "half_width_95",
+            "required", "meets_required", "mean_equivalent_size_px", "mean_target_contrast",
+        ])
+        for bucket in cc.SIZE_BUCKETS:
+            for background in settings.block_backgrounds:
+                key = (bucket, background)
+                count = int(counts.get(key, 0))
+                writer.writerow([
+                    cc.BLOCK_SWEEP, bucket, background, count,
+                    f"{cc.proportion_half_width(count):.4f}", cc.BLOCK_CELL_REQUIRED,
+                    "yes" if count >= cc.BLOCK_CELL_REQUIRED else "no",
+                    f"{size_sums.get(key, 0.0) / count:.3f}" if count else "",
+                    f"{contrast_sums.get(key, 0.0) / count:.3f}" if count and key in contrast_sums else "",
+                ])
+    return path
+
+
+def report(rows, settings, manifest_path: Path, cc, *, enforce_counts: bool = True,
+           contrasts=None) -> int:
     """Check the finished manifest by measurement and print what was produced."""
     failures: list[str] = []
     print("")
@@ -427,6 +514,30 @@ def report(rows, settings, manifest_path: Path, cc, *, enforce_counts: bool = Tr
             )
         )
     print("  wrote " + counts_path.name)
+    block_path = write_block_cells(rows, contrasts or {}, manifest_path.parent, cc, settings)
+    block_rows = [row for row in rows if str(row.get("sweep", "")) == cc.BLOCK_SWEEP]
+    if block_rows:
+        print("blocked size x scene cells (n, and the 35% a cell at n=8 carries):")
+        for bucket in cc.SIZE_BUCKETS:
+            cells = [
+                row for row in block_rows
+                if cc.size_bucket(float(row["equivalent_size_px"])) == bucket
+            ]
+            contrasts_for_bucket = [
+                (contrasts or {}).get(Path(row["file"]).stem) for row in cells
+            ]
+            known = [value for value in contrasts_for_bucket if value is not None]
+            print(
+                "  " + bucket + ": n=" + str(len(cells)) + " over "
+                + str(len({row["background"] for row in cells})) + " scenes"
+                + (
+                    ", contrast "
+                    + f"{min(known):.1f}-{max(known):.1f}"
+                    if known
+                    else ""
+                )
+            )
+        print("  wrote " + block_path.name)
     if enforce_counts:
         failures.extend(count_violations)
     else:

@@ -1,80 +1,128 @@
-sweep,condition,n_samples,half_width_95,required,meets_required
-S1,12-16,40,0.1550,40,yes
-S1,16-24,40,0.1550,40,yes
-S1,24-32,40,0.1550,40,yes
-S1,4-6,40,0.1550,40,yes
-S1,6-8,40,0.1550,40,yes
-S1,8-12,40,0.1550,40,yes
-S1,<4,40,0.1550,40,yes
-S1,>32,40,0.1550,40,yes
-S2,cork_end_on,40,0.1550,40,yes
-S2,feather_end_on,40,0.1550,40,yes
-S2,flight_rotation,40,0.1550,40,yes
-S2,oblique,40,0.1550,40,yes
-S2,pitch_only,40,0.1550,40,yes
-S2,roll_only,40,0.1550,40,yes
-S2,side,40,0.1550,40,yes
-S2,yaw_only,40,0.1550,40,yes
-S3,bottom,40,0.1550,40,yes
-S3,bottom_left,40,0.1550,40,yes
-S3,bottom_right,40,0.1550,40,yes
-S3,center,40,0.1550,40,yes
-S3,left,40,0.1550,40,yes
-S3,right,40,0.1550,40,yes
-S3,top,40,0.1550,40,yes
-S3,top_left,40,0.1550,40,yes
-S3,top_right,40,0.1550,40,yes
-S4,heavy,20,0.2191,20,yes
-S4,light,20,0.2191,20,yes
-S4,medium,20,0.2191,20,yes
-S4,none,20,0.2191,20,yes
-S5,light,20,0.2191,20,yes
-S5,none,20,0.2191,20,yes
-S5,partial,20,0.2191,20,yes
-S6a,bg_001.jpg,3,0.5658,3,yes
-S6a,bg_002.jpg,3,0.5658,3,yes
-S6a,bg_003.jpg,3,0.5658,3,yes
-S6a,bg_004.jpg,3,0.5658,3,yes
-S6a,bg_005.jpg,3,0.5658,3,yes
-S6a,bg_006.jpg,3,0.5658,3,yes
-S6a,bg_007.jpg,3,0.5658,3,yes
-S6a,bg_008.jpg,3,0.5658,3,yes
-S6a,bg_009.jpg,3,0.5658,3,yes
-S6a,bg_010.jpg,3,0.5658,3,yes
-S6a,bg_011.jpg,3,0.5658,3,yes
-S6a,bg_012.jpg,3,0.5658,3,yes
-S6a,bg_013.jpg,3,0.5658,3,yes
-S6a,bg_015.jpg,3,0.5658,3,yes
-S6a,bg_016.jpg,3,0.5658,3,yes
-S6a,bg_017.jpg,3,0.5658,3,yes
-S6a,bg_018.jpg,3,0.5658,3,yes
-S6a,bg_019.jpg,3,0.5658,3,yes
-S6a,bg_020.jpg,3,0.5658,3,yes
-S6a,bg_021.jpg,3,0.5658,3,yes
-S6a,bg_022.jpg,3,0.5658,3,yes
-S6a,bg_024.jpg,3,0.5658,3,yes
-S6a,bg_025.jpg,3,0.5658,3,yes
-S6a,bg_026.jpg,3,0.5658,3,yes
-S6a,bg_027.jpg,3,0.5658,3,yes
-S6a,bg_028.jpg,3,0.5658,3,yes
-S6a,bg_029.jpg,3,0.5658,3,yes
-S6a,bg_030.jpg,3,0.5658,3,yes
-S6a,bg_031.jpg,3,0.5658,3,yes
-S6a,bg_032.jpg,3,0.5658,3,yes
-S6b,0,20,0.2191,20,yes
-S6b,135,20,0.2191,20,yes
-S6b,180,20,0.2191,20,yes
-S6b,225,20,0.2191,20,yes
-S6b,270,20,0.2191,20,yes
-S6b,315,20,0.2191,20,yes
-S6b,45,20,0.2191,20,yes
-S6b,90,20,0.2191,20,yes
-S7,1024,40,0.1550,40,yes
-S7,128,40,0.1550,40,yes
-S7,192,40,0.1550,40,yes
-S7,256,40,0.1550,40,yes
-S7,384,40,0.1550,40,yes
-S7,512,40,0.1550,40,yes
-S7,64,40,0.1550,40,yes
-S7,768,40,0.1550,40,yes
-S7,96,40,0.1550,40,yes
+sweep,dimension,condition,n_samples,half_width_95,required,meets_required
+S1,condition,12-16,40,0.1550,40,yes
+S1,condition,16-24,40,0.1550,40,yes
+S1,condition,24-32,40,0.1550,40,yes
+S1,condition,4-6,40,0.1550,40,yes
+S1,condition,6-8,40,0.1550,40,yes
+S1,condition,8-12,40,0.1550,40,yes
+S1,condition,<4,40,0.1550,40,yes
+S1,condition,>32,40,0.1550,40,yes
+S2,condition,cork_end_on,40,0.1550,40,yes
+S2,condition,feather_end_on,40,0.1550,40,yes
+S2,condition,flight_rotation,40,0.1550,40,yes
+S2,condition,oblique,40,0.1550,40,yes
+S2,condition,pitch_only,40,0.1550,40,yes
+S2,condition,roll_only,40,0.1550,40,yes
+S2,condition,side,40,0.1550,40,yes
+S2,condition,yaw_only,40,0.1550,40,yes
+S3,condition,bottom,40,0.1550,40,yes
+S3,condition,bottom_left,40,0.1550,40,yes
+S3,condition,bottom_right,40,0.1550,40,yes
+S3,condition,center,40,0.1550,40,yes
+S3,condition,left,40,0.1550,40,yes
+S3,condition,right,40,0.1550,40,yes
+S3,condition,top,40,0.1550,40,yes
+S3,condition,top_left,40,0.1550,40,yes
+S3,condition,top_right,40,0.1550,40,yes
+S4,condition,heavy,20,0.2191,20,yes
+S4,condition,light,20,0.2191,20,yes
+S4,condition,medium,20,0.2191,20,yes
+S4,condition,none,20,0.2191,20,yes
+S5,condition,light,20,0.2191,20,yes
+S5,condition,none,20,0.2191,20,yes
+S5,condition,partial,20,0.2191,20,yes
+S6a,condition,bg_001.jpg,3,0.5658,3,yes
+S6a,condition,bg_002.jpg,3,0.5658,3,yes
+S6a,condition,bg_003.jpg,3,0.5658,3,yes
+S6a,condition,bg_004.jpg,3,0.5658,3,yes
+S6a,condition,bg_005.jpg,3,0.5658,3,yes
+S6a,condition,bg_006.jpg,3,0.5658,3,yes
+S6a,condition,bg_007.jpg,3,0.5658,3,yes
+S6a,condition,bg_008.jpg,3,0.5658,3,yes
+S6a,condition,bg_009.jpg,3,0.5658,3,yes
+S6a,condition,bg_010.jpg,3,0.5658,3,yes
+S6a,condition,bg_011.jpg,3,0.5658,3,yes
+S6a,condition,bg_012.jpg,3,0.5658,3,yes
+S6a,condition,bg_013.jpg,3,0.5658,3,yes
+S6a,condition,bg_015.jpg,3,0.5658,3,yes
+S6a,condition,bg_016.jpg,3,0.5658,3,yes
+S6a,condition,bg_017.jpg,3,0.5658,3,yes
+S6a,condition,bg_018.jpg,3,0.5658,3,yes
+S6a,condition,bg_019.jpg,3,0.5658,3,yes
+S6a,condition,bg_020.jpg,3,0.5658,3,yes
+S6a,condition,bg_021.jpg,3,0.5658,3,yes
+S6a,condition,bg_022.jpg,3,0.5658,3,yes
+S6a,condition,bg_024.jpg,3,0.5658,3,yes
+S6a,condition,bg_025.jpg,3,0.5658,3,yes
+S6a,condition,bg_026.jpg,3,0.5658,3,yes
+S6a,condition,bg_027.jpg,3,0.5658,3,yes
+S6a,condition,bg_028.jpg,3,0.5658,3,yes
+S6a,condition,bg_029.jpg,3,0.5658,3,yes
+S6a,condition,bg_030.jpg,3,0.5658,3,yes
+S6a,condition,bg_031.jpg,3,0.5658,3,yes
+S6a,condition,bg_032.jpg,3,0.5658,3,yes
+S6b,condition,0,20,0.2191,20,yes
+S6b,condition,135,20,0.2191,20,yes
+S6b,condition,180,20,0.2191,20,yes
+S6b,condition,225,20,0.2191,20,yes
+S6b,condition,270,20,0.2191,20,yes
+S6b,condition,315,20,0.2191,20,yes
+S6b,condition,45,20,0.2191,20,yes
+S6b,condition,90,20,0.2191,20,yes
+S7,condition,1024,40,0.1550,40,yes
+S7,condition,128,40,0.1550,40,yes
+S7,condition,192,40,0.1550,40,yes
+S7,condition,256,40,0.1550,40,yes
+S7,condition,384,40,0.1550,40,yes
+S7,condition,512,40,0.1550,40,yes
+S7,condition,64,40,0.1550,40,yes
+S7,condition,768,40,0.1550,40,yes
+S7,condition,96,40,0.1550,40,yes
+S8,condition,12-16,40,0.1550,40,yes
+S8,condition,16-24,40,0.1550,40,yes
+S8,condition,24-32,40,0.1550,40,yes
+S8,condition,4-6,40,0.1550,40,yes
+S8,condition,6-8,40,0.1550,40,yes
+S8,condition,8-12,40,0.1550,40,yes
+S8,condition,<4,40,0.1550,40,yes
+S8,condition,>32,40,0.1550,40,yes
+S8,size_bucket x background,<4 @ bg_001.jpg,8,0.3465,8,yes
+S8,size_bucket x background,<4 @ bg_006.jpg,8,0.3465,8,yes
+S8,size_bucket x background,<4 @ bg_011.jpg,8,0.3465,8,yes
+S8,size_bucket x background,<4 @ bg_019.jpg,8,0.3465,8,yes
+S8,size_bucket x background,<4 @ bg_029.jpg,8,0.3465,8,yes
+S8,size_bucket x background,4-6 @ bg_001.jpg,8,0.3465,8,yes
+S8,size_bucket x background,4-6 @ bg_006.jpg,8,0.3465,8,yes
+S8,size_bucket x background,4-6 @ bg_011.jpg,8,0.3465,8,yes
+S8,size_bucket x background,4-6 @ bg_019.jpg,8,0.3465,8,yes
+S8,size_bucket x background,4-6 @ bg_029.jpg,8,0.3465,8,yes
+S8,size_bucket x background,6-8 @ bg_001.jpg,8,0.3465,8,yes
+S8,size_bucket x background,6-8 @ bg_006.jpg,8,0.3465,8,yes
+S8,size_bucket x background,6-8 @ bg_011.jpg,8,0.3465,8,yes
+S8,size_bucket x background,6-8 @ bg_019.jpg,8,0.3465,8,yes
+S8,size_bucket x background,6-8 @ bg_029.jpg,8,0.3465,8,yes
+S8,size_bucket x background,8-12 @ bg_001.jpg,8,0.3465,8,yes
+S8,size_bucket x background,8-12 @ bg_006.jpg,8,0.3465,8,yes
+S8,size_bucket x background,8-12 @ bg_011.jpg,8,0.3465,8,yes
+S8,size_bucket x background,8-12 @ bg_019.jpg,8,0.3465,8,yes
+S8,size_bucket x background,8-12 @ bg_029.jpg,8,0.3465,8,yes
+S8,size_bucket x background,12-16 @ bg_001.jpg,8,0.3465,8,yes
+S8,size_bucket x background,12-16 @ bg_006.jpg,8,0.3465,8,yes
+S8,size_bucket x background,12-16 @ bg_011.jpg,8,0.3465,8,yes
+S8,size_bucket x background,12-16 @ bg_019.jpg,8,0.3465,8,yes
+S8,size_bucket x background,12-16 @ bg_029.jpg,8,0.3465,8,yes
+S8,size_bucket x background,16-24 @ bg_001.jpg,8,0.3465,8,yes
+S8,size_bucket x background,16-24 @ bg_006.jpg,8,0.3465,8,yes
+S8,size_bucket x background,16-24 @ bg_011.jpg,8,0.3465,8,yes
+S8,size_bucket x background,16-24 @ bg_019.jpg,8,0.3465,8,yes
+S8,size_bucket x background,16-24 @ bg_029.jpg,8,0.3465,8,yes
+S8,size_bucket x background,24-32 @ bg_001.jpg,8,0.3465,8,yes
+S8,size_bucket x background,24-32 @ bg_006.jpg,8,0.3465,8,yes
+S8,size_bucket x background,24-32 @ bg_011.jpg,8,0.3465,8,yes
+S8,size_bucket x background,24-32 @ bg_019.jpg,8,0.3465,8,yes
+S8,size_bucket x background,24-32 @ bg_029.jpg,8,0.3465,8,yes
+S8,size_bucket x background,>32 @ bg_001.jpg,8,0.3465,8,yes
+S8,size_bucket x background,>32 @ bg_006.jpg,8,0.3465,8,yes
+S8,size_bucket x background,>32 @ bg_011.jpg,8,0.3465,8,yes
+S8,size_bucket x background,>32 @ bg_019.jpg,8,0.3465,8,yes
+S8,size_bucket x background,>32 @ bg_029.jpg,8,0.3465,8,yes
