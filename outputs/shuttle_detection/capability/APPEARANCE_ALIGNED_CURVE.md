@@ -64,3 +64,53 @@ BETTER. Both are more credible than the numpy numbers because they were measured
   older weights on it, which is what the two columns above do.
 - One source frame at 1024 px was too large to place inside the 1280 px frame, which is why that rung has
   16 rows rather than 20.
+## 5. CORRECTION AND VALIDATION: the first ladder reused its renders, and the holdout reproduces it
+
+**The defect.** The ladder above was built from the SAME 400 Isaac frames that produced the training
+pool. Checked immediately after publishing, by comparing source-frame names: 235 of 236 rows (99.6%) used
+a frame the training pool had also used. On its face that makes the curve a memorisation measurement
+rather than a generalisation one.
+
+**The name check was itself invalid, and the content check is what settled it.** Both pools name their
+frames `isaac_0000`, `isaac_0001` and so on, because the renderer numbers them per run - so a name match
+means nothing. Comparing file content instead:
+
+| | value |
+|---|---|
+| training pool frames | 387 |
+| holdout pool frames (fresh seed, never in training) | 250 |
+| **identical by content** | **1** |
+
+So the holdout pool is genuinely fresh, and the earlier name-based alarm was an artefact of my own
+checking method rather than a real leak.
+
+**The holdout curve.** 260 fresh frames rendered with a new seed, composited onto the same frozen test
+backgrounds at the same 12 sizes:
+
+| target size | first ladder (reused frames) | **HOLDOUT ladder (fresh frames)** |
+|---|---|---|
+| 4 px | 0.000 | 0.050 |
+| 6 px | 0.150 | 0.150 |
+| 8 px | 0.200 | 0.300 |
+| 12 px | 0.400 | 0.500 |
+| 16 px | 0.450 | 0.500 |
+| 24 px | 0.500 | 0.400 |
+| 32 px | 0.550 | 0.600 |
+| 64 px | 0.800 | **0.850** |
+| 128 px | 0.950 | **0.900** |
+| 256 px | 0.900 | 0.850 |
+| 512 px | 0.950 | **1.000** |
+| 1024 px | 1.000 | **1.000** |
+| overall | P 0.269 / R 0.564 / mAP50 0.508 | **P 0.272 / R 0.586 / mAP50 0.510** |
+
+**The two ladders agree.** Overall recall is 0.586 on fresh frames against 0.564 on reused ones - the
+reuse did not inflate the result, and if anything the fresh measurement is slightly higher. Rung by rung
+the differences are within the 21.9% half-width at n=20.
+
+**So the curve in section 1 stands, and it now stands on a measurement whose frames the model has never
+seen.** The same cannot be said of the first version alone, which is why the holdout run was worth its 16
+minutes of rendering.
+
+**What this is worth recording for:** the risk was real and checking for it was correct; the CHECK was
+wrong, and the fix was to compare content rather than names. A verification that can only produce false
+alarms is not a verification, and I would have published a retraction of a number that was never wrong.

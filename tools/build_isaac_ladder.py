@@ -23,9 +23,13 @@ ap.add_argument("--repeats", type=int, default=4)
 ap.add_argument("--imgsz", type=int, default=1280)
 ap.add_argument("--seed", type=int, default=20260918)
 ap.add_argument("--out", default="/home/T7/dgut/robot_sim/outputs/shuttle_capability/isaac_ladder")
+# The source pool matters for validity: a ladder built from the frames that produced the TRAINING pool
+# measures renders the model has already seen. The holdout pool is rendered with a different seed and
+# never touched by training, so a ladder built from it is a generalisation measurement.
+ap.add_argument("--pool", default="/home/T7/dgut/robot_sim/outputs/shuttle_capability/isaac_pool")
 args = ap.parse_args()
 
-POOL = REPO / "outputs/shuttle_capability/isaac_pool"
+POOL = Path(args.pool)
 CORE = REPO / "outputs/shuttle_capability/real_images/backgrounds"
 OUT = Path(args.out)
 (OUT / "images").mkdir(parents=True, exist_ok=True)
