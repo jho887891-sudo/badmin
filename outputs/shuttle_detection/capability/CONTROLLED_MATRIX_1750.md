@@ -17,23 +17,38 @@ two tests hold the committed manifest to them.
 | Top-K hit rate | 0.1680 | 0.4669 |
 | Precision | 0.0975 | 0.1857 |
 
-## 2. Size curve (n=40 per bucket, except 16-24 at 1110 and >32 at 400)
+## 2. Size curve — computed ONLY from the sweep that varies size (S1, n=40 per bucket)
 
-| bucket | n | orig | nf | delta |
-|---|---|---|---|---|
-| <4 px | 40 | 0.000 | 0.000 | 0.000 |
-| 4-6 px | 40 | 0.000 | 0.000 | 0.000 |
-| 6-8 px | 40 | 0.225 | **0.025** | **-0.200** |
-| 8-12 px | 40 | 0.300 | **0.125** | **-0.175** |
-| 12-16 px | 40 | 0.275 | 0.350 | +0.075 |
-| 16-24 px | 1110 | 0.228 | 0.404 | +0.176 |
-| 24-32 px | 40 | 0.250 | **0.850** | +0.600 |
-| >32 px | 400 | 0.008 | **0.788** | **+0.780** |
+**Correction.** The first version of this file quoted `size_bucket_metrics.csv`, which groups by
+measured size ACROSS ALL SWEEPS. That is wrong for a conditioned curve, and the controlled-set
+implementer warned about it explicitly: every sweep other than S1 pins its size at 18 px, so the
+`16-24` bucket totals 1110 rows, of which only 40 are S1 size-varying rows. The quoted
+`16-24 n=1110, 0.228 -> 0.404` was therefore a contaminated figure, and `>32 n=400` was S1 and S7
+blended. Recomputed by joining predictions to the manifest on `file` and filtering to S1:
 
-The near field is transformed: 0.008 -> 0.788. Below 6 px nothing changed, and nothing could - the
-set contains nothing detectable there, as the full-resolution check recorded earlier.
+| bucket | n | orig | nf | delta | (as published before) |
+|---|---|---|---|---|---|
+| `<4 px` | 40 | 0.000 | 0.000 | 0.000 | same, n=40 |
+| `4-6 px` | 40 | 0.000 | 0.000 | 0.000 | same, n=40 |
+| `6-8 px` | 40 | 0.225 | **0.025** | **-0.200** | same, n=40 |
+| `8-12 px` | 40 | 0.300 | **0.125** | **-0.175** | same, n=40 |
+| `12-16 px` | 40 | 0.275 | 0.350 | +0.075 | same, n=40 |
+| `16-24 px` | **40** | **0.275** | **0.500** | **+0.225** | WRONG: quoted n=1110, 0.228 -> 0.404 |
+| `24-32 px` | 40 | 0.250 | **0.850** | +0.600 | same, n=40 |
+| `>32 px` | **40** | **0.050** | **0.925** | **+0.875** | blended with S7 as n=400, 0.008 -> 0.788 |
+
+Only the last two rows changed, and the direction of every conclusion survives. The near-field
+ladder read on its own, S7, n=360: **0.000 -> 0.772**.
+
+The 6-8 and 8-12 regressions are unaffected: those buckets are exclusive to S1, so the original
+numbers were already the S1 numbers. Below 6 px nothing changed, and nothing could - the set
+contains nothing detectable there, as the full-resolution check recorded earlier.
 
 **The 6-12 px column is a REGRESSION, and it is the honest cost of this data return.**
+
+Reading rule for every curve in this file, and the reason for the `(as published before)` column:
+a conditioned curve must be read from the sweep that VARIES that condition. Bucket totals are
+inflated by the other sweeps pinned values and are not group sizes.
 
 ## 3. And it is contradicted by the frozen P3 set, which must be stated rather than resolved
 
