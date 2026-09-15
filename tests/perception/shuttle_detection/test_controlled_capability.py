@@ -23,6 +23,7 @@ from __future__ import annotations
 import math
 import sys
 import unittest
+from collections import Counter
 from pathlib import Path
 
 import numpy as np
@@ -36,6 +37,11 @@ if str(TOOLS) not in sys.path:
 
 from src.perception.shuttle_detection.controlled_capability import (  # noqa: E402
     BLUR_LEVELS,
+    NEAR_FIELD_MARGIN_PX,
+    NEAR_FIELD_MIN_DISTANCE_M,
+    NEAR_FIELD_REPEATS,
+    NEAR_FIELD_SIZES_PX,
+    NEAR_FIELD_SUPERSAMPLE,
     OCCLUDER_SIDE,
     MANIFEST_COLUMNS,
     OCCLUSION_LEVELS,
@@ -54,6 +60,8 @@ from src.perception.shuttle_detection.controlled_capability import (  # noqa: E4
     end_toward_camera,
     light_vector,
     long_axis_camera_space,
+    merge_manifest_rows,
+    near_field_camera,
     occlusion_bucket,
     position_pixel_centre,
     position_stays_inside_frame,
@@ -308,8 +316,11 @@ class PlanTests(unittest.TestCase):
 
     def test_the_plan_covers_every_sweep_the_spec_asks_for(self) -> None:
         self.assertEqual(
-            SWEEP_IDS, ("S1", "S2", "S3", "S4", "S5", "S6a", "S6b")
+            SWEEP_IDS, ("S1", "S2", "S3", "S4", "S5", "S6a", "S6b", "S7")
         )
+        # S7 is the near-field ladder, not a spec 03 section 4 variable: spec 03's own
+        # sweeps are S1 to S6b, and S7 exists because the real positives are 838-1579 px
+        # while this set used to stop at 44 px.
         self.assertEqual({s.sweep for s in plan()}, set(SWEEP_IDS))
 
     def test_every_sweep_varies_exactly_one_variable(self) -> None:
@@ -471,6 +482,23 @@ class MeasuredPinTests(unittest.TestCase):
                 row["occlusion_fraction"] = 0.1 + 0.05 * index
         self.assertEqual(verify_measured_pins(rows), [])
 
+    def test_the_near_field_rows_are_checked_like_every_other_sweep(self) -> None:
+        rows = self.rendered_rows()
+        near = [row for row in rows if row["sweep"] == "S7"]
+        self.assertTrue(near)
+        self.assertEqual({row["imgsz"] for row in near}, {1280})
+        self.assertEqual({row["supersample"] for row in near}, {1})
+        self.assertEqual(verify_measured_pins(rows), [])
+
+    def test_a_near_field_row_rendered_in_another_frame_is_reported(self) -> None:
+        rows = self.rendered_rows()
+        for row in rows:
+            if row["sweep"] == "S7":
+                row["imgsz"] = 960
+                break
+        violations = verify_measured_pins(rows)
+        self.assertTrue(any("S7" in v and "imgsz" in v for v in violations), violations)
+
     def test_an_occlusion_fraction_outside_its_sweep_is_reported(self) -> None:
         rows = self.rendered_rows()
         for row in rows:
@@ -505,6 +533,147 @@ class FrameAndDistributionTests(unittest.TestCase):
         rows = [{"sweep": "S1"}, {"sweep": "S1"}, {"sweep": "S2"}]
         self.assertEqual(distribution(rows, "sweep"), {"S1": 2, "S2": 1})
         self.assertEqual(distribution(rows, "missing"), {"": 3})
+
+
+class NearFieldTests(unittest.TestCase):
+    """The large-target ladder the size sweep could not reach.
+
+    Measured elsewhere: the largest target in the training set is 32.86 px while the
+    real verified positives are 838-1579 px, and the trained baseline finds none of
+    them. Whether that is a size-coverage gap or a domain gap can only be told apart
+    by putting SYNTHETIC shuttles of that size in front of the detector, which is what
+    this ladder exists for. The spec 03 section 3 buckets are untouched: every rung of
+    this ladder falls in ">32" and is identified by its sweep and its measured size.
+    """
+
+    REAL_POSITIVE_RANGE_PX = (837.8, 1578.8)
+
+    def test_the_ladder_reaches_past_the_bottom_of_the_real_range(self) -> None:
+        self.assertGreaterEqual(max(NEAR_FIELD_SIZES_PX), self.REAL_POSITIVE_RANGE_PX[0])
+
+    def test_at_least_one_rung_sits_comfortably_inside_the_real_range(self) -> None:
+        low, high = self.REAL_POSITIVE_RANGE_PX
+        inside = [size for size in NEAR_FIELD_SIZES_PX if low <= size <= high]
+        self.assertTrue(inside, "no rung lands inside the real 838-1579 px range")
+        self.assertTrue(
+            any(size >= low * 1.1 for size in inside),
+            "no rung is comfortably above the low edge of the real range",
+        )
+
+    def test_the_ladder_rises_without_repeats(self) -> None:
+        self.assertEqual(list(NEAR_FIELD_SIZES_PX), sorted(NEAR_FIELD_SIZES_PX))
+        self.assertEqual(len(set(NEAR_FIELD_SIZES_PX)), len(NEAR_FIELD_SIZES_PX))
+        self.assertGreater(len(NEAR_FIELD_SIZES_PX), 1)
+
+    def test_every_rung_fits_the_frame_with_the_required_margin(self) -> None:
+        camera = near_field_camera()
+        for target in NEAR_FIELD_SIZES_PX:
+            margin = camera.frame_px / 2.0 - target / 2.0
+            self.assertGreaterEqual(margin, NEAR_FIELD_MARGIN_PX, str(target))
+
+    def test_the_focal_keeps_every_rung_well_in_front_of_the_camera(self) -> None:
+        """Too short a lens needs a camera distance inside the mesh, which drops faces."""
+        camera = near_field_camera()
+        for target in NEAR_FIELD_SIZES_PX:
+            self.assertGreater(
+                camera.naive_distance_m(target), NEAR_FIELD_MIN_DISTANCE_M, str(target)
+            )
+
+    def test_one_camera_serves_the_whole_ladder(self) -> None:
+        """A per-rung frame or focal would be a second variable inside a size sweep."""
+        camera = near_field_camera()
+        self.assertEqual(camera.supersample, NEAR_FIELD_SUPERSAMPLE)
+        self.assertEqual(camera, near_field_camera())
+
+    def test_a_frame_too_small_for_the_ladder_is_rejected(self) -> None:
+        with self.assertRaises(ValueError):
+            near_field_camera(frame_px=int(max(NEAR_FIELD_SIZES_PX)))
+
+    def test_a_focal_too_short_for_the_ladder_is_rejected(self) -> None:
+        with self.assertRaises(ValueError):
+            near_field_camera(focal_px=700.0)
+
+    def test_the_supersample_is_the_cheap_one_because_the_target_is_huge(self) -> None:
+        self.assertEqual(NEAR_FIELD_SUPERSAMPLE, 1)
+        self.assertGreater(min(NEAR_FIELD_SIZES_PX), 32.0)
+
+
+class NearFieldPlanTests(unittest.TestCase):
+    """The ladder has to be a controlled experiment like every other sweep."""
+
+    @staticmethod
+    def rows():
+        return [sample for sample in plan() if sample.sweep == "S7"]
+
+    def test_the_near_field_sweep_varies_only_the_size(self) -> None:
+        rows = self.rows()
+        self.assertTrue(rows)
+        self.assertEqual({row.varied for row in rows}, {("target_px",)})
+        for field in ("background", "light_azimuth_deg", "motion_px", "position_bucket",
+                      "yaw_deg", "pitch_deg", "roll_deg", "occlusion_bucket", "pose_bucket"):
+            self.assertEqual(len({row.control_inputs()[field] for row in rows}), 1, field)
+
+    def test_the_near_field_sweep_pins_one_camera(self) -> None:
+        rows = self.rows()
+        for field in ("width", "height", "focal_px", "supersample"):
+            self.assertEqual(len({getattr(row, field) for row in rows}), 1, field)
+        camera = near_field_camera()
+        self.assertEqual(rows[0].focal_px, camera.focal_px)
+        self.assertEqual(rows[0].width, camera.frame_px)
+        self.assertEqual(rows[0].supersample, camera.supersample)
+
+    def test_every_rung_has_several_repeats(self) -> None:
+        counts = Counter(row.target_px for row in self.rows())
+        self.assertEqual(set(counts), set(NEAR_FIELD_SIZES_PX))
+        for target, count in counts.items():
+            self.assertGreaterEqual(count, NEAR_FIELD_REPEATS, str(target))
+
+    def test_every_near_field_box_stays_inside_its_own_frame(self) -> None:
+        rows = self.rows()
+        biggest = max(row.target_px for row in rows)
+        for row in rows:
+            self.assertTrue(
+                position_stays_inside_frame(row.position_bucket, biggest, row.width, row.height),
+                row.name,
+            )
+
+    def test_the_existing_sweeps_are_untouched_by_the_new_one(self) -> None:
+        for sample in plan():
+            if sample.sweep == "S7":
+                continue
+            self.assertEqual((sample.width, sample.height), (WIDTH, HEIGHT), sample.name)
+            self.assertEqual(sample.focal_px, FOCAL_PX, sample.name)
+            self.assertEqual(sample.supersample, 3, sample.name)
+
+
+class ManifestMergeTests(unittest.TestCase):
+    """Adding a sweep to a finished set must not disturb the rows already shipped."""
+
+    def test_appended_rows_keep_the_existing_rows_and_their_order(self) -> None:
+        existing = [{"file": "images/a.jpg"}, {"file": "images/b.jpg"}]
+        merged = merge_manifest_rows(existing, [{"file": "images/c.jpg"}])
+        self.assertEqual(
+            [row["file"] for row in merged],
+            ["images/a.jpg", "images/b.jpg", "images/c.jpg"],
+        )
+
+    def test_a_row_already_present_is_replaced_rather_than_duplicated(self) -> None:
+        existing = [{"file": "images/a.jpg", "sweep": "S1"}, {"file": "images/b.jpg", "sweep": "S1"}]
+        merged = merge_manifest_rows(existing, [{"file": "images/a.jpg", "sweep": "S7"}])
+        self.assertEqual(len(merged), 2)
+        self.assertEqual([row["file"] for row in merged], ["images/a.jpg", "images/b.jpg"])
+        self.assertEqual(merged[0]["sweep"], "S7")
+
+    def test_an_empty_existing_manifest_is_just_the_new_rows(self) -> None:
+        merged = merge_manifest_rows([], [{"file": "images/a.jpg"}])
+        self.assertEqual([row["file"] for row in merged], ["images/a.jpg"])
+
+    def test_merging_does_not_mutate_its_inputs(self) -> None:
+        existing = [{"file": "images/a.jpg", "sweep": "S1"}]
+        new = [{"file": "images/a.jpg", "sweep": "S7"}]
+        merge_manifest_rows(existing, new)
+        self.assertEqual(existing[0]["sweep"], "S1")
+        self.assertEqual(new[0]["sweep"], "S7")
 
 
 class OcclusionTests(unittest.TestCase):

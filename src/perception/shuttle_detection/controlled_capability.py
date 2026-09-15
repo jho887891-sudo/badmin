@@ -570,10 +570,139 @@ MEASURED_MANIFEST_COLUMNS: tuple[str, ...] = (
 
 
 # --------------------------------------------------------------------------- #
+# The near-field ladder: a second size sweep for large targets
+# --------------------------------------------------------------------------- #
+
+# Why a second size sweep exists at all: measured elsewhere on this project, the
+# largest target in the frozen training set is 32.86 px while the real verified
+# positives are 837.8-1578.8 px, and the trained baseline finds none of them. That
+# gap cannot be attributed by looking at real images alone -- a detector that has
+# never seen a large shuttle and a detector that cannot recognise a synthetic one at
+# any size both return nothing. Telling them apart needs SYNTHETIC shuttles at that
+# size, which is what this ladder is for.
+#
+# Spec 03 section 3 is NOT extended: the buckets stay frozen, every rung of this
+# ladder lands in ">32", and a row is identified by its sweep name plus the measured
+# equivalent_size_px the manifest records for it.
+NEAR_FIELD_SIZES_PX: tuple[float, ...] = (
+    64.0, 96.0, 128.0, 192.0, 256.0, 384.0, 512.0, 768.0, 1024.0,
+)
+NEAR_FIELD_REPEATS = 3
+
+# One camera for the whole ladder, so the only thing that changes between rungs is
+# the target size. A per-rung frame or focal length would be a second variable inside
+# a size sweep.
+NEAR_FIELD_FRAME_PX = 1280
+# A lens long enough that the camera never has to sit inside the mesh. At fx = 700 the
+# renderer's pose-aware distance floor bites at roughly 900 px (shuttle_render.
+# _minimum_view_distance), so a 1024 px rung drawn with the set's own lens would be
+# rendered from inside the shuttlecock, with faces dropped silently. fx = 11200 puts
+# the 1024 px rung at about 0.9 m, where no vertex is near the camera plane.
+NEAR_FIELD_FOCAL_PX = 11200.0
+# Supersampling exists to stop a 2-8 px silhouette from becoming a staircase; it is
+# what makes the small end of the main sweep meaningful. At 64 px and above the whole
+# outline is under 1.6% of the target, so the box-filtered supersample buys no
+# measurable edge quality while costing 4 to 9 times the raster in every iteration of
+# the calibration loop. The supersample actually used is written into every row.
+NEAR_FIELD_SUPERSAMPLE = 1
+# Clear frame around the largest rung, in pixels, required by near_field_camera().
+NEAR_FIELD_MARGIN_PX = 64
+# The camera must stay well outside the rotated mesh. The renderer's own floor is
+# 1.2 x the forward half extent (about 0.05 m for this asset); this is the bound the
+# ladder is checked against BEFORE anything is rendered, so a ladder that cannot be
+# drawn fails loudly instead of producing clipped silhouettes.
+NEAR_FIELD_MIN_DISTANCE_M = 0.25
+
+
+@dataclass(frozen=True)
+class NearFieldCamera:
+    """The single camera a near-field ladder is rendered with."""
+
+    frame_px: int
+    focal_px: float
+    supersample: int
+
+    def naive_distance_m(self, target_px: float) -> float:
+        """The distance calibrate_distance() starts from for one rung.
+
+        It is the same seed that function uses, so this is the value the renderer will
+        actually be asked to draw from, not an unrelated estimate.
+        """
+        if target_px <= 0.0:
+            raise ValueError("target_px must be > 0")
+        return self.focal_px * _renderer().canonical_length_m() / float(target_px)
+
+    def margin_px(self, target_px: float) -> float:
+        """Clear frame on each side of a target of that size, centred."""
+        return self.frame_px / 2.0 - float(target_px) / 2.0
+
+
+def near_field_camera(
+    targets: Sequence[float] = NEAR_FIELD_SIZES_PX,
+    *,
+    frame_px: int = NEAR_FIELD_FRAME_PX,
+    focal_px: float = NEAR_FIELD_FOCAL_PX,
+    supersample: int = NEAR_FIELD_SUPERSAMPLE,
+) -> NearFieldCamera:
+    """The camera for the whole ladder, or a refusal explaining what does not fit.
+
+    Both refusals are checked before any rendering: a frame that clips the largest
+    rung would silently produce a ground-truth box hanging over the edge, and a lens
+    short enough to need a camera distance inside the mesh would silently drop faces.
+    """
+    if not targets:
+        raise ValueError("the near-field ladder is empty")
+    if supersample < 1:
+        raise ValueError("supersample must be >= 1")
+    camera = NearFieldCamera(
+        frame_px=int(frame_px), focal_px=float(focal_px), supersample=int(supersample)
+    )
+    for target in targets:
+        if camera.margin_px(target) < NEAR_FIELD_MARGIN_PX:
+            raise ValueError(
+                "a " + str(target) + " px target leaves only "
+                + f"{camera.margin_px(target):.1f} px of frame, under the "
+                + str(NEAR_FIELD_MARGIN_PX) + " px margin required in a "
+                + str(camera.frame_px) + " px frame"
+            )
+        distance = camera.naive_distance_m(target)
+        if distance <= NEAR_FIELD_MIN_DISTANCE_M:
+            raise ValueError(
+                "a " + str(target) + " px target needs a camera at "
+                + f"{distance:.4f} m with fx={camera.focal_px:.0f}, inside the mesh: "
+                + "raise the focal length"
+            )
+    return camera
+
+
+def merge_manifest_rows(
+    existing: Sequence[Mapping[str, Any]], new: Sequence[Mapping[str, Any]]
+) -> list[dict[str, Any]]:
+    """Append new rows to a shipped manifest without disturbing the ones already in it.
+
+    A sweep added to a finished set must not rewrite rows an evaluator may already
+    have consumed, so existing rows keep their position. A row whose file is already
+    present is replaced in place rather than duplicated: re-rendering one sample must
+    not create two rows for one image, which the audit reports as a duplicate id.
+    """
+    merged = [dict(row) for row in existing]
+    position = {str(row.get("file", "")): index for index, row in enumerate(merged)}
+    for row in new:
+        copy = dict(row)
+        key = str(copy.get("file", ""))
+        if key in position:
+            merged[position[key]] = copy
+        else:
+            position[key] = len(merged)
+            merged.append(copy)
+    return merged
+
+
+# --------------------------------------------------------------------------- #
 # The plan
 # --------------------------------------------------------------------------- #
 
-SWEEP_IDS: tuple[str, ...] = ("S1", "S2", "S3", "S4", "S5", "S6a", "S6b")
+SWEEP_IDS: tuple[str, ...] = ("S1", "S2", "S3", "S4", "S5", "S6a", "S6b", "S7")
 
 # Rows per size bucket in the size sweep: one per candidate target, so the repeats
 # inside a bucket are different SIZE requests, not the same request rendered twice.
@@ -596,6 +725,13 @@ class ControlSettings:
     shadow_gain: float = 0.0
     motion_angle_deg: float = 30.0
     pose_deg: tuple[float, float, float] = (35.0, 30.0, 0.0)
+    # The near-field ladder (S7) is a second size sweep over large targets; it carries
+    # its own frame and lens, which are constant across the whole ladder.
+    near_field_sizes_px: tuple[float, ...] = NEAR_FIELD_SIZES_PX
+    near_field_repeats: int = NEAR_FIELD_REPEATS
+    near_field_frame_px: int = NEAR_FIELD_FRAME_PX
+    near_field_focal_px: float = NEAR_FIELD_FOCAL_PX
+    near_field_supersample: int = NEAR_FIELD_SUPERSAMPLE
     # The size every non-size sweep pins. Deliberately in the middle of the 16-24
     # bucket rather than on its 16.0 edge: the renderer's ground-truth footprint is a
     # whole-pixel quantity, and a pose sweep pinned at 16.0 px measured 15.4-16.0 px,
@@ -619,6 +755,14 @@ class ControlSettings:
             raise ValueError("the light sweep needs at least two azimuths to vary over")
         if self.background not in self.backgrounds:
             raise ValueError("the pinned background must be one of the swept backgrounds")
+        if self.near_field_repeats < 1:
+            raise ValueError("the near-field ladder needs at least one repeat per rung")
+        near_field_camera(
+            self.near_field_sizes_px,
+            frame_px=self.near_field_frame_px,
+            focal_px=self.near_field_focal_px,
+            supersample=self.near_field_supersample,
+        )
 
 
 @dataclass(frozen=True)
@@ -753,6 +897,9 @@ def _sample(
     motion_px: float,
     occlusion_name: str,
     occlusion_target_fraction: float,
+    frame_px: int | None = None,
+    focal_px: float | None = None,
+    supersample: int | None = None,
 ) -> PlannedSample:
     seed = stable_seed(sweep, name)
     return PlannedSample(
@@ -776,10 +923,10 @@ def _sample(
         noise_sigma=float(settings.noise_sigma),
         noise_seed=seed,
         shadow_gain=float(settings.shadow_gain),
-        width=int(settings.width),
-        height=int(settings.height),
-        focal_px=float(settings.focal_px),
-        supersample=int(settings.supersample),
+        width=int(settings.width if frame_px is None else frame_px),
+        height=int(settings.height if frame_px is None else frame_px),
+        focal_px=float(settings.focal_px if focal_px is None else focal_px),
+        supersample=int(settings.supersample if supersample is None else supersample),
     )
 
 
@@ -879,6 +1026,28 @@ def build_plan(settings: ControlSettings) -> list[PlannedSample]:
             varied=("light_azimuth_deg",),
             light_azimuth_deg=azimuth,
         )
+
+    # S7 near field: the same control as S1 -- pose, background, position, light and
+    # blur held -- over the large targets the main sweep cannot reach. Repeated at each
+    # rung, because a single row per size would make a detection failure at 1024 px
+    # indistinguishable from one unlucky noise draw.
+    camera = near_field_camera(
+        settings.near_field_sizes_px,
+        frame_px=settings.near_field_frame_px,
+        focal_px=settings.near_field_focal_px,
+        supersample=settings.near_field_supersample,
+    )
+    for target in settings.near_field_sizes_px:
+        for repeat in range(settings.near_field_repeats):
+            add(
+                name="s7_near_field_" + str(int(round(target))).zfill(4) + "_" + str(repeat),
+                sweep="S7",
+                varied=("target_px",),
+                target_px=target,
+                frame_px=camera.frame_px,
+                focal_px=camera.focal_px,
+                supersample=camera.supersample,
+            )
     return samples
 
 
@@ -951,6 +1120,11 @@ PINNED_MANIFEST_COLUMNS: dict[str, float] = {
     "occlusion_bucket": 0.0,
     "occlusion_target_fraction": 0.0,
     "occlusion_fraction": 0.0,
+    # The frame and the camera are pinned per sweep too: a sweep whose frame or lens
+    # moved between rows is not a single experiment.
+    "imgsz": 0.0,
+    "focal_px": 0.0,
+    "supersample": 0.0,
 }
 
 # The one variable each sweep is allowed to move, as manifest column names. Where a
@@ -965,6 +1139,7 @@ VARIED_MANIFEST_COLUMNS: dict[str, tuple[str, ...]] = {
     "S5": ("occlusion_bucket", "occlusion_target_fraction", "occlusion_fraction"),
     "S6a": ("background",),
     "S6b": ("light_azimuth_deg",),
+    "S7": ("target_px", "equivalent_size_px"),
 }
 
 

@@ -45,7 +45,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--only", default=None, help="comma-separated sweep ids, for smoke runs")
     parser.add_argument("--limit", type=int, default=0, help="render at most this many rows")
     parser.add_argument("--jpeg-quality", type=int, default=95)
+    parser.add_argument(
+        "--merge-existing",
+        action="store_true",
+        help="keep the rows already in the output manifest and append this run's rows "
+             "to them, so a sweep can be added to a shipped set without re-rendering it",
+    )
     return parser.parse_args()
+
+
+def read_manifest_rows(path: Path) -> tuple[list[dict], list[str]]:
+    """Read an existing manifest, or nothing when there is none yet."""
+    if not path.is_file():
+        return [], []
+    with path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        return [dict(row) for row in reader], list(reader.fieldnames or [])
 
 
 def collect_backgrounds(background_dir: Path, training_dirs, find_blank_backgrounds,
@@ -242,23 +257,45 @@ def main() -> int:
             )
         )
 
+    if len(rows) != len(plan):
+        print(
+            "FAILED: rendered " + str(len(rows)) + " rows for a plan of " + str(len(plan)),
+            file=sys.stderr,
+        )
+        return 1
+
     manifest_path = out_dir / cc.MANIFEST_NAME
+    merged_rows = rows
+    if args.merge_existing:
+        existing_rows, existing_header = read_manifest_rows(manifest_path)
+        if existing_rows:
+            # A header that no longer matches the schema would silently drop columns for
+            # every row this run appends, so it is a refusal rather than a warning.
+            if list(existing_header) != list(cc.MANIFEST_COLUMNS):
+                raise SystemExit(
+                    "existing manifest header does not match the schema: "
+                    + str(existing_header)
+                )
+            merged_rows = cc.merge_manifest_rows(existing_rows, rows)
+            print(
+                "keeping " + str(len(existing_rows)) + " existing rows and appending "
+                + str(len(rows)) + " new ones (" + str(len(merged_rows)) + " total)"
+            )
+
     with manifest_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(cc.MANIFEST_COLUMNS), extrasaction="ignore")
         writer.writeheader()
-        for row in rows:
+        for row in merged_rows:
             writer.writerow(row)
 
-    return report(rows, settings, manifest_path, plan, cc)
+    return report(merged_rows, settings, manifest_path, cc)
 
 
-def report(rows, settings, manifest_path: Path, plan, cc) -> int:
+def report(rows, settings, manifest_path: Path, cc) -> int:
     """Check the finished manifest by measurement and print what was produced."""
     failures: list[str] = []
     print("")
     print("samples=" + str(len(rows)) + "  manifest=" + str(manifest_path))
-    if len(rows) != len(plan):
-        failures.append("rendered " + str(len(rows)) + " rows for a plan of " + str(len(plan)))
 
     measured_sizes = [cc.size_bucket(float(row["equivalent_size_px"])) for row in rows]
     dimensions = {
@@ -278,17 +315,18 @@ def report(rows, settings, manifest_path: Path, plan, cc) -> int:
         ))
 
     # A dimension is only required when the sweep that fills it was rendered: a smoke
-    # run of one sweep must not be reported as a set with seven empty buckets.
+    # run of one sweep must not be reported as a set with seven empty buckets. The size
+    # dimension is filled by both size sweeps, so S1 or S7 alone still has to cover it.
     expected = {
-        "S1": ("size_bucket (measured)", cc.SIZE_BUCKETS),
-        "S2": ("pose_bucket", cc.POSE_BUCKETS),
-        "S3": ("position_bucket", tuple(cc.POSITION_TARGETS)),
-        "S4": ("blur_bucket", tuple(name for name, _ in cc.BLUR_LEVELS)),
-        "S5": ("occlusion_bucket (measured)", tuple(name for name, _ in cc.OCCLUSION_LEVELS)),
+        "size_bucket (measured)": (("S1", "S7"), cc.SIZE_BUCKETS),
+        "pose_bucket": (("S2",), cc.POSE_BUCKETS),
+        "position_bucket": (("S3",), tuple(cc.POSITION_TARGETS)),
+        "blur_bucket": (("S4",), tuple(name for name, _ in cc.BLUR_LEVELS)),
+        "occlusion_bucket (measured)": (("S5",), tuple(name for name, _ in cc.OCCLUSION_LEVELS)),
     }
     rendered_sweeps = {row["sweep"] for row in rows}
-    for sweep, (name, vocabulary) in expected.items():
-        if sweep not in rendered_sweeps:
+    for name, (sweeps, vocabulary) in expected.items():
+        if not (set(sweeps) & rendered_sweeps):
             continue
         counts = {}
         for value in dimensions[name]:
@@ -300,9 +338,13 @@ def report(rows, settings, manifest_path: Path, plan, cc) -> int:
     for violation in cc.verify_measured_pins(rows):
         failures.append(violation)
 
+    # Each row is checked against its OWN frame: the near-field ladder is rendered in a
+    # larger frame than the rest of the set, and a check against the wrong one would
+    # either pass a clipped box or fail a good one.
     for row in rows:
-        if not cc.bbox_inside_frame(row, settings.width, settings.height):
-            failures.append(row["file"] + " is not wholly inside the frame")
+        frame = int(float(row["imgsz"]))
+        if not cc.bbox_inside_frame(row, frame, frame):
+            failures.append(row["file"] + " is not wholly inside its " + str(frame) + " px frame")
 
     backgrounds = {row["background"] for row in rows}
     training_names = set()
