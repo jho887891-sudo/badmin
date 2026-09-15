@@ -46,7 +46,8 @@ CORK_TRANSLUCENCY = 0.0
 # The sizing seed comes from configs/shuttlecock.yaml via canonical_length_m() (the
 # configured model is 79.25 mm end to end); the projected silhouette is driven by the
 # ~61.8 mm skirt.  Only the seed is a constant here - the loop measures the real footprint.
-MIN_DISTANCE_M = 0.3
+# Absolute safety floor. The REAL floor depends on the pose: see _minimum_view_distance().
+MIN_DISTANCE_M = 0.01
 # A ground-truth box is the object's FOOTPRINT: every pixel the shuttle touches belongs to
 # it.  Requiring half coverage instead would erase the target entirely below ~4 px, which is
 # precisely the regime this dataset exists to measure.
@@ -279,6 +280,31 @@ def split_backgrounds(paths: Sequence[Path], *, val_count: int, seed: int
     return train, val
 
 
+def _minimum_view_distance(parts: Sequence[Part], rotation: np.ndarray) -> float:
+    """Smallest camera distance that keeps the whole rotated mesh in front of the camera.
+
+    The camera is a pinhole at the origin looking along +z, so any vertex with z <= 0 projects
+    behind it and is silently dropped by the per-face guard. The object is centred at the camera
+    space distance, so the distance must exceed the mesh's own forward half-extent AFTER rotation.
+    A flat 0.3 m floor was used before and it silently capped every render at about 166 px with
+    fx=700, making the entire near-field regime - including the 838-1578 px real positives -
+    unrenderable. 20% margin keeps the silhouette well formed rather than grazing the camera plane.
+
+    Note the remaining bound: with a given focal length fx the reachable size is also limited,
+    because a larger target needs a smaller d. fx=700 reaches roughly 900 px here; beyond that
+    raise fx (a longer lens), which is the physically correct model for a close-up anyway.
+    """
+    if not parts:
+        raise ValueError("no parts to render")
+    centre = np.mean([np.asarray(p.verts).mean(axis=0) for p in parts], axis=0)
+    forward = 0.0
+    rot = np.asarray(rotation, dtype=np.float64)
+    for part in parts:
+        rel = (np.asarray(part.verts, dtype=np.float64) - centre) @ rot.T
+        forward = max(forward, float(rel[:, 2].max()))
+    return max(1.2 * forward, MIN_DISTANCE_M)
+
+
 def calibrate_distance(parts: Sequence[Part], rotation: np.ndarray, target_px: float,
                        pixel_xy: Tuple[float, float], K, width: int, height: int, *,
                        measure_supersample: int = 3, max_iterations: int = 8,
@@ -299,7 +325,8 @@ def calibrate_distance(parts: Sequence[Part], rotation: np.ndarray, target_px: f
         raise ValueError("target_px must be > 0")
     # Coverage is pure geometry, so calibration does not depend on the lighting.
     flat_light = np.array([0.0, 0.0, -1.0])
-    distance = max(float(K[0]) * canonical_length_m() / target_px, MIN_DISTANCE_M)
+    floor = _minimum_view_distance(parts, rotation)
+    distance = max(float(K[0]) * canonical_length_m() / target_px, floor)
     best_distance, best_error = distance, float("inf")
     for _ in range(max_iterations):
         _rgb, alpha = render_shuttle(parts, rotation, distance, pixel_xy, K, width, height,
@@ -307,18 +334,18 @@ def calibrate_distance(parts: Sequence[Part], rotation: np.ndarray, target_px: f
         bbox = yolo_bbox_from_mask(mask_from_coverage(alpha, SUPPORT_COVERAGE),
                                    width, height)
         if bbox is None:
-            distance = max(distance * 0.5, MIN_DISTANCE_M)
+            distance = max(distance * 0.5, floor)
             continue
         achieved = math.sqrt(bbox[2] * width * bbox[3] * height)
         if achieved <= 0.0:
-            distance = max(distance * 0.5, MIN_DISTANCE_M)
+            distance = max(distance * 0.5, floor)
             continue
         error = abs(achieved - target_px) / target_px
         if error < best_error:
             best_error, best_distance = error, distance
         if error <= tolerance:
             return distance
-        distance = max(distance * (achieved / target_px), MIN_DISTANCE_M)
+        distance = max(distance * (achieved / target_px), floor)
     return best_distance
 
 

@@ -236,6 +236,28 @@ class RenderTests(unittest.TestCase):
                                  f"target {target}: calibrated {achieved:.2f} px is no better "
                                  f"than naive {achieved_naive:.2f} px")
 
+    def test_calibration_reaches_near_field_targets_far_beyond_the_training_range(self) -> None:
+        """A 512 px target needs d = fx*extent/512 = 0.106 m, which is still well outside the object
+        (half-length 0.039 m), so the renderer must allow it.
+
+        Measured before the fix: calibrate_distance returned exactly MIN_DISTANCE_M = 0.3 for every
+        request above ~166 px, because the floor overrode the naive starting guess and every
+        iteration was clamped by it. The renderer therefore could not produce a target larger than
+        about 166 px at all, which silently made the whole near-field regime unrenderable - and the
+        real verified positives are 838-1578 px.
+        """
+        ss = 1  # large targets need no anti-aliasing, and ss=3 on a 512 px object is very slow
+        for target in (256.0, 512.0):
+            dist = calibrate_distance(self.parts, np.eye(3), target, (WH / 2.0, WH / 2.0),
+                                      K, WH, WH, measure_supersample=ss)
+            _rgb, alpha = render_shuttle(self.parts, np.eye(3), dist, (WH / 2.0, WH / 2.0),
+                                         K, WH, WH, light_dir=self.light, supersample=ss)
+            bbox = self._gt_bbox(alpha)
+            self.assertIsNotNone(bbox, f"nothing rendered at target {target} px")
+            achieved = math.sqrt(bbox[2] * WH * bbox[3] * WH)
+            self.assertGreater(achieved, target * 0.7,
+                               f"target {target} px produced only {achieved:.1f} px")
+
     def test_calibrated_distance_beats_naive_extent_over_target(self) -> None:
         target = 12.0
         naive = K[0] * SHUTTLE_EXTENT_M / target
