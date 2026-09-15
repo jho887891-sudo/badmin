@@ -85,6 +85,31 @@ Supporting evidence, all on frozen sets that never entered training:
 | CHALLENGE C1 vs C1n, paired | recall 0.333 on scenes that fire 0.97 boxes each when empty - **no discrimination** |
 | controlled matrix | recall 0.426, mAP50 0.351 (see the renderer caveat) |
 
+## 4b. The deployment-aligned capability curve, and it supersedes the numpy-rendered figures
+
+Section 4 quotes the controlled matrix, which is numpy-rendered. That set measures an appearance this
+release was NOT trained for, so its numbers understate the model - measurably so: on an appearance-aligned
+ladder built from Isaac Sim renders, `baseline_round3` (trained on numpy renders) scores 0.05-0.20 across
+24-1024 px while this release scores 0.50-1.00 over the same range.
+
+**The figure to plan against is therefore this one**, measured on 237 rows at 12 sizes x 20 repeats, built
+from 260 renders that training never saw (validated by content hash: 1 of 250 frames identical):
+
+| target size | recall | | target size | recall |
+|---|---|---|---|---|
+| 4 px | 0.050 | | 32 px | 0.600 |
+| 6 px | 0.150 | | 64 px | **0.850** |
+| 8 px | 0.300 | | 128 px | **0.900** |
+| 12 px | 0.500 | | 256 px | 0.850 |
+| 16 px | 0.500 | | 512 px | **1.000** |
+| 24 px | 0.400 | | 1024 px | **1.000** |
+
+Overall: precision 0.272, recall **0.586**, mAP50 **0.510**.
+
+So the honest statements are: **stable detection (>= 0.85) from 64 px upward**, roughly 0.40-0.60 across
+12-32 px, and nothing reliable below 6 px. The section 4 figure of "stable >= 24 px" came from the
+numpy-rendered controlled curve and is **not** the deployment figure; this is.
+
 ## 5. Frozen known limitations
 
 1. **No discrimination on cluttered scenes with small targets.** On 33 hard scenes a 10 px target is
@@ -104,6 +129,14 @@ Supporting evidence, all on frozen sets that never entered training:
    plausibility, never fitted to a real camera. There is no guarantee the appearance match generalises to
    the deployment camera.
 7. **`bg_001` is anomalously hard** for a reason no measurement in this project identified.
+- **A Level-1 adjustment was tried against the cluttered-scene defect and REVERTED.** Feeding whole scenes
+  instead of 960x960 centre crops as hard negatives - a clean single-variable change - halved real-photo
+  recall (0.600 -> 0.300) and collapsed its precision (0.500 -> 0.158) while making false positives
+  slightly worse (43 -> 47). `baseline_whole` is kept on disk as a recorded negative result.
+- **The challenge set partially overlaps the training pool**: 8 of 66 C1 rows and 4 of 33 C1n rows use a
+  scene that also appears among the training negatives, because C1/C1n were built from those scenes before
+  they were added to training. The discrimination finding was recomputed on the 29 non-overlapping scenes
+  and is unchanged (recall 0.345 against 0.93 boxes per empty scene).
 
 ## 6. Frozen interface
 
@@ -163,6 +196,13 @@ approximately. Any drift means the code, the data or the environment changed.
 | frozen P3 (160) | precision 0.196, recall 0.438, mAP50 0.253 |
 | controlled matrix (2070) | recall 0.426, mAP50 0.351 |
 | CHALLENGE C5 | recall 1.000 |
+| appearance-aligned ladder (237 rows, holdout renders) | precision 0.272, recall 0.586, mAP50 0.510 |
+| appearance-aligned ladder, per rung | 4 px 0.050, 8 px 0.300, 16 px 0.500, 32 px 0.600, 64 px 0.850, 128 px 0.900, 512 px 1.000, 1024 px 1.000 |
+
+The appearance-aligned ladder was validated against a first version built from frames the training pool had
+also used: the two agreed (recall 0.586 on fresh renders against 0.564 on reused ones), so the numbers above
+are the holdout ones and the reuse did not inflate them. The holdout frames are in
+`outputs/shuttle_capability/isaac_pool_holdout` and the ladder manifest in `isaac_ladder_holdout`.
 
 ## 8b. Regression verification, actually run rather than asserted
 
