@@ -21,11 +21,13 @@ Run this module's tests with:
 from __future__ import annotations
 
 import csv
+import hashlib
+from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, Mapping, Sequence
+from typing import Any, Iterable, Mapping, Sequence
 
-from .contracts import SPLITS, SOURCE_TYPES, AuditIssue
+from .contracts import SPLITS, SOURCE_TYPES, AuditIssue, AuditResult
 
 # Columns whose absence makes the manifest unusable rather than merely terse.
 REQUIRED_COLUMNS: tuple[str, ...] = ("file", "split", "source_type")
@@ -494,3 +496,537 @@ def find_duplicate_sample_ids(rows: Iterable[tuple[str, str]]) -> list[AuditIssu
                 )
             )
     return issues
+
+
+# --------------------------------------------------------------------------- #
+# Leakage detection (spec section 6)
+# --------------------------------------------------------------------------- #
+
+
+def _scan_cross_split(rows: Iterable[tuple[str, str, str]]) -> list[tuple[str, list[str], list[str]]]:
+    """Group rows by key and return the keys that span more than one split.
+
+    Rows are (sample_id, split, key). Rows without a key are skipped: a manifest
+    that cannot supply a source group or a content hash must not be reported as if
+    every one of its samples were a duplicate of every other.
+    """
+    groups: dict[str, list[tuple[str, str]]] = {}
+    order: list[str] = []
+    for sample_id, split, key in rows:
+        if not key:
+            continue
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        groups[key].append((sample_id, split))
+    findings: list[tuple[str, list[str], list[str]]] = []
+    for key in order:
+        members = groups[key]
+        splits = sorted({split for _, split in members})
+        if len(splits) > 1:
+            findings.append((key, splits, [sample_id for sample_id, _ in members]))
+    return findings
+
+
+def _summarise_ids(sample_ids: Sequence[str], limit: int = 5) -> str:
+    if len(sample_ids) <= limit:
+        return ", ".join(sample_ids)
+    return ", ".join(sample_ids[:limit]) + " (+" + str(len(sample_ids) - limit) + " more)"
+
+
+def find_cross_split_duplicates(rows: Iterable[tuple[str, str, str]]) -> list[AuditIssue]:
+    """Report byte-identical images that appear in more than one split.
+
+    Rows are (sample_id, split, content_hash). Spec section 6: the same synthetic
+    sequence or the same real frame must never straddle train / val / test, so any
+    content hash seen in two splits is an ERROR.
+    """
+    return [
+        AuditIssue(
+            _summarise_ids(sample_ids),
+            CODE_CROSS_SPLIT_DUPLICATE,
+            "ERROR",
+            "identical content in splits " + ", ".join(splits) + " (hash " + key + ")",
+        )
+        for key, splits, sample_ids in _scan_cross_split(rows)
+    ]
+
+
+def find_source_group_leakage(rows: Iterable[tuple[str, str, str]]) -> list[AuditIssue]:
+    """Report a source group (background, clip, scene) that spans two splits.
+
+    Rows are (sample_id, split, group). Using one background or one video clip on
+    both sides of a split boundary lets the model memorise the source instead of
+    the object, which the pool isolation of spec section 3 exists to prevent.
+    """
+    return [
+        AuditIssue(
+            _summarise_ids(sample_ids),
+            CODE_SOURCE_GROUP_LEAKAGE,
+            "ERROR",
+            "source group " + key + " in splits " + ", ".join(splits),
+        )
+        for key, splits, sample_ids in _scan_cross_split(rows)
+    ]
+
+
+# --------------------------------------------------------------------------- #
+# Distribution reporting (spec sections 7 and 8)
+# --------------------------------------------------------------------------- #
+
+# Bucket edges chosen from the measured P4-A range (2.45 px to 32.86 px, median
+# 8.94 px) so that every rendered size class keeps its own bucket instead of the
+# whole set collapsing into one "small" bin.
+SIZE_BUCKETS: tuple[str, ...] = ("<4px", "4-8px", "8-16px", "16-32px", ">=32px")
+# motion_px is the rendered motion blur length in pixels; the frozen set uses
+# 0, 1, 2, 4 and 7 px.
+BLUR_BUCKETS: tuple[str, ...] = ("sharp", "slight", "moderate", "heavy")
+# Orientation deviation from the reference orientation, folded into one half turn
+# because the shuttlecock is (near) axisymmetric: 0 deg and 180 deg look alike.
+POSE_BUCKETS: tuple[str, ...] = ("axis_aligned", "tilted", "steep")
+
+UNKNOWN_BUCKET = "unknown"
+UNSPECIFIED = "unspecified"
+
+# Dimensions required in dataset_distribution_report.csv.
+BUCKET_DIMENSIONS: tuple[str, ...] = (
+    "split",
+    "source_type",
+    "camera_id",
+    "size_bucket",
+    "blur_bucket",
+    "pose_bucket",
+    "is_negative",
+)
+
+
+def bucket_size(equiv_size_px: Any) -> str:
+    """Bucket an equivalent target size in pixels."""
+    value = _as_float(equiv_size_px)
+    if value is None:
+        return UNKNOWN_BUCKET
+    if value < 4.0:
+        return SIZE_BUCKETS[0]
+    if value < 8.0:
+        return SIZE_BUCKETS[1]
+    if value < 16.0:
+        return SIZE_BUCKETS[2]
+    if value < 32.0:
+        return SIZE_BUCKETS[3]
+    return SIZE_BUCKETS[4]
+
+
+def bucket_blur(motion_px: Any) -> str:
+    """Bucket the rendered motion blur length in pixels."""
+    value = _as_float(motion_px)
+    if value is None:
+        return UNKNOWN_BUCKET
+    if value <= 0.0:
+        return BLUR_BUCKETS[0]
+    if value <= 2.0:
+        return BLUR_BUCKETS[1]
+    if value <= 5.0:
+        return BLUR_BUCKETS[2]
+    return BLUR_BUCKETS[3]
+
+
+def _fold_angle(value: Any) -> float | None:
+    number = _as_float(value)
+    if number is None:
+        return None
+    return abs(((number + 90.0) % 180.0) - 90.0)
+
+
+def bucket_pose(yaw_deg: Any, pitch_deg: Any, roll_deg: Any) -> str:
+    """Bucket the largest folded orientation deviation of the three pose angles."""
+    folded = [_fold_angle(value) for value in (yaw_deg, pitch_deg, roll_deg)]
+    known = [value for value in folded if value is not None]
+    if not known:
+        return UNKNOWN_BUCKET
+    deviation = max(known)
+    if deviation <= 15.0:
+        return POSE_BUCKETS[0]
+    if deviation <= 45.0:
+        return POSE_BUCKETS[1]
+    return POSE_BUCKETS[2]
+
+
+def _field(record: Any, name: str, default: Any = None) -> Any:
+    """Read a field from either a mapping row or an attribute-carrying object."""
+    if isinstance(record, Mapping):
+        return record.get(name, default)
+    return getattr(record, name, default)
+
+
+def _first_field(record: Any, names: Sequence[str]) -> Any:
+    for name in names:
+        value = _field(record, name)
+        if value is not None and str(value).strip() != "":
+            return value
+    return None
+
+
+def _normalize_bool_text(value: Any) -> str:
+    if isinstance(value, bool):
+        return "True" if value else "False"
+    if value is None or str(value).strip() == "":
+        return "False"
+    text = str(value).strip().lower()
+    if text in _TRUTHY:
+        return "True"
+    if text in {"0", "false", "no", "n", "f"}:
+        return "False"
+    return UNKNOWN_BUCKET
+
+
+def summarize_distribution(records: Iterable[Any]) -> dict[str, dict[str, int]]:
+    """Count records by every dimension required in the distribution report.
+
+    Accepts manifest row dicts, inventory row dicts, or record objects; precomputed
+    bucket columns are honoured so a caller can override the bucketing policy.
+    """
+    counters: dict[str, Counter] = {dimension: Counter() for dimension in BUCKET_DIMENSIONS}
+    for record in records:
+        split = _field(record, "split")
+        counters["split"][
+            str(split).strip() if split is not None and str(split).strip() else UNSPECIFIED
+        ] += 1
+
+        source = _field(record, "source_family")
+        if source is None or str(source).strip() == "":
+            source = canonical_source_family(str(_field(record, "source_type") or ""))
+        counters["source_type"][str(source) if source else UNSPECIFIED] += 1
+
+        camera = _field(record, "camera_id")
+        counters["camera_id"][
+            str(camera).strip() if camera is not None and str(camera).strip() else UNSPECIFIED
+        ] += 1
+
+        size_value = _field(record, "size_bucket")
+        if size_value is None or str(size_value).strip() == "":
+            size_value = bucket_size(_first_field(record, ("equiv_size_px", "target_px")))
+        counters["size_bucket"][str(size_value)] += 1
+
+        blur_value = _field(record, "blur_bucket")
+        if blur_value is None or str(blur_value).strip() == "":
+            blur_value = bucket_blur(_field(record, "motion_px"))
+        counters["blur_bucket"][str(blur_value)] += 1
+
+        pose_value = _field(record, "pose_bucket")
+        if pose_value is None or str(pose_value).strip() == "":
+            pose_value = bucket_pose(
+                _field(record, "yaw_deg"), _field(record, "pitch_deg"), _field(record, "roll_deg")
+            )
+        counters["pose_bucket"][str(pose_value)] += 1
+
+        counters["is_negative"][_normalize_bool_text(_field(record, "is_negative"))] += 1
+
+    return {dimension: dict(counters[dimension]) for dimension in BUCKET_DIMENSIONS}
+
+
+# --------------------------------------------------------------------------- #
+# Manifest-level audit: ties the checks above together into one report
+# --------------------------------------------------------------------------- #
+
+# Column consulted for the "same source" of a sample, most specific first. A
+# manifest that has none of these cannot be checked for source-group leakage.
+GROUP_COLUMN_PREFERENCE: tuple[str, ...] = (
+    "source_group",
+    "source_id",
+    "clip_id",
+    "video_id",
+    "sequence_id",
+    "scene_id",
+    "background",
+)
+
+CODE_SOURCE_GROUP_UNKNOWN = "SOURCE_GROUP_UNKNOWN"
+
+INVENTORY_COLUMNS: tuple[str, ...] = (
+    "sample_id",
+    "split",
+    "source_type",
+    "source_family",
+    "camera_id",
+    "is_negative",
+    "box_count",
+    "equiv_size_px",
+    "size_bucket",
+    "blur_bucket",
+    "pose_bucket",
+    "background",
+    "image_sha256",
+    "image_path",
+    "label_path",
+    "error_count",
+    "warning_count",
+)
+
+CLEANING_COLUMNS: tuple[str, ...] = ("sample_id", "code", "severity", "detail")
+
+DISTRIBUTION_COLUMNS: tuple[str, ...] = ("dimension", "value", "count")
+
+LEAKAGE_COLUMNS: tuple[str, ...] = ("code", "key", "splits", "sample_ids", "detail")
+
+
+@dataclass(frozen=True)
+class DatasetAuditReport:
+    """Everything the CLI needs to write its five output files."""
+
+    result: AuditResult
+    issues: list[AuditIssue]
+    inventory: list[dict[str, Any]]
+    leakage: list[dict[str, Any]]
+    distribution: dict[str, dict[str, int]]
+    summary: dict[str, Any]
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _pick_group_column(columns: Sequence[str]) -> str | None:
+    present = {column.strip() for column in columns}
+    for candidate in GROUP_COLUMN_PREFERENCE:
+        if candidate in present:
+            return candidate
+    return None
+
+
+def _dataset_version(manifest_infos: Sequence[Mapping[str, Any]]) -> str:
+    """Order-independent identity of the manifest set that was audited."""
+    payload = "\n".join(
+        sorted(
+            str(info["name"]) + ":" + str(info["sha256"]) + ":" + str(info["rows"])
+            for info in manifest_infos
+        )
+    )
+    return "sha256:" + hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
+
+
+def _leakage_rows(
+    hash_rows: Sequence[tuple[str, str, str]], group_rows: Sequence[tuple[str, str, str]]
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for key, splits, sample_ids in _scan_cross_split(hash_rows):
+        rows.append(
+            {
+                "code": CODE_CROSS_SPLIT_DUPLICATE,
+                "key": key,
+                "splits": ", ".join(splits),
+                "sample_ids": _summarise_ids(sample_ids),
+                "detail": "identical image content in more than one split",
+            }
+        )
+    for key, splits, sample_ids in _scan_cross_split(group_rows):
+        rows.append(
+            {
+                "code": CODE_SOURCE_GROUP_LEAKAGE,
+                "key": key,
+                "splits": ", ".join(splits),
+                "sample_ids": _summarise_ids(sample_ids),
+                "detail": "source group reused in more than one split",
+            }
+        )
+    return rows
+
+
+def audit_dataset(
+    manifests: Path | str | Iterable[Path | str],
+    dataset_root: Path | str | None = None,
+    expected_class: int = 0,
+    hash_images: bool = True,
+    decode_images: bool = True,
+) -> DatasetAuditReport:
+    """Audit one or more manifests and return every report the spec asks for.
+
+    Raises ManifestMissingError when a manifest does not exist, so a caller (the
+    CLI) can turn that into a clean non-zero exit instead of a traceback.
+    """
+    if isinstance(manifests, (str, Path)):
+        manifest_paths = [Path(manifests)]
+    else:
+        manifest_paths = [Path(path) for path in manifests]
+    if not manifest_paths:
+        raise ManifestError("no manifest given to audit")
+
+    root = Path(dataset_root) if dataset_root is not None else manifest_paths[0].parent
+
+    issues: list[AuditIssue] = []
+    inventory: list[dict[str, Any]] = []
+    hash_rows: list[tuple[str, str, str]] = []
+    group_rows: list[tuple[str, str, str]] = []
+    id_rows: list[tuple[str, str]] = []
+    manifest_infos: list[dict[str, Any]] = []
+    group_columns: set[str] = set()
+    total_rows = 0
+
+    for manifest_path in manifest_paths:
+        rows, columns = read_manifest(manifest_path)
+        manifest_infos.append(
+            {
+                "path": str(manifest_path),
+                "name": manifest_path.name,
+                "sha256": _file_sha256(manifest_path),
+                "rows": len(rows),
+                "columns": list(columns),
+            }
+        )
+        issues.extend(check_manifest_columns(columns))
+        group_column = _pick_group_column(columns)
+        if group_column is None:
+            issues.append(
+                AuditIssue(
+                    MANIFEST_SCOPE,
+                    CODE_SOURCE_GROUP_UNKNOWN,
+                    "WARNING",
+                    "no source-group column in "
+                    + manifest_path.name
+                    + "; source leakage cannot be checked",
+                )
+            )
+        else:
+            group_columns.add(group_column)
+        total_rows += len(rows)
+
+        # A qualified source_type is a property of the whole manifest, not of each
+        # sample: reporting it 400 times would bury the findings that matter, so it
+        # is counted here and emitted once per manifest.
+        non_canonical_sources: Counter[str] = Counter()
+
+        for row in rows:
+            sample = audit_sample(
+                row,
+                dataset_root=root,
+                manifest_dir=manifest_path.parent,
+                expected_class=expected_class,
+                decode_images=decode_images,
+            )
+            for issue in sample.issues:
+                if issue.code == CODE_SOURCE_TYPE_NON_CANONICAL:
+                    non_canonical_sources[sample.source_type] += 1
+                    continue
+                issues.append(issue)
+
+            content_hash = ""
+            if hash_images and sample.image_path:
+                content_hash = _file_sha256(Path(sample.image_path))
+            hash_rows.append((sample.sample_id, sample.split, content_hash))
+            group_rows.append(
+                (
+                    sample.sample_id,
+                    sample.split,
+                    str(row.get(group_column, "")) if group_column else "",
+                )
+            )
+            if sample.sample_id:
+                id_rows.append((sample.sample_id, manifest_path.name))
+
+            sample_error_count = sum(
+                1 for issue in sample.issues if issue.severity == "ERROR"
+            )
+            sample_warning_count = sum(
+                1
+                for issue in sample.issues
+                if issue.severity == "WARNING" and issue.code != CODE_SOURCE_TYPE_NON_CANONICAL
+            )
+            inventory.append(
+                {
+                    "sample_id": sample.sample_id,
+                    "split": sample.split,
+                    "source_type": sample.source_type,
+                    "source_family": sample.source_family,
+                    "camera_id": sample.camera_id,
+                    "is_negative": sample.is_negative,
+                    "box_count": sample.box_count,
+                    "equiv_size_px": row.get("equiv_size_px", ""),
+                    "size_bucket": bucket_size(_first_field(row, ("equiv_size_px", "target_px"))),
+                    "blur_bucket": bucket_blur(row.get("motion_px")),
+                    "pose_bucket": bucket_pose(
+                        row.get("yaw_deg"), row.get("pitch_deg"), row.get("roll_deg")
+                    ),
+                    "background": row.get(group_column, "") if group_column else "",
+                    "image_sha256": content_hash,
+                    "image_path": sample.image_path or "",
+                    "label_path": sample.label_path or "",
+                    "error_count": sample_error_count,
+                    "warning_count": sample_warning_count,
+                }
+            )
+
+        for source_value, count in non_canonical_sources.items():
+            issues.append(
+                AuditIssue(
+                    MANIFEST_SCOPE,
+                    CODE_SOURCE_TYPE_NON_CANONICAL,
+                    "WARNING",
+                    "source_type="
+                    + repr(source_value)
+                    + " family="
+                    + str(canonical_source_family(source_value))
+                    + " in "
+                    + str(count)
+                    + " sample(s) of "
+                    + manifest_path.name,
+                )
+            )
+
+    if total_rows == 0:
+        issues.append(
+            AuditIssue(MANIFEST_SCOPE, CODE_MANIFEST_EMPTY, "ERROR", "no manifest row to audit")
+        )
+
+    issues.extend(find_duplicate_sample_ids(id_rows))
+    leakage_issues = find_cross_split_duplicates(hash_rows) + find_source_group_leakage(group_rows)
+    issues.extend(leakage_issues)
+
+    result = AuditResult.from_issues(issues)
+    distribution = summarize_distribution(inventory)
+    severity_counts = Counter(issue.severity for issue in issues)
+    code_counts = Counter(issue.code for issue in issues)
+    split_counts = Counter(str(row["split"]) for row in inventory)
+    label_codes = {
+        CODE_LABEL_MISSING,
+        CODE_LABEL_FORMAT,
+        CODE_LABEL_NON_NUMERIC,
+        CODE_WRONG_CLASS,
+        CODE_BBOX_OUT_OF_RANGE,
+    }
+    label_ok = not any(issue.code in label_codes for issue in issues)
+
+    summary = {
+        "passed": result.passed,
+        "issue_count": result.issue_count,
+        "error_count": result.error_count,
+        "warning_count": severity_counts.get("WARNING", 0),
+        "n_samples": len(inventory),
+        "n_manifests": len(manifest_infos),
+        "dataset_root": str(root),
+        "dataset_version": _dataset_version(manifest_infos),
+        "manifests": manifest_infos,
+        "source_group_columns": sorted(group_columns),
+        "counts_by_split": dict(split_counts),
+        "counts_by_severity": dict(severity_counts),
+        "counts_by_code": dict(code_counts),
+        "distribution_dimensions": list(BUCKET_DIMENSIONS),
+        "checklist": {
+            "asset_consistency": "NOT_CHECKED_BY_THIS_AUDIT",
+            "label_integrity": "PASS" if label_ok else "FAIL",
+            "data_cleaning": "PASS" if result.error_count == 0 else "FAIL",
+            "pool_isolation": "PASS" if not leakage_issues else "FAIL",
+            "distribution_quantified": "PASS" if inventory else "FAIL",
+        },
+    }
+
+    return DatasetAuditReport(
+        result=result,
+        issues=list(issues),
+        inventory=inventory,
+        leakage=_leakage_rows(hash_rows, group_rows),
+        distribution=distribution,
+        summary=summary,
+    )
