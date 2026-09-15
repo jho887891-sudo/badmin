@@ -68,6 +68,17 @@ def _as_float(name: str, value: Any) -> float:
     raise ConfigError(name + " must be a number, got " + repr(value))
 
 
+def _as_bool(name: str, value: Any) -> bool:
+    """Strict boolean: a config says true or false, not "yes" and not 1.
+
+    Strictness matters here because this switch changes only how images are LOADED, so a typo that
+    silently left it false would look like "caching did not help" rather than "caching was ignored".
+    """
+    if isinstance(value, bool):
+        return value
+    raise ConfigError(name + " must be a YAML boolean true/false, got " + repr(value))
+
+
 def _as_text(name: str, value: Any) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ConfigError(name + " must be a non-empty string, got " + repr(value))
@@ -93,6 +104,17 @@ class BaselineConfig:
     batch: int = 16
     optimizer: str = "auto"
     lr0: float = 0.01
+    # I/O-only switch, DEFAULT FALSE so every config written before this field existed behaves exactly
+    # as it did and the declared baseline is unchanged. When true, Ultralytics reads the images once
+    # into RAM instead of decoding every image again on every epoch; the model, the data, the
+    # augmentation, the seed and the optimiser are untouched, so a cached run is the same experiment
+    # with a different data-loading path.
+    #
+    # Why it is worth having: on this host the storage is a fuseblk mount under heavy contention, and
+    # epochs were measured at 61 s, 559 s, 274 s, 247 s - roughly 7 hours for 100 epochs, against a
+    # historical 11.7 s/epoch for the same recipe on the same machine. That made the retrain
+    # impractical rather than merely slow.
+    cache: bool = False
 
     # The complete, ordered field list. Anything else in the YAML is a mistake.
     FIELDS: ClassVar[tuple[str, ...]] = (
@@ -105,6 +127,7 @@ class BaselineConfig:
         "batch",
         "optimizer",
         "lr0",
+        "cache",
     )
 
     def __post_init__(self) -> None:
@@ -130,6 +153,8 @@ class BaselineConfig:
         _as_text("optimizer", self.optimizer)
         if self.lr0 <= 0:
             raise ConfigError("lr0 must be positive, got " + repr(self.lr0))
+        if not isinstance(self.cache, bool):
+            raise ConfigError("cache must be a YAML boolean, got " + repr(self.cache))
 
     @classmethod
     def from_mapping(cls, mapping: Mapping[str, Any]) -> "BaselineConfig":
@@ -156,6 +181,7 @@ class BaselineConfig:
             batch=_as_int("batch", values.get("batch", defaults.batch)),
             optimizer=_as_text("optimizer", values.get("optimizer", defaults.optimizer)),
             lr0=_as_float("lr0", values.get("lr0", defaults.lr0)),
+            cache=_as_bool("cache", values.get("cache", defaults.cache)),
         )
 
     @classmethod

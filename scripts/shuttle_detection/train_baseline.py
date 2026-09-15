@@ -373,6 +373,7 @@ def train(prepared: PreparedRun) -> dict[str, Any]:
         seed=config.seed,
         optimizer=config.optimizer,
         lr0=config.lr0,
+        cache=config.cache,
         project=str(prepared.run_dir.parent),
         name=prepared.run_name,
         exist_ok=True,

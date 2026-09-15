@@ -13,7 +13,11 @@
 #
 # Usage: bash 05_retrain_and_retest.sh <run-name>
 set -e
-RUN=${1:?usage: 05_retrain_and_retest.sh <run-name>}
+RUN=${1:?usage: 05_retrain_and_retest.sh <run-name> [config-yaml]}
+# Defaults to the declared baseline config. Pass baseline_cached.yaml when the host storage is too
+# slow to decode 676 images per epoch; the two files differ ONLY in cache, which resolved_config.json
+# records.
+CONFIG=${2:-configs/shuttle_detection/baseline.yaml}
 TGT=/home/T7/dgut/robot_sim/third_party/ultralytics
 PY=/home/T7/ojh/robot_sim/env_isaaclab/bin/python
 cd /home/T7/dgut/robot_sim
@@ -24,9 +28,10 @@ OUT=outputs/shuttle_detection/training/$RUN
 TRAINLOG=/tmp/${RUN}_train.log
 
 echo "################ 1. TRAIN ################"
+echo "  config: $CONFIG"
 echo "  log: $TRAINLOG   (progress echoed here every 30 s)"
 $PY -u scripts/shuttle_detection/train_baseline.py \
-  --config configs/shuttle_detection/baseline.yaml \
+  --config $CONFIG \
   --train-manifest $TRAIN/manifest_train_full.csv \
   --val-manifest   $TRAIN/manifest_val_synthetic.csv \
   --data-root /home/T7/dgut/robot_sim \

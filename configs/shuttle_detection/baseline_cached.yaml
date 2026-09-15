@@ -1,0 +1,26 @@
+# Baseline experiment settings for the nc=1 shuttlecock detector.
+#
+# Spec: docs/superpowers/specs/02_BASELINE_TRAINING_SPEC.md
+# Plan: docs/superpowers/plans/2026-09-15-shuttle-baseline-training.md (Task 1)
+#
+# IDENTICAL to baseline.yaml except cache: true, and that is the whole point of the file. Every
+# hyper-parameter, the seed, the epochs and the optimiser are the declared baseline values.
+#
+# cache is an I/O-only switch: Ultralytics reads the images once into RAM instead of decoding them
+# again on every epoch. The model, the data, the augmentation and the optimiser are untouched. It is
+# used because this host storage is a fuseblk mount under heavy contention and epochs measured 61 s,
+# 559 s, 274 s and 247 s - about 7 hours for 100 epochs, against 11.7 s/epoch for the same recipe on
+# the same machine earlier in the day. Without it the retrain is not slow, it is impractical.
+#
+# A run started from this file records cache: true in resolved_config.json, so the difference is
+# visible in the artefact rather than only in prose.
+model: yolo26s.pt
+nc: 1
+name: shuttlecock
+imgsz: 640
+seed: 17
+epochs: 100
+batch: 16
+optimizer: auto
+lr0: 0.01
+cache: true
