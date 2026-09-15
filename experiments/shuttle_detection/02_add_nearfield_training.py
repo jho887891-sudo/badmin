@@ -37,6 +37,14 @@ def main() -> int:
     ap.add_argument("--max-px", type=float, default=512.0)
     ap.add_argument("--imgsz", type=int, default=960)
     ap.add_argument("--seed", type=int, default=20260915)
+    # Round 2 writes its own manifest so round 1's record stays intact and each retrain can name the
+    # exact pool it used.
+    ap.add_argument("--base-manifest", default="manifest_train_nearfield.csv")
+    ap.add_argument("--out-manifest", default="manifest_train_nearfield2.csv")
+    # Image names must not collide across rounds: round 1 wrote nf_train_00000..., and running round 2
+    # without a distinct prefix OVERWROTE round 1's first frames while round 1's manifest still
+    # referenced them - silent data corruption. Each round now names its own frames.
+    ap.add_argument("--name-prefix", default="nf_train")
     args = ap.parse_args()
 
     repo = Path(args.repo).resolve()
@@ -44,7 +52,7 @@ def main() -> int:
     from shuttle_render import imread_unicode, imwrite_unicode, load_shuttle_parts, render_sample
 
     base = repo / "outputs" / "shuttle_capability" / "train_data"
-    src = base / "manifest_train_synthetic.csv"
+    src = base / args.base_manifest
     rows = list(csv.DictReader(src.open(encoding="utf-8")))
     columns = list(rows[0].keys())
     bgs = sorted(p for p in (base / "bg_train").glob("*") if p.suffix.lower() in (".jpg", ".jpeg", ".png"))
@@ -66,7 +74,7 @@ def main() -> int:
         # ss=3 allocates a 2880x2880 canvas per render. One pixel of edge on an 800 px object is
         # 0.1% of its size, so ss=1 is used above 128 px and the choice is recorded per row.
         ss = 3 if target < 128.0 else 1
-        name = "nf_train_{:05d}".format(i)
+        name = "{}_{:05d}".format(args.name_prefix, i)
         try:
             sample = render_sample(parts, bg, target_px=float(target), seed=args.seed * 7919 + i,
                                    split="train", name=name, width=args.imgsz, height=args.imgsz,
@@ -83,7 +91,7 @@ def main() -> int:
         added_rows.append(row)
         made += 1
 
-    out = base / "manifest_train_nearfield.csv"
+    out = base / args.out_manifest
     with out.open("w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=columns)
         w.writeheader()
