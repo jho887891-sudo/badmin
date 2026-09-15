@@ -109,6 +109,29 @@ def test_image_lists_are_written_next_to_the_yaml(tmp_path):
     assert list_lines(out / "val.txt") == [str(val_image.resolve())]
 
 
+def test_dataset_configuration_never_calls_path_resolve(tmp_path, monkeypatch):
+    """Path.resolve() calls lstat/readlink on every path component.
+
+    On the training host the project tree is a FUSE mount (/home/T7 is fuseblk) where that call
+    HANGS rather than returning slowly. A 673-row manifest stalled the trainer indefinitely with
+    the process blocked in posixpath._joinrealpath and consuming ZERO CPU, which is
+    indistinguishable from a dead GPU job until faulthandler is enabled and SIGABRT dumps the
+    stack. The paths only need to be absolute and normalised, which abspath does without touching
+    symlinks. This test fails the moment a resolve() call returns to this module.
+    """
+    train_manifest, val_manifest, _, _ = build_dataset(tmp_path)
+    out = tmp_path / "out"
+
+    def forbidden(self, *args, **kwargs):
+        raise AssertionError(
+            "Path.resolve() must not be used here: it hangs on the FUSE-mounted training tree"
+        )
+
+    monkeypatch.setattr(Path, "resolve", forbidden)
+    write_dataset_yaml(out, train_manifest, val_manifest)
+    assert (out / "train.txt").is_file()
+
+
 def test_yaml_points_at_the_written_lists_and_the_data_root(tmp_path):
     train_manifest, val_manifest, _, _ = build_dataset(tmp_path)
     out = tmp_path / "out"

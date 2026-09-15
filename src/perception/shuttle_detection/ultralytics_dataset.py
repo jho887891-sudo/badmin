@@ -31,6 +31,7 @@ Run this module's tests with:
 """
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 from typing import Any, Iterable, Sequence
@@ -38,6 +39,23 @@ from typing import Any, Iterable, Sequence
 import yaml
 
 from .contracts import SPLITS
+
+
+def _canonical(path: Path) -> Path:
+    """Absolute and normalised, WITHOUT following symlinks.
+
+    Path.resolve() walks every path component with lstat/readlink. On the training host the
+    project tree lives on a FUSE mount (/home/T7 is fuseblk), where that call HANGS rather than
+    returning slowly: a 673-row manifest stalled the trainer indefinitely with the process
+    blocked in posixpath._joinrealpath and consuming zero CPU, which looked like a dead GPU job
+    until faulthandler was enabled and SIGABRT dumped the stack.
+
+    abspath normalises "." and ".." and makes the path absolute, which is all the dataset
+    configuration needs - Ultralytics opens these paths directly and reads through symlinks. The
+    generated lists still contain absolute paths of the host that generated them, which the
+    module docstring already requires.
+    """
+    return Path(os.path.abspath(str(path)))
 from .dataset_audit import ManifestError, ManifestMissingError, read_manifest
 
 # The detection task. Spec section 2 fixes both values, so they are not configurable.
@@ -182,7 +200,7 @@ def _resolve_image(manifest_dir: Path, data_root: Path | None, split: str, file_
     """
     name = Path(str(file_name).strip())
     if name.is_absolute():
-        return name.resolve()
+        return _canonical(name)
     candidates = [
         manifest_dir / split / IMAGE_SUBDIR / name,
         manifest_dir / split / name,
@@ -199,8 +217,8 @@ def _resolve_image(manifest_dir: Path, data_root: Path | None, split: str, file_
         )
     for candidate in candidates:
         if candidate.is_file():
-            return candidate.resolve()
-    return (manifest_dir / split / IMAGE_SUBDIR / name).resolve()
+            return _canonical(candidate)
+    return _canonical(manifest_dir / split / IMAGE_SUBDIR / name)
 
 
 def _lines_from_manifest(path: Path, role: str, data_root: Path | None) -> list[str]:
@@ -230,7 +248,7 @@ def _lines_from_image_list(path: Path, role: str) -> list[str]:
         candidate = Path(text)
         if not candidate.is_absolute():
             candidate = path.parent / candidate
-        lines.append(str(candidate.resolve()))
+        lines.append(str(_canonical(candidate)))
     return lines
 
 
@@ -337,9 +355,9 @@ def write_dataset_yaml(
         written[role] = list_path
 
     document = {
-        "path": str((root if root is not None else output).resolve()),
-        "train": str(written[TRAINABLE_SPLITS[0]].resolve()),
-        "val": str(written[TRAINABLE_SPLITS[1]].resolve()),
+        "path": str(_canonical(root if root is not None else output)),
+        "train": str(_canonical(written[TRAINABLE_SPLITS[0]])),
+        "val": str(_canonical(written[TRAINABLE_SPLITS[1]])),
         "nc": NC,
         "names": dict(CLASS_NAMES),
     }
