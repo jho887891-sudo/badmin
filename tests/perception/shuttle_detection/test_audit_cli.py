@@ -498,5 +498,229 @@ class TrainingReadinessVisibilityTests(unittest.TestCase):
             self.assertIn("trainable=True", captured.getvalue())
 
 
+def build_leaky_pair(root: Path) -> list[Path]:
+    """Two pools holding byte-identical content, with disjoint source groups.
+
+    The backgrounds are deliberately different: identical images plus a shared
+    background would leak twice, and the --no-hash-images test measures exactly one
+    of those two checks.
+    """
+    train_row = write_sample(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+    val_row = write_sample(root, "val_00000", "val", TINY_PNG, "bg_val_1")
+    return [
+        write_manifest(root / "manifest_train.csv", [train_row]),
+        write_manifest(root / "manifest_val.csv", [val_row]),
+    ]
+
+
+def read_summary(out: Path) -> dict:
+    return json.loads((out / SUMMARY_REPORT).read_text(encoding="utf-8"))
+
+
+class CliOptionCoverageTests(unittest.TestCase):
+    """F5: options and verdicts that no assertion used to constrain.
+
+    Each test here is written so that removing or ignoring the behaviour it names
+    makes it fail, rather than merely exercising the code path.
+    """
+
+    def test_no_hash_images_disables_duplicate_detection(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifests = build_leaky_pair(root)
+            arguments = []
+            for manifest in manifests:
+                arguments += ["--manifest", str(manifest)]
+
+            detected = root / "out_detected"
+            rc_detected = main(
+                [*arguments, "--dataset-root", str(root), "--out", str(detected)]
+            )
+            self.assertEqual(rc_detected, 1)
+            codes = {row["code"] for row in read_csv(detected / LEAKAGE_REPORT)}
+            self.assertIn("CROSS_SPLIT_DUPLICATE", codes)
+
+            skipped = root / "out_skipped"
+            rc_skipped = main(
+                [*arguments, "--dataset-root", str(root), "--out", str(skipped), "--no-hash-images"]
+            )
+            self.assertEqual(rc_skipped, 0)
+            self.assertEqual(read_csv(skipped / LEAKAGE_REPORT), [])
+            summary = read_summary(skipped)
+            self.assertEqual(summary["checks"]["cross_split_duplicate_content"], "NOT_RUN")
+            self.assertEqual(summary["checklist"]["pool_isolation"], "NOT_RUN")
+            self.assertTrue(
+                all(row["image_sha256"] == "" for row in read_csv(skipped / INVENTORY_REPORT))
+            )
+            self.assertNotEqual(
+                read_summary(detected)["dataset_version"], summary["dataset_version"]
+            )
+
+    def test_no_decode_images_disables_the_corrupt_image_check(self) -> None:
+        try:
+            import PIL  # noqa: F401
+        except Exception:  # pragma: no cover - Pillow is optional
+            self.skipTest("Pillow not installed: the check cannot run here at all")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            row = write_sample(root, "train_00000", "train")
+            manifest = write_manifest(root / "manifest_train.csv", [row])
+            (root / "train" / "images" / "train_00000.png").write_bytes(b"not an image at all")
+
+            decoded = root / "out_decoded"
+            rc_decoded = main(
+                ["--manifest", str(manifest), "--dataset-root", str(root), "--out", str(decoded)]
+            )
+            self.assertEqual(rc_decoded, 1)
+            codes = {entry["code"] for entry in read_csv(decoded / CLEANING_REPORT)}
+            self.assertIn("IMAGE_UNREADABLE", codes)
+
+            skipped = root / "out_skipped"
+            rc_skipped = main(
+                [
+                    "--manifest", str(manifest),
+                    "--dataset-root", str(root),
+                    "--out", str(skipped),
+                    "--no-decode-images",
+                ]
+            )
+            self.assertEqual(rc_skipped, 0)
+            skipped_codes = {entry["code"] for entry in read_csv(skipped / CLEANING_REPORT)}
+            self.assertNotIn("IMAGE_UNREADABLE", skipped_codes)
+            summary = read_summary(skipped)
+            self.assertEqual(summary["checks"]["corrupt_image_decode"], "NOT_RUN")
+            self.assertEqual(summary["checklist"]["data_cleaning"], "NOT_RUN")
+
+    def test_expected_class_is_honoured(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            row = write_sample(root, "train_00000", "train", label="1 0.500000 0.500000 0.200000 0.200000\n")
+            manifest = write_manifest(root / "manifest_train.csv", [row])
+
+            rc_default = main(
+                ["--manifest", str(manifest), "--dataset-root", str(root), "--out", str(root / "out_default")]
+            )
+            self.assertEqual(rc_default, 1)
+            codes = {entry["code"] for entry in read_csv(root / "out_default" / CLEANING_REPORT)}
+            self.assertIn("WRONG_CLASS", codes)
+
+            rc_matching = main(
+                [
+                    "--manifest", str(manifest),
+                    "--dataset-root", str(root),
+                    "--out", str(root / "out_matching"),
+                    "--expected-class", "1",
+                ]
+            )
+            self.assertEqual(rc_matching, 0)
+            matching_codes = {
+                entry["code"] for entry in read_csv(root / "out_matching" / CLEANING_REPORT)
+            }
+            self.assertNotIn("WRONG_CLASS", matching_codes)
+
+    def test_missing_manifest_exits_with_the_usage_code(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            captured = io.StringIO()
+            with redirect_stderr(captured):
+                rc = main(
+                    [
+                        "--manifest", str(root / "missing.csv"),
+                        "--dataset-root", str(root),
+                        "--out", str(root / "out"),
+                    ]
+                )
+            self.assertEqual(rc, 2)
+            self.assertTrue(captured.getvalue().strip())
+
+    def test_headerless_manifest_exits_with_the_usage_code(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = root / "manifest_train.csv"
+            manifest.write_bytes(b"")
+            out = root / "out"
+            captured = io.StringIO()
+            with redirect_stderr(captured):
+                rc = main(
+                    ["--manifest", str(manifest), "--dataset-root", str(root), "--out", str(out)]
+                )
+            self.assertEqual(rc, 2)
+            self.assertFalse(out.exists())
+            self.assertTrue(captured.getvalue().strip())
+
+    def test_data_cleaning_reports_pass_fail_and_not_run(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            clean_manifest = build_clean_dataset(root)
+            clean_out = root / "out_clean"
+            self.assertEqual(
+                main(["--manifest", str(clean_manifest), "--dataset-root", str(root), "--out", str(clean_out)]),
+                0,
+            )
+            self.assertEqual(read_summary(clean_out)["checklist"]["data_cleaning"], "PASS")
+
+            bad_out = root / "out_bad"
+            bad_row = write_sample(root, "bad_00000", "train", label="0 0.5 0.5 1.4 0.2\n")
+            bad_manifest = write_manifest(root / "manifest_bad.csv", [bad_row])
+            self.assertNotEqual(
+                main(["--manifest", str(bad_manifest), "--dataset-root", str(root), "--out", str(bad_out)]),
+                0,
+            )
+            self.assertEqual(read_summary(bad_out)["checklist"]["data_cleaning"], "FAIL")
+
+            not_run_out = root / "out_not_run"
+            self.assertEqual(
+                main(
+                    [
+                        "--manifest", str(clean_manifest),
+                        "--dataset-root", str(root),
+                        "--out", str(not_run_out),
+                        "--no-decode-images",
+                    ]
+                ),
+                0,
+            )
+            self.assertEqual(read_summary(not_run_out)["checklist"]["data_cleaning"], "NOT_RUN")
+
+    def test_dataset_version_is_stable_for_unchanged_data(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = build_clean_dataset(root)
+            first = root / "out_first"
+            second = root / "out_second"
+            for out in (first, second):
+                self.assertEqual(
+                    main(["--manifest", str(manifest), "--dataset-root", str(root), "--out", str(out)]),
+                    0,
+                )
+            self.assertEqual(
+                read_summary(first)["dataset_version"], read_summary(second)["dataset_version"]
+            )
+
+    def test_dataset_version_changes_when_the_manifest_changes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = build_clean_dataset(root)
+            before = root / "out_before"
+            main(["--manifest", str(manifest), "--dataset-root", str(root), "--out", str(before)])
+            version_before = read_summary(before)["dataset_version"]
+
+            rows = read_csv(manifest)
+            rows[0]["background"] = "bg_renamed"
+            write_manifest(manifest, rows)
+            after = root / "out_after"
+            main(["--manifest", str(manifest), "--dataset-root", str(root), "--out", str(after)])
+            self.assertNotEqual(version_before, read_summary(after)["dataset_version"])
+
+    def test_the_printed_summary_states_the_dataset_version(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest = build_clean_dataset(root)
+            captured = io.StringIO()
+            with redirect_stdout(captured):
+                main(["--manifest", str(manifest), "--dataset-root", str(root), "--out", str(root / "out")])
+            self.assertIn(read_summary(root / "out")["dataset_version"], captured.getvalue())
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -158,11 +158,18 @@ class ReadManifestTests(unittest.TestCase):
     def test_manifest_missing_error_is_a_manifest_error(self) -> None:
         self.assertTrue(issubclass(ManifestMissingError, ManifestError))
 
-    def test_missing_manifest_error_is_not_a_bare_file_not_found(self) -> None:
-        """The CLI turns this into a clean non-zero exit instead of a traceback."""
+    def test_missing_manifest_raises_the_type_the_cli_catches(self) -> None:
+        """A missing manifest must raise the class main() catches (ManifestError).
+
+        That is what lets the CLI print an error and return its usage exit code
+        instead of letting a traceback escape. The CLI's exit code for this input is
+        asserted in test_audit_cli.py::test_missing_manifest_exits_with_the_usage_code;
+        this test covers only the exception type this module promises to callers.
+        """
         with tempfile.TemporaryDirectory() as tmp:
-            with self.assertRaises(ManifestError):
+            with self.assertRaises(ManifestError) as caught:
                 read_manifest(Path(tmp) / "missing.csv")
+            self.assertIsInstance(caught.exception, ManifestMissingError)
 
     def test_header_only_manifest_returns_no_rows(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
