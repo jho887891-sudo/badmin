@@ -15,6 +15,12 @@ Layouts understood for the frozen P4-A set and its successors:
     <root>/images/<file>          +  <root>/<stem>.txt
 with <manifest_dir> accepted as an alternative base directory.
 
+Not checked here, and why: near-duplicate detection needs a perceptual metric over
+decoded pixels (plus a video-frame adjacency model for "consecutive frames"), which
+the plan's Tasks 1-4 do not define. summary["checks"]["near_duplicate_content"]
+reports it as NOT_CHECKED_BY_THIS_AUDIT so the gap is visible instead of assumed;
+exact duplicates are checked and reported as EXACT_DUPLICATE.
+
 Run this module's tests with:
     python tests/perception/shuttle_detection/test_dataset_audit.py -v
 """
@@ -74,6 +80,7 @@ CODE_SOURCE_TYPE_ILLEGAL = "SOURCE_TYPE_ILLEGAL"
 CODE_SOURCE_TYPE_NON_CANONICAL = "SOURCE_TYPE_NON_CANONICAL"
 CODE_DUPLICATE_SAMPLE_ID = "DUPLICATE_SAMPLE_ID"
 CODE_CROSS_SPLIT_DUPLICATE = "CROSS_SPLIT_DUPLICATE"
+CODE_EXACT_DUPLICATE = "EXACT_DUPLICATE"
 CODE_SOURCE_GROUP_LEAKAGE = "SOURCE_GROUP_LEAKAGE"
 CODE_HELD_OUT_SPLIT_MIXED = "HELD_OUT_SPLIT_WITH_TRAINING_SPLIT"
 CODE_IMAGE_DECODE_SKIPPED = "IMAGE_DECODE_CHECK_SKIPPED"
@@ -570,28 +577,47 @@ def _decode_image_issues(sample_id: str, image_path: Path, row: Mapping[str, str
     return issues
 
 
-def find_duplicate_sample_ids(rows: Iterable[tuple[str, str]]) -> list[AuditIssue]:
-    """A sample id may appear once in the whole dataset, across all manifests."""
-    seen: dict[str, list[str]] = {}
+def _scan_repeats(
+    rows: Iterable[Sequence[str]], key_index: int, tag_index: int
+) -> list[tuple[str, list[str], list[str]]]:
+    """Group rows by one column and return the keys seen more than once.
+
+    Every duplicate-flavoured check in this module is the same grouping problem --
+    "which keys repeat, and where" -- differing only in which column is the key
+    (sample id, image content hash) and which column tags each occurrence (manifest
+    name, split). One implementation keeps those checks from drifting apart; rows
+    without a key are skipped so a disabled hash does not make every row a twin.
+    """
     order: list[str] = []
-    for sample_id, source in rows:
-        if sample_id not in seen:
-            seen[sample_id] = []
-            order.append(sample_id)
-        seen[sample_id].append(source)
-    issues: list[AuditIssue] = []
-    for sample_id in order:
-        sources = seen[sample_id]
-        if len(sources) > 1:
-            issues.append(
-                AuditIssue(
-                    sample_id,
-                    CODE_DUPLICATE_SAMPLE_ID,
-                    "ERROR",
-                    "appears " + str(len(sources)) + " times in: " + ", ".join(sorted(set(sources))),
-                )
-            )
-    return issues
+    sample_ids: dict[str, list[str]] = {}
+    tags: dict[str, list[str]] = {}
+    for row in rows:
+        key = row[key_index]
+        if not key:
+            continue
+        if key not in sample_ids:
+            order.append(key)
+            sample_ids[key] = []
+            tags[key] = []
+        sample_ids[key].append(row[0])
+        tags[key].append(row[tag_index])
+    return [(key, sample_ids[key], tags[key]) for key in order if len(sample_ids[key]) > 1]
+
+
+def find_duplicate_sample_ids(rows: Iterable[tuple[str, str]]) -> list[AuditIssue]:
+    """A sample id may appear once in the whole dataset, across all manifests.
+
+    Rows are (sample_id, source), where source names the manifest it came from.
+    """
+    return [
+        AuditIssue(
+            sample_id,
+            CODE_DUPLICATE_SAMPLE_ID,
+            "ERROR",
+            "appears " + str(len(sources)) + " times in: " + ", ".join(sorted(set(sources))),
+        )
+        for sample_id, _, sources in _scan_repeats(rows, key_index=0, tag_index=1)
+    ]
 
 
 # --------------------------------------------------------------------------- #
@@ -602,26 +628,50 @@ def find_duplicate_sample_ids(rows: Iterable[tuple[str, str]]) -> list[AuditIssu
 def _scan_cross_split(rows: Iterable[tuple[str, str, str]]) -> list[tuple[str, list[str], list[str]]]:
     """Group rows by key and return the keys that span more than one split.
 
-    Rows are (sample_id, split, key). Rows without a key are skipped: a manifest
-    that cannot supply a source group or a content hash must not be reported as if
-    every one of its samples were a duplicate of every other.
+    Rows are (sample_id, split, key). A key that stays inside one split is not
+    cross-split leakage; find_exact_duplicates reports those separately.
     """
-    groups: dict[str, list[tuple[str, str]]] = {}
-    order: list[str] = []
-    for sample_id, split, key in rows:
-        if not key:
-            continue
-        if key not in groups:
-            groups[key] = []
-            order.append(key)
-        groups[key].append((sample_id, split))
     findings: list[tuple[str, list[str], list[str]]] = []
-    for key in order:
-        members = groups[key]
-        splits = sorted({split for _, split in members})
+    for key, sample_ids, tags in _scan_repeats(rows, key_index=2, tag_index=1):
+        splits = sorted(set(tags))
         if len(splits) > 1:
-            findings.append((key, splits, [sample_id for sample_id, _ in members]))
+            findings.append((key, splits, sample_ids))
     return findings
+
+
+def find_exact_duplicates(rows: Iterable[tuple[str, str, str]]) -> list[AuditIssue]:
+    """Report byte-identical images repeated inside a single split.
+
+    Rows are (sample_id, split, content_hash). Spec section 5 lists exact
+    duplicates as data dirt independently of leakage: a repeated image inside train
+    inflates the epoch weight of one scene, and inside a test pool it makes the
+    metric look better than the data justifies. These are WARNINGs -- a duplicate
+    is a judgement call for the dataset owner, not a broken sample.
+    """
+    issues: list[AuditIssue] = []
+    for key, sample_ids, tags in _scan_repeats(rows, key_index=2, tag_index=1):
+        counts = Counter(tags)
+        for split_name in sorted(counts):
+            if counts[split_name] < 2:
+                continue
+            repeated = [
+                sample_id for sample_id, tag in zip(sample_ids, tags) if tag == split_name
+            ]
+            issues.append(
+                AuditIssue(
+                    _summarise_ids(repeated),
+                    CODE_EXACT_DUPLICATE,
+                    "WARNING",
+                    "identical image content appears "
+                    + str(counts[split_name])
+                    + " times inside split "
+                    + split_name
+                    + " (hash "
+                    + key
+                    + ")",
+                )
+            )
+    return issues
 
 
 def _summarise_ids(sample_ids: Sequence[str], limit: int = 5) -> str:
@@ -1118,6 +1168,8 @@ def audit_dataset(
     issues.extend(find_duplicate_sample_ids(id_rows))
     leakage_issues = find_cross_split_duplicates(hash_rows) + find_source_group_leakage(group_rows)
     issues.extend(leakage_issues)
+    # Cleaning findings, not leakage: they must not change pool_isolation.
+    issues.extend(find_exact_duplicates(hash_rows))
 
     split_counts = Counter(str(row["split"]) for row in inventory)
     splits_present = [split for split in SPLITS if split in split_counts] + sorted(

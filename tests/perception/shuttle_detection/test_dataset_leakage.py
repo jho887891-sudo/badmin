@@ -605,5 +605,96 @@ class AuditSummaryContractTests(unittest.TestCase):
             )
 
 
+class FindExactDuplicatesTests(unittest.TestCase):
+    """F7: repeats inside one split used to be invisible to every report.
+
+    _scan_cross_split only ever returned keys that span more than one split, so a
+    sample duplicated twice inside train produced no issue and no report row.
+    Spec section 5 lists exact duplicates as data dirt in their own right.
+    """
+
+    def test_identical_images_inside_one_split_are_reported(self) -> None:
+        from src.perception.shuttle_detection.dataset_audit import find_exact_duplicates
+
+        issues = find_exact_duplicates([("a", "train", "h"), ("b", "train", "h")])
+        self.assertEqual(len(issues), 1)
+        self.assertEqual(issues[0].code, "EXACT_DUPLICATE")
+        self.assertEqual(issues[0].severity, "WARNING")
+        self.assertIn("train", issues[0].detail)
+
+    def test_three_copies_in_one_split_are_one_finding(self) -> None:
+        from src.perception.shuttle_detection.dataset_audit import find_exact_duplicates
+
+        issues = find_exact_duplicates(
+            [("a", "train", "h"), ("b", "train", "h"), ("c", "train", "h")]
+        )
+        self.assertEqual(len(issues), 1)
+        self.assertIn("3 times", issues[0].detail)
+
+    def test_cross_split_duplicates_are_left_to_the_error_check(self) -> None:
+        """A cross-split repeat is already an ERROR; it must not warn twice."""
+        from src.perception.shuttle_detection.dataset_audit import find_exact_duplicates
+
+        self.assertEqual(find_exact_duplicates([("a", "train", "h"), ("b", "val", "h")]), [])
+
+    def test_distinct_content_and_empty_hashes_are_ignored(self) -> None:
+        from src.perception.shuttle_detection.dataset_audit import find_exact_duplicates
+
+        self.assertEqual(find_exact_duplicates([("a", "train", "h1"), ("b", "train", "h2")]), [])
+        self.assertEqual(find_exact_duplicates([("a", "train", ""), ("b", "train", "")]), [])
+
+
+class WithinSplitDuplicateAuditTests(unittest.TestCase):
+    def test_within_split_duplicates_reach_the_cleaning_report(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            first = write_sample(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            second = write_sample(root, "train_00001", "train", TINY_PNG, "bg_train_2")
+            manifest = write_manifest(root / "manifest_train.csv", [first, second])
+            report = audit_dataset([manifest], dataset_root=root)
+            codes = [issue.code for issue in report.issues]
+            self.assertIn("EXACT_DUPLICATE", codes)
+            self.assertEqual(report.result.error_count, 0)
+            self.assertEqual(report.summary["checklist"]["pool_isolation"], "PASS")
+
+
+class DecoderAvailabilityTests(unittest.TestCase):
+    """F8: a host without Pillow skipped the image checks silently."""
+
+    def test_a_missing_decoder_is_reported_as_not_run(self) -> None:
+        from unittest import mock
+
+        from src.perception.shuttle_detection import dataset_audit as module
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            row = write_sample(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            manifest = write_manifest(root / "manifest_train.csv", [row])
+            # A corrupt raster would be an ERROR if it could be decoded.
+            (root / "train" / "images" / "train_00000.png").write_bytes(b"not an image")
+            with mock.patch.object(module, "image_decoder_available", return_value=False):
+                report = module.audit_dataset([manifest], dataset_root=root)
+            codes = [issue.code for issue in report.issues]
+            self.assertIn("IMAGE_DECODE_CHECK_SKIPPED", codes)
+            self.assertNotIn("IMAGE_UNREADABLE", codes)
+            self.assertEqual(report.summary["checks"]["corrupt_image_decode"], "NOT_RUN")
+            self.assertEqual(report.summary["checklist"]["data_cleaning"], "NOT_RUN")
+
+    def test_the_decoder_is_reported_as_ran_when_it_exists(self) -> None:
+        from src.perception.shuttle_detection.dataset_audit import image_decoder_available
+
+        if not image_decoder_available():
+            self.skipTest("no decoder installed here")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            row = write_sample(root, "train_00000", "train", TINY_PNG, "bg_train_1")
+            manifest = write_manifest(root / "manifest_train.csv", [row])
+            report = audit_dataset([manifest], dataset_root=root)
+            self.assertEqual(report.summary["checks"]["corrupt_image_decode"], "RAN")
+            self.assertNotIn(
+                "IMAGE_DECODE_CHECK_SKIPPED", [issue.code for issue in report.issues]
+            )
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
