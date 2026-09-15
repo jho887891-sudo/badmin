@@ -1035,14 +1035,17 @@ def bbox_inside_frame(row: Mapping[str, Any], width: int, height: int) -> bool:
     bbox_h = _numeric(row.get("bbox_h_px"))
     if None in (centre_x, centre_y, bbox_w, bbox_h):
         return False
-    half_w = (bbox_w - 1.0) / 2.0
-    half_h = (bbox_h - 1.0) / 2.0
-    return bool(
-        centre_x - half_w >= 0.0
-        and centre_y - half_h >= 0.0
-        and centre_x + half_w <= float(width) - 1.0
-        and centre_y + half_h <= float(height) - 1.0
-    )
+    if bbox_w < 1.0 or bbox_h < 1.0:
+        return False
+    # The recorded centre is floor((min + max) / 2), so the box is reconstructed
+    # exactly rather than bracketed: a width of 16 puts 7 px on one side of the
+    # centre and 8 on the other, and a half-width of 8 would reject boxes that the
+    # renderer really did place inside the frame.
+    left = int(centre_x) - (int(bbox_w) - 1) // 2
+    top = int(centre_y) - (int(bbox_h) - 1) // 2
+    right = left + int(bbox_w) - 1
+    bottom = top + int(bbox_h) - 1
+    return bool(left >= 0 and top >= 0 and right <= int(width) - 1 and bottom <= int(height) - 1)
 
 
 # --------------------------------------------------------------------------- #

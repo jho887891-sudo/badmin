@@ -48,7 +48,9 @@ from src.perception.shuttle_detection.controlled_capability import (  # noqa: E4
     SWEEP_IDS,
     ControlSettings,
     apply_occlusion,
+    bbox_inside_frame,
     build_plan,
+    distribution,
     end_toward_camera,
     light_vector,
     long_axis_camera_space,
@@ -477,6 +479,32 @@ class MeasuredPinTests(unittest.TestCase):
                 break
         violations = verify_measured_pins(rows)
         self.assertTrue(any("occlusion_fraction" in v for v in violations), violations)
+
+
+class FrameAndDistributionTests(unittest.TestCase):
+    """Two small checks the post-generation report is built on."""
+
+    def test_a_box_that_fits_is_accepted(self) -> None:
+        row = {"pos_x_px": 480, "pos_y_px": 480, "bbox_w_px": 16, "bbox_h_px": 16}
+        self.assertTrue(bbox_inside_frame(row, 960, 960))
+
+    def test_a_box_touching_each_edge_is_still_inside(self) -> None:
+        for centre_x, centre_y in ((7, 480), (951, 480), (480, 7), (480, 951)):
+            row = {"pos_x_px": centre_x, "pos_y_px": centre_y, "bbox_w_px": 16, "bbox_h_px": 16}
+            self.assertTrue(bbox_inside_frame(row, 960, 960), f"{centre_x},{centre_y}")
+
+    def test_a_clipped_box_is_rejected(self) -> None:
+        for centre_x, centre_y in ((6, 480), (952, 480), (480, 6), (480, 952)):
+            row = {"pos_x_px": centre_x, "pos_y_px": centre_y, "bbox_w_px": 16, "bbox_h_px": 16}
+            self.assertFalse(bbox_inside_frame(row, 960, 960), f"{centre_x},{centre_y}")
+
+    def test_a_row_without_a_box_is_rejected(self) -> None:
+        self.assertFalse(bbox_inside_frame({"pos_x_px": 480}, 960, 960))
+
+    def test_distribution_counts_by_column(self) -> None:
+        rows = [{"sweep": "S1"}, {"sweep": "S1"}, {"sweep": "S2"}]
+        self.assertEqual(distribution(rows, "sweep"), {"S1": 2, "S2": 1})
+        self.assertEqual(distribution(rows, "missing"), {"": 3})
 
 
 class OcclusionTests(unittest.TestCase):
