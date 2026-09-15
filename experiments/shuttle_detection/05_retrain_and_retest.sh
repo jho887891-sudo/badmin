@@ -18,6 +18,9 @@ RUN=${1:?usage: 05_retrain_and_retest.sh <run-name> [config-yaml]}
 # slow to decode 676 images per epoch; the two files differ ONLY in cache, which resolved_config.json
 # records.
 CONFIG=${2:-configs/shuttle_detection/baseline.yaml}
+# Third argument selects the training manifest, so a pool built by a different generator (for
+# example the Isaac Sim renderer) can be trained and compared without editing this script.
+TRAINMANIFEST=${3:-manifest_train_full.csv}
 TGT=/home/T7/dgut/robot_sim/third_party/ultralytics
 PY=/home/T7/ojh/robot_sim/env_isaaclab/bin/python
 cd /home/T7/dgut/robot_sim
@@ -29,10 +32,11 @@ TRAINLOG=/tmp/${RUN}_train.log
 
 echo "################ 1. TRAIN ################"
 echo "  config: $CONFIG"
+echo "  train manifest: $TRAINMANIFEST"
 echo "  log: $TRAINLOG   (progress echoed here every 30 s)"
 $PY -u scripts/shuttle_detection/train_baseline.py \
   --config $CONFIG \
-  --train-manifest $TRAIN/manifest_train_full.csv \
+  --train-manifest $TRAIN/$TRAINMANIFEST \
   --val-manifest   $TRAIN/manifest_val_synthetic.csv \
   --data-root /home/T7/dgut/robot_sim \
   --run-name $RUN > "$TRAINLOG" 2>&1 &
