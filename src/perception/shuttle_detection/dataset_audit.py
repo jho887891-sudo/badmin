@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import io
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -54,6 +55,8 @@ IMAGE_EXTENSIONS: tuple[str, ...] = (".jpg", ".jpeg", ".png", ".bmp", ".webp")
 
 # Codes emitted by this module. Kept as constants so reports and tests agree.
 CODE_MANIFEST_COLUMN_MISSING = "MANIFEST_COLUMN_MISSING"
+CODE_MANIFEST_NOT_UTF8 = "MANIFEST_NOT_UTF8"
+CODE_LABEL_NOT_UTF8 = "LABEL_NOT_UTF8"
 CODE_MANIFEST_ROW_INCOMPLETE = "MANIFEST_ROW_INCOMPLETE"
 CODE_MANIFEST_EMPTY = "MANIFEST_EMPTY"
 CODE_LABEL_MISSING = "LABEL_MISSING"
@@ -135,8 +138,24 @@ def canonical_source_family(source_type: str) -> str | None:
     return None
 
 
-def read_manifest(path: Path | str) -> tuple[list[dict[str, str]], list[str]]:
-    """Read a manifest into plain row dicts, plus its header.
+def _decode_text(raw: bytes) -> tuple[str, bool]:
+    """Decode file bytes, reporting whether the decode was lossless.
+
+    UTF-8 is the contract for manifests and labels, but a file that violates it
+    must not abort the audit: the whole point of this module is to report dataset
+    problems, and a traceback reports nothing. The fallback is latin-1, which
+    cannot fail, so the caller can keep parsing and emit an audit issue.
+    """
+    try:
+        return raw.decode("utf-8-sig"), True
+    except UnicodeDecodeError:
+        return raw.decode("latin-1"), False
+
+
+def read_manifest_with_issues(
+    path: Path | str,
+) -> tuple[list[dict[str, str]], list[str], list[AuditIssue]]:
+    """Read a manifest into row dicts, its header, and any decoding findings.
 
     csv is used instead of pandas on purpose: the audit must run in environments
     (including the remote training host) where only the standard library exists.
@@ -144,15 +163,36 @@ def read_manifest(path: Path | str) -> tuple[list[dict[str, str]], list[str]]:
     manifest_path = Path(path)
     if not manifest_path.is_file():
         raise ManifestMissingError("manifest not found: " + str(manifest_path))
-    with manifest_path.open("r", newline="", encoding="utf-8-sig") as handle:
-        reader = csv.DictReader(handle)
-        if not reader.fieldnames:
-            raise ManifestError("manifest has no header row: " + str(manifest_path))
-        fieldnames = [name.strip() for name in reader.fieldnames]
-        rows = [
-            {(key or "").strip(): (value or "").strip() for key, value in row.items()}
-            for row in reader
-        ]
+    text, decoded_cleanly = _decode_text(manifest_path.read_bytes())
+    issues: list[AuditIssue] = []
+    if not decoded_cleanly:
+        issues.append(
+            AuditIssue(
+                MANIFEST_SCOPE,
+                CODE_MANIFEST_NOT_UTF8,
+                "ERROR",
+                str(manifest_path)
+                + " is not valid UTF-8; decoded as latin-1 so the audit can still report on it",
+            )
+        )
+    reader = csv.DictReader(io.StringIO(text))
+    if not reader.fieldnames:
+        raise ManifestError("manifest has no header row: " + str(manifest_path))
+    fieldnames = [name.strip() for name in reader.fieldnames]
+    rows = [
+        {(key or "").strip(): (value or "").strip() for key, value in row.items()}
+        for row in reader
+    ]
+    return rows, fieldnames, issues
+
+
+def read_manifest(path: Path | str) -> tuple[list[dict[str, str]], list[str]]:
+    """Read a manifest into plain row dicts, plus its header.
+
+    Decoding findings are dropped here; use read_manifest_with_issues when they
+    matter (the audit does).
+    """
+    rows, fieldnames, _ = read_manifest_with_issues(path)
     return rows, fieldnames
 
 
@@ -166,7 +206,21 @@ def validate_yolo_label(sample_id: str, path: Path, expected_class: int = 0) -> 
     label_path = Path(path)
     if not label_path.exists():
         return [AuditIssue(sample_id, CODE_LABEL_MISSING, "ERROR", str(label_path))]
-    for line_no, line in enumerate(label_path.read_text(encoding="utf-8").splitlines(), start=1):
+    try:
+        text, decoded_cleanly = _decode_text(label_path.read_bytes())
+    except OSError as error:
+        return [AuditIssue(sample_id, CODE_LABEL_MISSING, "ERROR", str(label_path) + ": " + str(error))]
+    if not decoded_cleanly:
+        issues.append(
+            AuditIssue(
+                sample_id,
+                CODE_LABEL_NOT_UTF8,
+                "ERROR",
+                str(label_path)
+                + " is not valid UTF-8; decoded as latin-1 so its boxes can still be checked",
+            )
+        )
+    for line_no, line in enumerate(text.splitlines(), start=1):
         if not line.strip():
             continue
         parts = line.split()
@@ -455,11 +509,16 @@ def audit_sample(
 
 
 def _count_label_boxes(label_path: Path) -> int:
+    """Count lines that are a well-formed YOLO row (five fields).
+
+    Counting every non-empty line instead would let a comment or a corrupt line
+    turn a negative sample into a positive one, and this count drives is_negative.
+    """
     try:
-        text = label_path.read_text(encoding="utf-8")
+        text, _ = _decode_text(label_path.read_bytes())
     except OSError:
         return 0
-    return sum(1 for line in text.splitlines() if line.strip())
+    return sum(1 for line in text.splitlines() if len(line.split()) == 5)
 
 
 _DECODER_AVAILABLE: bool | None = None
@@ -939,7 +998,8 @@ def audit_dataset(
         )
 
     for manifest_path in manifest_paths:
-        rows, columns = read_manifest(manifest_path)
+        rows, columns, decode_issues = read_manifest_with_issues(manifest_path)
+        issues.extend(decode_issues)
         manifest_infos.append(
             {
                 "path": str(manifest_path),

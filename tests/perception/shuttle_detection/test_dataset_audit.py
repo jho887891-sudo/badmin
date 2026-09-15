@@ -393,5 +393,77 @@ class FindDuplicateSampleIdsTests(unittest.TestCase):
         self.assertEqual(find_duplicate_sample_ids([]), [])
 
 
+LATIN1_LABEL = b"0 0.500000 0.500000 0.200000 0.200000\n" + b"# caf\xe9\n"
+LATIN1_MANIFEST = (
+    b"file,split,source_type,background\n"
+    b"train_00000.png,train,SYNTHETIC_3D,caf\xe9_bg.jpg\n"
+)
+
+
+class UndecodableFileTests(unittest.TestCase):
+    """F3: an undecodable file is a finding, not a crash.
+
+    The documented contract of this audit is that it REPORTS problems: the CLI must
+    still write its five reports and return a non-zero exit through the normal error
+    path. A UnicodeDecodeError escaping from here produced a bare traceback, no
+    reports at all, and an exit code that said nothing about the dataset.
+    """
+
+    def test_a_non_utf8_label_is_reported_instead_of_raising(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "latin1.txt"
+            p.write_bytes(LATIN1_LABEL)
+            issues = validate_yolo_label("s1", p, expected_class=0)
+            reported = [i for i in issues if i.code == "LABEL_NOT_UTF8"]
+            self.assertEqual([i.severity for i in reported], ["ERROR"])
+
+    def test_a_non_utf8_label_still_has_its_boxes_checked(self) -> None:
+        """Falling back to latin-1 keeps the box checks meaningful."""
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "latin1_bad_box.txt"
+            p.write_bytes(b"0 1.4 0.500000 0.200000 0.200000\n" + b"# \xff\n")
+            codes = [i.code for i in validate_yolo_label("s1", p, expected_class=0)]
+            self.assertIn("LABEL_NOT_UTF8", codes)
+            self.assertIn("BBOX_OUT_OF_RANGE", codes)
+
+    def test_a_non_utf8_label_is_reported_through_the_sample_audit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            row = build_sample(root)
+            (root / "train" / "labels" / "train_00000.txt").write_bytes(LATIN1_LABEL)
+            audit = audit_sample(row, dataset_root=root, manifest_dir=root)
+            self.assertIn("LABEL_NOT_UTF8", [i.code for i in audit.issues])
+            self.assertEqual(audit.box_count, 1)
+
+    def test_a_non_utf8_manifest_is_read_and_reported(self) -> None:
+        from src.perception.shuttle_detection.dataset_audit import read_manifest_with_issues
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "manifest_train.csv"
+            path.write_bytes(LATIN1_MANIFEST)
+            rows, fieldnames, issues = read_manifest_with_issues(path)
+            self.assertEqual(len(rows), 1)
+            self.assertIn("background", fieldnames)
+            self.assertEqual([i.code for i in issues], ["MANIFEST_NOT_UTF8"])
+            self.assertEqual(issues[0].severity, "ERROR")
+            # the historical two-value API keeps working
+            rows_again, fieldnames_again = read_manifest(path)
+            self.assertEqual(rows_again, rows)
+            self.assertEqual(fieldnames_again, fieldnames)
+
+    def test_a_non_utf8_manifest_is_reported_through_the_manifest_audit(self) -> None:
+        from src.perception.shuttle_detection.dataset_audit import audit_dataset
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            build_sample(root, "train_00000", "train")
+            manifest = root / "manifest_train.csv"
+            manifest.write_bytes(LATIN1_MANIFEST)
+            report = audit_dataset([manifest], dataset_root=root)
+            self.assertIn("MANIFEST_NOT_UTF8", [i.code for i in report.issues])
+            self.assertFalse(report.result.passed)
+            self.assertEqual(report.summary["n_samples"], 1)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

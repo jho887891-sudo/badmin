@@ -336,5 +336,77 @@ class CommandLineTests(unittest.TestCase):
             self.assertNotIn("Traceback", result.stderr)
 
 
+LATIN1_LABEL = b"0 0.500000 0.500000 0.200000 0.200000\n" + b"# caf\xe9\n"
+LATIN1_MANIFEST = (
+    b"file,split,source_type,background\n"
+    b"train_00000.png,train,SYNTHETIC_3D,caf\xe9_bg.jpg\n"
+)
+
+
+class UndecodableInputTests(unittest.TestCase):
+    """F3: an undecodable file must not stop the CLI from doing its job.
+
+    Before the fix these inputs raised UnicodeDecodeError out of main(), which
+    produced a traceback, no reports at all, and an exit code that described the
+    crash rather than the dataset.
+    """
+
+    def test_non_utf8_label_still_writes_reports_and_exits_non_zero(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            row = write_sample(root, "train_00000", "train")
+            (root / "train" / "labels" / "train_00000.txt").write_bytes(LATIN1_LABEL)
+            manifest = write_manifest(root / "manifest_train.csv", [row])
+            out = root / "out"
+            rc = main(
+                ["--manifest", str(manifest), "--dataset-root", str(root), "--out", str(out)]
+            )
+            self.assertEqual(rc, 1)
+            for name in REPORT_FILES:
+                self.assertTrue((out / name).is_file(), name + " was not written")
+            codes = {entry["code"] for entry in read_csv(out / CLEANING_REPORT)}
+            self.assertIn("LABEL_NOT_UTF8", codes)
+
+    def test_non_utf8_manifest_still_writes_reports_and_exits_non_zero(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write_sample(root, "train_00000", "train")
+            manifest = root / "manifest_train.csv"
+            manifest.write_bytes(LATIN1_MANIFEST)
+            out = root / "out"
+            rc = main(
+                ["--manifest", str(manifest), "--dataset-root", str(root), "--out", str(out)]
+            )
+            self.assertEqual(rc, 1)
+            for name in REPORT_FILES:
+                self.assertTrue((out / name).is_file(), name + " was not written")
+            codes = {entry["code"] for entry in read_csv(out / CLEANING_REPORT)}
+            self.assertIn("MANIFEST_NOT_UTF8", codes)
+            summary = json.loads((out / SUMMARY_REPORT).read_text(encoding="utf-8"))
+            self.assertEqual(summary["n_samples"], 1)
+            self.assertFalse(summary["passed"])
+
+    def test_documented_command_line_does_not_traceback_on_non_utf8_input(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            row = write_sample(root, "train_00000", "train")
+            (root / "train" / "labels" / "train_00000.txt").write_bytes(LATIN1_LABEL)
+            manifest = write_manifest(root / "manifest_train.csv", [row])
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts" / "shuttle_detection" / "audit_dataset.py"),
+                    "--manifest", str(manifest),
+                    "--dataset-root", str(root),
+                    "--out", str(root / "out"),
+                ],
+                cwd=str(ROOT),
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1, result.stderr)
+            self.assertNotIn("Traceback", result.stderr)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
