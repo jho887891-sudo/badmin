@@ -164,6 +164,24 @@ approximately. Any drift means the code, the data or the environment changed.
 | controlled matrix (2070) | recall 0.426, mAP50 0.351 |
 | CHALLENGE C5 | recall 1.000 |
 
+## 8b. Regression verification, actually run rather than asserted
+
+The expectations in section 8 were verified by re-measuring the frozen weights on the frozen manifests,
+not by restating the numbers they were taken from:
+
+| Quantity | Expected | Re-measured |
+|---|---|---|
+| weight sha256 | `2530af3515983e27dd088fcabd2c80ae575eeb28adc6ee5ce3e7dc97b171b9b4` | identical |
+| frozen P3 precision / recall / mAP50 | 0.196 / 0.438 / 0.253 | **0.195531 / 0.4375 / 0.252826** |
+| real photographs precision / recall / mAP50 | 0.500 / 0.600 / 0.505 | **0.500 / 0.600 / 0.50495** |
+| challenge overall precision / recall / mAP50 | 0.278 / 0.335 / 0.274 | **0.277778 / 0.335052 / 0.273676** |
+| CHALLENGE C5 (>32 px) recall | 1.000 | **1.000** |
+| CHALLENGE C1 (8-12 px) recall | 0.333 | **0.333333** |
+
+Every value reproduces exactly, which is the property the frozen sets are supposed to have and the
+reason section 8 sets an exact-match tolerance rather than a band. **A future run that drifts on these
+numbers has changed the code, the data or the environment, and that is the signal this regresses for.**
+
 ## 9. What is deliberately NOT frozen, and why
 
 The tests themselves must not change under a frozen release, but three of them carry known defects that
