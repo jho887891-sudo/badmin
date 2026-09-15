@@ -1,0 +1,31 @@
+background,n_samples,n_evaluable,n_negative,n_missing_ground_truth,n_detector_errors,n_ground_truth,n_predictions,tp,fp,fn,precision,recall,f1,mAP50,mAP50-95,top1_hit_rate,topk_hit_rate,gt_covered_rate,mean_center_error_px,n_center_error,mean_confidence,n_confidence,mean_matched_confidence,n_matched_confidence,mean_best_iou,iou_threshold,top_k,notes
+bg_001.jpg,109,109,0,0,0,109,95,26,69,83,0.273684,0.238532,0.254902,0.068616,0.019054,0.229358,0.238532,0.018349,2.704182,26,0.553929,57,0.242235,26,0.165051,0.5,5,
+bg_002.jpg,1,1,0,0,0,1,5,1,4,0,0.2,1.0,0.333333,0.5,0.35,0.0,1.0,0.0,1.203254,1,0.510964,1,0.456144,1,0.839203,0.5,5,
+bg_003.jpg,1,1,0,0,0,1,2,1,1,0,0.5,1.0,0.666667,1.0,0.6,1.0,1.0,0.0,1.643013,1,0.706339,1,0.706339,1,0.772182,0.5,5,
+bg_004.jpg,1,1,0,0,0,1,5,0,5,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,NOT_COMPUTABLE: no matched candidate in this group,0,0.715652,1,NOT_COMPUTABLE: no matched candidate in this group,0,0.0,0.5,5,mean_center_error_px: no matched candidate in this group; mean_matched_confidence: no matched candidate in this group
+bg_005.jpg,1,1,0,0,0,1,8,1,7,0,0.125,1.0,0.222222,1.0,0.5,1.0,1.0,0.0,1.946046,1,0.863225,1,0.863225,1,0.74402,0.5,5,
+bg_006.jpg,1,1,0,0,0,1,7,0,7,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,NOT_COMPUTABLE: no matched candidate in this group,0,0.570781,1,NOT_COMPUTABLE: no matched candidate in this group,0,0.0,0.5,5,mean_center_error_px: no matched candidate in this group; mean_matched_confidence: no matched candidate in this group
+bg_007.jpg,1,1,0,0,0,1,9,0,9,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,NOT_COMPUTABLE: no matched candidate in this group,0,0.630045,1,NOT_COMPUTABLE: no matched candidate in this group,0,0.0,0.5,5,mean_center_error_px: no matched candidate in this group; mean_matched_confidence: no matched candidate in this group
+bg_008.jpg,1,1,0,0,0,1,3,1,2,0,0.333333,1.0,0.5,1.0,0.5,1.0,1.0,0.0,2.415208,1,0.112167,1,0.112167,1,0.749481,0.5,5,
+bg_009.jpg,1,1,0,0,0,1,15,0,15,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,NOT_COMPUTABLE: no matched candidate in this group,0,0.792826,1,NOT_COMPUTABLE: no matched candidate in this group,0,0.0,0.5,5,mean_center_error_px: no matched candidate in this group; mean_matched_confidence: no matched candidate in this group
+bg_010.jpg,1,1,0,0,0,1,3,1,2,0,0.333333,1.0,0.5,1.0,0.5,1.0,1.0,0.0,2.469622,1,0.848604,1,0.848604,1,0.70297,0.5,5,
+bg_011.jpg,1,1,0,0,0,1,2,1,1,0,0.5,1.0,0.666667,1.0,0.6,1.0,1.0,0.0,1.891334,1,0.866566,1,0.866566,1,0.770593,0.5,5,
+bg_012.jpg,1,1,0,0,0,1,2,1,1,0,0.5,1.0,0.666667,1.0,0.5,1.0,1.0,0.0,2.185772,1,0.836743,1,0.836743,1,0.725957,0.5,5,
+bg_013.jpg,1,1,0,0,0,1,2,1,1,0,0.5,1.0,0.666667,1.0,0.5,1.0,1.0,0.0,2.392284,1,0.868164,1,0.868164,1,0.72062,0.5,5,
+bg_015.jpg,1,1,0,0,0,1,5,1,4,0,0.2,1.0,0.333333,1.0,0.5,1.0,1.0,0.0,2.267679,1,0.896018,1,0.896018,1,0.707046,0.5,5,
+bg_016.jpg,1,1,0,0,0,1,5,1,4,0,0.2,1.0,0.333333,1.0,0.5,1.0,1.0,0.0,2.13159,1,0.867732,1,0.867732,1,0.739602,0.5,5,
+bg_017.jpg,1,1,0,0,0,1,3,1,2,0,0.333333,1.0,0.5,1.0,0.6,1.0,1.0,0.0,1.884489,1,0.879754,1,0.879754,1,0.750557,0.5,5,
+bg_018.jpg,1,1,0,0,0,1,3,1,2,0,0.333333,1.0,0.5,1.0,0.5,1.0,1.0,0.0,1.952127,1,0.904472,1,0.904472,1,0.746557,0.5,5,
+bg_019.jpg,1,1,0,0,0,1,1,1,0,0,1.0,1.0,1.0,1.0,0.5,1.0,1.0,0.0,1.990736,1,0.8931,1,0.8931,1,0.744636,0.5,5,
+bg_020.jpg,1,1,0,0,0,1,6,0,6,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,NOT_COMPUTABLE: no matched candidate in this group,0,0.349306,1,NOT_COMPUTABLE: no matched candidate in this group,0,0.0,0.5,5,mean_center_error_px: no matched candidate in this group; mean_matched_confidence: no matched candidate in this group
+bg_021.jpg,1,1,0,0,0,1,2,1,1,0,0.5,1.0,0.666667,1.0,0.4,1.0,1.0,0.0,2.460585,1,0.786489,1,0.786489,1,0.687742,0.5,5,
+bg_022.jpg,1,1,0,0,0,1,2,1,1,0,0.5,1.0,0.666667,1.0,0.5,1.0,1.0,0.0,2.149815,1,0.87707,1,0.87707,1,0.73413,0.5,5,
+bg_024.jpg,1,1,0,0,0,1,10,1,9,0,0.1,1.0,0.181818,1.0,0.4,1.0,1.0,0.0,2.265967,1,0.556517,1,0.556517,1,0.694248,0.5,5,
+bg_025.jpg,1,1,0,0,0,1,0,0,0,1,NOT_COMPUTABLE: no predictions in this group,0.0,NOT_COMPUTABLE: no predictions in this group,NOT_COMPUTABLE: no predictions in this group,NOT_COMPUTABLE: no predictions in this group,0.0,0.0,0.0,NOT_COMPUTABLE: no matched candidate in this group,0,NOT_COMPUTABLE: no predictions in this group,0,NOT_COMPUTABLE: no matched candidate in this group,0,0.0,0.5,5,f1: no predictions in this group; mAP50: no predictions in this group; mAP50-95: no predictions in this group; mean_center_error_px: no matched candidate in this group; mean_confidence: no predictions in this group; mean_matched_confidence: no matched candidate in this group; precision: no predictions in this group
+bg_026.jpg,1,1,0,0,0,1,2,1,1,0,0.5,1.0,0.666667,1.0,0.8,1.0,1.0,1.0,0.735176,1,0.838388,1,0.838388,1,0.89278,0.5,5,
+bg_027.jpg,1,1,0,0,0,1,1,1,0,0,1.0,1.0,1.0,1.0,0.5,1.0,1.0,0.0,2.017247,1,0.249848,1,0.249848,1,0.733486,0.5,5,
+bg_028.jpg,1,1,0,0,0,1,1,1,0,0,1.0,1.0,1.0,1.0,0.5,1.0,1.0,0.0,2.366306,1,0.868674,1,0.868674,1,0.7007,0.5,5,
+bg_029.jpg,1,1,0,0,0,1,1,1,0,0,1.0,1.0,1.0,1.0,0.4,1.0,1.0,0.0,2.628933,1,0.585772,1,0.585772,1,0.690427,0.5,5,
+bg_030.jpg,1,1,0,0,0,1,2,1,1,0,0.5,1.0,0.666667,1.0,0.6,1.0,1.0,0.0,1.92593,1,0.885821,1,0.885821,1,0.752662,0.5,5,
+bg_031.jpg,1,1,0,0,0,1,1,1,0,0,1.0,1.0,1.0,1.0,0.4,1.0,1.0,0.0,2.63547,1,0.880409,1,0.880409,1,0.666192,0.5,5,
+bg_032.jpg,1,1,0,0,0,1,0,0,0,1,NOT_COMPUTABLE: no predictions in this group,0.0,NOT_COMPUTABLE: no predictions in this group,NOT_COMPUTABLE: no predictions in this group,NOT_COMPUTABLE: no predictions in this group,0.0,0.0,0.0,NOT_COMPUTABLE: no matched candidate in this group,0,NOT_COMPUTABLE: no predictions in this group,0,NOT_COMPUTABLE: no matched candidate in this group,0,0.0,0.5,5,f1: no predictions in this group; mAP50: no predictions in this group; mAP50-95: no predictions in this group; mean_center_error_px: no matched candidate in this group; mean_confidence: no predictions in this group; mean_matched_confidence: no matched candidate in this group; precision: no predictions in this group

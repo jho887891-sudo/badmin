@@ -1,0 +1,927 @@
+{
+  "manifest": {
+    "path": "outputs/shuttle_capability/controlled_capability/manifest.csv",
+    "sha256": "4594592fe7da42bf28036fac673f8e0f21f08363e71042bfa3633dea0d4b2328",
+    "columns": [
+      "file",
+      "split",
+      "source_type",
+      "bbox_w_px",
+      "bbox_h_px",
+      "pos_x_px",
+      "pos_y_px",
+      "yaw_deg",
+      "pitch_deg",
+      "roll_deg",
+      "pose_bucket",
+      "position_bucket",
+      "blur_bucket",
+      "occlusion_bucket",
+      "background",
+      "light_azimuth_deg",
+      "equivalent_size_px",
+      "sweep",
+      "seed",
+      "target_px",
+      "equiv_size_px",
+      "distance_m",
+      "motion_px",
+      "motion_angle_deg",
+      "occlusion_fraction",
+      "occlusion_target_fraction",
+      "noise_sigma",
+      "noise_seed",
+      "shadow_gain",
+      "coverage_sum",
+      "solid_px",
+      "imgsz",
+      "supersample",
+      "focal_px",
+      "camera_id",
+      "is_negative"
+    ],
+    "n_rows": 138
+  },
+  "n_samples": 138,
+  "n_evaluable": 138,
+  "n_negative": 0,
+  "n_missing_ground_truth": 0,
+  "n_detector_errors": 0,
+  "counts_by_split": {
+    "fixed_core_test": 138
+  },
+  "iou_threshold": 0.5,
+  "top_k": 5,
+  "min_confidence": 0.0,
+  "expected_class": 0,
+  "gt_coverage_fraction": 0.9,
+  "ap_iou_thresholds": [
+    0.5,
+    0.55,
+    0.6,
+    0.65,
+    0.7,
+    0.75,
+    0.8,
+    0.85,
+    0.9,
+    0.95
+  ],
+  "dimensions": {
+    "size_bucket": {
+      "status": "derived",
+      "source": "derived from manifest column 'equivalent_size_px'",
+      "reason": null,
+      "file": "size_bucket_metrics.csv",
+      "n_groups": 8,
+      "n_labelled": 138,
+      "n_unlabelled": 0
+    },
+    "pose": {
+      "status": "manifest_column",
+      "source": "manifest column 'pose_bucket'",
+      "reason": null,
+      "file": "pose_metrics.csv",
+      "n_groups": 9,
+      "n_labelled": 138,
+      "n_unlabelled": 0
+    },
+    "position": {
+      "status": "manifest_column",
+      "source": "manifest column 'position_bucket'",
+      "reason": null,
+      "file": "position_metrics.csv",
+      "n_groups": 9,
+      "n_labelled": 138,
+      "n_unlabelled": 0
+    },
+    "blur": {
+      "status": "manifest_column",
+      "source": "manifest column 'blur_bucket'",
+      "reason": null,
+      "file": "blur_metrics.csv",
+      "n_groups": 4,
+      "n_labelled": 138,
+      "n_unlabelled": 0
+    },
+    "occlusion": {
+      "status": "manifest_column",
+      "source": "manifest column 'occlusion_bucket'",
+      "reason": null,
+      "file": "occlusion_metrics.csv",
+      "n_groups": 3,
+      "n_labelled": 138,
+      "n_unlabelled": 0
+    },
+    "background": {
+      "status": "manifest_column",
+      "source": "manifest column 'background'",
+      "reason": null,
+      "file": "background_metrics.csv",
+      "n_groups": 30,
+      "n_labelled": 138,
+      "n_unlabelled": 0
+    }
+  },
+  "not_computed": [],
+  "not_computed_metrics": [
+    {
+      "dimension": "size_bucket",
+      "group": "<4",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "<4",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "<4",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "<4",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "<4",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "<4",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "<4",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "4-6",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "4-6",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "4-6",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "4-6",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "4-6",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "4-6",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "4-6",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "6-8",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "6-8",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "6-8",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "6-8",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "6-8",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "6-8",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "6-8",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "8-12",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "8-12",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "8-12",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "8-12",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "8-12",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "8-12",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": "8-12",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": ">32",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "size_bucket",
+      "group": ">32",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "feather_end_on",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "feather_end_on",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "feather_end_on",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "feather_end_on",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "feather_end_on",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "feather_end_on",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "feather_end_on",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "side",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "side",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "side",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "side",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "side",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "side",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "side",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "roll_only",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "roll_only",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "roll_only",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "roll_only",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "roll_only",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "roll_only",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "pose",
+      "group": "roll_only",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "left",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "left",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "left",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "left",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "left",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "left",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "left",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "bottom",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "bottom",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "bottom",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "bottom",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "bottom",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "bottom",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "bottom",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_left",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_left",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_left",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_left",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_left",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_left",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_left",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_right",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_right",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_right",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_right",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_right",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_right",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "position",
+      "group": "top_right",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "medium",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "medium",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "medium",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "medium",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "medium",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "medium",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "medium",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "heavy",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "heavy",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "heavy",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "heavy",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "heavy",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "heavy",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "blur",
+      "group": "heavy",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "occlusion",
+      "group": "partial",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "occlusion",
+      "group": "partial",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_004.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_004.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_006.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_006.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_007.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_007.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_009.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_009.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_020.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_020.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_025.jpg",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_025.jpg",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_025.jpg",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_025.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_025.jpg",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_025.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_025.jpg",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_032.jpg",
+      "metric": "f1",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_032.jpg",
+      "metric": "mAP50",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_032.jpg",
+      "metric": "mAP50-95",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_032.jpg",
+      "metric": "mean_center_error_px",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_032.jpg",
+      "metric": "mean_confidence",
+      "reason": "no predictions in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_032.jpg",
+      "metric": "mean_matched_confidence",
+      "reason": "no matched candidate in this group"
+    },
+    {
+      "dimension": "background",
+      "group": "bg_032.jpg",
+      "metric": "precision",
+      "reason": "no predictions in this group"
+    }
+  ],
+  "warnings": [],
+  "overall": {
+    "overall": "ALL",
+    "n_samples": 138,
+    "n_evaluable": 138,
+    "n_negative": 0,
+    "n_missing_ground_truth": 0,
+    "n_detector_errors": 0,
+    "n_ground_truth": 138,
+    "n_predictions": 203,
+    "tp": 48,
+    "fp": 155,
+    "fn": 90,
+    "precision": 0.236453,
+    "recall": 0.347826,
+    "f1": 0.281525,
+    "mAP50": 0.163662,
+    "mAP50-95": 0.071116,
+    "top1_hit_rate": 0.333333,
+    "topk_hit_rate": 0.347826,
+    "gt_covered_rate": 0.021739,
+    "mean_center_error_px": 2.413902,
+    "n_center_error": 48,
+    "mean_confidence": 0.609707,
+    "n_confidence": 84,
+    "mean_matched_confidence": 0.475544,
+    "n_matched_confidence": 48,
+    "mean_best_iou": 0.248234,
+    "iou_threshold": 0.5,
+    "top_k": 5,
+    "notes": ""
+  },
+  "outputs": {
+    "predictions": "predictions.csv",
+    "summary": "summary.json",
+    "size_bucket": "size_bucket_metrics.csv",
+    "pose": "pose_metrics.csv",
+    "position": "position_metrics.csv",
+    "blur": "blur_metrics.csv",
+    "occlusion": "occlusion_metrics.csv",
+    "background": "background_metrics.csv"
+  }
+}
