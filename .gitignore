@@ -19,21 +19,24 @@ logs/
 *.onnx
 *.engine
 *.urdf.bak
-# scratch / probe files created by reviewers and agents during work must never be committed
-_scratch_*.py
-_probe_*.py
-_*_probe*.py
+# third-party wheels are staged under assets/external/_staging/, never tracked
+*.whl
+# Scratch/probe/patch scripts created by agents during work must never be committed.
+# A bare "_*.py" is a TRAP: it also matches "__init__.py" and "__main__.py" (both start with
+# an underscore), so real package files get silently dropped from the repository. That trap
+# already caught one implementer on this branch (force-added in commit aaffa9b). Negating the
+# dunder names back keeps the blanket rule without the trap.
+_*.py
+!__*.py
+_*.sh
+_scratch_*.png
+_probe_*.png
 __pycache__/
 *.pyc
 # reviewer worktree mirrors (never part of the project)
 .review_remote/
 .review_remote2/
 .review_remote*/
-# any agent scratch/probe/patch script at the repo root or in tools/
-_*.py
-tools/_*.py
-_scratch_*.png
-_probe_*.png
 
 # bulk generated image sets and background pools: regenerable, and the repository tracks
 # their manifests, reports and audit sheets instead (same policy as the P3 image set).
@@ -48,3 +51,8 @@ outputs/shuttle_capability/train_data/bg_excluded/
 outputs/shuttle_capability/real_images/backgrounds/
 outputs/shuttle_capability/real_images/raw/
 outputs/shuttle_capability/synthetic_3d/
+# full-resolution review sheets: regenerable evidence, the committed JPEG is the overview
+outputs/shuttle_detection/background_review_sheets/
+
+# superpowers SDD workspaces (plan ledgers, briefs, review packages)
+.superpowers/

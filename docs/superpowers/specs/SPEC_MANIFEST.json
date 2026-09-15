@@ -1,0 +1,46 @@
+{
+  "00_SHUTTLE_DETECTION_MASTER_SPEC.md": {
+    "sha256": "8bb0e8829b790867f45b3cf83393174019ad74f01d21f95aca1666a0ffc05bf7",
+    "bytes": 6509
+  },
+  "01_DATA_ASSET_READINESS_SPEC.md": {
+    "sha256": "d2891b44e12d6f58a35554a6cd5948d79282417dcf9bd7c4a6f3dbce87c348bf",
+    "bytes": 3363
+  },
+  "02_BASELINE_TRAINING_SPEC.md": {
+    "sha256": "a36c62d43d8d018789f7bc8846e065d213d23af59cb40f1117f996bc4850360e",
+    "bytes": 2284
+  },
+  "03_CONTROLLED_CAPABILITY_SPEC.md": {
+    "sha256": "99ee3a6ecdb8ae2d7c504711cf3f93574b78cf8665d1d46ddb1a4a66bfe99548",
+    "bytes": 2669
+  },
+  "04_REAL_IMAGE_VIDEO_SPEC.md": {
+    "sha256": "6d163b493aeede31509336681b32d1e598d9c2e8e98334569eafb223cbbb197b",
+    "bytes": 2397
+  },
+  "05_SYSTEM_REQUIREMENT_MAPPING_SPEC.md": {
+    "sha256": "c96a8543ea299c64751e3b28db4dc0a0555fdfec431c1825e49dd1fd07682870",
+    "bytes": 2474
+  },
+  "06_FAILURE_DIAGNOSIS_FEEDBACK_SPEC.md": {
+    "sha256": "ac17848aa28ace723a37a9824337c676d71060253a32833d393b7fb8544b60f4",
+    "bytes": 2172
+  },
+  "07_THREE_LEVEL_ADJUSTMENT_SPEC.md": {
+    "sha256": "1422e6dae52704597e2ae3c53eeb6ea43f27369deb67035a710f6a664a33eb20",
+    "bytes": 4367
+  },
+  "08_FINAL_EVALUATION_SPEC.md": {
+    "sha256": "2263200d79ad89f8f7564f97cc067d8ae2eee064e3618b7e18c756bb4684c94f",
+    "bytes": 3312
+  },
+  "09_FREEZE_HANDOFF_SPEC.md": {
+    "sha256": "c2668a47b1df307e8dda8b69810b347f14b08fd8b18e45820fa3cc7a5a93271f",
+    "bytes": 2999
+  },
+  "README.md": {
+    "sha256": "b09ab402e94e688ccca3b81999dfea49f2818dca5248a1d526e3e3c924e14518",
+    "bytes": 1847
+  }
+}

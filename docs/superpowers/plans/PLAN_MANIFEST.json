@@ -1,0 +1,42 @@
+{
+  "2026-09-15-shuttle-baseline-training.md": {
+    "sha256": "d27bed31cec68dda8296526f5944294c45e4a8284a51f1392fb76fbf3ab0966e",
+    "bytes": 7903
+  },
+  "2026-09-15-shuttle-controlled-capability.md": {
+    "sha256": "902c15b0136f75b52f4cea4575d7a8dd51176baa18ef6919582f7f00bbe1779f",
+    "bytes": 6286
+  },
+  "2026-09-15-shuttle-data-asset-readiness.md": {
+    "sha256": "f232239b4543ce70d471e64cde24cdd5e6f02855bd43d7bcdbbdff189b65dbc8",
+    "bytes": 10178
+  },
+  "2026-09-15-shuttle-failure-feedback.md": {
+    "sha256": "158fcebc37b32121fe1f59995cef9cab91af2b769e27b716763a5c66db06332b",
+    "bytes": 5118
+  },
+  "2026-09-15-shuttle-final-evaluation.md": {
+    "sha256": "40eab51a1aec5568cf9ff4bfd8ecd83888dce0ac5c82f6c424528b2a261fe1bb",
+    "bytes": 4642
+  },
+  "2026-09-15-shuttle-freeze-handoff.md": {
+    "sha256": "5d9d3088eff72416b80bbe510540335cfff1e2ed0b132600263c946417105948",
+    "bytes": 5825
+  },
+  "2026-09-15-shuttle-real-image-video.md": {
+    "sha256": "003ad8c59df79b858817ac07d0576130cc2a6fbaa6fc51ede8e61232f174d239",
+    "bytes": 5573
+  },
+  "2026-09-15-shuttle-system-requirements.md": {
+    "sha256": "446fb17bc5855526c35847ee750a2a7c24164e2d2df7e9a669cbfb0e7faa8349",
+    "bytes": 5562
+  },
+  "2026-09-15-shuttle-three-level-adjustment.md": {
+    "sha256": "8a65f4b61da12ff1a0c834f373d413fc88fffe0e84e22432b3323d8e6950f7c2",
+    "bytes": 6627
+  },
+  "README.md": {
+    "sha256": "ee9b9f9b67df8d06f50c97c699bec7d73d936bafcece7a9df51384ec7c2ea23f",
+    "bytes": 641
+  }
+}
