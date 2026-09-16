@@ -21,6 +21,10 @@ AppLauncher.add_app_launcher_args(p)
 p.add_argument("--n", type=int, default=12)
 p.add_argument("--out", default="/home/T7/dgut/robot_sim/outputs/shuttle_capability/isaac_pool")
 p.add_argument("--seed", type=int, default=20260917)
+# The first pool sampled pitch from +/-60 degrees, which cannot produce a true side view (that needs near
+# +/-90), and the pose sweep built from it had NO side family at all. The numpy training pool covers side
+# views abundantly - 62.4% of its positives are at |pitch| >= 65 - so the gap was specific to this renderer.
+p.add_argument("--pitch-max-deg", type=float, default=60.0)
 args = p.parse_args()
 args.headless = True
 args.enable_cameras = True
@@ -102,7 +106,7 @@ rng = np.random.default_rng(args.seed)
 records = []
 for i in range(args.n):
     yaw = float(rng.uniform(0, 2 * math.pi))
-    pitch = float(rng.uniform(-math.pi / 3, math.pi / 3))
+    pitch = float(rng.uniform(-math.radians(args.pitch_max_deg), math.radians(args.pitch_max_deg)))
     roll = float(rng.uniform(0, 2 * math.pi))
     cy, sy = math.cos(yaw / 2), math.sin(yaw / 2)
     cp, sp = math.cos(pitch / 2), math.sin(pitch / 2)

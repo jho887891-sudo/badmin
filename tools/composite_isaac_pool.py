@@ -19,9 +19,14 @@ ap.add_argument("--min-px", type=float, default=3.0)
 ap.add_argument("--max-px", type=float, default=800.0)
 ap.add_argument("--imgsz", type=int, default=960)
 ap.add_argument("--seed", type=int, default=20260917)
+ap.add_argument("--pool", default=None)
+ap.add_argument("--name-prefix", default="isaac_train")
 args = ap.parse_args()
 
-POOL = REPO / "outputs/shuttle_capability/isaac_pool"
+# Parameterised so a second pool rendered with a wider pitch range can be composited alongside the first,
+# with distinct filenames so neither overwrites the other.
+POOL = Path(args.pool) if getattr(args, "pool", None) else REPO / "outputs/shuttle_capability/isaac_pool"
+NAME_PREFIX = getattr(args, "name_prefix", "isaac_train")
 BASE = REPO / "outputs/shuttle_capability/train_data"
 OUTI = BASE / "train" / "images"
 OUTL = BASE / "train" / "labels"
@@ -69,7 +74,7 @@ for i in range(args.n):
     canvas_f[top:top + nh, left:left + nw] = (canvas_f[top:top + nh, left:left + nw] * (1 - alpha3)
                                               + obj_s * alpha3)
     canvas = np.clip(canvas_f, 0, 255).astype(np.uint8)
-    name = "isaac_train_{:05d}".format(i)
+    name = "{}_{:05d}".format(NAME_PREFIX, i)
     imwrite_unicode(OUTI / (name + ".jpg"), canvas, quality=92)
     nx1, ny1 = left / args.imgsz, top / args.imgsz
     nx2, ny2 = (left + nw) / args.imgsz, (top + nh) / args.imgsz
