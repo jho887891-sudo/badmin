@@ -64,5 +64,16 @@ outputs/shuttle_capability/challenge_test/labels/
 # full-resolution review sheets: regenerable evidence, the committed JPEG is the overview
 outputs/shuttle_detection/background_review_sheets/
 
+# Acquired image pools: the licence/provenance CSV is the tracked record, the images themselves are
+# third-party bulk data. Regenerate or re-download with the paired experiments/shuttle_detection script:
+#   python experiments/shuttle_detection/03_acquire_hard_negatives.py
+#   python experiments/shuttle_detection/06_acquire_hard_negatives_2.py
+#   python experiments/shuttle_detection/09_acquire_real_training.py
+# 36 files under this path were tracked by mistake in 32f8679 and untracked afterwards; a
+# .gitignore line cannot carry an inline comment, so this one does not.
+outputs/shuttle_capability/hard_negatives/raw/
+outputs/shuttle_capability/hard_negatives2/raw/
+outputs/shuttle_capability/real_train/raw/
+
 # superpowers SDD workspaces (plan ledgers, briefs, review packages)
 .superpowers/
