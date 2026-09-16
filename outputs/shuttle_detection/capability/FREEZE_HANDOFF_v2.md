@@ -76,6 +76,30 @@ point analysis applies to v2 as well and should be re-run before choosing one.
 | peak inference VRAM | **108 MB** |
 | longest miss streak, left/right camera | **NOT MEASURABLE** - see section 10 |
 
+## 5b. How the false-positive protocol is composed, and the second figure it yields
+
+An audit of the 30 shuttle-free scenes (`BACKGROUND_POOL_AUDIT.md`) found that **11 of them are not
+badminton venues**: eight are near-duplicate frames of one construction commencement ceremony, and three
+others are a trophy cabinet, a palace film hall, and a portrait of a duke standing outside Badminton House -
+which is a stately home, not a court. The pool was assembled by keyword and never screened for relevance.
+
+**The frozen-core discipline held**: those images are in the test pool only, the training pool is a
+disjoint set of 25, and the overlap is zero.
+
+The measurement was re-broken down per scene to see whether the defect drives the result. It does not:
+
+| Group | Scenes | Boxes | Per scene | Clean |
+|---|---|---|---|---|
+| ceremony, non-venue | 8 | 11 | 1.38 | 1/8 |
+| other non-venue | 3 | 4 | 1.33 | 1/3 |
+| **venue-like** | 19 | **21** | **1.11** | **8/19** |
+| all | 30 | **36** | 1.20 | 10/30 |
+
+So **36 boxes over 30 scenes is the headline figure and 21 boxes over 19 venue-like scenes is the one a
+reader should use when thinking about deployment**, because a badminton robot will not meet a building site.
+The venue-like scenes still carry 1.11 boxes each, so the false-positive problem is real and not an artefact
+of pool composition - it is simply smaller than the headline number suggests.
+
 ## 6. Known limitations
 
 Carried from v1 unless stated: no discrimination below about conf 0.40 on cluttered scenes (improved but
@@ -85,6 +109,10 @@ distinct images behind 10 rows, one a plastic shuttle; **no real training photog
 appearance is plausible but never calibrated against a real camera; `bg_001` is anomalously hard for an
 unidentified reason; the Isaac training pool contains **no true side view**, so pose behaviour in the trained
 appearance is unmeasured; and worst false-positive confidence rose slightly from 0.669 to 0.724.
+- **The false-positive protocol is measured on a pool with 11 non-venue scenes in it** (8 of them a single
+  near-duplicate event), so "30 shuttle-free scenes" overstates its independence. The venue-like subset gives
+  21 boxes over 19 scenes rather than 36 over 30. Disclosed rather than silently corrected, because the
+  published v2 numbers were taken on the full pool.
 
 ## 7. Regression expectations, verified
 
