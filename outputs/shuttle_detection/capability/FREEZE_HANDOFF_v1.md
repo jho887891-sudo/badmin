@@ -138,6 +138,29 @@ numpy-rendered controlled curve and is **not** the deployment figure; this is.
   they were added to training. The discrimination finding was recomputed on the 29 non-overlapping scenes
   and is unchanged (recall 0.345 against 0.93 boxes per empty scene).
 
+## 5b. Adjustments that were tried and NOT adopted, and the pattern they share
+
+Spec 07 requires each adjustment to be measured on the original protocols and kept only if effective. Two
+were tried against the release's weakest axes and neither was adopted, because on both occasions the
+**deployment-relevant** measurements regressed while the synthetic ones improved:
+
+| Attempt | Outcome |
+|---|---|
+| whole-scene hard negatives instead of 960x960 centre crops | real-photo recall 0.600 -> 0.300, precision 0.500 -> 0.158, FP 43 -> 47. **REVERTED** |
+| add side views in the trained appearance (209 images, pitch to +/-90 deg) | appearance ladder mAP50 0.510 -> 0.569 but real-photo recall 0.600 -> 0.300 and FP 43 -> 60 with worst confidence 0.669 -> 0.876. **NOT ADOPTED** |
+
+One adjustment against the same weaknesses DID work: more hard negatives of the character the model fires
+on took false positives from 82 to 43 on the shuttle-free protocol.
+
+**The pattern across all three is the most useful methodological result in this project: improvements on
+synthetic tests do not predict improvements on real scenes.** Both rejected attempts looked like wins on
+the controlled matrix and the appearance ladder. When the two disagree, the real-scene measurements govern.
+
+Neither rejection rests on a statistically strong result on its own - the real-photograph set has 10 rows,
+so a 0.600 to 0.300 change is three rows and not significant - but the false-positive measurements are on 30
+real scenes and are outside noise, and they moved the same way both times. That, rather than the
+real-photograph delta alone, is what the decisions rest on.
+
 ## 6. Frozen interface
 
 Per detection result, the contract offered to the downstream fine-localisation module:
