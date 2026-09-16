@@ -242,6 +242,26 @@ Every value reproduces exactly, which is the property the frozen sets are suppos
 reason section 8 sets an exact-match tolerance rather than a band. **A future run that drifts on these
 numbers has changed the code, the data or the environment, and that is the signal this regresses for.**
 
+## 8c. Complete regression verification — every published number re-measured
+
+Section 8b verified three protocols. The remaining ones were verified afterwards so that the whole table,
+not a sample of it, is known to reproduce on the frozen weights:
+
+| Quantity | Expected | Re-measured |
+|---|---|---|
+| weight sha256 | `2530af3515983e27dd088fcabd2c80ae575eeb28adc6ee5ce3e7dc97b171b9b4` | identical |
+| controlled matrix (2070) precision / recall / mAP50 | 0.240 / 0.426 / 0.351 | **0.239989 / 0.425604 / 0.350676** |
+| appearance ladder (237) precision / recall / mAP50 | 0.272 / 0.586 / 0.510 | **0.272016 / 0.586498 / 0.509896** |
+| false positives, 30 shuttle-free scenes | 43 boxes, 8 clean of 30, worst confidence 0.669 | **43, 8 of 30, 0.669** |
+| frozen P3 (160) precision / recall / mAP50 | 0.196 / 0.438 / 0.253 | **0.195531 / 0.4375 / 0.252826** |
+| real photographs (16) precision / recall / mAP50 | 0.500 / 0.600 / 0.505 | **0.500 / 0.600 / 0.50495** |
+| challenge (227) precision / recall / mAP50 | 0.278 / 0.335 / 0.274 | **0.277778 / 0.335052 / 0.273676** |
+| CHALLENGE C5 (>32 px) recall | 1.000 | **1.000** |
+
+**Every published number reproduces exactly.** The frozen sets are deterministic, so that is the expected
+outcome and it is the property the regression protocol depends on: a future run that drifts on any of these
+has changed the code, the data or the environment.
+
 ## 9. What is deliberately NOT frozen, and why
 
 The tests themselves must not change under a frozen release, but three of them carry known defects that
