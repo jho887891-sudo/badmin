@@ -164,6 +164,26 @@ Conventions, stated because the spec requires them explicit:
 - **invalid frame**: `valid=False` with an empty list. Use it when the frame could not be read or the
   capture is corrupted. `valid=False` must not be treated as "no shuttle present".
 
+### 6b. The one setting a consumer SHOULD change, with the numbers to choose it
+
+Confidence 0.05 is frozen for reproducibility, not because it is the right deployment value. Measured on
+the paired C1/C1n design - 66 cluttered rows with a 10 px shuttle against 33 of the SAME scenes with nothing
+in them - the ratio of true positives to empty-scene boxes is:
+
+| confidence | recall on the 10 px target | boxes per EMPTY scene | ratio |
+|---|---|---|---|
+| **0.05** (frozen) | 0.333 | 0.97 | **0.34** |
+| 0.30 | 0.258 | 0.30 | 0.85 |
+| **0.40** | 0.242 | 0.24 | **1.00** |
+| 0.50 | 0.167 | 0.15 | 1.10 |
+| **0.60** | 0.106 | 0.03 | **3.50** |
+
+Below about 0.40 a detection on cluttered input is more likely to be noise than the target; above it, the
+false positives fall faster than the true ones and a detection carries information. **A consumer that
+cannot tolerate false positives on cluttered input should raise the threshold to 0.50-0.60; one working in
+open scenes can stay low.** This is exactly why the interface returns Top-K candidates with confidences
+instead of a single decision.
+
 ## 7. Contract with the downstream fine-localisation module
 
 The detector provides coarse candidate regions, confidences and a Top-K ranking. It does NOT provide an
