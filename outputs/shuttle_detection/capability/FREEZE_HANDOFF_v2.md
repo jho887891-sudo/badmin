@@ -55,6 +55,31 @@ identically to the one on the training host. The test-set manifests are unchange
 matrix `4eaf056f9d8d4375`, frozen P3 `2b7728ffe1c811f6`, real photographs `99a268e7a1c08d2f`, challenge
 `996ebd5a8dd96e2c`, appearance ladder `isaac_ladder_holdout`.
 
+### 3b. The input scale the frozen numbers were taken at, and why it stays there
+
+All published v2 numbers were taken with `imgsz 640` on 1280 px inputs, which letterboxes by half. A sweep of
+six input scales showed that **cropping beats letterboxing at a fixed scale**, and that a size-adaptive crop
+has a ceiling of **+0.169 mean recall** on the appearance-aligned ladders. That raised the obvious question -
+are these numbers limited by input scale? - and the clean test (same set, same model, only `imgsz` changes)
+answers it in two directions:
+
+| Set | imgsz 640 | imgsz 1280 | Winner |
+|---|---|---|---|
+| appearance ladder recall / mAP50 | 0.553 / 0.503 | **0.658 / 0.563** | 1280 |
+| small-target ladder recall / mAP50 | 0.519 / 0.442 | **0.684 / 0.605** | 1280 |
+| frozen P3 recall / mAP50 | 0.413 / 0.284 | **0.650 / 0.556** | 1280 |
+| **real photographs recall / precision** | **0.800 / 0.800** | 0.600 / 0.273 | **640** |
+| **false positives, 30 shuttle-free scenes** | **36 boxes, 10 clean** | 85 boxes, 4 clean | **640** |
+
+**So raising the resolution is not a general improvement: it is a large regression on the two measurements
+that reflect deployment.** The optimal scale is data-dependent, the synthetic sets were generated at 1280 and
+prefer it, and no single scale wins everywhere.
+
+**The release stays at 640**, which is what every published number was taken at, is reproducible, and is
+clearly better on real photographs and real-scene false positives. What this changes is the STATUS of the
+frozen figures: they are not improvable for free by raising resolution, and a consumer should not read them
+as an input-scale artefact.
+
 ## 4. Frozen inference configuration
 
 Unchanged from v1: imgsz 640, confidence 0.05, NMS IoU 0.7 (Ultralytics default), match IoU 0.5, Top-K 5,
