@@ -228,15 +228,55 @@ def _lines_from_manifest(path: Path, role: str, data_root: Path | None) -> list[
         raise ManifestError(
             "manifest must have a file and a split column to be trainable: " + str(path)
         )
-    lines: list[str] = []
+    # Deduplication happens HERE, at row level, because a flattened string list cannot tell "one row
+    # declaring three repeats" from "three rows declaring one each" - the run-length view of the two is
+    # identical. Collapsing per file first, then expanding the declared count, keeps the guard against
+    # accidental duplicates while making a declared repeat mean something.
+    order: list[str] = []
+    counts: dict[str, int] = {}
     for row in rows:
         file_name = str(row.get("file", "") or "").strip()
         sample_id = Path(file_name).stem if file_name else ""
         if not file_name:
             raise DatasetConfigError("manifest row without a file value in " + path.name)
         split = _check_split(sample_id, str(row.get("split", "") or ""), role, path)
-        lines.append(str(_resolve_image(path.parent, data_root, split, file_name)))
-    return lines
+        resolved = str(_resolve_image(path.parent, data_root, split, file_name))
+        repeat = _repeat_of(row, path)
+        if resolved not in counts:
+            counts[resolved] = repeat
+            order.append(resolved)
+        elif counts[resolved] != repeat:
+            raise DatasetConfigError(
+                "manifest declares " + str(counts[resolved]) + " and " + str(repeat)
+                + " repeats for the same image: " + resolved
+            )
+    return [line for line in order for _ in range(counts[line])]
+
+
+def _repeat_of(row: Mapping[str, Any], path: Path) -> int:
+    """How many times a manifest row wants its image in the training list. Default 1.
+
+    Spec 07 section 3.4 requires a difficult-example oversampling comparison, and the first attempt repeated
+    manifest ROWS - which did nothing at all, because _dedupe drops repeated images before the trainer sees
+    them. That guard is correct and stays: it stops an image being silently trained on twice. This column is
+    the explicit alternative, so oversampling is something a manifest DECLARES rather than something a
+    duplicated row does by accident. Both are collapsed to one entry per image by _dedupe_pairs, which also
+    refuses rows that disagree about the count instead of quietly taking one of them.
+    """
+    raw = str(row.get("repeat", "") or "").strip()
+    if not raw:
+        return 1
+    try:
+        value = int(raw)
+    except ValueError:
+        raise DatasetConfigError(
+            "repeat must be a positive integer when present, got " + repr(raw) + " in " + path.name
+        ) from None
+    if value < 1:
+        raise DatasetConfigError(
+            "repeat must be at least 1, got " + repr(value) + " in " + path.name
+        )
+    return value
 
 
 def _lines_from_image_list(path: Path, role: str) -> list[str]:
@@ -309,6 +349,9 @@ def _pool_lines(source: Path | str, role: str, data_root: Path | None) -> list[s
     _assert_no_held_out_paths(role, lines, path)
     if not lines:
         raise DatasetConfigError("the " + role + " pool is empty: " + str(path))
+    if _looks_like_manifest(path):
+        # _lines_from_manifest already deduplicated at row level and applied declared repeats.
+        return lines
     return _dedupe(lines)
 
 

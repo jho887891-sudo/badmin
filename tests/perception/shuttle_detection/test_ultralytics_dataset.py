@@ -109,6 +109,70 @@ def test_image_lists_are_written_next_to_the_yaml(tmp_path):
     assert list_lines(out / "val.txt") == [str(val_image.resolve())]
 
 
+def _write_manifest_with_repeat(tmp_path, repeat):
+    """A trainable manifest whose single positive row declares an explicit repeat count."""
+    image = tmp_path / "images" / "train_00000.jpg"
+    image.parent.mkdir(parents=True, exist_ok=True)
+    image.write_bytes(b"\xff\xd8\xff")
+    image.with_suffix(".txt").write_text("0 0.5 0.5 0.1 0.1\n", encoding="utf-8")
+    manifest = tmp_path / "train_manifest.csv"
+    with manifest.open("w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=["file", "split", "source_type", "repeat"])
+        w.writeheader()
+        w.writerow({"file": image.name, "split": "train", "source_type": "SYNTHETIC_3D",
+                    "repeat": "" if repeat is None else str(repeat)})
+    val = tmp_path / "val_manifest.csv"
+    with val.open("w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=["file", "split", "source_type"])
+        w.writeheader()
+        w.writerow({"file": image.name, "split": "val", "source_type": "SYNTHETIC_3D"})
+    return manifest, val
+
+
+class TestExplicitOversampling:
+    """Spec 07 section 3.4 requires a difficult-example oversampling comparison.
+
+    The first attempt repeated manifest ROWS, and nothing happened: _dedupe removed the repeats before the
+    trainer saw them, because _dedupe exists to stop an image being silently trained on twice. That guard is
+    correct and stays. What this adds is an EXPLICIT, declared repeat count, so oversampling is something a
+    manifest says on purpose rather than something a duplicated row does by accident.
+    """
+
+    def test_a_declared_repeat_appears_that_many_times_in_the_list(self, tmp_path):
+        manifest, val = _write_manifest_with_repeat(tmp_path, 3)
+        out = tmp_path / "out"
+        write_dataset_yaml(out, manifest, val)
+        lines = list_lines(out / "train.txt")
+        assert len(lines) == 3, f"expected 3 entries for repeat=3, got {len(lines)}"
+        assert len(set(lines)) == 1
+
+    def test_no_repeat_column_keeps_one_entry(self, tmp_path):
+        manifest, val = _write_manifest_with_repeat(tmp_path, None)
+        out = tmp_path / "out"
+        write_dataset_yaml(out, manifest, val)
+        assert len(list_lines(out / "train.txt")) == 1
+
+    def test_accidental_duplicate_rows_are_still_collapsed(self, tmp_path):
+        """The guard this feature must NOT remove: three identical rows are one image, not three."""
+        manifest, val = _write_manifest_with_repeat(tmp_path, None)
+        with manifest.open("a", newline="", encoding="utf-8") as fh:
+            w = csv.writer(fh)
+            w.writerow(["train_00000.jpg", "train", "SYNTHETIC_3D", ""])
+            w.writerow(["train_00000.jpg", "train", "SYNTHETIC_3D", ""])
+        out = tmp_path / "out"
+        write_dataset_yaml(out, manifest, val)
+        assert len(list_lines(out / "train.txt")) == 1
+
+    def test_duplicate_rows_disagreeing_on_repeat_are_refused(self, tmp_path):
+        """Silently picking one of two different repeat counts is exactly the kind of quiet wrong answer
+        this module exists to prevent."""
+        manifest, val = _write_manifest_with_repeat(tmp_path, 2)
+        with manifest.open("a", newline="", encoding="utf-8") as fh:
+            csv.writer(fh).writerow(["train_00000.jpg", "train", "SYNTHETIC_3D", "5"])
+        with pytest.raises(DatasetConfigError):
+            write_dataset_yaml(tmp_path / "out", manifest, val)
+
+
 def test_dataset_configuration_never_calls_path_resolve(tmp_path, monkeypatch):
     """Path.resolve() calls lstat/readlink on every path component.
 
