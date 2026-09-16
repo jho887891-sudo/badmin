@@ -155,6 +155,21 @@ All four re-measured here reproduced their earlier values exactly, and the froze
 the tolerance is exact match rather than a band. The same regression command as v1 applies, with
 `manifest_train_os.csv` as the training manifest.
 
+## 7b. Final verification, all five protocols re-measured
+
+| Quantity | Expected | Re-measured |
+|---|---|---|
+| weight sha256 | `61c491206904bba66ee866a8d5b7a45b4b10668c87c07804e2b58e147d74c963` | identical |
+| real photographs precision / recall / mAP50 | 0.800 / 0.800 / 0.768977 | **exact** |
+| frozen P3 precision / recall / mAP50 | 0.226027 / 0.4125 / 0.284195 | **exact** |
+| appearance ladder precision / recall / mAP50 | 0.388724 / 0.552743 / 0.502934 | **exact** |
+| challenge precision / recall / mAP50 | 0.401274 / 0.324742 / 0.286934 | **exact** |
+| controlled matrix precision / recall / mAP50 | 0.349901 / 0.428502 / 0.342986 | **exact** |
+
+Every published number reproduces exactly, which is the property the regression protocol depends on. Test
+suites at the time of freezing: `tests/perception/shuttle_detection` **501 passed**, and the render tool
+suite reports **OK**.
+
 ## 8. Interface
 
 Unchanged from v1 section 6, including the two semantics the spec insists on: an empty result is
