@@ -74,6 +74,13 @@ outputs/shuttle_detection/background_review_sheets/
 outputs/shuttle_capability/hard_negatives/raw/
 outputs/shuttle_capability/hard_negatives2/raw/
 outputs/shuttle_capability/real_train/raw/
+# real match frames sampled from the Badminton-hit-detection rally clips: the manifest and the model's
+# detections are the tracked record, the JPEGs are regenerable with tools/sample_match_frames.py
+outputs/shuttle_capability/real_match_frames/images/
+
+# scratch working areas for third-party downloads (not part of the repository)
+_scratch_drive/
+_scratch_matches/
 
 # superpowers SDD workspaces (plan ledgers, briefs, review packages)
 .superpowers/
