@@ -81,6 +81,12 @@ outputs/shuttle_capability/real_match_frames/images/
 # scratch working areas for third-party downloads (not part of the repository)
 _scratch_drive/
 _scratch_matches/
+_scratch_rf/
+
+# frozen test-set imagery: bulk PNGs, ignored like every other image pool in this repository. The tracked
+# records are the split manifests under outputs/shuttle_capability/metrics/.
+outputs/shuttle_capability/synthetic_on_real_bg/
+outputs/shuttle_capability/real_video/
 
 # superpowers SDD workspaces (plan ledgers, briefs, review packages)
 .superpowers/
