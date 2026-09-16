@@ -1,5 +1,9 @@
 # Plan 5 requirement mapping, rebuilt on the deployment-aligned curve (v2)
 
+Release: `shuttle-detector-v2-2026-09-15`, weight sha256 `61c491206904bba66ee866a8d5b7a45b4b10668c87c07804e2b58e147d74c963`,
+taken at imgsz 640. The curve below is the appearance-aligned holdout ladder, not the numpy-rendered controlled
+matrix, for the reason in section 2.
+
 Supersedes the first version of `PLAN5_REQUIREMENT_MAPPING.md`, and the change is the point.
 
 ## 1. The useful working distance bands, v2
