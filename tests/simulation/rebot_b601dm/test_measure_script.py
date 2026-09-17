@@ -71,3 +71,21 @@ class TestTheRecordSurvivesTheAppClose:
         flush_at = text.index("sys.stdout.flush()")
         close_at = text.index("app.close()")
         assert flush_at < close_at
+
+
+class TestItRefusesToReportASelfDefeatingMeasurement:
+    def test_it_does_not_zero_the_velocity_it_then_reads(self):
+        """The broken first version set velocities to zero, stepped, and read them back: it measured 0.086
+        rad/s against a 20.94 rad/s command and passed its own bound because the number was near zero."""
+        text = SCRIPT.read_text(encoding="utf-8")
+        assert "set_joint_velocities([0.0]" not in text, "zeroing the measured quantity is the bug"
+        assert "set_joint_velocity_targets" in text, "the joint must be driven, not teleported"
+
+    def test_it_refuses_a_near_zero_result(self):
+        text = SCRIPT.read_text(encoding="utf-8")
+        assert "under 5 percent" in text or "0.05 *" in text
+        assert "No record written" in text or "no record written" in text
+
+    def test_the_torque_ceiling_is_recorded_with_the_result(self):
+        text = SCRIPT.read_text(encoding="utf-8")
+        assert "torque_ceiling_nm" in text

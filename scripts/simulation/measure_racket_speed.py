@@ -40,6 +40,10 @@ from src.simulation.rebot_b601dm.speed_bound import (  # noqa: E402
 
 ARM_JOINTS = ("joint1", "joint2", "joint3", "joint4", "joint5", "joint6")
 
+# A generous ceiling used only to make the ramp visible: the point is to observe how fast the joint can reach
+# its velocity target under a torque limit, not to stress the drive model. Recorded with the result.
+ABSOLUTE_TORQUE_LIMIT_NM = 27.0
+
 
 def parse_args(argv=None):
     p = argparse.ArgumentParser(description="Torque-limited swing measurement")
@@ -91,32 +95,56 @@ def drive_and_measure(args) -> dict:
     stage = get_current_stage()
     drive = UsdPhysics.DriveAPI.Get(stage.GetPrimAtPath("/World/reBot"), "angular")
 
+    # DRIVE THE JOINT, DO NOT TELEPORT IT.
+    #
+    # The first version set the joint positions directly and then zeroed the velocities before stepping, and
+    # read the velocities back afterwards. That measured a joint it had just told to stop: the commanded rate
+    # was 20.94 rad/s and the "achieved" rate came back at 0.086 rad/s, 244 times smaller, with a peak flange
+    # speed of 0.066 m/s. The record was written and it passed its own bound trivially, because the number was
+    # near zero. It was not a measurement of anything.
+    #
+    # What is measured here instead: the joint is given a VELOCITY TARGET and a torque ceiling, and the
+    # simulation integrates what actually happens. The achieved velocity is then a consequence of the motors
+    # against the arm's own inertia, which is the question worth asking.
+    torque = [0.0] * len(dof_names)
+    torque[target_index] = ABSOLUTE_TORQUE_LIMIT_NM
     samples = []
     period = 1.0 / args.hz
     deadline = time.time() + args.seconds
-    commanded = 0.0
+    t0 = time.time()
     while time.time() < deadline:
-        commanded += target_rate * period
-        positions = robot.get_joint_positions()
-        positions[target_index] = commanded
-        robot.set_joint_positions(positions)
-        robot.set_joint_velocities([0.0] * len(dof_names))
+        targets = [0.0] * len(dof_names)
+        targets[target_index] = target_rate
+        robot.set_joint_velocity_targets(targets)
+        robot.set_joint_efforts(torque)
         world.step(render=False)
 
         vel = robot.get_joint_velocities()
         reached = float(vel[target_index])
         tip = reached * 0.767  # reach; see speed_bound.REACH_M
-        samples.append({"t": time.time() - (deadline - args.seconds), "joint_rate": reached, "flange_m_s": tip})
+        samples.append({"t": time.time() - t0, "joint_rate": reached, "flange_m_s": tip})
         time.sleep(period)
 
     peak_joint = max(abs(s["joint_rate"]) for s in samples) if samples else 0.0
     peak_flange = max(abs(s["flange_m_s"]) for s in samples) if samples else 0.0
+    # A near-zero result means the drive was not actually driven, which is what the broken first version
+    # produced. Refusing to write a record in that case is better than writing one that passes its bound for
+    # the wrong reason.
+    if peak_joint < 0.05 * abs(target_rate):
+        raise RuntimeError(
+            "the joint reached only {:.4f} rad/s against a target of {:.2f} rad/s, under 5 percent. That is "
+            "not a measurement of the arm; it means the drive was not driven. No record written.".format(
+                peak_joint, target_rate
+            )
+        )
+
     measured = {
         "samples": len(samples),
         "peak_joint_rate_rad_s": peak_joint,
         "peak_flange_m_s": peak_flange,
         "commanded_rate_rad_s": target_rate,
         "target_joint": args.target_joint,
+        "torque_ceiling_nm": ABSOLUTE_TORQUE_LIMIT_NM,
         "joints_seen": dof_names,
     }
 
