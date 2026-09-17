@@ -88,5 +88,10 @@ _scratch_rf/
 outputs/shuttle_capability/synthetic_on_real_bg/
 outputs/shuttle_capability/real_video/
 
+# generated simulation assets: only the 14 MB binary geometry payload is ignored. The patched TEXT files
+# (physics/physx .usda), the stage entry point and PATCH_NOTES.md are the record of what changed and stay
+# tracked; the binary is regenerable from the upstream repo via src/simulation/rebot_b601dm/patch_asset.py
+outputs/simulation/rebot_b601dm/*/payloads/geometries.usd
+
 # superpowers SDD workspaces (plan ledgers, briefs, review packages)
 .superpowers/
