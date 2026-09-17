@@ -1,0 +1,217 @@
+# reBot B601-DM joint limits, mirroring src/simulation/rebot_b601dm/joint_limits.py.
+#
+# GENERATED - edit the Python table and regenerate; a test asserts the two agree.
+#
+# Every value carries `provenance` and, unless UNKNOWN, a `source`. A value tagged SIM_ONLY may not be
+# used to support a capability claim: the shipped asset permits 9.09x and 9.55x the real motor speeds
+# because the real rpm figures were used as rad/s.
+#
+# Candidate arm only: see management/rebot_b601dm/ARM_IDENTITY_DECISION.md. PiPER keeps the project
+# identity until this arm passes the Task 8 gates.
+
+robot: reBot_B601_DM
+identity: test_bench_candidate_arm
+reach_m: 0.767          # README_zh.md:176, B601-DM maximum
+payload_kg: 1.5         # README_zh.md:174
+recommended_radius_fraction: 0.70    # Performance_Testing_zh.md:86
+recommended_speed_fraction: 0.70     # Performance_Testing_zh.md:87
+mass_kg: 4.5            # README_zh.md:177, approximate
+
+# An experiment must record which torque convention it ran under. The shipped asset and the URDF carry
+# PEAK torques (27 and 7 N m) while the rated figures are 9 and 3 N m - a factor of three. The default
+# here is the conservative one, and resolve_torque_limit refuses to guess when asked without one.
+torque_convention:
+  default: rated
+  allowed: [peak, rated]
+  peak_torque_nm: {DM4340P: 27.0, DM4310: 7.0}    # what the shipped asset carries
+  rated_torque_nm: {DM4340P: 9.0, DM4310: 3.0}    # what the motor can sustain
+
+motors:
+  DM4340P:
+    rated_torque_nm: 9.0
+    peak_torque_nm: 27.0
+    no_load_rpm: 52.5
+    rated_rpm: 36.0
+    reduction_ratio: 40
+    provenance: CONFIRMED_REAL
+    source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1)
+    caveat: official table documents -2EC; the BOM specifies V4
+  DM4310:
+    rated_torque_nm: 3.0
+    peak_torque_nm: 7.0
+    no_load_rpm: 200.0
+    rated_rpm: 120.0
+    reduction_ratio: 10
+    provenance: CONFIRMED_REAL
+    source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1)
+    caveat: official table documents -2EC; the BOM specifies V4
+
+joints:
+  joint1:
+    kind: revolute
+    motor: DM4340P
+    reduction_ratio: 40
+    angle:
+      value: null
+      provenance: UNKNOWN
+      lower: -2.8
+      upper: 2.8
+    velocity:
+      value: 5.4977871
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) no-load 52.5 rpm
+      sim_value: 50.0
+      sim_overshoot: 9.0946
+    torque:
+      value: 27.0
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) peak
+      sim_value: 27.0
+      rated: 9.0
+      is_peak: true
+  joint2:
+    kind: revolute
+    motor: DM4340P
+    reduction_ratio: 40
+    angle:
+      value: null
+      provenance: UNKNOWN
+      lower: -3.14
+      upper: 0.0
+    velocity:
+      value: 5.4977871
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) no-load 52.5 rpm
+      sim_value: 50.0
+      sim_overshoot: 9.0946
+    torque:
+      value: 27.0
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) peak
+      sim_value: 27.0
+      rated: 9.0
+      is_peak: true
+  joint3:
+    kind: revolute
+    motor: DM4340P
+    reduction_ratio: 40
+    angle:
+      value: null
+      provenance: UNKNOWN
+      lower: -3.14
+      upper: 0.0
+    velocity:
+      value: 5.4977871
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) no-load 52.5 rpm
+      sim_value: 50.0
+      sim_overshoot: 9.0946
+    torque:
+      value: 27.0
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) peak
+      sim_value: 27.0
+      rated: 9.0
+      is_peak: true
+  joint4:
+    kind: revolute
+    motor: DM4310
+    reduction_ratio: 10
+    angle:
+      value: null
+      provenance: UNKNOWN
+      lower: -1.87
+      upper: 1.57
+    velocity:
+      value: 20.943951
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) no-load 200.0 rpm
+      sim_value: 200.0
+      sim_overshoot: 9.5493
+    torque:
+      value: 7.0
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) peak
+      sim_value: 7.0
+      rated: 3.0
+      is_peak: true
+  joint5:
+    kind: revolute
+    motor: DM4310
+    reduction_ratio: 10
+    angle:
+      value: null
+      provenance: UNKNOWN
+      lower: -1.57
+      upper: 1.57
+    velocity:
+      value: 20.943951
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) no-load 200.0 rpm
+      sim_value: 200.0
+      sim_overshoot: 9.5493
+    torque:
+      value: 7.0
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) peak
+      sim_value: 7.0
+      rated: 3.0
+      is_peak: true
+  joint6:
+    kind: revolute
+    motor: DM4310
+    reduction_ratio: 10
+    angle:
+      value: null
+      provenance: UNKNOWN
+      lower: -3.14
+      upper: 3.14
+    velocity:
+      value: 20.943951
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) no-load 200.0 rpm
+      sim_value: 200.0
+      sim_overshoot: 9.5493
+    torque:
+      value: 7.0
+      provenance: CONFIRMED_REAL
+      source: SeeedStudio damiao_series table (J4340-2EC / J4310-2EC V1.1) peak
+      sim_value: 7.0
+      rated: 3.0
+      is_peak: true
+  gripper_joint1:
+    kind: prismatic
+    motor: DM4310
+    reduction_ratio: 10
+    angle:
+      value: null
+      provenance: UNKNOWN
+      lower: 0.0
+      upper: 0.0715
+    velocity:
+      value: null
+      provenance: SIM_ONLY
+      source: reBot-Isaacsim/urdf/reBot_B601_DM/urdf/reBot_B601_DM.urdf limit velocity 15 (simulation only, no hardware source)
+      sim_value: 15.0
+    torque:
+      value: null
+      provenance: UNKNOWN
+      sim_value: 100.0
+  gripper_joint2:
+    kind: prismatic
+    motor: DM4310
+    reduction_ratio: 10
+    angle:
+      value: null
+      provenance: UNKNOWN
+      lower: 0.0
+      upper: 0.0715
+    velocity:
+      value: null
+      provenance: SIM_ONLY
+      source: reBot-Isaacsim/urdf/reBot_B601_DM/urdf/reBot_B601_DM.urdf limit velocity 15 (simulation only, no hardware source)
+      sim_value: 15.0
+    torque:
+      value: null
+      provenance: UNKNOWN
+      sim_value: 100.0
