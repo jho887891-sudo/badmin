@@ -52,3 +52,22 @@ class TestTheCliIsUsable:
         r = subprocess.run([sys.executable, str(SCRIPT), "--asset", "/tmp/x.usda", "--variant", "nope"],
                            capture_output=True, timeout=120, cwd=".")
         assert r.returncode != 0
+
+
+class TestTheRecordSurvivesTheAppClose:
+    def test_the_record_is_written_before_the_app_is_closed(self):
+        """SimulationApp.close() ends the process, so anything after it never runs.
+
+        The first real run of this script started the app, ran the swing, closed, exited rc=0 and wrote no
+        record at all, for exactly this reason. The ordering is therefore asserted structurally.
+        """
+        text = SCRIPT.read_text(encoding="utf-8")
+        write_at = text.index("args.out")
+        close_at = text.index("app.close()")
+        assert write_at < close_at, "the record must be written before close() terminates the process"
+
+    def test_it_flushes_before_closing(self):
+        text = SCRIPT.read_text(encoding="utf-8")
+        flush_at = text.index("sys.stdout.flush()")
+        close_at = text.index("app.close()")
+        assert flush_at < close_at

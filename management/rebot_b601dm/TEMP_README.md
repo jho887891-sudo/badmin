@@ -12,13 +12,13 @@ number that exists but was not obtained. UNKNOWN means no source was found at al
 
 | Motor | Model | Modelled | Official | Ratio | Status | Source |
 |---|---|---|---|---|---|---|
-| `motor1` | DM4340P | absent | 362 g | - | `UNKNOWN` | `absent from _scratch_rebot/reBot-Isaacsim/urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv` |
-| `motor2` | DM4340P | 256.9 g | 362 g | 0.71x | `TEMP_PARAMETERIZED_PROXY` | `_scratch_rebot/reBot-Isaacsim/urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv (CAD export)` |
-| `motor3` | DM4340P | 99.0 g | 362 g | 0.27x | `TEMP_PARAMETERIZED_PROXY` | `_scratch_rebot/reBot-Isaacsim/urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv (CAD export)` |
-| `motor4` | DM4310 | 99.0 g | 300 g | 0.33x | `TEMP_PARAMETERIZED_PROXY` | `_scratch_rebot/reBot-Isaacsim/urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv (CAD export)` |
-| `motor5` | DM4310 | 99.0 g | 300 g | 0.33x | `TEMP_PARAMETERIZED_PROXY` | `_scratch_rebot/reBot-Isaacsim/urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv (CAD export)` |
-| `motor6` | DM4310 | absent | 300 g | - | `UNKNOWN` | `absent from _scratch_rebot/reBot-Isaacsim/urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv` |
-| `motor7` | DM4310 | 99.0 g | 300 g | 0.33x | `TEMP_PARAMETERIZED_PROXY` | `_scratch_rebot/reBot-Isaacsim/urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv (CAD export)` |
+| `motor1` | DM4340P | absent | 362 g | - | `UNKNOWN` | `absent from urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv` |
+| `motor2` | DM4340P | 256.9 g | 362 g | 0.71x | `TEMP_PARAMETERIZED_PROXY` | `urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv (CAD export)` |
+| `motor3` | DM4340P | 99.0 g | 362 g | 0.27x | `TEMP_PARAMETERIZED_PROXY` | `urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv (CAD export)` |
+| `motor4` | DM4310 | 99.0 g | 300 g | 0.33x | `TEMP_PARAMETERIZED_PROXY` | `urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv (CAD export)` |
+| `motor5` | DM4310 | 99.0 g | 300 g | 0.33x | `TEMP_PARAMETERIZED_PROXY` | `urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv (CAD export)` |
+| `motor6` | DM4310 | absent | 300 g | - | `UNKNOWN` | `absent from urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv` |
+| `motor7` | DM4310 | 99.0 g | 300 g | 0.33x | `TEMP_PARAMETERIZED_PROXY` | `urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv (CAD export)` |
 
 ### The size of it
 

@@ -110,3 +110,39 @@ def test_temp_readme_is_current():
     )
     after = path.read_text(encoding="utf-8")
     assert before == after, "TEMP_README.md is stale; regenerate it"
+
+
+class TestItWorksWhereTheRepositoryIsLaidOutDifferently:
+    """The first version hardcoded the local scratch layout and failed on the host.
+
+    The failure only appeared when the code ran where the asset actually is: local tests passed because
+    _scratch_rebot happened to exist. These tests pin the behaviour that makes it layout-independent.
+    """
+
+    def test_the_audit_is_produced_even_with_no_upstream_tree(self, monkeypatch):
+        from src.simulation.rebot_b601dm import motor_mass as mm
+
+        monkeypatch.setattr(mm, "_UPSTREAM_CANDIDATES", ("/nonexistent/one", "/nonexistent/two"))
+        audit = mm.motor_mass_audit()
+        assert audit["modelled_arm_mass_kg"] == pytest.approx(mm.RECORDED_ARM_MASS_KG)
+        assert audit["motor_deficit_g"] > 0
+
+    def test_the_fallback_value_matches_what_was_read(self):
+        from src.simulation.rebot_b601dm import motor_mass as mm
+
+        if mm.upstream_root() is None:
+            pytest.skip("upstream tree absent, nothing to compare against")
+        assert mm.modelled_arm_mass_kg() == pytest.approx(mm.RECORDED_ARM_MASS_KG, abs=0.01)
+
+    def test_the_environment_can_point_at_the_tree(self, monkeypatch, tmp_path):
+        from src.simulation.rebot_b601dm import motor_mass as mm
+
+        monkeypatch.setattr(mm, "_UPSTREAM_CANDIDATES", (str(tmp_path),))
+        assert mm.upstream_root() is None, "a directory without the URDF must not be accepted"
+
+    def test_the_host_layout_is_among_the_candidates(self):
+        from src.simulation.rebot_b601dm import motor_mass as mm
+
+        joined = " ".join(mm._UPSTREAM_CANDIDATES)
+        assert "reBot-Isaacsim" in joined
+        assert "/home/T7/dgut/robot_sim/reBot-Isaacsim" in joined, "the host layout must be tried"

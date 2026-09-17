@@ -109,17 +109,43 @@ def drive_and_measure(args) -> dict:
         samples.append({"t": time.time() - (deadline - args.seconds), "joint_rate": reached, "flange_m_s": tip})
         time.sleep(period)
 
-    app.close()
-
     peak_joint = max(abs(s["joint_rate"]) for s in samples) if samples else 0.0
     peak_flange = max(abs(s["flange_m_s"]) for s in samples) if samples else 0.0
-    return {
+    measured = {
         "samples": len(samples),
         "peak_joint_rate_rad_s": peak_joint,
         "peak_flange_m_s": peak_flange,
         "commanded_rate_rad_s": target_rate,
         "target_joint": args.target_joint,
+        "joints_seen": dof_names,
     }
+
+    # EVERYTHING THAT MUST SURVIVE IS FINISHED BEFORE close().
+    #
+    # SimulationApp.close() shuts down Kit and the process ends with it, so code placed after it never runs.
+    # The first real run of this script started the app successfully, ran the swing, closed, exited rc=0, and
+    # wrote no record at all for exactly that reason - the record was built after the close.
+    record = experiment_record(
+        limit_variant=args.variant,
+        torque_convention=args.torque_convention,
+        duty_cycle=DEFAULT_DUTY_CYCLE,
+        measured_peak_m_s=peak_flange,
+    )
+    record["measurement"] = measured
+    record["note"] = (
+        "flange speed, not racket head. The racket adds a moment arm beyond the flange, so the racket head "
+        "moves faster; racket length and mass are parameters, not assumptions."
+    )
+    text = json.dumps(record, indent=2)
+    print(text[:2500], flush=True)
+    if args.out:
+        Path(args.out).write_text(text, encoding="utf-8")
+        print("[swing] record written to " + str(args.out), flush=True)
+    sys.stdout.flush()
+    sys.stderr.flush()
+
+    app.close()
+    return record
 
 
 def main(argv=None) -> int:
@@ -128,22 +154,7 @@ def main(argv=None) -> int:
     print("[swing] variant : " + args.variant, flush=True)
     print("[swing] duty    : " + str(DEFAULT_DUTY_CYCLE), flush=True)
     print("[swing] starting Isaac Sim; this host has taken ~24 minutes", flush=True)
-
-    measured = drive_and_measure(args)
-    record = experiment_record(
-        limit_variant=args.variant,
-        torque_convention=args.torque_convention,
-        duty_cycle=DEFAULT_DUTY_CYCLE,
-        measured_peak_m_s=measured["peak_flange_m_s"],
-    )
-    record["measurement"] = measured
-    record["note"] = (
-        "flange speed, not racket head. The racket adds a moment arm beyond the flange, so the racket head "
-        "moves faster; racket length and mass are parameters, not assumptions."
-    )
-    print(json.dumps(record, indent=2)[:2000], flush=True)
-    if args.out:
-        Path(args.out).write_text(json.dumps(record, indent=2), encoding="utf-8")
+    drive_and_measure(args)
     return 0
 
 

@@ -22,9 +22,27 @@ import csv
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-URDF_REL = "_scratch_rebot/reBot-Isaacsim/urdf/reBot_B601_DM/urdf/reBot_B601_DM.urdf"
-CSV_REL = "_scratch_rebot/reBot-Isaacsim/urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv"
-REPO_REL = "_scratch_rebot/reBot-Isaacsim"
+# WHERE THE UPSTREAM TREE MIGHT BE.
+#
+# The first version hardcoded the local development layout, "_scratch_rebot/reBot-Isaacsim", which exists on
+# the workstation and NOT on the host, where the repository sits at "/home/T7/dgut/robot_sim/reBot-Isaacsim".
+# Local tests passed because the path happened to be there; the failure only appeared when the code ran where
+# the asset actually is. Path resolution therefore tries several layouts, and the environment can override.
+import os as _os
+
+_UPSTREAM_CANDIDATES = (
+    _os.environ.get("REBOT_UPSTREAM", ""),
+    "reBot-Isaacsim",
+    "_scratch_rebot/reBot-Isaacsim",
+    "/home/T7/dgut/robot_sim/reBot-Isaacsim",
+)
+
+URDF_REL = "urdf/reBot_B601_DM/urdf/reBot_B601_DM.urdf"
+CSV_REL = "urdf/reBot_B601_DM/urdf/reBot_B601_DM.csv"
+
+# The value read from the CAD export on 2026-09-17, recorded so the audit can still be produced where the
+# upstream tree is absent. modelled_arm_mass_kg() reads the URDF when it can and falls back to this.
+RECORDED_ARM_MASS_KG = 2.7445
 
 # Measured from the CAD export. Kept here so the audit is reproducible without the repository present.
 CAD_MOTOR_MASSES_G = {
@@ -54,13 +72,37 @@ MISSING_MOTORS = {"motor1": "DM4340P", "motor6": "DM4310"}
 SPECIFIED_ARM_MASS_KG = 4.5  # README_zh.md:177, "约 4.5 kg"
 
 
+def upstream_root() -> Path | None:
+    """The first upstream repository layout that exists here, or None."""
+    for candidate in _UPSTREAM_CANDIDATES:
+        if not candidate:
+            continue
+        p = Path(candidate)
+        if (p / URDF_REL).is_file():
+            return p
+    return None
+
+
 def _urdf_path() -> Path:
-    return Path(URDF_REL)
+    root = upstream_root()
+    if root is None:
+        raise FileNotFoundError(
+            "reBot-Isaacsim not found in any known layout: " + ", ".join(c for c in _UPSTREAM_CANDIDATES if c)
+        )
+    return root / URDF_REL
 
 
 def modelled_arm_mass_kg() -> float:
-    """Sum of the URDF link masses."""
-    root = ET.parse(_urdf_path()).getroot()
+    """Sum of the URDF link masses, or the recorded value when the upstream tree is not present.
+
+    Reading the source is preferred, because it is the thing being audited. The fallback exists because the
+    audit is also needed by code that runs where the repository is not laid out the same way, and refusing to
+    produce it there would be worse than using a value that was verified when it was read.
+    """
+    try:
+        root = ET.parse(_urdf_path()).getroot()
+    except FileNotFoundError:
+        return RECORDED_ARM_MASS_KG
     total = 0.0
     for link in root.findall("link"):
         ine = link.find("inertial")
