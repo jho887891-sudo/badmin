@@ -6,9 +6,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(".").resolve()))
 from src.simulation.rebot_b601dm.motor_mass import motor_mass_audit
+from src.simulation.rebot_b601dm.racket import racket_mass_properties
 
 BT = chr(96)
 a = motor_mass_audit()
+_rp = racket_mass_properties()
 
 
 def code(text: str) -> str:
@@ -87,8 +89,8 @@ lines += [
     " 15 rad/s and 100 N; no hardware source exists. Left at the shipped values, never substituted. |",
     "| Motor speed and torque figures | partly real | Real per the official table, but that table documents"
     " the -2EC variants while the BOM specifies V4. Peak torques agree, so same family; V4 data not found. |",
-    "| Racket mass and inertia | " + code("UNKNOWN") + " | Not yet attached. An asset exists at "
-    + code("assets/external/_staging/D_racket_shuttle/") + ", its properties are not established. |",
+    "| Racket mass and inertia | " + code(_rp["status"]) + " | " + _rp["source"] + ". " + _rp["note"]
+    + " Needs: " + "; ".join(_rp["requires"]) + " |",
     "",
     "---",
     "",

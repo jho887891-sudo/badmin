@@ -60,7 +60,7 @@ OVERESTIMATE, and the Task 8 plausibility gate must be read with that in mind.
 | Joint angle limits, J1-J6 | `UNKNOWN` | No hardware document in either repository states a joint range. The URDF has values, but the URDF is simulation. Enforced in code: `limits_for(joint, require_real=True)` raises. |
 | Gripper velocity and force | `SIM_ONLY` / `UNKNOWN` | The URDF declares 15 rad/s and 100 N; no hardware source exists. Left at the shipped values, never substituted. |
 | Motor speed and torque figures | partly real | Real per the official table, but that table documents the -2EC variants while the BOM specifies V4. Peak torques agree, so same family; V4 data not found. |
-| Racket mass and inertia | `UNKNOWN` | Not yet attached. An asset exists at `assets/external/_staging/D_racket_shuttle/`, its properties are not established. |
+| Racket mass and inertia | `UNKNOWN` | none; the asset is a mesh with no inertial data. racket mass and inertia directly determine racket-head speed, so an invented value here would make every speed measured with it uninterpretable. Left unknown deliberately. Needs: mass of the actual racket to be used, weighed, in kg; the inertia tensor about its centre of mass, or the geometry and density to compute it; the transform from the flange to the racket centre of mass, which sets the moment arm |
 
 ---
 
