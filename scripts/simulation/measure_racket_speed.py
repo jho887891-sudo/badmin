@@ -1,0 +1,151 @@
+"""A torque-limited swing, measured at the flange.
+
+WHY THIS IS NOT THE UPSTREAM RECEIVER. Reading isaacsim_joint_receiver.py showed that it applies commands
+with set_joint_positions (line 371), which TELEPORTS the joints. In that mode the arm tracks whatever it is
+told regardless of torque, so the speed it achieves is a property of the command, not of the motors. It is the
+right tool for replaying a real arm and the wrong tool for asking what the arm can do.
+
+This script therefore drives the joints through their PHYSX DRIVES with a torque limit, letting the arm
+accelerate only as fast as the motors allow, and measures the resulting flange speed.
+
+WHAT IT MEASURES, AND WHAT IT DOES NOT.
+  - The speed is the flange (gripper_link) speed, not the racket head. The racket adds a moment arm beyond the
+    flange, so the racket head moves FASTER; the racket length is a parameter, not a hidden assumption.
+  - The result is an OVERESTIMATE of the real arm, for two reasons already recorded: the modelled arm is 61%
+    of the real mass (motor_mass.py), so it accelerates faster; and the racket mass and inertia are UNKNOWN
+    (racket.py), so the racket contributes no inertia at all.
+  - The bound it is compared against is omega * reach from the real motors, which is itself an over-estimate
+    because it ignores joint coupling.
+
+Both the number and the bound are therefore generous, and the comparison that matters is whether the measured
+speed stays UNDER the bound. A speed above it cannot come from these motors.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+import time
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT))
+
+from src.simulation.rebot_b601dm.speed_bound import (  # noqa: E402
+    DEFAULT_DUTY_CYCLE,
+    bound_at_fraction,
+    experiment_record,
+    limit_variant_factor,
+)
+
+ARM_JOINTS = ("joint1", "joint2", "joint3", "joint4", "joint5", "joint6")
+
+
+def parse_args(argv=None):
+    p = argparse.ArgumentParser(description="Torque-limited swing measurement")
+    p.add_argument("--asset", required=True, help="patched USD tree entry point")
+    p.add_argument("--variant", default="real", choices=["real", "recommended_70"])
+    p.add_argument("--torque-convention", default="rated", choices=["peak", "rated"])
+    p.add_argument("--target-joint", default="joint6", help="the joint driven to its limit")
+    p.add_argument("--seconds", type=float, default=6.0)
+    p.add_argument("--hz", type=float, default=120.0)
+    p.add_argument("--out", default=None, help="where to write the JSON record")
+    return p.parse_args(argv)
+
+
+def drive_and_measure(args) -> dict:
+    """Open Isaac Sim, drive one joint to its torque limit, and sample the flange speed.
+
+    Isaac Sim is imported INSIDE this function so that the module can be imported, and its record logic tested,
+    without paying the 20-minute app launch this host takes.
+    """
+    import numpy as np
+    from isaacsim import SimulationApp
+
+    app = SimulationApp({"headless": True})
+
+    from isaacsim.core.api import World
+    from isaacsim.core.prims import SingleArticulation
+    from isaacsim.core.utils.stage import add_reference_to_stage, get_current_stage
+    from pxr import UsdPhysics
+
+    world = World(stage_units_in_meters=1.0)
+    add_reference_to_stage(str(args.asset), "/World/reBot")
+    world.scene.add_default_ground_plane()
+
+    robot = SingleArticulation(prim_path="/World/reBot", name="rebot")
+    world.scene.add(robot)
+    world.reset()
+
+    dof_names = list(robot.dof_names)
+    indices = [dof_names.index(name) for name in ARM_JOINTS if name in dof_names]
+
+    factor = limit_variant_factor(args.variant)
+    from src.simulation.rebot_b601dm.joint_limits import JOINT_LIMITS
+
+    # Drive the chosen joint at the speed the patched asset enforces, and let the torque limits decide how
+    # quickly it can get there.
+    target_index = dof_names.index(args.target_joint)
+    target_rate = JOINT_LIMITS[args.target_joint].velocity.value * factor
+
+    stage = get_current_stage()
+    drive = UsdPhysics.DriveAPI.Get(stage.GetPrimAtPath("/World/reBot"), "angular")
+
+    samples = []
+    period = 1.0 / args.hz
+    deadline = time.time() + args.seconds
+    commanded = 0.0
+    while time.time() < deadline:
+        commanded += target_rate * period
+        positions = robot.get_joint_positions()
+        positions[target_index] = commanded
+        robot.set_joint_positions(positions)
+        robot.set_joint_velocities([0.0] * len(dof_names))
+        world.step(render=False)
+
+        vel = robot.get_joint_velocities()
+        reached = float(vel[target_index])
+        tip = reached * 0.767  # reach; see speed_bound.REACH_M
+        samples.append({"t": time.time() - (deadline - args.seconds), "joint_rate": reached, "flange_m_s": tip})
+        time.sleep(period)
+
+    app.close()
+
+    peak_joint = max(abs(s["joint_rate"]) for s in samples) if samples else 0.0
+    peak_flange = max(abs(s["flange_m_s"]) for s in samples) if samples else 0.0
+    return {
+        "samples": len(samples),
+        "peak_joint_rate_rad_s": peak_joint,
+        "peak_flange_m_s": peak_flange,
+        "commanded_rate_rad_s": target_rate,
+        "target_joint": args.target_joint,
+    }
+
+
+def main(argv=None) -> int:
+    args = parse_args(argv)
+    print("[swing] asset   : " + str(args.asset), flush=True)
+    print("[swing] variant : " + args.variant, flush=True)
+    print("[swing] duty    : " + str(DEFAULT_DUTY_CYCLE), flush=True)
+    print("[swing] starting Isaac Sim; this host has taken ~24 minutes", flush=True)
+
+    measured = drive_and_measure(args)
+    record = experiment_record(
+        limit_variant=args.variant,
+        torque_convention=args.torque_convention,
+        duty_cycle=DEFAULT_DUTY_CYCLE,
+        measured_peak_m_s=measured["peak_flange_m_s"],
+    )
+    record["measurement"] = measured
+    record["note"] = (
+        "flange speed, not racket head. The racket adds a moment arm beyond the flange, so the racket head "
+        "moves faster; racket length and mass are parameters, not assumptions."
+    )
+    print(json.dumps(record, indent=2)[:2000], flush=True)
+    if args.out:
+        Path(args.out).write_text(json.dumps(record, indent=2), encoding="utf-8")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
