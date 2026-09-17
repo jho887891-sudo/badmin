@@ -4,6 +4,7 @@ from pathlib import Path
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 sys.path.insert(0, str(Path(".").resolve()))
 from src.simulation.rebot_b601dm.joint_limits import JOINT_LIMITS, MOTOR_ASSIGNMENT, Provenance
+from src.simulation.rebot_b601dm.torque_convention import DEFAULT_TORQUE_CONVENTION
 
 def render(value):
     return "null" if value is None else repr(round(value, 7))
@@ -27,6 +28,15 @@ lines = [
     "recommended_radius_fraction: 0.70    # Performance_Testing_zh.md:86",
     "recommended_speed_fraction: 0.70     # Performance_Testing_zh.md:87",
     "mass_kg: 4.5            # README_zh.md:177, approximate",
+    "",
+    "# An experiment must record which torque convention it ran under. The shipped asset and the URDF carry",
+    "# PEAK torques (27 and 7 N m) while the rated figures are 9 and 3 N m - a factor of three. The default",
+    "# here is the conservative one, and resolve_torque_limit refuses to guess when asked without one.",
+    "torque_convention:",
+    "  default: {}".format(DEFAULT_TORQUE_CONVENTION.value),
+    "  allowed: [peak, rated]",
+    "  peak_torque_nm: {DM4340P: 27.0, DM4310: 7.0}    # what the shipped asset carries",
+    "  rated_torque_nm: {DM4340P: 9.0, DM4310: 3.0}    # what the motor can sustain",
     "",
     "motors:",
 ]

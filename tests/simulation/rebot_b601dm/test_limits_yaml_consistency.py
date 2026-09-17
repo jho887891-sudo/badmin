@@ -60,3 +60,20 @@ def test_the_yaml_names_the_unknowns(cfg):
     assert len(unknown) >= 6, "the six arm joints have no hardware angle source"
     for name in ("joint1", "joint4"):
         assert cfg["joints"][name]["angle"]["provenance"] == "UNKNOWN"
+
+
+def test_yaml_declares_the_torque_convention(cfg):
+    """The convention must be in the config, not only in code, so a reader of the asset sees it."""
+    block = cfg["torque_convention"]
+    assert block["default"] == "rated", "the conservative convention is the project default"
+    assert set(block["allowed"]) == {"peak", "rated"}
+    assert block["peak_torque_nm"]["DM4340P"] == 27.0
+    assert block["rated_torque_nm"]["DM4340P"] == 9.0
+    assert block["peak_torque_nm"]["DM4310"] == 7.0
+    assert block["rated_torque_nm"]["DM4310"] == 3.0
+
+
+def test_the_yaml_default_agrees_with_the_code_default(cfg):
+    from src.simulation.rebot_b601dm.torque_convention import DEFAULT_TORQUE_CONVENTION
+
+    assert cfg["torque_convention"]["default"] == DEFAULT_TORQUE_CONVENTION.value
