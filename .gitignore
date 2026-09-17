@@ -82,6 +82,11 @@ outputs/shuttle_capability/real_match_frames/images/
 _scratch_drive/
 _scratch_matches/
 _scratch_rf/
+_scratch_rebot/
+
+# scratch shell/python probes written during investigation; never part of the deliverable
+_scratch_*.sh
+_scratch_*.py
 
 # frozen test-set imagery: bulk PNGs, ignored like every other image pool in this repository. The tracked
 # records are the split manifests under outputs/shuttle_capability/metrics/.
