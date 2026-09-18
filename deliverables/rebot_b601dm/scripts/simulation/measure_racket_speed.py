@@ -31,18 +31,27 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
+from src.simulation.rebot_b601dm.joint_limits import JOINT_LIMITS  # noqa: E402
 from src.simulation.rebot_b601dm.speed_bound import (  # noqa: E402
     DEFAULT_DUTY_CYCLE,
     bound_at_fraction,
     experiment_record,
     limit_variant_factor,
 )
+from src.simulation.rebot_b601dm.torque_convention import resolve_torque_limit  # noqa: E402
 
 ARM_JOINTS = ("joint1", "joint2", "joint3", "joint4", "joint5", "joint6")
 
-# A generous ceiling used only to make the ramp visible: the point is to observe how fast the joint can reach
-# its velocity target under a torque limit, not to stress the drive model. Recorded with the result.
-ABSOLUTE_TORQUE_LIMIT_NM = 27.0
+# THERE IS NO STANDALONE TORQUE CONSTANT HERE, AND THAT IS THE POINT.
+#
+# The first version carried ABSOLUTE_TORQUE_LIMIT_NM = 27.0 and applied it to whatever joint it was told to
+# drive. joint6 is a DM4310 whose rated torque is 3 N.m and whose peak is 7, so the drive was given 9.0x the
+# rated figure and 3.9x the peak - while the record went on to claim "torque_convention": "rated". The arm would
+# have accelerated far faster than it can, and the provenance would have been false. A plausible number with a
+# false label is worse than an obviously broken one.
+#
+# The torque now comes from torque_convention.resolve_torque_limit, so the convention argument that reaches the
+# record is the one that reached the drive.
 
 
 def parse_args(argv=None):
@@ -85,9 +94,8 @@ def drive_and_measure(args) -> dict:
     indices = [dof_names.index(name) for name in ARM_JOINTS if name in dof_names]
 
     factor = limit_variant_factor(args.variant)
-    from src.simulation.rebot_b601dm.joint_limits import JOINT_LIMITS
 
-    # Drive the chosen joint at the speed the patched asset enforces, and let the torque limits decide how
+    # Drive the chosen joint at the speed the patched asset enforces, and let the torque limit decide how
     # quickly it can get there.
     target_index = dof_names.index(args.target_joint)
     target_rate = JOINT_LIMITS[args.target_joint].velocity.value * factor
@@ -106,8 +114,16 @@ def drive_and_measure(args) -> dict:
     # What is measured here instead: the joint is given a VELOCITY TARGET and a torque ceiling, and the
     # simulation integrates what actually happens. The achieved velocity is then a consequence of the motors
     # against the arm's own inertia, which is the question worth asking.
+    # Resolved from the declared convention for THIS joint, never a shared constant.
+    applied_torque = resolve_torque_limit(args.target_joint, convention=args.torque_convention)
     torque = [0.0] * len(dof_names)
-    torque[target_index] = ABSOLUTE_TORQUE_LIMIT_NM
+    torque[target_index] = applied_torque
+    print(
+        "[swing] driving " + args.target_joint + " at " + str(round(target_rate, 3)) + " rad/s with "
+        + str(applied_torque) + " N m (" + args.torque_convention + " convention for a "
+        + JOINT_LIMITS[args.target_joint].motor + ")",
+        flush=True,
+    )
     samples = []
     period = 1.0 / args.hz
     deadline = time.time() + args.seconds
@@ -144,7 +160,8 @@ def drive_and_measure(args) -> dict:
         "peak_flange_m_s": peak_flange,
         "commanded_rate_rad_s": target_rate,
         "target_joint": args.target_joint,
-        "torque_ceiling_nm": ABSOLUTE_TORQUE_LIMIT_NM,
+        "applied_torque_nm": applied_torque,
+        "target_motor": JOINT_LIMITS[args.target_joint].motor,
         "joints_seen": dof_names,
     }
 

@@ -86,6 +86,48 @@ class TestItRefusesToReportASelfDefeatingMeasurement:
         assert "under 5 percent" in text or "0.05 *" in text
         assert "No record written" in text or "no record written" in text
 
-    def test_the_torque_ceiling_is_recorded_with_the_result(self):
+    def test_the_applied_torque_is_recorded_with_the_result(self):
         text = SCRIPT.read_text(encoding="utf-8")
-        assert "torque_ceiling_nm" in text
+        assert "applied_torque_nm" in text
+
+
+class TestTheAppliedTorqueMatchesTheDeclaredConvention:
+    """The first version applied a hardcoded 27 N m to any joint while the record claimed "rated".
+
+    joint6 is a DM4310: rated 3 N m, peak 7. The drive therefore received 9.0x the rated figure and 3.9x the
+    peak, and the provenance in the record was false. A plausible number with a false label is worse than an
+    obviously broken one, because nobody re-checks it.
+    """
+
+    def test_no_standalone_torque_constant_is_assigned(self):
+        """The name may appear in the comment that records why it was removed; it must not be assigned."""
+        code = [
+            line for line in SCRIPT.read_text(encoding="utf-8").splitlines()
+            if not line.strip().startswith("#")
+        ]
+        joined = "\n".join(code)
+        assert "ABSOLUTE_TORQUE_LIMIT_NM" not in joined, "a shared constant is how the lie got in"
+        assert "= 27.0" not in joined, "no hardcoded torque may reach a joint"
+
+    def test_the_torque_comes_from_the_convention_resolver(self):
+        text = SCRIPT.read_text(encoding="utf-8")
+        assert "resolve_torque_limit(" in text
+        assert "convention=args.torque_convention" in text
+
+    def test_the_applied_torque_is_recorded_not_just_the_convention(self):
+        text = SCRIPT.read_text(encoding="utf-8")
+        assert "applied_torque_nm" in text
+
+    def test_the_resolver_gives_the_figures_the_record_would_claim(self):
+        from src.simulation.rebot_b601dm.torque_convention import resolve_torque_limit
+
+        assert resolve_torque_limit("joint6", convention="rated") == pytest.approx(3.0)
+        assert resolve_torque_limit("joint6", convention="peak") == pytest.approx(7.0)
+        assert resolve_torque_limit("joint1", convention="rated") == pytest.approx(9.0)
+
+    def test_the_old_constant_would_have_been_nine_times_the_rated_torque(self):
+        """Kept as a regression figure: this is the size of the error that was applied."""
+        from src.simulation.rebot_b601dm.torque_convention import resolve_torque_limit
+
+        rated = resolve_torque_limit("joint6", convention="rated")
+        assert 27.0 / rated == pytest.approx(9.0)
