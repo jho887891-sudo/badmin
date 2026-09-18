@@ -1,6 +1,6 @@
 # reBot B601-DM badminton capability: delivery package
 
-Assembled by `tools/assemble_b601dm_delivery.py` from commit `03b7048e06b574baeb1075952b2e0445aa528542`.
+Assembled by `tools/assemble_b601dm_delivery.py` from commit `75968bb62f7b9f32be01a910bba6a704a486a70d`.
 
 **This folder is generated. Do not edit it in place.** The repository above it is the single point of
 truth; a change made here is lost the next time the assembler runs, and is not in the repository at all.
