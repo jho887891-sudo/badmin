@@ -1,6 +1,6 @@
 # reBot B601-DM badminton capability: delivery package
 
-Assembled by `tools/assemble_b601dm_delivery.py` from commit `8c21094cf514fb3d8c203578edaf3dd6bf54aed5`.
+Assembled by `tools/assemble_b601dm_delivery.py` from commit `74ff1a31a1a4f5e470624a41e2919776add746f8`.
 
 **This folder is generated. Do not edit it in place.** The repository above it is the single point of
 truth; a change made here is lost the next time the assembler runs, and is not in the repository at all.
@@ -67,7 +67,7 @@ ones enforced 2864.789 and 11459.156. Everything else exists to make that correc
 | `management/rebot_b601dm/ARM_IDENTITY_DECISION.md` | 2,530 B | `17a9a502e7c9b8fb` |
 | `management/rebot_b601dm/REBOT_B601DM_REPORT.md` | 11,619 B | `90ebb75153fc3568` |
 | `management/rebot_b601dm/BADMINTON_CAPABILITY_RESULT.md` | 7,898 B | `bf6b41af3c2cf04d` |
-| `management/rebot_b601dm/DELIVERABLES.md` | 7,793 B | `c01d9ea87b12b5f5` |
+| `management/rebot_b601dm/DELIVERABLES.md` | 7,793 B | `e49e6500f008a6c4` |
 | `management/rebot_b601dm/TEMP_README.md` | 4,615 B | `3e303e6966459020` |
 | `management/rebot_b601dm/TASK7_MEASUREMENT_STATUS.md` | 4,125 B | `f7c49e4ed3373e5a` |
 | `management/rebot_b601dm/FIRST_SWING_RECORD_INVALID.md` | 2,722 B | `f8870e3a84226281` |
@@ -84,7 +84,7 @@ ones enforced 2864.789 and 11459.156. Everything else exists to make that correc
 | `configs/simulation/rebot_b601dm_joint_limits.yaml` | 6,666 B | `fc4498f32f2cb3c4` |
 | `scripts/simulation/isaacsim_receiver_driver.py` | 3,957 B | `ceccef1171c37dd5` |
 | `scripts/simulation/run_isaacsim_receiver.sh` | 2,612 B | `8711ceb5c9918058` |
-| `scripts/simulation/measure_racket_speed.py` | 12,181 B | `954621378e87ed36` |
+| `scripts/simulation/measure_racket_speed.py` | 12,163 B | `07d2b392dfe6b5a5` |
 | `scripts/simulation/wait_for_quiet_window.sh` | 2,671 B | `20401430a38ba140` |
 | `tools/generate_b601dm_limits_yaml.py` | 4,492 B | `7249b6cb15a8ffa9` |
 | `tools/generate_b601dm_temp_readme.py` | 4,497 B | `6aa11921ac4c3a19` |
@@ -99,7 +99,7 @@ ones enforced 2864.789 and 11459.156. Everything else exists to make that correc
 | `tests/simulation/rebot_b601dm/test_joint_limits.py` | 8,902 B | `7ba669793fcf2b4d` |
 | `tests/simulation/rebot_b601dm/test_launcher_contract.py` | 5,942 B | `a9abf1a45fa51dfd` |
 | `tests/simulation/rebot_b601dm/test_limits_yaml_consistency.py` | 3,168 B | `e3be24ce739027a5` |
-| `tests/simulation/rebot_b601dm/test_measure_script.py` | 7,414 B | `27ca446c2864914e` |
+| `tests/simulation/rebot_b601dm/test_measure_script.py` | 8,392 B | `6211830956bf5541` |
 | `tests/simulation/rebot_b601dm/test_motor_mass.py` | 6,634 B | `ccbd433563735cd4` |
 | `tests/simulation/rebot_b601dm/test_patch_asset.py` | 5,489 B | `7e92fefaf3566d37` |
 | `tests/simulation/rebot_b601dm/test_racket_attachment.py` | 6,273 B | `9fd7b7a5dad71cf9` |

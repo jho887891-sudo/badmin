@@ -135,22 +135,38 @@ class TestTheAppliedTorqueMatchesTheDeclaredConvention:
 
 class TestItDrivesThroughUsdRatherThanAGuessedApi:
     def test_it_does_not_call_the_method_that_does_not_exist(self):
-        """set_joint_velocity_targets was recalled, not checked, and raised AttributeError in a real run."""
+        """set_joint_velocity_targets was recalled, not checked, and raised AttributeError in a real run.
+
+        The first version of this test also forbade set_joint_efforts, which was wrong: that one exists at line
+        505 of single_articulation.py and is now the method this script uses. A test that forbids a working
+        method because it was written next to a broken one is a test bug, not a safeguard.
+        """
         code = "\n".join(l for l in SCRIPT.read_text(encoding="utf-8").splitlines()
                           if not l.strip().startswith("#"))
         assert "set_joint_velocity_targets(" not in code
-        assert "set_joint_efforts(" not in code
 
-    def test_it_uses_the_documented_usd_drive_api(self):
-        text = SCRIPT.read_text(encoding="utf-8")
-        assert "UsdPhysics.DriveAPI.Get" in text
-        assert "GetTargetVelocityAttr" in text
+    def test_it_uses_set_joint_efforts(self):
+        """Verified against the real class: single_articulation.py line 505, in extsDeprecated."""
+        code = "\n".join(l for l in SCRIPT.read_text(encoding="utf-8").splitlines()
+                          if not l.strip().startswith("#"))
+        assert "set_joint_efforts(" in code
 
-    def test_it_does_not_overwrite_the_asset_maxforce(self):
-        """Task 2 put the real torque in the asset; overwriting it here would undo that."""
+    def test_it_records_where_the_api_was_found(self):
+        """The class is in a DEPRECATED extension, which a reader needs to know."""
         text = SCRIPT.read_text(encoding="utf-8")
-        assert "maxForce left at asset value" in text
-        assert "GetMaxForceAttr().Set(" not in text
+        assert "extsDeprecated" in text
+        assert "single_articulation.py" in text
+
+    def test_it_leaves_the_assets_velocity_limit_to_do_its_job(self):
+        """Task 2 set maxJointVelocity to the real speed; this script must not override it.
+
+        The measurement relies on that limit being what stops the joint, so a run that also set a velocity
+        would be measuring itself.
+        """
+        code = "\n".join(l for l in SCRIPT.read_text(encoding="utf-8").splitlines()
+                          if not l.strip().startswith("#"))
+        assert "maxJointVelocity" not in code
+        assert "set_joint_velocities(" not in code, "the measured quantity must not be written to"
 
     def test_it_dumps_the_articulation_api_for_next_time(self):
         text = SCRIPT.read_text(encoding="utf-8")

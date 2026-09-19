@@ -123,41 +123,35 @@ def drive_and_measure(args) -> dict:
         flush=True,
     )
 
-    # DRIVEN THROUGH THE USD DRIVES, NOT THROUGH A RECALLED ARGUMENTATION API.
+    # DRIVEN BY APPLYING TORQUE, THROUGH A METHOD THAT WAS READ RATHER THAN RECALLED.
     #
-    # A previous version called robot.set_joint_velocity_targets and died on AttributeError: that method was
-    # written from memory and does not exist on SingleArticulation. Searching the installed tree for the real
-    # one proved impractical - the Python sources are spread through the extension directories and a content
-    # grep over them did not finish.
+    # A previous version called robot.set_joint_velocity_targets and died on AttributeError. That method was
+    # written from memory. The real class was then found, in a place no search under exts/ would have looked:
     #
-    # The USD drives need no such search. physx.usda already carries, per joint, a drive type, a target
-    # position, stiffness, damping and a maxForce that Tasks 1 and 2 set to the real torque. Setting the drive
-    # TARGET VELOCITY lets PhysX integrate the motion itself, which is exactly the physics-driven measurement
-    # wanted, and it uses a documented USD API rather than an assumed Isaac Sim one.
+    #   isaacsim/extsDeprecated/isaacsim.core.prims/isaacsim/core/prims/impl/single_articulation.py
     #
-    # maxForce is deliberately NOT set here: the asset already carries it, and overwriting it would defeat the
-    # point of Task 2.
+    # It is a DEPRECATED extension, which is itself worth knowing - the upstream receiver is built on a
+    # deprecated Isaac Sim API. Its actual surface, read from that file:
+    #
+    #   set_joint_velocities(velocities, joint_indices)   469
+    #   set_joint_efforts(efforts, joint_indices)         505   <- what this uses
+    #   get_joint_velocities(joint_indices)               541
+    #   get_applied_joint_efforts(joint_indices)          606
+    #   apply_action(ArticulationAction)                  909
+    #   and no set_joint_velocity_targets anywhere
+    #
+    # Applying torque is the right primitive for this measurement. The joint accelerates only as fast as the
+    # declared torque allows, and it is then stopped by the asset's own maxJointVelocity - which Task 2 set to
+    # the real motor speed. So one run exercises the torque convention AND the velocity correction together,
+    # and a result above the bound would mean one of them did not take effect.
     drive_report = []
+    efforts = [0.0] * len(dof_names)
+    efforts[target_index] = applied_torque
+    robot.set_joint_efforts(efforts, joint_indices=list(range(len(dof_names))))
+    drive_report.append((args.target_joint, "torque applied: " + str(applied_torque) + " N m"))
     for name in ARM_JOINTS:
-        prim = stage.GetPrimAtPath("/World/reBot/" + name)
-        if not prim or not prim.IsValid():
-            drive_report.append((name, "prim not found"))
-            continue
-        drive = UsdPhysics.DriveAPI.Get(prim, "angular")
-        if not drive:
-            drive_report.append((name, "no angular drive"))
-            continue
-        if name == args.target_joint:
-            attr = drive.GetTargetVelocityAttr()
-            if not attr:
-                drive_report.append((name, "no targetVelocity attribute"))
-                continue
-            attr.Set(float(target_rate))
-            existing_force = drive.GetMaxForceAttr().Get() if drive.GetMaxForceAttr() else None
-            drive_report.append((name, "targetVelocity set to " + str(round(target_rate, 3))
-                                 + ", maxForce left at asset value " + str(existing_force)))
-        else:
-            drive_report.append((name, "left alone"))
+        if name != args.target_joint:
+            drive_report.append((name, "zero torque"))
     for name, note in drive_report:
         print("[swing] drive " + name + ": " + note, flush=True)
     # A dump of what the wrapper actually offers, so the next attempt does not guess again.
@@ -174,6 +168,8 @@ def drive_and_measure(args) -> dict:
     deadline = time.time() + args.seconds
     t0 = time.time()
     while time.time() < deadline:
+        # Re-applied every step: an articulation controller does not persist an effort by itself.
+        robot.set_joint_efforts(efforts, joint_indices=list(range(len(dof_names))))
         world.step(render=False)
 
         vel = robot.get_joint_velocities()
