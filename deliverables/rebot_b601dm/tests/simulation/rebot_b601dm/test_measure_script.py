@@ -131,3 +131,27 @@ class TestTheAppliedTorqueMatchesTheDeclaredConvention:
 
         rated = resolve_torque_limit("joint6", convention="rated")
         assert 27.0 / rated == pytest.approx(9.0)
+
+
+class TestItDrivesThroughUsdRatherThanAGuessedApi:
+    def test_it_does_not_call_the_method_that_does_not_exist(self):
+        """set_joint_velocity_targets was recalled, not checked, and raised AttributeError in a real run."""
+        code = "\n".join(l for l in SCRIPT.read_text(encoding="utf-8").splitlines()
+                          if not l.strip().startswith("#"))
+        assert "set_joint_velocity_targets(" not in code
+        assert "set_joint_efforts(" not in code
+
+    def test_it_uses_the_documented_usd_drive_api(self):
+        text = SCRIPT.read_text(encoding="utf-8")
+        assert "UsdPhysics.DriveAPI.Get" in text
+        assert "GetTargetVelocityAttr" in text
+
+    def test_it_does_not_overwrite_the_asset_maxforce(self):
+        """Task 2 put the real torque in the asset; overwriting it here would undo that."""
+        text = SCRIPT.read_text(encoding="utf-8")
+        assert "maxForce left at asset value" in text
+        assert "GetMaxForceAttr().Set(" not in text
+
+    def test_it_dumps_the_articulation_api_for_next_time(self):
+        text = SCRIPT.read_text(encoding="utf-8")
+        assert "SingleArticulation offers" in text

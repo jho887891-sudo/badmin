@@ -116,23 +116,64 @@ def drive_and_measure(args) -> dict:
     # against the arm's own inertia, which is the question worth asking.
     # Resolved from the declared convention for THIS joint, never a shared constant.
     applied_torque = resolve_torque_limit(args.target_joint, convention=args.torque_convention)
-    torque = [0.0] * len(dof_names)
-    torque[target_index] = applied_torque
     print(
         "[swing] driving " + args.target_joint + " at " + str(round(target_rate, 3)) + " rad/s with "
         + str(applied_torque) + " N m (" + args.torque_convention + " convention for a "
         + JOINT_LIMITS[args.target_joint].motor + ")",
         flush=True,
     )
+
+    # DRIVEN THROUGH THE USD DRIVES, NOT THROUGH A RECALLED ARGUMENTATION API.
+    #
+    # A previous version called robot.set_joint_velocity_targets and died on AttributeError: that method was
+    # written from memory and does not exist on SingleArticulation. Searching the installed tree for the real
+    # one proved impractical - the Python sources are spread through the extension directories and a content
+    # grep over them did not finish.
+    #
+    # The USD drives need no such search. physx.usda already carries, per joint, a drive type, a target
+    # position, stiffness, damping and a maxForce that Tasks 1 and 2 set to the real torque. Setting the drive
+    # TARGET VELOCITY lets PhysX integrate the motion itself, which is exactly the physics-driven measurement
+    # wanted, and it uses a documented USD API rather than an assumed Isaac Sim one.
+    #
+    # maxForce is deliberately NOT set here: the asset already carries it, and overwriting it would defeat the
+    # point of Task 2.
+    drive_report = []
+    for name in ARM_JOINTS:
+        prim = stage.GetPrimAtPath("/World/reBot/" + name)
+        if not prim or not prim.IsValid():
+            drive_report.append((name, "prim not found"))
+            continue
+        drive = UsdPhysics.DriveAPI.Get(prim, "angular")
+        if not drive:
+            drive_report.append((name, "no angular drive"))
+            continue
+        if name == args.target_joint:
+            attr = drive.GetTargetVelocityAttr()
+            if not attr:
+                drive_report.append((name, "no targetVelocity attribute"))
+                continue
+            attr.Set(float(target_rate))
+            existing_force = drive.GetMaxForceAttr().Get() if drive.GetMaxForceAttr() else None
+            drive_report.append((name, "targetVelocity set to " + str(round(target_rate, 3))
+                                 + ", maxForce left at asset value " + str(existing_force)))
+        else:
+            drive_report.append((name, "left alone"))
+    for name, note in drive_report:
+        print("[swing] drive " + name + ": " + note, flush=True)
+    # A dump of what the wrapper actually offers, so the next attempt does not guess again.
+    try:
+        public = [m for m in dir(robot) if not m.startswith("_")]
+        interesting = [m for m in public
+                       if any(k in m.lower() for k in ("velocit", "effort", "target", "action"))]
+        print("[swing] SingleArticulation offers: " + ", ".join(sorted(interesting)), flush=True)
+    except Exception as exc:  # diagnostics must never break the run
+        print("[swing] could not introspect the articulation: " + repr(exc), flush=True)
+
     samples = []
     period = 1.0 / args.hz
     deadline = time.time() + args.seconds
     t0 = time.time()
     while time.time() < deadline:
-        targets = [0.0] * len(dof_names)
-        targets[target_index] = target_rate
-        robot.set_joint_velocity_targets(targets)
-        robot.set_joint_efforts(torque)
         world.step(render=False)
 
         vel = robot.get_joint_velocities()
@@ -162,6 +203,8 @@ def drive_and_measure(args) -> dict:
         "target_joint": args.target_joint,
         "applied_torque_nm": applied_torque,
         "target_motor": JOINT_LIMITS[args.target_joint].motor,
+        "applied_torque_nm": applied_torque,
+        "drive_report": drive_report,
         "joints_seen": dof_names,
     }
 
