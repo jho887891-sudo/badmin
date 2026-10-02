@@ -1,0 +1,809 @@
+{
+ "status": "RESOLVED",
+ "eth_repo": "/home/T7/dgut/robot_sim/eth_official_code/shuttle_detection",
+ "data_root": "/home/T7/dgut/robot_sim/eth_shuttle_detection",
+ "official_model_name": "yolov8s",
+ "official_imgsz": 1024,
+ "official_epochs": 50,
+ "official_batch_size": 32,
+ "official_nbs": 64,
+ "official_optimizer": "adamw",
+ "official_scheduler": "linear",
+ "official_lr": 0.0001,
+ "official_momentum": 0.9,
+ "official_amsgrad": false,
+ "official_weight_decay": 0.0005,
+ "official_confidence": 0.5,
+ "official_dist_threshold": 25.0,
+ "official_seed": 42,
+ "official_train_locations": [
+  "cab_1",
+  "cab_2",
+  "glc_2",
+  "uetlibergstrasse_1",
+  "uetlibergstrasse_2",
+  "ml_3",
+  "ml_6",
+  "ticino_2",
+  "glc_1",
+  "ml_4",
+  "ticino_1",
+  "coco_train"
+ ],
+ "official_train_difficulties": [
+  "easy",
+  "medium"
+ ],
+ "official_val_difficulties": [
+  "easy",
+  "medium",
+  "hard"
+ ],
+ "official_fraction_train": 1.0,
+ "official_fraction_coco_train": 0.1,
+ "official_loss": {
+  "box": 7.5,
+  "cls": 0.5,
+  "dfl": 1.5
+ },
+ "official_augmentations": {
+  "mosaic": 1.0,
+  "degrees": 0.0,
+  "translate": 0.1,
+  "scale": 0.5,
+  "shear": 0.0,
+  "perspective": 0.0,
+  "copy_paste_mode": "flip",
+  "copy_paste": 0.0,
+  "fliplr": 0.5,
+  "flipud": 0.0,
+  "mixup": 0.7,
+  "cutmix": 0.0,
+  "hsv_h": 0.015,
+  "hsv_s": 0.7,
+  "hsv_v": 0.4,
+  "mask_ratio": 4,
+  "overlap_mask": true,
+  "bgr": 0.0,
+  "deterministic": true
+ },
+ "official_negative_sources": [
+  "coco_train"
+ ],
+ "official_negative_policy": "coco_train images at fraction_coco_train=0.100",
+ "eth_iphone_decision": "EXCLUDED: the official config.json lists 12 training locations and none is an iPhone location, so ETH iPhone frames are outside the released model's training distribution (plan: exclude and record when uncertain).",
+ "class_names": {
+  "0": "shuttle"
+ },
+ "location_membership": {
+  "cab_1_easy": {
+   "location": "cab_1",
+   "difficulty": "easy",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 1606,
+   "labels": 1606,
+   "empty_labels": 0
+  },
+  "cab_1_hard": {
+   "location": "cab_1",
+   "difficulty": "hard",
+   "role": "same_location_holdout",
+   "in_official_training": false,
+   "images": 169,
+   "labels": 169,
+   "empty_labels": 0
+  },
+  "cab_1_medium": {
+   "location": "cab_1",
+   "difficulty": "medium",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 521,
+   "labels": 521,
+   "empty_labels": 0
+  },
+  "cab_2_easy": {
+   "location": "cab_2",
+   "difficulty": "easy",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 2543,
+   "labels": 2543,
+   "empty_labels": 0
+  },
+  "cab_2_hard": {
+   "location": "cab_2",
+   "difficulty": "hard",
+   "role": "same_location_holdout",
+   "in_official_training": false,
+   "images": 135,
+   "labels": 135,
+   "empty_labels": 0
+  },
+  "cab_2_medium": {
+   "location": "cab_2",
+   "difficulty": "medium",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 728,
+   "labels": 729,
+   "empty_labels": 0
+  },
+  "coco_train_easy": {
+   "location": "coco_train",
+   "difficulty": "easy",
+   "role": "official_negatives",
+   "in_official_training": true,
+   "images": 5500,
+   "labels": 0,
+   "empty_labels": 0
+  },
+  "coco_val_easy": {
+   "location": "coco_val",
+   "difficulty": "easy",
+   "role": "benchmark_holdout",
+   "in_official_training": false,
+   "images": 1000,
+   "labels": 0,
+   "empty_labels": 0
+  },
+  "glc_1_easy": {
+   "location": "glc_1",
+   "difficulty": "easy",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 2118,
+   "labels": 2118,
+   "empty_labels": 0
+  },
+  "glc_1_hard": {
+   "location": "glc_1",
+   "difficulty": "hard",
+   "role": "same_location_holdout",
+   "in_official_training": false,
+   "images": 55,
+   "labels": 55,
+   "empty_labels": 0
+  },
+  "glc_1_medium": {
+   "location": "glc_1",
+   "difficulty": "medium",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 328,
+   "labels": 328,
+   "empty_labels": 0
+  },
+  "glc_2_easy": {
+   "location": "glc_2",
+   "difficulty": "easy",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 1506,
+   "labels": 1506,
+   "empty_labels": 0
+  },
+  "glc_2_hard": {
+   "location": "glc_2",
+   "difficulty": "hard",
+   "role": "same_location_holdout",
+   "in_official_training": false,
+   "images": 35,
+   "labels": 35,
+   "empty_labels": 0
+  },
+  "glc_2_medium": {
+   "location": "glc_2",
+   "difficulty": "medium",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 107,
+   "labels": 107,
+   "empty_labels": 0
+  },
+  "ml_3_easy": {
+   "location": "ml_3",
+   "difficulty": "easy",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 606,
+   "labels": 606,
+   "empty_labels": 0
+  },
+  "ml_3_hard": {
+   "location": "ml_3",
+   "difficulty": "hard",
+   "role": "same_location_holdout",
+   "in_official_training": false,
+   "images": 144,
+   "labels": 144,
+   "empty_labels": 0
+  },
+  "ml_3_medium": {
+   "location": "ml_3",
+   "difficulty": "medium",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 398,
+   "labels": 398,
+   "empty_labels": 0
+  },
+  "ml_4_easy": {
+   "location": "ml_4",
+   "difficulty": "easy",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 1214,
+   "labels": 1214,
+   "empty_labels": 0
+  },
+  "ml_4_hard": {
+   "location": "ml_4",
+   "difficulty": "hard",
+   "role": "same_location_holdout",
+   "in_official_training": false,
+   "images": 23,
+   "labels": 23,
+   "empty_labels": 0
+  },
+  "ml_4_medium": {
+   "location": "ml_4",
+   "difficulty": "medium",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 129,
+   "labels": 129,
+   "empty_labels": 0
+  },
+  "ml_6_easy": {
+   "location": "ml_6",
+   "difficulty": "easy",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 674,
+   "labels": 674,
+   "empty_labels": 0
+  },
+  "ml_6_hard": {
+   "location": "ml_6",
+   "difficulty": "hard",
+   "role": "same_location_holdout",
+   "in_official_training": false,
+   "images": 115,
+   "labels": 115,
+   "empty_labels": 0
+  },
+  "ml_6_medium": {
+   "location": "ml_6",
+   "difficulty": "medium",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 449,
+   "labels": 449,
+   "empty_labels": 0
+  },
+  "old": {
+   "location": "old",
+   "difficulty": "?",
+   "role": "other",
+   "in_official_training": false,
+   "images": 0,
+   "labels": 0,
+   "empty_labels": 0
+  },
+  "ticino_1_easy": {
+   "location": "ticino_1",
+   "difficulty": "easy",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 1250,
+   "labels": 1250,
+   "empty_labels": 0
+  },
+  "ticino_1_hard": {
+   "location": "ticino_1",
+   "difficulty": "hard",
+   "role": "same_location_holdout",
+   "in_official_training": false,
+   "images": 135,
+   "labels": 135,
+   "empty_labels": 0
+  },
+  "ticino_1_medium": {
+   "location": "ticino_1",
+   "difficulty": "medium",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 1187,
+   "labels": 1187,
+   "empty_labels": 0
+  },
+  "ticino_2_easy": {
+   "location": "ticino_2",
+   "difficulty": "easy",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 1733,
+   "labels": 1733,
+   "empty_labels": 0
+  },
+  "ticino_2_hard": {
+   "location": "ticino_2",
+   "difficulty": "hard",
+   "role": "same_location_holdout",
+   "in_official_training": false,
+   "images": 13,
+   "labels": 13,
+   "empty_labels": 0
+  },
+  "ticino_2_medium": {
+   "location": "ticino_2",
+   "difficulty": "medium",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 636,
+   "labels": 636,
+   "empty_labels": 0
+  },
+  "uetlibergstrasse_1_easy": {
+   "location": "uetlibergstrasse_1",
+   "difficulty": "easy",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 591,
+   "labels": 591,
+   "empty_labels": 0
+  },
+  "uetlibergstrasse_1_hard": {
+   "location": "uetlibergstrasse_1",
+   "difficulty": "hard",
+   "role": "same_location_holdout",
+   "in_official_training": false,
+   "images": 4,
+   "labels": 4,
+   "empty_labels": 0
+  },
+  "uetlibergstrasse_1_medium": {
+   "location": "uetlibergstrasse_1",
+   "difficulty": "medium",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 47,
+   "labels": 47,
+   "empty_labels": 0
+  },
+  "uetlibergstrasse_2_easy": {
+   "location": "uetlibergstrasse_2",
+   "difficulty": "easy",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 1244,
+   "labels": 1244,
+   "empty_labels": 0
+  },
+  "uetlibergstrasse_2_hard": {
+   "location": "uetlibergstrasse_2",
+   "difficulty": "hard",
+   "role": "same_location_holdout",
+   "in_official_training": false,
+   "images": 3,
+   "labels": 3,
+   "empty_labels": 0
+  },
+  "uetlibergstrasse_2_medium": {
+   "location": "uetlibergstrasse_2",
+   "difficulty": "medium",
+   "role": "official_positives",
+   "in_official_training": true,
+   "images": 63,
+   "labels": 63,
+   "empty_labels": 0
+  }
+ },
+ "counts": {
+  "positives_train_dirs": 19678,
+  "official_negative_images": 5500,
+  "holdout_images": 1831,
+  "other_images": 0,
+  "positive_empty_labels": 0,
+  "negative_empty_labels": 0,
+  "non_empty_labels_total": 20510,
+  "empty_labels_total": 0,
+  "positives_by_location": {
+   "cab_1": 2127,
+   "cab_2": 3271,
+   "glc_1": 2446,
+   "glc_2": 1613,
+   "ml_3": 1004,
+   "ml_4": 1343,
+   "ml_6": 1123,
+   "ticino_1": 2437,
+   "ticino_2": 2369,
+   "uetlibergstrasse_1": 638,
+   "uetlibergstrasse_2": 1307
+  }
+ },
+ "plan_overrides_vs_official": {
+  "imgsz": {
+   "official": 1024,
+   "plan": 1024
+  },
+  "epochs": {
+   "official": 50,
+   "plan": 50
+  },
+  "batch": {
+   "official": 32,
+   "plan": 8
+  },
+  "nbs": {
+   "official": 64,
+   "plan": 32
+  },
+  "optimizer": {
+   "official": "adamw",
+   "plan": "AdamW"
+  },
+  "lr": {
+   "official": 0.0001,
+   "plan": 0.0001
+  }
+ },
+ "evidence": {
+  "config_json": "/home/T7/dgut/robot_sim/eth_official_code/shuttle_detection/runs/final-model/config.json",
+  "config_json_sha256": "d696c3698c9bb65c3d82b28d3a0bb325b399fec274345053ce8cca44aeb18986",
+  "dataset_yamls": [
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/cab_1_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/cab_1_hard.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/cab_1_medium.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/cab_2_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/cab_2_hard.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/cab_2_medium.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/coco_train_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/coco_val_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/glc_1_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/glc_1_hard.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/glc_1_medium.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/glc_2_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/glc_2_hard.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/glc_2_medium.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ml_3_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ml_3_hard.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ml_3_medium.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ml_4_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ml_4_hard.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ml_4_medium.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ml_6_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ml_6_hard.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ml_6_medium.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ticino_1_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ticino_1_hard.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ticino_1_medium.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ticino_2_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ticino_2_hard.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/ticino_2_medium.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/uetlibergstrasse_1_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/uetlibergstrasse_1_hard.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/uetlibergstrasse_1_medium.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/uetlibergstrasse_2_easy.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/uetlibergstrasse_2_hard.yaml",
+   "/home/T7/dgut/robot_sim/eth_shuttle_detection/uetlibergstrasse_2_medium.yaml"
+  ],
+  "dataset_dirs": [
+   {
+    "dir": "cab_1_easy",
+    "images": 1606,
+    "labels": 1606,
+    "empty": 0
+   },
+   {
+    "dir": "cab_1_hard",
+    "images": 169,
+    "labels": 169,
+    "empty": 0
+   },
+   {
+    "dir": "cab_1_medium",
+    "images": 521,
+    "labels": 521,
+    "empty": 0
+   },
+   {
+    "dir": "cab_2_easy",
+    "images": 2543,
+    "labels": 2543,
+    "empty": 0
+   },
+   {
+    "dir": "cab_2_hard",
+    "images": 135,
+    "labels": 135,
+    "empty": 0
+   },
+   {
+    "dir": "cab_2_medium",
+    "images": 728,
+    "labels": 729,
+    "empty": 0
+   },
+   {
+    "dir": "coco_train_easy",
+    "images": 5500,
+    "labels": 0,
+    "empty": 0
+   },
+   {
+    "dir": "coco_val_easy",
+    "images": 1000,
+    "labels": 0,
+    "empty": 0
+   },
+   {
+    "dir": "glc_1_easy",
+    "images": 2118,
+    "labels": 2118,
+    "empty": 0
+   },
+   {
+    "dir": "glc_1_hard",
+    "images": 55,
+    "labels": 55,
+    "empty": 0
+   },
+   {
+    "dir": "glc_1_medium",
+    "images": 328,
+    "labels": 328,
+    "empty": 0
+   },
+   {
+    "dir": "glc_2_easy",
+    "images": 1506,
+    "labels": 1506,
+    "empty": 0
+   },
+   {
+    "dir": "glc_2_hard",
+    "images": 35,
+    "labels": 35,
+    "empty": 0
+   },
+   {
+    "dir": "glc_2_medium",
+    "images": 107,
+    "labels": 107,
+    "empty": 0
+   },
+   {
+    "dir": "ml_3_easy",
+    "images": 606,
+    "labels": 606,
+    "empty": 0
+   },
+   {
+    "dir": "ml_3_hard",
+    "images": 144,
+    "labels": 144,
+    "empty": 0
+   },
+   {
+    "dir": "ml_3_medium",
+    "images": 398,
+    "labels": 398,
+    "empty": 0
+   },
+   {
+    "dir": "ml_4_easy",
+    "images": 1214,
+    "labels": 1214,
+    "empty": 0
+   },
+   {
+    "dir": "ml_4_hard",
+    "images": 23,
+    "labels": 23,
+    "empty": 0
+   },
+   {
+    "dir": "ml_4_medium",
+    "images": 129,
+    "labels": 129,
+    "empty": 0
+   },
+   {
+    "dir": "ml_6_easy",
+    "images": 674,
+    "labels": 674,
+    "empty": 0
+   },
+   {
+    "dir": "ml_6_hard",
+    "images": 115,
+    "labels": 115,
+    "empty": 0
+   },
+   {
+    "dir": "ml_6_medium",
+    "images": 449,
+    "labels": 449,
+    "empty": 0
+   },
+   {
+    "dir": "old",
+    "images": 0,
+    "labels": 0,
+    "empty": 0
+   },
+   {
+    "dir": "ticino_1_easy",
+    "images": 1250,
+    "labels": 1250,
+    "empty": 0
+   },
+   {
+    "dir": "ticino_1_hard",
+    "images": 135,
+    "labels": 135,
+    "empty": 0
+   },
+   {
+    "dir": "ticino_1_medium",
+    "images": 1187,
+    "labels": 1187,
+    "empty": 0
+   },
+   {
+    "dir": "ticino_2_easy",
+    "images": 1733,
+    "labels": 1733,
+    "empty": 0
+   },
+   {
+    "dir": "ticino_2_hard",
+    "images": 13,
+    "labels": 13,
+    "empty": 0
+   },
+   {
+    "dir": "ticino_2_medium",
+    "images": 636,
+    "labels": 636,
+    "empty": 0
+   },
+   {
+    "dir": "uetlibergstrasse_1_easy",
+    "images": 591,
+    "labels": 591,
+    "empty": 0
+   },
+   {
+    "dir": "uetlibergstrasse_1_hard",
+    "images": 4,
+    "labels": 4,
+    "empty": 0
+   },
+   {
+    "dir": "uetlibergstrasse_1_medium",
+    "images": 47,
+    "labels": 47,
+    "empty": 0
+   },
+   {
+    "dir": "uetlibergstrasse_2_easy",
+    "images": 1244,
+    "labels": 1244,
+    "empty": 0
+   },
+   {
+    "dir": "uetlibergstrasse_2_hard",
+    "images": 3,
+    "labels": 3,
+    "empty": 0
+   },
+   {
+    "dir": "uetlibergstrasse_2_medium",
+    "images": 63,
+    "labels": 63,
+    "empty": 0
+   }
+  ],
+  "config_raw": {
+   "seed": 42,
+   "data": {
+    "train": [
+     "cab_1",
+     "cab_2",
+     "glc_2",
+     "uetlibergstrasse_1",
+     "uetlibergstrasse_2",
+     "ml_3",
+     "ml_6",
+     "ticino_2",
+     "glc_1",
+     "ml_4",
+     "ticino_1",
+     "coco_train"
+    ],
+    "val": [],
+    "test": []
+   },
+   "diff_levels": {
+    "train": [
+     "easy",
+     "medium"
+    ],
+    "val": [
+     "easy",
+     "medium",
+     "hard"
+    ],
+    "test": [
+     "easy",
+     "medium",
+     "hard"
+    ]
+   },
+   "fraction_train": 1.0,
+   "fraction_coco_train": 0.1,
+   "dist_threshold": 25.0,
+   "confidence": 0.5,
+   "model_name": "yolov8s",
+   "epochs": 50,
+   "batch_size": 32,
+   "workers": 8,
+   "optim": "adamw",
+   "scheduler": "linear",
+   "lr": 0.0001,
+   "momentum": 0.9,
+   "amsgrad": false,
+   "weight_decay": 0.0005,
+   "imgsz": 1024,
+   "nbs": 64,
+   "warmup_momentum": 0.8,
+   "n_warmup": 3,
+   "loss": {
+    "box": 7.5,
+    "cls": 0.5,
+    "dfl": 1.5
+   },
+   "t_blurr_p": 0.0,
+   "t_blurr_limits": [
+    5,
+    30
+   ],
+   "t_color_jitter": 0.6,
+   "augmentations": {
+    "mosaic": 1.0,
+    "degrees": 0.0,
+    "translate": 0.1,
+    "scale": 0.5,
+    "shear": 0.0,
+    "perspective": 0.0,
+    "copy_paste_mode": "flip",
+    "copy_paste": 0.0,
+    "fliplr": 0.5,
+    "flipud": 0.0,
+    "mixup": 0.7,
+    "cutmix": 0.0,
+    "hsv_h": 0.015,
+    "hsv_s": 0.7,
+    "hsv_v": 0.4,
+    "mask_ratio": 4,
+    "overlap_mask": true,
+    "bgr": 0.0,
+    "deterministic": true
+   }
+  }
+ },
+ "experiment_config": {
+  "path": "/home/dgut/.dsh-bench/eth_only_yolo26s_1024_v1.yaml",
+  "model": "yolo26s.pt",
+  "imgsz": 1024,
+  "batch": 8,
+  "nbs": 32,
+  "epochs": 50,
+  "optimizer": "AdamW",
+  "lr0": 0.0001
+ }
+}

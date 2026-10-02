@@ -1,0 +1,65 @@
+# ETH-only YOLO26s 1024 baseline V1 - frozen experiment contract (Task 1).
+# Every value here is pinned BEFORE any metric is observed. Do not tune from intermediate metrics.
+experiment: eth_only_yolo26s_1024_v1
+spec: docs/superpowers/specs/2026-10-02-eth-only-yolo26s-1024-baseline-v1-design.md
+
+# --- model ---
+model: yolo26s.pt
+model_variant: yolo26s          # plain YOLO26s, standard strides only, no P2 / no custom head
+model_source: assets/external/_staging/F_yolo/weights/yolo26s.pt
+model_sha256: 646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b
+model_bytes: 20422725
+model_source_verified_on_remote: /home/T7/dgut/robot_sim/yolo26s.pt
+ultralytics_version: 8.4.150
+
+# --- training recipe (pinned; official ETH recipe recorded separately in the recipe json) ---
+imgsz: 1024
+freeze: 0
+optimizer: AdamW
+lr0: 1.0e-4
+epochs: 50
+nbs: 32
+batch: 8
+batch_fallback: [8, 6, 4]       # physical batch only; imgsz/nbs/optimizer/lr0 stay fixed
+never_touch: [imgsz, nbs, optimizer, lr0]
+seed: 42
+
+# --- data contract ---
+classes: [shuttlecock]
+train_domains: eth_only
+data:
+  positives: ETH real positives only (locations and difficulties from the official config.json)
+  negatives: ETH official negatives (coco_train images)
+  eth_iphone: excluded_unless_official_recipe_proves_same_distribution
+  exclude:
+    - project synthetic positives
+    - project synthetic negatives
+    - Isaac Sim renders
+    - near-field synthetic
+    - synthetic_on_real_background
+    - D455 hard negatives
+    - Roboflow pseudo boxes
+    - every evaluation image
+split:
+  kind: location_disjoint
+  frozen_before_any_metric: true
+  internal_val_fraction_target: [0.15, 0.20]
+  leakage_checks: [path, sha256, location]
+
+# --- evaluation contract ---
+evaluation_only_sets: [val|eth_unseen, external_real_only, controlled_capability, challenge_test]
+selection_metric: mAP50-95        # internal location-disjoint validation only; Recall reported alongside
+checkpoint_selection_scope: internal_validation_only
+evaluator_family: tools/eval_yolo26_v1.py + tools/audit_localization_yolo26_v1.py
+confidence_policy: {operating: 0.25, ap_floor: 0.001}
+nms_policy: {iou: 0.7, max_det: 300, rect: false}
+size_bucket: equiv_size_640
+
+# --- interpretation thresholds ---
+inconclusive_abs_diff: 0.02
+confirmation_range: [0.02, 0.05]
+actionable_abs_diff: 0.05
+
+# --- smoke ---
+smoke_epochs: 3
+smoke_checkpoint_is_final: false
