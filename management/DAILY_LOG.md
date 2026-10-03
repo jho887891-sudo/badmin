@@ -4,6 +4,23 @@
 
 ---
 
+# 2026-10-03（续 14）Task 3 收官（集成跑跑通全链路）+ **Task 4 50 epoch 全量已启动**
+
+**约束**：仍未用任何中间指标做选点或调参；smoke/集成跑均标记 `diagnostic_only=true`、`eligible_for_final_report=false`（新增"epochs 与契约 50 不同即不可作为最终结果"的判定）；旧产物一律保留。
+
+**Task 3 端到端验证**（`integration_e1c`，1 epoch 集成跑，03:42:08→03:52:48Z，10.7 min）
+- manifest 证据：contract sha256 `fd9f95dc…`；权重 **20,422,725 B / `646f8bc3…`** 校验通过；数据列表 train **14,543** / val **2,920**（sha256 `d0947c2c…` / `1863b6a1…`，与本地提交逐位一致）
+- 冻结配方落盘：imgsz 1024 / AdamW / lr0 1e-4 / nbs 32 / freeze 0 / batch 8（fallback [8,6,4] 实测第 1 次即成功）；ETH 官方增强与 loss（mosaic 1.0、mixup 0.7、scale 0.5、fliplr 0.5、hsv_h 0.015、box 7.5/cls 0.5/dfl 1.5）
+- 24 GiB 单进程上限生效：`gpu_cap.fraction 0.5063`（设备 47.4 GiB）；选点 `column metrics/mAP50-95(B)`、`value 0.60435`、`recall 0.82232`、scope `internal_validation_only`；best.pt 20,337,797 B / sha256 `96263a5b…`
+- **smoke+集成跑共抓出 4 个真实缺陷**（save_dir 见 ISSUE-033；`weight=` 非法参数、W&B 自动上传产物、选点列名不匹配见 ISSUE-034）→ 全部修复并各自补测试；启动器测试 58 项全绿
+
+**Task 4 已启动**：`run_full_v1.sh full_e50`（50 epoch，batch 8，imgsz 1024，workers 8，`WANDB_MODE=disabled`，24 GiB 上限，内部 val 选点）
+- 启动证据：`YOLO26s summary: 260 layers, 9,948,638 parameters` + `Transferred 696/708 items from pretrained weights`（确认从官方 `yolo26s.pt` 初始化）
+- 速度实测（smoke，诊断）：冷启动 1.8 it/s → 页缓存热后 4.2–4.6 it/s，约 **12 min/epoch + 1.5 min 验证** → 50 epoch 预计 **10–12 h**；显存 6.0–6.7 GB（上限 24 GiB 从未触发）
+- 完成判据：`full_e50_manifest.json` 的 `selection`（内部 val mAP50-95 的 best epoch）+ `best_checkpoint.sha256`；随后 Task 5 用这张 ckpt 做四个评估集（其中 controlled_capability / challenge_test 必须本地跑，ckpt 只落 `_scratch_*` 并在用后删除）
+
+**提交**：`a7ce718`（wandb/资格判定）、`8d834fc`（非法参数 + 参数合法性测试）、`ef313d8`（选点列名归一）
+
 # 2026-10-03（续 13）ETH-only YOLO26s 1024 V1：**Task 2 数据冻结（修正 3 个真实缺陷）+ Task 3 24 GiB 训练启动器**
 
 **约束**：本轮未训练/未 fine-tune 任何模型（只跑了 3 epoch 诊断 smoke）、未改 ETH 官方 checkpoint/测试集/GT/evaluator、未按模型单独调阈值、未用任何中间指标做选择、旧产物一律保留（两次错误产物转存远端 `~/.dsh-bench/v1_buggy_backup/`、`v1_badneg_backup/`，未删）。

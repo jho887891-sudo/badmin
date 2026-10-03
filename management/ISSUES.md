@@ -376,7 +376,19 @@ excluded-but-trained: 7
 - **解决方案：** 启动器改为从 trainer 对象读取权威 `save_dir`（`resolve_save_dir(project, name, model)`），并把 `save_dir` 写进 manifest；新增 2 项测试。
 - **修改文件：** tools/train_eth_only_v1.py、tests/test_train_eth_only_v1.py
 - **验证方法：** `pytest tests/test_train_eth_only_v1.py` 46 项全绿；smoke 重跑后 manifest 的 `save_dir`/`selection` 与日志中的实际目录一致
-- **是否彻底解决：** 是（代码已修，smoke 复验中）
-- **相关 commit：** f2bed61
+- **是否彻底解决：** 是（`integration_e1c_manifest.json` 的 `save_dir`/selection 与实际运行目录一致）
+- **相关 commit：** f2bed61、a7ce718
+
+## ISSUE-034 训练启动器三处缺陷（非法参数、W&B 自动上传、选点列名不匹配），由 smoke+集成跑逐个暴露
+- **日期：** 2026-10-03
+- **模块：** 训练启动器
+- **现象：** ① 1 epoch 集成跑直接报 `'weight' is not a valid YOLO argument`；② 3 epoch smoke 日志出现 `wandb: uploading artifact ...`（本机从未申请 W&B）；③ 去掉 weight 后，训练跑完 1 epoch 却在选点处抛 `results.csv ... has no 'mAP50-95' column`。
+- **原因：** ① `build_train_args` 误传 `weight=<path>`（模型已由 `YOLO(weights)` 加载，无需该键）；② ultralytics 8.4.150 的 `cfg/default.yaml` 与 `cfg/__init__.py` **根本没有 `wandb` 键**——集成由回调自动注册，唯一可靠的关闭方式是环境变量，故 `wandb=False` 同样非法；③ 契约写 `selection_metric: mAP50-95`，而 ultralytics 的结果列名是 `metrics/mAP50-95(B)`，两者字面不等。
+- **影响：** 若不修：50 epoch 全量会在**最后一步选点**失败（best.pt 仍在但选点证据丢失，正是本实验契约最在意的失败模式）；且训练产物会被上传到第三方 W&B 服务（离线可复现性与数据泄漏风险）。
+- **解决方案：** 移除 `weight=`；改为 `disable_third_party_loggers()`（`WANDB_MODE=disabled`/`WANDB_DISABLED=true`/`COMET_MODE=DISABLED`）并把生效值写入 manifest 的 `third_party_loggers`；`metric_aliases()` 把两种写法归一到同一集合，manifest 记录 `selection.column`；新增 2 项测试：**所有 train kwargs 必须存在于 ultralytics `cfg/default.yaml` 的键集合**（fixture 与真实 contract+recipe 各一次），专防此类"跑到远端才炸"的拼写/键名错误。
+- **修改文件：** tools/train_eth_only_v1.py、tests/test_train_eth_only_v1.py、tools/remote/run_smoke_v1.sh、tools/remote/run_full_v1.sh、tools/remote/run_integration_v1.sh
+- **验证方法：** `integration_e1c_manifest.json`：`save_dir` 取 trainer 权威路径、`selection.column = metrics/mAP50-95(B)`、`value 0.60435` @epoch1（recall 0.82232）、`gpu_cap.fraction 0.5063`（设备 47.4 GiB）、`diagnostic_reasons ["epochs 1 != contract 50"]`；同一日志 `grep -c wandb` = **0**（修复前的 launch 有大量上传行）；启动器测试 54 → 58 项全绿
+- **是否彻底解决：** 是（四类缺陷全部修完并有测试/产物双证据）
+- **相关 commit：** a7ce718、8d834fc、ef313d8
 
 
