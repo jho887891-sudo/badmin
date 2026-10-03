@@ -18,6 +18,7 @@
 - 启动证据：`YOLO26s summary: 260 layers, 9,948,638 parameters` + `Transferred 696/708 items from pretrained weights`（确认从官方 `yolo26s.pt` 初始化）
 - 速度实测（smoke，诊断）：冷启动 1.8 it/s → 页缓存热后 4.2–4.6 it/s，约 **12 min/epoch + 1.5 min 验证** → 50 epoch 预计 **10–12 h**；显存 6.0–6.7 GB（上限 24 GiB 从未触发）
 - 完成判据：`full_e50_manifest.json` 的 `selection`（内部 val mAP50-95 的 best epoch）+ `best_checkpoint.sha256`；随后 Task 5 用这张 ckpt 做四个评估集（其中 controlled_capability / challenge_test 必须本地跑，ckpt 只落 `_scratch_*` 并在用后删除）
+- **内部 val 的来源必须记住（易踩坑）**：`data/eth_only_v1_val_manifest.csv` 2,920 行**全部**来自 ETH 官方 `images/train` 子目录（`split=train`、`in_official_training=True`、`glc_2_easy 1506 / uetlibergstrasse_2_easy 1244 / glc_2_medium 107 / uetlibergstrasse_2_medium 63`）→ 对本模型是干净的（location-disjoint + 已剔除全部评估帧），但**它们就是 ETH 官方模型的训练帧**，因此该内部 val **只能用于本模型选点，绝不可用于与 ETH 官方模型的同集合公平比较**；ETH 公平对照必须继续用 `val|eth_unseen`（ISSUE-031 口径）
 
 **提交**：`a7ce718`（wandb/资格判定）、`8d834fc`（非法参数 + 参数合法性测试）、`ef313d8`（选点列名归一）
 
