@@ -1,0 +1,6 @@
+path: .
+train: eth_only_v1_train_train.txt
+val: eth_only_v1_train_val.txt
+nc: 1
+names:
+  0: shuttlecock

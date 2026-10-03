@@ -11,6 +11,7 @@ import hashlib
 import json
 import math
 import random
+import statistics
 import sys
 from pathlib import Path
 
@@ -69,6 +70,7 @@ def inventory_eth_dataset(data_root, recipe, only_sets=None, progress_every=2000
         raise DatasetAuditError("dataset root not found: %s" % data_root)
     from PIL import Image
     rows = []
+    unreadable = []
     wanted = set(only_sets) if only_sets else None
     for set_dir in sorted(p for p in data_root.iterdir() if p.is_dir()):
         name = set_dir.name
@@ -99,21 +101,36 @@ def inventory_eth_dataset(data_root, recipe, only_sets=None, progress_every=2000
                     with Image.open(img) as im:
                         W, H = im.size
                 except Exception:
+                    unreadable.append(str(img))
                     continue
-                eq = equiv_size_640(1, 1, W, H)
+                # Per-box equivalent sizes need the image size, so parse labels after opening the image.
+                eqs = []
+                if has_label:
+                    try:
+                        for line in lab.read_text(encoding="utf-8", errors="replace").splitlines():
+                            parts = line.split()
+                            if len(parts) >= 5:
+                                eqs.append(equiv_size_640(float(parts[3]) * W, float(parts[4]) * H, W, H))
+                    except (OSError, ValueError):
+                        eqs = []
                 rows.append({
                     "image": str(img), "label": str(lab) if has_label else "",
                     "location": loc, "difficulty": diff, "split": split, "set_dir": name,
                     "role": role, "in_official_training": trained, "source": source,
                     "is_negative": bool(has_label is False or n_boxes == 0),
                     "n_boxes": n_boxes, "width": W, "height": H, "sha256": _sha256(img),
-                    "equiv_size_640": eq,
+                    "equiv_size_640": (max(eqs) if eqs else 0.0),
+                    "median_equiv_size_640": (statistics.median(eqs) if eqs else 0.0),
+                    "min_equiv_size_640": (min(eqs) if eqs else 0.0),
+                    "equiv_sizes": ";".join("%.6f" % e for e in sorted(eqs)),
                 })
                 if progress_every and len(rows) % progress_every == 0:
                     print("  inventory %d images (last %s)" % (len(rows), name), flush=True)
     df = pd.DataFrame(rows)
+    df.attrs["unreadable_images"] = unreadable
     if df.empty:
-        raise DatasetAuditError("inventory is empty under %s" % data_root)
+        raise DatasetAuditError("inventory is empty under %s (unreadable=%d)" % (data_root, len(unreadable)))
+    print("[build] inventory done: rows=%d unreadable=%d" % (len(df), len(unreadable)), flush=True)
     return df
 
 
@@ -262,8 +279,14 @@ def audit_split(train_df: pd.DataFrame, val_df: pd.DataFrame, evaluation_paths) 
                         % (len(eval_hits), eval_hits[:3]))
     if hash_hits:
         problems.append("training images byte-identical to evaluation images: %d" % len(hash_hits))
-    total = len(train_df) + len(val_df)
-    frac = (len(val_df) / total) if total else 0.0
+    # The plan expresses the internal validation target over POSITIVES (15-20% of eligible positive
+    # images), so negatives must not enter this denominator.
+    def _pos(df):
+        if "is_negative" in df.columns:
+            return int((~df["is_negative"]).sum())
+        return int(len(df))
+    n_pos = _pos(train_df) + _pos(val_df)
+    frac = (_pos(val_df) / n_pos) if n_pos else 0.0
     report = {
         "status": "PASS" if not problems else "FAIL",
         "problems": problems,
@@ -302,15 +325,22 @@ def write_ultralytics_dataset_yaml(train_df: pd.DataFrame, val_df: pd.DataFrame,
 
 
 def size_distribution(df: pd.DataFrame) -> pd.DataFrame:
+    """Box-level size distribution (the plan asks for a size distribution of the frozen train split)."""
+    per = {lab: [] for lab in BUCKET_LABELS}
+    for _, row in df.iterrows():
+        sizes = [float(v) for v in str(row.get("equiv_sizes") or "").split(";") if v]
+        if not sizes and float(row.get("equiv_size_640") or 0) > 0:
+            sizes = [float(row["equiv_size_640"])]
+        for e in sizes:
+            per[bucket_of(e)].append(e)
     rows = []
-    boxes = df[~df["is_negative"]] if "is_negative" in df.columns else df
     for lab in BUCKET_LABELS:
-        sub = boxes[boxes["equiv_size_640"].apply(bucket_of) == lab]
-        rows.append({"bucket": lab, "images": int(len(sub)),
-                     "median_equiv_size_640": float(sub["equiv_size_640"].median()) if len(sub) else None,
-                     "mean_equiv_size_640": float(sub["equiv_size_640"].mean()) if len(sub) else None,
-                     "median_width_px": float(sub["width"].median()) if len(sub) else None,
-                     "median_height_px": float(sub["height"].median()) if len(sub) else None})
+        vals = per[lab]
+        rows.append({"bucket": lab, "boxes": len(vals),
+                     "median_equiv_size_640": statistics.median(vals) if vals else None,
+                     "mean_equiv_size_640": statistics.fmean(vals) if vals else None,
+                     "min_equiv_size_640": min(vals) if vals else None,
+                     "max_equiv_size_640": max(vals) if vals else None})
     return pd.DataFrame(rows)
 
 
@@ -319,6 +349,14 @@ def build(eth_data, recipe_path, exclude_eval, train_out, val_out, dataset_yaml,
           only_sets=None):
     print("[build] inventory %s" % eth_data, flush=True)
     recipe = json.loads(Path(recipe_path).read_text(encoding="utf-8"))
+    # The official negative policy lives in the resolved recipe (fraction_coco_train); unless the caller
+    # pins a fraction explicitly, follow the recipe so the negative subsampling cannot be forgotten.
+    negative_fraction_source = "cli" if negative_fraction is not None else "none"
+    if negative_fraction is None:
+        official_fraction = recipe.get("official_fraction_coco_train")
+        if official_fraction is not None and 0.0 < float(official_fraction) < 1.0:
+            negative_fraction = float(official_fraction)
+            negative_fraction_source = "recipe:official_fraction_coco_train"
     inv = inventory_eth_dataset(eth_data, recipe, only_sets=only_sets)
     print("[build] inventory rows=%d" % len(inv), flush=True)
     cand = inv[inv["role"].isin(["official_positives", "official_negatives"])].copy()
@@ -338,24 +376,25 @@ def build(eth_data, recipe_path, exclude_eval, train_out, val_out, dataset_yaml,
         _tr, val_pos = choose_location_split(pos_pool, target_val_fraction)
         val_locs = sorted(set(val_pos["location"]))
     cand, dropped = filter_eval_overlap(cand, exclude_eval)
-    if (dropped["role"] == "official_positives").any():
-        pass
     neg = cand[cand["role"] == "official_negatives"].copy()
     if negative_fraction is not None and 0.0 < float(negative_fraction) < 1.0:
         n_keep = int(round(len(neg) * float(negative_fraction)))
         neg = neg.sort_values("image").head(n_keep)
-    keep = cand[cand["location"].isin(val_locs)] | neg
     train_df = cand[~cand["location"].isin(val_locs)].copy()
     train_df = train_df[train_df["role"] == "official_positives"].copy()
     train_df = pd.concat([train_df, neg], ignore_index=True)
     val_df = cand[cand["location"].isin(val_locs)].copy()
+    # Report the locations that actually carry frames (a chosen location can end up empty after exclusions).
+    val_locs = sorted(set(val_df["location"]))
     excluded_eval = inv[~inv.index.isin(cand.index)].copy()
     report = audit_split(train_df, val_df, exclude_eval)
     report.update({
         "eth_data": str(eth_data), "recipe": str(recipe_path),
         "inventory_images": int(len(inv)),
+        "unreadable_images": len(inv.attrs.get("unreadable_images") or []),
         "candidate_positives_before_exclusion": int((inv["role"] == "official_positives").sum()),
         "negatives_used": int(len(neg)), "negative_fraction": negative_fraction,
+        "negative_fraction_source": negative_fraction_source,
         "excluded_eval_images": int(len(dropped)),
         "excluded_eval_positives": int((dropped["role"] == "official_positives").sum()),
         "excluded_eval_by_location": dropped.groupby("location").size().to_dict() if not dropped.empty else {},

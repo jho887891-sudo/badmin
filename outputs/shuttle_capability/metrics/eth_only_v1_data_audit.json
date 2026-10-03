@@ -1,0 +1,65 @@
+{
+ "status": "PASS",
+ "problems": [],
+ "train_images": 14543,
+ "val_images": 2920,
+ "train_negatives": 551,
+ "negative_images": 551,
+ "location_overlap": [],
+ "sha256_overlap": [],
+ "eval_overlap_images": 0,
+ "eval_hash_overlap_images": 0,
+ "nonempty_negative_labels": 0,
+ "project_synthetic_rows": 0,
+ "val_positive_fraction": 0.17265846736045412,
+ "train_locations": [
+  "cab_1",
+  "cab_2",
+  "coco_train",
+  "glc_1",
+  "ml_4",
+  "ticino_1",
+  "ticino_2"
+ ],
+ "val_locations": [
+  "glc_2",
+  "uetlibergstrasse_2"
+ ],
+ "train_location_counts": {
+  "cab_1": 2127,
+  "cab_2": 3271,
+  "coco_train": 550,
+  "glc_1": 2446,
+  "ml_4": 1343,
+  "ticino_1": 2437,
+  "ticino_2": 2369
+ },
+ "val_location_counts": {
+  "glc_2": 1613,
+  "uetlibergstrasse_2": 1307
+ },
+ "eth_data": "/home/T7/dgut/robot_sim/eth_shuttle_detection",
+ "recipe": "eth_only_v1_official_recipe.json",
+ "inventory_images": 27009,
+ "unreadable_images": 0,
+ "candidate_positives_before_exclusion": 19678,
+ "negatives_used": 550,
+ "negative_fraction": 0.1,
+ "negative_fraction_source": "cli",
+ "excluded_eval_images": 2765,
+ "excluded_eval_positives": 2765,
+ "excluded_eval_by_location": {
+  "ml_3": 1004,
+  "ml_6": 1123,
+  "uetlibergstrasse_1": 638
+ },
+ "excluded_non_training_images": 4596,
+ "excluded_by_role": {
+  "benchmark_holdout": 1000,
+  "official_positives": 2765,
+  "same_location_holdout": 831
+ },
+ "train_images_total": 14543,
+ "target_val_fraction": 0.18,
+ "seed": 42
+}

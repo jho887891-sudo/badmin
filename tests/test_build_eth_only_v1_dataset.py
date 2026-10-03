@@ -143,6 +143,79 @@ def test_filter_eval_overlap_removes_by_name_path_and_hash(sample_inventory):
     assert len(dropped3) == 0
 
 
+def test_build_end_to_end_on_fixture(tmp_path):
+    """build() must run end to end (the plan declared no test for the orchestration path)."""
+    import json
+    import pandas as pd
+    from build_eth_only_v1_dataset import build
+    eth = tmp_path / "eth"
+    recipe = {"official_train_locations": ["cab_1", "cab_2", "cab_3"],
+              "official_train_difficulties": ["easy", "medium"]}
+    for name, n in [("cab_1_easy", 40), ("cab_1_medium", 10), ("cab_2_easy", 8), ("cab_3_easy", 8),
+                    ("coco_train_easy", 10), ("cab_1_hard", 5)]:
+        d = eth / name
+        (d / "images" / "train").mkdir(parents=True)
+        (d / "labels" / "train").mkdir(parents=True)
+        loc = name.rsplit("_", 1)[0]
+        from PIL import Image
+        for i in range(n):
+            img = d / "images" / "train" / ("%s_%s_%03d.jpg" % (loc, name.rsplit("_", 1)[1], i))
+            import zlib
+            key = zlib.crc32(name.encode())
+            Image.new("RGB", (32, 24), (i % 256, (key >> 8) % 256, key % 256)).save(img)  # unique per (dir, i)
+            if loc != "coco_train":
+                (d / "labels" / "train" / (img.stem + ".txt")).write_text("0 0.5 0.5 0.05 0.05\n", encoding="utf-8")
+    rp = tmp_path / "recipe.json"
+    rp.write_text(json.dumps(recipe), encoding="utf-8")
+    rep = build(eth, rp, [], tmp_path / "train.csv", tmp_path / "val.csv", tmp_path / "ds.yaml",
+                tmp_path / "audit.json", tmp_path / "size.csv", dataset_root="data/x",
+                negative_fraction=1.0, target_val_fraction=0.18)
+    assert rep["status"] == "PASS"
+    assert rep["location_overlap"] == []
+    assert rep["nonempty_negative_labels"] == 0
+    assert rep["negatives_used"] == 10
+    assert 0.0 < rep["val_positive_fraction"] < 1.0
+    assert set(rep["train_locations"]).isdisjoint(set(rep["val_locations"]))
+    train = pd.read_csv(tmp_path / "train.csv")
+    assert "coco_train" in set(train["location"])
+    assert (tmp_path / "ds.yaml").exists()
+    assert (tmp_path / "ds.yaml").with_name("ds_train.txt").exists()
+
+
+def test_build_follows_the_recipe_negative_fraction_when_none_is_given(tmp_path):
+    """The official coco fraction must come from the resolved recipe, not from a CLI habit."""
+    import json
+    import pandas as pd
+    import zlib
+    from PIL import Image
+    from build_eth_only_v1_dataset import build
+    eth = tmp_path / "eth2"
+    recipe = {"official_train_locations": ["cab_1", "cab_2", "cab_3"],
+              "official_train_difficulties": ["easy", "medium"],
+              "official_fraction_coco_train": 0.4}
+    for name, n in [("cab_1_easy", 40), ("cab_2_easy", 10), ("cab_3_easy", 10), ("coco_train_easy", 10)]:
+        d = eth / name
+        (d / "images" / "train").mkdir(parents=True)
+        (d / "labels" / "train").mkdir(parents=True)
+        loc = name.rsplit("_", 1)[0]
+        for i in range(n):
+            img = d / "images" / "train" / ("%s_%03d.jpg" % (name, i))
+            Image.new("RGB", (32, 24), (i % 256, zlib.crc32(name.encode()) % 256, 7)).save(img)
+            if loc != "coco_train":
+                (d / "labels" / "train" / (img.stem + ".txt")).write_text("0 0.5 0.5 0.05 0.05\n",
+                                                                         encoding="utf-8")
+    rp = tmp_path / "recipe2.json"
+    rp.write_text(json.dumps(recipe), encoding="utf-8")
+    rep = build(eth, rp, [], tmp_path / "t2.csv", tmp_path / "v2.csv", tmp_path / "ds2.yaml",
+                tmp_path / "audit2.json", tmp_path / "size2.csv", dataset_root="data/x",
+                target_val_fraction=0.18)
+    assert rep["negative_fraction"] == 0.4
+    assert rep["negative_fraction_source"] == "recipe:official_fraction_coco_train"
+    assert rep["negatives_used"] == 4
+    train = pd.read_csv(tmp_path / "t2.csv")
+    assert int((train["location"] == "coco_train").sum()) == 4
+
+
 def test_inventory_requires_recipe_locations(tmp_path, sample_inventory):
     from build_eth_only_v1_dataset import inventory_eth_dataset
     (tmp_path / "cab_1_easy" / "images" / "train").mkdir(parents=True)
