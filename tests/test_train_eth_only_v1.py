@@ -299,7 +299,30 @@ def test_resolve_save_dir_falls_back_to_project_name(tmp_path):
     assert T.resolve_save_dir(tmp_path / "p", "n", SimpleNamespace(trainer=None)) == tmp_path / "p" / "n"
 
 
+def test_build_train_args_pins_wandb_off_and_the_frozen_recipe(workspace, tmp_path):
+    from types import SimpleNamespace
+    a = SimpleNamespace(data_yaml="d.yaml", project="p", name="n", device="0", workers=8, cache=False)
+    d = T.build_train_args(a, 8, {"imgsz": 1024, "nbs": 32, "epochs": 3}, weights="y.pt")
+    assert d["wandb"] is False, "wandb must stay off: it would upload artifacts of an offline experiment"
+    assert d["batch"] == 8 and d["imgsz"] == 1024 and d["nbs"] == 32 and d["epochs"] == 3
+    assert d["exist_ok"] is False and d["pretrained"] is True and d["val"] is True
+    assert d["weight"] == "y.pt" and d["data"] == "d.yaml"
+
+
 # --- manifest ---
+
+def test_shortened_run_is_never_final_eligible():
+    m = T.build_manifest({"experiment": "x", "smoke": False, "dry_run": False,
+                          "resolved_kwargs": {"epochs": 1}, "contract_epochs": 50})
+    assert m["diagnostic_only"] is True and m["eligible_for_final_report"] is False
+    assert m["diagnostic_reasons"] == ["epochs 1 != contract 50"]
+
+
+def test_full_length_run_is_final_eligible():
+    m = T.build_manifest({"experiment": "x", "smoke": False, "dry_run": False,
+                          "resolved_kwargs": {"epochs": 50}, "contract_epochs": 50})
+    assert m["diagnostic_only"] is False and m["diagnostic_reasons"] == []
+
 
 def test_build_manifest_marks_smoke_as_diagnostic():
     m = T.build_manifest({"experiment": "x", "smoke": True})

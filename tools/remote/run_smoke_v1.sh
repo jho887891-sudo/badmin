@@ -5,6 +5,7 @@ B="$HOME/.dsh-bench"; cd "$B"
 PY=/home/T7/public/miniconda3/bin/python
 export PYTHONPATH=/home/T7/ojh/robot_sim/experiments/yolo26_p2_ab/_wheel_extract
 export CUDA_VISIBLE_DEVICES=0
+export WANDB_MODE=disabled   # ultralytics would otherwise upload artifacts of an offline experiment
 NAME="${1:-smoke_e3}"
 MAN="$B/${NAME}_manifest.json"
 DRY="$B/${NAME}_dryrun_manifest.json"

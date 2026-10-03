@@ -252,6 +252,15 @@ def cap_gpu_memory(cap_gib, device_index: int, torch_module=None) -> dict:
             "fraction": fraction, "applied": True}
 
 
+def build_train_args(args, batch: int, recipe_kwargs: dict, weights: str) -> dict:
+    """The exact ultralytics train kwargs. wandb is forced off: the remote box has the package installed
+    and would otherwise upload artifacts of a hermetic, offline experiment."""
+    return dict(data=args.data_yaml, project=args.project, name=args.name, exist_ok=False,
+                device=args.device, workers=args.workers, batch=batch, cache=args.cache,
+                pretrained=True, val=True, plots=True, verbose=True, wandb=False,
+                weight=weights, **recipe_kwargs)
+
+
 def resolve_save_dir(project, name, model=None) -> Path:
     """The trainer's own save_dir is authoritative: ultralytics may nest the run under runs/detect/<project>.
 
@@ -263,10 +272,26 @@ def resolve_save_dir(project, name, model=None) -> Path:
     return Path(project) / name
 
 
+def diagnostic_reasons(run: dict) -> list:
+    """Why a run cannot be reported as the final baseline (empty list = eligible)."""
+    reasons = []
+    if run.get("dry_run"):
+        reasons.append("dry_run")
+    if run.get("smoke"):
+        reasons.append("smoke")
+    epochs = (run.get("resolved_kwargs") or {}).get("epochs")
+    expected = run.get("contract_epochs")
+    if epochs is not None and expected is not None and int(epochs) != int(expected):
+        reasons.append("epochs %s != contract %s" % (epochs, expected))
+    return reasons
+
+
 def build_manifest(run: dict) -> dict:
-    """Assemble the run manifest; a smoke/diagnostic run is explicitly marked non-final."""
-    diagnostic = bool(run.get("smoke") or run.get("dry_run"))
+    """Assemble the run manifest; anything shortened or diagnostic is explicitly marked non-final."""
+    reasons = diagnostic_reasons(run)
+    diagnostic = bool(reasons)
     manifest = dict(run)
+    manifest["diagnostic_reasons"] = reasons
     manifest["diagnostic_only"] = diagnostic
     manifest["eligible_for_final_report"] = not diagnostic
     manifest["checkpoint_selection"] = {"scope": "internal_validation_only",
@@ -333,6 +358,7 @@ def run_cli(argv=None) -> int:
         "smoke": bool(args.smoke),
         "dry_run": bool(args.dry_run),
         "selection_metric": contract["selection_metric"],
+        "contract_epochs": contract["epochs"],
         "device": args.device,
         "workers": args.workers,
         "mem_cap_gib": args.mem_cap_gib,
@@ -356,9 +382,7 @@ def run_cli(argv=None) -> int:
 
     def train_fn(batch):
         model = YOLO(args.weights)
-        model.train(data=args.data_yaml, project=args.project, name=args.name, exist_ok=False,
-                    device=args.device, workers=args.workers, batch=batch, cache=args.cache,
-                    pretrained=True, val=True, plots=True, verbose=True, **kwargs)
+        model.train(**build_train_args(args, batch, kwargs, args.weights))
         return model
 
     batch, model, tried = run_with_fallback(attempts, train_fn)
