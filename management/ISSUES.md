@@ -251,3 +251,132 @@
 - **处置：** ① `target_px` 改为精确存储；② 新增 `test_sample_record_stores_replay_parameters_exactly` 与 `test_replaying_a_sample_from_its_record_is_bit_exact`（从记录值整样本重渲染并断言逐位相同）
 - **已交付数据集的修复方式（不重渲染）：** `target_px` 由 CLI 的确定性配方（`default_rng(seed).lognormal(log 9, 0.5, n)` 后 clip）可精确重导 → 回填 train 397/400、val 120/120 行；回填后 5 个抽样（含 `train_00399`）回放**全为 0.000000**，数据集验证恢复 `ALL CHECKS PASSED`
 - **状态：** RESOLVED（有测试护栏；记录已回填并复验）
+## ISSUE-026 Stage B 从 Stage A 续训时学习率过高，破坏已收敛参数（**FAILED_HIGH_LR_STAGE_B**）
+- **日期：** 2026-09-27
+- **模块：** 训练 / 优化器超参（Stage B 主训练）
+- **现象：** 从 Stage A `best.pt` 续训 Stage B（全网络解冻、`lr0=0.01`）后，前 3 个 epoch 指标**持续坍塌**：mAP50 0.337 → 0.437 → 0.226，Recall 0.496 → 0.390 → 0.189，`train/box_loss` 连续上升 1.455 → 1.575 → 1.660，均远低于 Stage A 基线（mAP50 0.871 / Recall 0.760 / box_loss 1.431）。
+- **失败实验（已保留，禁止覆盖或删除）：**
+  - run id：`gate6B_fromA_imgsz1024_b16_w8_20260927-130317`
+  - 路径：`/home/T7/ojh/robot_sim/runs/shuttle_yolo26_v1/gate6B_fromA_imgsz1024_b16_w8_20260927-130317`
+  - 内含 `results.csv`（3 行）、`best.pt`(58.9 MB)、`last.pt`(58.9 MB)、`resolved_config.yaml`、`args.yaml`
+- **错误日志（`results.csv` 原文，epoch/time/box/cls/l1/P/R/mAP50/mAP50-95/val_box/val_cls/val_l1）:**
+```
+1,4640.85,1.45492,0.75779,0.00182,0.31375,0.49571,0.33691,0.1995,1.53891,2.32459,0.00247
+2,9065.47,1.57457,0.98920,0.00200,0.67154,0.39049,0.43652,0.26384,1.39498,2.31767,0.00209
+3,12938.8,1.65959,1.16127,0.00213,0.80622,0.18896,0.22574,0.13940,1.40337,2.85320,0.00211
+```
+  记录到的 lr（8 个参数组）：epoch1 `0.00999522 / 0.00333174`（交替）、epoch2 `0.0197124 / 0.00657081`、epoch3 `0.0291468 / 0.00971559`。
+- **对照基线校正（避免混用不同 epoch 的指标）：** Stage A `best.pt` 的 `train_metrics.fitness = 0.52278`，与 `results.csv` 中 **epoch 6** 的 mAP50-95 完全一致 → **Stage A 基线 = epoch 6**：
+  box_loss 1.43067 / cls_loss 0.66014 / P 0.94111 / R 0.76012 / mAP50 0.871 / mAP50-95 0.52278 / val_box 1.23579 / val_cls 0.92225 / val_l1 0.00178。
+  后续一切 Stage B 对照都只用 epoch 6 这一行，不再用 Stage A 的 epoch 7/8。
+- **原因（2026-09-27 用源码与实测 LR 审计查明，第一版判断只说对了一半）：**
+  1. **`optimizer=auto` 会完全忽略 `lr0`**。`ultralytics/engine/trainer.py:1137-1146`：`if name == "auto": LOGGER.info("...ignoring 'lr0=...' and 'momentum=...'")`；随后 `lr_fit = 0.002*5/(4+nc)`，并 `name, lr, momentum = ("MuSGD", 0.01, 0.9) if iterations > 10000 else ("AdamW", lr_fit, 0.9)`。
+  2. 70 epoch × 2,091 step = **146,370 iterations > 10,000** → auto 选 **MuSGD，lr=0.01**（与我配置的 `lr0` 无关，数值上碰巧相同）。
+  3. MuSGD 路径还会给检测头（`cv3`/`one2one_cv3`）**学习率 ×3**（`trainer.py:1195`：`{"params": p1, **x, "lr": lr * 3}`），并把参数组拆成 8 组 → **头部分组的 LR = 0.03**，实测 `results.csv` 的 `lr/pg0` 在 epoch 3 达到 **0.0291468**，与该推算一致。
+  4. 于是真实情况是：**全网络解冻 + 检测头 0.03 的 MuSGD 更新**，把 Stage A 已收敛（mAP50 0.871）的权重直接打散。
+  5. 另一个必须记录的事实：3 epoch 的 smoke 若仍用 `auto`，因为 iterations = 6,273 < 10,000 会走 **AdamW lr=0.002** —— **与真实 70 epoch 运行不是同一条代码路径**，用这种 smoke 验证 LR 修复是无效的（本次已作废重跑）。
+- **解决方案：**
+  ① `stages.B.lr0: 0.01 → 0.001`；
+  ② **`run.optimizer: auto → MuSGD`（显式固定）**——否则 lr0 依然被忽略，这是让 lr0 生效的必要条件；`run.warmup_bias_lr: 0.0`（与 auto 分支原本强制的值一致）；
+  ③ 本轮相对失败实验**只改「有效学习率」这一个变量**（优化器家族仍是 auto 当初选的 MuSGD），imgsz(1024)/batch(16)/workers(8)/dataset/sampler/augmentation/Stage A checkpoint/模型结构全部不变；
+  ④ 先跑 **3 epoch smoke** 验收（且必须显式 MuSGD，保证与 70 epoch 走同一路径），通过后再续剩余 epoch；
+  ⑤ 训练器新增 LR/内存审计回调：记录 `lr_config.json`（warmup_epochs / warmup_bias_lr / scheduler / optimizer / 每个参数组的 lr·initial_lr·weight_decay·张量数）与 `lr_probe.jsonl`（逐 step 记录所有参数组 LR）、`mem_probe.jsonl`（MemAvailable / SwapFree / cgroup / RSS），并在 `MemAvailable < 5 GB` 时自动停止训练。
+- **修改文件：** `configs/shuttle_detection/yolo26_p2_v1.yaml`（`stages.B.lr0`）、`tools/train_yolo26_v1.py`（新增参数组 LR 审计回调与内存护栏）
+- **验证方法：** 3 epoch smoke 的 7 条验收 —— ① `box_loss` 不连续明显上升；② Recall 不出现 0.75→0.5→0.2 级坍塌；③ mAP50 不长期低于 Stage A 的一半（<0.435）；④ 所有 pg 的实际 LR 符合预期（任何组都不得升到 0.01/0.02/0.03 以上）；⑤ 无 NaN；⑥ 权重确实从 Stage A `best.pt` 加载；⑦ backbone 确实已解冻（`freeze=0` 且 backbone 参数 `requires_grad=True`）。
+- **是否彻底解决：** 否（待 3 epoch smoke 验收；若 smoke 通过才续训剩余 Stage B）
+- **相关 commit：** 无（本次改动尚未提交）
+
+## ISSUE-027 `hard_negatives2/excluded.txt` 的排除名单被数据集构建器忽略，7 张图仍进入训练集
+- **日期：** 2026-09-28
+- **模块：** 数据集构建 / 数据卫生（V1 统一清单）
+- **现象：** 困难负样本评估（`outputs/shuttle_capability/reports/HARD_NEGATIVE_EVAL.md`）核对清单身份时发现，`outputs/shuttle_capability/hard_negatives2/excluded.txt` 里明确排除的 7 张图，**在 `v1_dataset_manifest.csv` 中全部存在且 `split=train`**，即它们参与了 Stage A 与 Stage B 的训练。
+- **证据（清单 30,321 行逐行匹配）：**
+```
+hn2_010.jpg -> manifest source=hard_negative split=train location=hard_negatives2
+hn2_011.jpg -> manifest source=hard_negative split=train location=hard_negatives2
+hn2_012.jpg -> manifest source=hard_negative split=train location=hard_negatives2
+hn2_013.jpg -> manifest source=hard_negative split=train location=hard_negatives2
+hn2_015.jpg -> manifest source=hard_negative split=train location=hard_negatives2
+hn2_016.jpg -> manifest source=hard_negative split=train location=hard_negatives2
+hn2_017.jpg -> manifest source=hard_negative split=train location=hard_negatives2
+excluded-but-trained: 7
+```
+  复现：`python tools/audit_neg_membership.py`（`PYTHONUTF8=1`）。
+- **原因：** `tools/build_yolo26_v1_dataset.py` 只按**冻结目录**硬排除（`controlled_capability / challenge_test / synthetic_on_real_bg / synthetic_3d / real_images / real_video / real_match_frames / real_train`），**从未读取 `excluded.txt`**。建立 `excluded.txt` 的那次人工筛图与清单构建是两条独立流程，没有接线。
+- **影响评估：** ① 结论层面：`hard_negative` 集合“已被训练”的判定不变（96 张 100% split=train）；② 程度层面：困难负样本上 Stage A→Stage B 的 FP 从 2→0 只能算记忆性证据，且被这 7 张**本不该出现**的图污染（其中 `hn2_056`/`hn2_057` 恰是 Stage A 仍有误检的两张）；③ 泄漏层面：这 7 张不含正样本标注，不构成正样本泄漏，只影响“困难负样本”这一集合的定义纯度。
+- **解决方案：** 在 `tools/build_yolo26_v1_dataset.py` 中新增 `excluded.txt` 读取（按文件名过滤，缺失文件即报错，不静默），然后重建 manifest/digest/sampler。**注意：这会改变已冻结清单 sha256，必须等 Stage B 训练结束之后再执行**，不得在训练途中改动清单（当前 Stage B 仍在跑，PID 3839453）。
+- **修改文件：** 待改 `tools/build_yolo26_v1_dataset.py`；新增证据脚本 `tools/audit_neg_membership.py`；新增报告 `outputs/shuttle_capability/reports/HARD_NEGATIVE_EVAL.md`
+- **验证方法：** 重建后重跑 `tools/audit_neg_membership.py`，要求 `excluded-but-trained: 0`；并比对新的 manifest 行数（应为 30,321 − 7 = 30,314，若允许与正样本重复计数则以实际为准）。
+- **是否彻底解决：** 否（已定位、未修；受 Stage B 训练约束，排在训练结束后）
+- **相关 commit：** 无
+
+## ISSUE-028 本地推理环境 `D:\_yolo26v1` 被外部删除（torch/ultralytics 全失），本地评估一度不可执行
+- **日期：** 2026-09-29
+- **模块：** 环境 / 本地评估链路
+- **现象：** Stage B 训练结束后准备做三方对比时，`D:\_yolo26v1\venv\Scripts\python.exe` 报“不会被识别为 cmdlet/可执行程序”；`Test-Path` 为 False，`dir /a /b D:\` 无任何 `yolo*` 条目，`E:` 亦无同名目录 → **整个 `D:\_yolo26v1`（venv + 解包的 ultralytics wheel `_wheel_extract` + `_deps` + `YOLO_CONFIG_DIR=cfg`）被外部删除，不是改名、不在回收站**。
+- **同时确认未受影响：** `D:\_eth_dl\ckpts\*`（4 个权重）、`D:\_eth_dl\venv`（ETH 下载用，仅 numpy/PIL/pyyaml）、`D:\_eth_data\eth_shuttle_detection`、仓库 `outputs/**` 全部完好；`D:` 现有 23.9 GB 空闲。
+- **影响：** 本地无法做任何 ultralytics 推理（尺寸分桶评估、困难负样本 FP 复算、Gate 7 的 640/960/1280 对比全部受阻）；`D:\_yolo26v1` 下的本地脚本（`launch_*.ps1`、`run_*.ps1`）一并丢失。
+- **原因：** 非本会话所为（本会话对本地只做读取与仓库内写入）；最可能是机器清理/迁移。**无法从本地文件系统取证删除者** → 记录为“外部删除”。
+- **临时绕行尝试（据实记录）：** ① 改用远端 GPU + 远端 venv `env_isaaclab/bin/python`：`import torch` 在 `timeout 900` 内**未完成**（`/dev/vdb2` 84% 占用、loadavg 13.9、GPU 上另有 3 个他人进程 24.2 GB），远端路径不可靠；② 远端 `v1_dataset` 清单已核对与本地**同 sha256**（`11d85026…`）且负样本目录齐备（36+60+30），故远端资产本身没问题，瓶颈只在解释器导入速度。
+- **解决方案：** 重建**本地**评估环境 —— `D:\_eval26\venv`（Python 3.11）：先装 `ultralytics==8.4.150 + polars`（PyPI），**再**装 CUDA 版 `torch/torchvision --index-url https://download.pytorch.org/whl/cu126`（顺序不能反，否则 ultralytics 的依赖会拉入 CPU 版 torch）；装完用 `torch.cuda.is_available()` + `get_device_name(0)` 验收（本机 GPU = RTX 4060 Laptop 8 GB，之前报告里写的 “A6000” 是本机标注错误，已在 `HARD_NEGATIVE_EVAL.md` 更正）。脚本：`D:\_eval26\setup_eval_env.ps1`，日志 `D:\_eval26\setup.log`。
+- **经验教训：** 本地评估环境必须**可重建**——把安装配方（含精确版本与索引 URL）写进仓库脚本，而不是只留 venv；本轮重建前，唯一记录在案的配方只存在于已删除目录的 `launch_*.ps1` 里。
+- **是否彻底解决：** 是（重建脚本已落盘并可重跑）；但重建完成前，所有本地评估处于阻塞状态
+- **相关 commit：** 无
+## ISSUE-029 固定评估集被写成“从未参与训练/调参/模型选择”，与事实不符（文档口径缺陷）
+- **日期：** 2026-10-01
+- **模块：** 文档 / 评估口径（不影响代码与权重）
+- **现象：** `outputs/shuttle_capability/reports/FROZEN_TEST_EVAL.md` 第 5 行写“8 个冻结集合**从未参与训练、调参或模型选择**；本报告是它们的首次使用”，`STAGE_B_FINAL_REPORT.md` 与 `docs/EVAL_FROZEN_TEST.md` 也有“从未参与训练/调参的冻结测试集”这类表述。
+- **原因：** ① 措辞沿用早期“冻结测试集”的说法，把“评估时未参与梯度更新”误写成“未参与模型选择”——实际上这些集合上的数字被反复用于 Stage A/B 的取舍（A best vs B best@e10 的判定本身就是用它们做的）；② `management/ISSUES.md` ISSUE-027 已证明 `hard_negatives2/excluded.txt` 的 7 张图实际进入了训练，隔离并非 100%；③ 集合被多次复看后，“首次使用”“完全未见过”的强断言不再成立。
+- **影响：** 若后续（如 Stage C 调参、置信度阈值选点）继续引用这些集合并称其为“最终测试集”，同一批数据会被同时用于选择与判定，结论无法与选择偏差区分。
+- **解决方案：** 统一改为 **fixed evaluation set** / **development holdout**；新增 `docs/LOCALIZATION_AUDIT.md` §7 作为术语口径来源；在 `FROZEN_TEST_EVAL.md`、`STAGE_B_FINAL_REPORT.md`、`docs/EVAL_FROZEN_TEST.md` 顶部插入**不改写历史**的更正说明；明确：**若 Stage C 依据这些集合上的任何结论调参或选点，最终判断必须另用一个全新的、未被看过的 holdout。**
+- **修改文件：** `docs/LOCALIZATION_AUDIT.md`（新增）、`outputs/shuttle_capability/reports/FROZEN_TEST_EVAL.md`、`outputs/shuttle_capability/reports/STAGE_B_FINAL_REPORT.md`、`docs/EVAL_FROZEN_TEST.md`、`management/ISSUES.md`
+- **是否彻底解决：** 是（口径已更正并落盘；历史报告保留原文 + 更正说明）
+- **相关 commit：** 无
+## ISSUE-030 train 与 val 的 GT 框高度/宽高比规范不一致，导致 val 上的高度偏差被误读为模型问题
+- **日期：** 2026-10-01
+- **模块：** 数据集 / 标注规范（评估口径已排除）
+- **现象：** val 上三个 checkpoint 的 pred_h/gt_h 均值一致地 ≈ **1.092**，而 pred_w/gt_w ≈ 1.000；即"预测框高度系统性偏大 9.2%"。表面像模型回归偏差或评估坐标 bug。
+- **排查：** 见 reports/BBOX_HEIGHT_BIAS_ROOT_CAUSE.md。坐标链路（GT 解码 / letterbox / scale-back）回环误差 1.14e-13，与安装版 ultralytics 的参数与回代函数差 0.0，且 gain_x == gain_y（各向同性，无法只差高度）；原生 vs 缓存逐框 ≤0.303 px；AP 口径与既有报告逐位一致 → 评估链路无 bug。
+- **原因：** **同一宽度桶内，val 的 GT 框比 train 更扁更矮**（1024 输入系中位高）：[14,20) 13.27→12.27、[20,28) 17.60→15.47、[28,40) 23.34→18.67 px；aspect 1.286→1.400 / 1.323→1.483 / 1.360→1.760。模型复现 train 规范，故在 val 上高度多 1.3 px（对 8–16 px 目标即 +9%～+11%）。与规范一致的来源（eth_iphone 1.020、synthetic 1.015）无此偏差，不一致的 eth_main（96% val GT）为 1.095 → 是数据侧规范差异，而非模型/评估。**叠加** aspect 回归到均值（GT aspect 0.677→预测 0.801、1.960→预测 1.521）。
+- **影响：** val 上的 height/AP90/AP95 结论会被这一项系统性偏差污染：counterfactual 显示只纠正高度整轴可把 a_best AP90 0.090→0.515、AP95 0.009→0.203（诊断值，非正式指标）。任何"提高高 IoU 性能"的方案若不先统一规范，都会在错误的基准上比较。
+- **解决方案（本轮不做，仅登记）：** ① 追查 train/val 标注规范差异来源（同一 eth_main 内部，疑与子集标注来源/COCO 转换有关），统一规范后重导 val；② 在统一规范前，val 上的 AP90/AP95 对比需附带本偏差说明。**本轮纪律禁止修改标签**，故只登记不改动。
+- **修改文件：** tools/audit_bbox_height_bias.py、tests/test_bbox_coordinate_roundtrip.py、outputs/shuttle_capability/metrics/bbox_*.csv、outputs/shuttle_capability/reports/BBOX_HEIGHT_BIAS_ROOT_CAUSE.md、management/DAILY_LOG.md
+- **是否彻底解决：** 否（已定位并量化，处置方案待定；标签未改动）
+- **相关 commit：** 无
+## ISSUE-031 我们的 val split 有 62.7% 图像就是 ETH 官方模型的训练帧（第三方基线评估的泄漏风险）
+- **日期：** 2026-10-01
+- **模块：** 数据集 / 第三方基线评估
+- **现象：** 用 ETH 官方 `best.pt` 在我们的固定集合上评估时，val 取得 R 0.9288 / mAP50-95 0.7766，远高于其在 controlled_capability（0.0024 / 0.0123）与 challenge_test（0.0000 / 0.0072）上的表现，值得怀疑。
+- **排查：** 依据 ETH 官方每档 yaml 的 `train: images/train` 与其 config.json 的 12 个训练 location + `diff_levels.train=[easy, medium]` 做**文件级**归属判定（tools/eval_eth_official_baseline.py 的 leakage_classify）。结果：val 4,413 图中 **A 类 2,765 张（62.7%）位于 ETH 训练目录**（ml_6 easy 674 + medium 449、ml_3 easy 606 + medium 398、uetlibergstrasse_1 easy 591 + medium 47），B 类 263、coco_val_easy 1,235、外部 150。
+- **原因：** 我们的 v1 数据集在构建时直接从 ETH 公开数据集各 location/difficulty 目录取样，未按“是否属于 ETH 官方训练档”过滤；而 ETH 官方仓库的训练/验证划分是按 location+difficulty+子目录（images/train|val）定义的，两者口径不同，导致大量 ETH 训练帧进入我们的 val。
+- **影响：** ① ETH 模型在 val 上的任何指标**不能作为其泛化能力**（本质含训练集记忆，A 类子集 R 0.9978）；② 我们的 val 也不能用作“外部模型公平比较集”；③ 若用 val 比较我们与 ETH，会严重高估 ETH、低估我们。
+- **解决方案（本轮只登记，不改数据）：** ① 第三方模型评估统一使用 `eth_unseen` 口径（剔除 A 类；本轮已产出 `val|eth_unseen` 行，495 GT）与两个**完全外部**的合成集；② 后续如需真实域外部评估集，应新建独立于 ETH 训练档的固定集合（我们的 iphone/自采帧 + 合成-on-real-bg），并在 manifest 里显式记录 provenance（location/difficulty/subdir 或来源 URL）以便复核；③ 不要把 val 称为 untouched/final test。
+- **修改文件：** tools/eval_eth_official_baseline.py、tests/test_eth_eval_parity.py、outputs/shuttle_capability/metrics/eth_data_leakage_audit.csv、eth_data_leakage_inventory.csv、reports/ETH_OFFICIAL_BASELINE_AUDIT.md、management/DAILY_LOG.md
+- **是否彻底解决：** 否（已定量定位；评估口径已切换为 eth_unseen，数据集本身未改动）
+- **相关 commit：** 无
+
+## ISSUE-032 ETH-only V1 数据集冻结的三处产物缺陷（上报字段、尺寸统计、负样本抽样）
+- **日期：** 2026-10-03
+- **模块：** 数据集构建 / 实验产物
+- **现象：** 首次全量冻结（远端 `~/.dsh-bench/eth_only_v1_*`）audit 显示 PASS，但逐字段核验发现三处不一致：① `val_locations` 列出 `uetlibergstrasse_1`，而 `val_location_counts` 只有 `glc_2 + uetlibergstrasse_2`；② `size_distribution.csv` 里 13,992 张正样本全部落在 `<4`，`median_equiv_size_640` 恒为 0.333；③ 重跑时 train 从 14,543 涨到 19,493、负样本从 551 涨到 5,501。
+- **原因：** ① `build()` 把"被选中的 location 组合"当作 val locations 上报（候选池排除评估帧后该 location 已 0 帧，但名字仍在组合里）；② `inventory_eth_dataset` 用 `equiv_size_640(1, 1, W, H)` 占位（因为逐图箱尺寸未知），使该列恒为 `sqrt(1*1)*640/max(W,H)`；③ 负样本抽样只由 `--negative-fraction` 触发，`build()` 不读 recipe 的 `official_fraction_coco_train`，CLI 漏传即静默退化为全量 5,500。
+- **影响：** ②使尺寸分布完全失真（会误导后续按尺寸分桶的性能比较）；③会以 10 倍负样本训练出一个与计划配方不同的模型（负样本比例 0.1→0.28），且 audit 仍是 PASS 不会报警；①只是上报字段错误，拆分本身正确（val 2,920 / 0.17266 三次一致）。
+- **解决方案：** ① 改为从实际 val 帧推导 `val_locations`；② 按标签框逐框计算 `equiv_size_640(w_px,h_px,W,H)`，每图新增 `min/median/max_equiv_size_640` 与 `equiv_sizes`，尺寸分布改为**箱级**统计；③ `negative_fraction` 缺省时按 recipe `official_fraction_coco_train` 取值并记录 `negative_fraction_source`；重跑脚本加硬断言（train/val/coco/val_locs）确保不再静默漂移。
+- **修改文件：** tools/build_eth_only_v1_dataset.py、tests/test_build_eth_only_v1_dataset.py、tools/remote/run_build_v1b.sh、tools/remote/verify_v1_artifacts.py、tools/remote/check_local_artifacts.py、data/eth_only_v1*、outputs/shuttle_capability/metrics/eth_only_v1_{data_audit.json,size_distribution.csv}
+- **验证方法：** `python tools/remote/check_local_artifacts.py`：audit PASS、`val_locations` 与 val manifest 实际 location 集合一致、箱级桶计数合计 **13,992** = 正样本数、negatives 551（coco 550）、16 项 builder 测试全绿（含新增的 recipe 负样本比例测试）
+- **是否彻底解决：** 是（产物已重生成并提交；错误版本保留在远端两个备份目录，未删除）
+- **相关 commit：** 52cd0dc
+
+## ISSUE-033 ultralytics 把 run 目录嵌套在 runs/detect/<project> 下，按 project/name 读 results.csv 会静默丢失选点
+- **日期：** 2026-10-03
+- **模块：** 训练启动器 / 实验产物
+- **现象：** 3 epoch smoke 的日志显示 `Logging results to /home/dgut/.dsh-bench/runs/detect/runs_eth_only_v1/smoke_e3`，而启动器按 `<project>/<name>` 去找 `results.csv` → 训练完成后选点记录只会写成 `{"error": "results.csv missing after training"}`。
+- **原因：** 当 `project` 是相对路径时，ultralytics 会把它并到默认根 `runs/detect/` 之下（`get_save_dir`），实际保存目录并不等于 `project/name`。
+- **影响：** 若未发现，50 epoch 全量训练后"只用内部 val mAP50-95 选点"这一步会退化为无记录（best.pt 仍有，但选点证据、best epoch、recall 全部丢失），且不会报错——正是本轮契约最在意的失败模式。
+- **解决方案：** 启动器改为从 trainer 对象读取权威 `save_dir`（`resolve_save_dir(project, name, model)`），并把 `save_dir` 写进 manifest；新增 2 项测试。
+- **修改文件：** tools/train_eth_only_v1.py、tests/test_train_eth_only_v1.py
+- **验证方法：** `pytest tests/test_train_eth_only_v1.py` 46 项全绿；smoke 重跑后 manifest 的 `save_dir`/`selection` 与日志中的实际目录一致
+- **是否彻底解决：** 是（代码已修，smoke 复验中）
+- **相关 commit：** f2bed61
+
+
