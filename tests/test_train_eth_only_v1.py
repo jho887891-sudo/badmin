@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -303,13 +304,62 @@ def test_build_train_args_pins_wandb_off_and_the_frozen_recipe(workspace, tmp_pa
     from types import SimpleNamespace
     a = SimpleNamespace(data_yaml="d.yaml", project="p", name="n", device="0", workers=8, cache=False)
     d = T.build_train_args(a, 8, {"imgsz": 1024, "nbs": 32, "epochs": 3}, weights="y.pt")
-    assert d["wandb"] is False, "wandb must stay off: it would upload artifacts of an offline experiment"
+    assert "weight" not in d, "ultralytics rejects 'weight=...'; the model is loaded through YOLO(weights)"
+    assert "wandb" not in d, "8.4.150 has no wandb= argument; suppression happens through the environment"
     assert d["batch"] == 8 and d["imgsz"] == 1024 and d["nbs"] == 32 and d["epochs"] == 3
     assert d["exist_ok"] is False and d["pretrained"] is True and d["val"] is True
-    assert d["weight"] == "y.pt" and d["data"] == "d.yaml"
+    assert d["data"] == "d.yaml"
 
 
 # --- manifest ---
+
+def test_disable_third_party_loggers_sets_the_environment(monkeypatch):
+    monkeypatch.delenv("WANDB_MODE", raising=False)
+    monkeypatch.delenv("WANDB_DISABLED", raising=False)
+    info = T.disable_third_party_loggers()
+    assert info["WANDB_MODE"] == "disabled" and os.environ["WANDB_MODE"] == "disabled"
+    assert os.environ["WANDB_DISABLED"] == "true"
+
+
+def _ultralytics_default_keys():
+    import importlib.util
+    spec = importlib.util.find_spec("ultralytics")
+    if spec is None or not spec.origin:
+        return None
+    import yaml as _yaml
+    p = Path(spec.origin).parent / "cfg" / "default.yaml"
+    if not p.is_file():
+        return None
+    return set((_yaml.safe_load(p.read_text(encoding="utf-8")) or {}).keys())
+
+
+def test_build_train_args_only_uses_legal_ultralytics_arguments(workspace):
+    """Guards the class of bug where a typo (e.g. weight=) only surfaces after a long remote run."""
+    keys = _ultralytics_default_keys()
+    if keys is None:
+        pytest.skip("ultralytics is not installed locally")
+    from types import SimpleNamespace
+    contract = T.load_contract(workspace["contract"])
+    recipe = json.loads(workspace["recipe"].read_text(encoding="utf-8"))
+    a = SimpleNamespace(data_yaml="d.yaml", project="p", name="n", device="0", workers=8, cache=False)
+    d = T.build_train_args(a, 8, T.resolve_recipe(contract, recipe), weights="y.pt")
+    illegal = sorted(k for k in d if k not in keys)
+    assert illegal == [], "not valid ultralytics arguments: %s" % illegal
+
+
+def test_real_contract_recipe_produces_only_legal_arguments(workspace):
+    keys = _ultralytics_default_keys()
+    if keys is None:
+        pytest.skip("ultralytics is not installed locally")
+    from types import SimpleNamespace
+    contract = T.load_contract(REAL_CONTRACT)
+    recipe = json.loads(REAL_RECIPE.read_text(encoding="utf-8"))
+    a = SimpleNamespace(data_yaml="d.yaml", project="p", name="n", device="0", workers=8, cache=False)
+    d = T.build_train_args(a, 8, T.resolve_recipe(contract, recipe), weights="y.pt")
+    illegal = sorted(k for k in d if k not in keys)
+    assert illegal == [], "not valid ultralytics arguments: %s" % illegal
+    assert d["optimizer"] == "AdamW" and d["imgsz"] == 1024 and d["nbs"] == 32
+
 
 def test_shortened_run_is_never_final_eligible():
     m = T.build_manifest({"experiment": "x", "smoke": False, "dry_run": False,

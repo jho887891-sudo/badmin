@@ -15,6 +15,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import re
 import sys
 from datetime import datetime, timezone
@@ -252,13 +253,23 @@ def cap_gpu_memory(cap_gib, device_index: int, torch_module=None) -> dict:
             "fraction": fraction, "applied": True}
 
 
+def disable_third_party_loggers() -> dict:
+    """Keep the run hermetic. ultralytics 8.4 has no wandb= argument: it auto-registers integration
+    callbacks whenever the package is importable (the remote box had W&B uploading run artifacts), so the
+    only reliable switch is the environment."""
+    os.environ["WANDB_MODE"] = "disabled"
+    os.environ.setdefault("WANDB_DISABLED", "true")
+    os.environ.setdefault("COMET_MODE", "DISABLED")
+    return {"WANDB_MODE": os.environ["WANDB_MODE"], "WANDB_DISABLED": os.environ["WANDB_DISABLED"],
+            "COMET_MODE": os.environ["COMET_MODE"]}
+
+
 def build_train_args(args, batch: int, recipe_kwargs: dict, weights: str) -> dict:
-    """The exact ultralytics train kwargs. wandb is forced off: the remote box has the package installed
-    and would otherwise upload artifacts of a hermetic, offline experiment."""
+    """The exact ultralytics train kwargs (every key is validated against default.yaml by the tests)."""
     return dict(data=args.data_yaml, project=args.project, name=args.name, exist_ok=False,
                 device=args.device, workers=args.workers, batch=batch, cache=args.cache,
-                pretrained=True, val=True, plots=True, verbose=True, wandb=False,
-                weight=weights, **recipe_kwargs)
+                pretrained=True, val=True, plots=True, verbose=True,
+                **recipe_kwargs)
 
 
 def resolve_save_dir(project, name, model=None) -> Path:
@@ -363,6 +374,7 @@ def run_cli(argv=None) -> int:
         "workers": args.workers,
         "mem_cap_gib": args.mem_cap_gib,
         "started": _now(),
+        "third_party_loggers": disable_third_party_loggers(),
         "notes": ["physical batch may fall back only on CUDA OOM",
                   "imgsz/nbs/optimizer/lr0 are frozen by the contract",
                   "augmentation + loss values mirror the ETH official recipe (only batch/nbs deviate)"],
