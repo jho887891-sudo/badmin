@@ -274,6 +274,23 @@ def test_select_best_epoch_uses_internal_val_map50_95(tmp_path):
     assert best["metric"] == T.SELECTION_METRIC
 
 
+def test_select_best_epoch_accepts_the_contract_metric_name(tmp_path):
+    """The contract says mAP50-95; ultralytics writes metrics/mAP50-95(B) with padded header cells."""
+    p = tmp_path / "results.csv"
+    header = "epoch,time,                 train/box_loss,metrics/mAP50(B)," + "                 metrics/mAP50-95(B)," + "                 metrics/recall(B)"
+    p.write_text(header + chr(10) + "1,10,3.5,0.30,0.11,0.40" + chr(10) + "2,20,3.0,0.44,0.19,0.55" + chr(10),
+                 encoding="utf-8")
+    best = T.select_best_epoch(p, "mAP50-95")
+    assert best["epoch"] == 2 and best["value"] == 0.19 and best["recall"] == 0.55
+    assert best["column"] == "metrics/mAP50-95(B)" and best["metric"] == "mAP50-95"
+
+
+def test_metric_aliases_cover_both_spellings():
+    assert "metrics/mAP50-95(B)" in T.metric_aliases("mAP50-95")
+    assert "mAP50-95" in T.metric_aliases("metrics/mAP50-95(B)")
+    assert T.metric_aliases("metrics/mAP50-95(B)") == T.metric_aliases("mAP50-95")
+
+
 def test_select_best_epoch_requires_the_metric_column(tmp_path):
     p = tmp_path / "results.csv"
     p.write_text("epoch,metrics/mAP50(B)\n1,0.4\n", encoding="utf-8")

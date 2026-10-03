@@ -203,6 +203,15 @@ def check_dataset_yaml(path) -> dict:
             "root": str(root), "lists": lists}
 
 
+def metric_aliases(metric: str) -> set:
+    """The contract names the metric 'mAP50-95'; ultralytics writes 'metrics/mAP50-95(B)'."""
+    m = str(metric).strip()
+    core = m[len("metrics/"):] if m.startswith("metrics/") else m
+    if core.endswith("(B)"):
+        core = core[:-3]
+    return {core, core + "(B)", "metrics/" + core, "metrics/%s(B)" % core}
+
+
 def select_best_epoch(results_csv, metric: str = SELECTION_METRIC) -> dict:
     """Internal-validation-only selection: argmax of the internal val metric column."""
     p = Path(results_csv)
@@ -211,20 +220,22 @@ def select_best_epoch(results_csv, metric: str = SELECTION_METRIC) -> dict:
     rows = list(csv.DictReader(p.open(encoding="utf-8", newline="")))
     if not rows:
         raise ContractError("results csv %s has no epoch rows" % p)
+    aliases = metric_aliases(metric)
     key = None
     for field in rows[0]:
-        if field and field.strip() == metric:
+        if field and field.strip() in aliases:
             key = field
             break
     if key is None:
-        raise ContractError("results csv %s has no %r column (columns: %s)"
-                            % (p, metric, ", ".join(k.strip() for k in rows[0] if k)))
+        raise ContractError("results csv %s has no %r column (aliases %s; columns: %s)"
+                            % (p, metric, sorted(aliases), ", ".join(k.strip() for k in rows[0] if k)))
     def value(row):
         return float(str(row[key]).strip() or "-1")
     best = max(rows, key=value)
     epoch = best.get("epoch") or best.get("                  epoch") or ""
     recall_key = next((f for f in best if f and f.strip() == "metrics/recall(B)"), None)
-    return {"metric": metric, "value": value(best), "epoch": int(float(str(epoch).strip() or 0)),
+    return {"metric": metric, "column": key.strip(), "value": value(best),
+            "epoch": int(float(str(epoch).strip() or 0)),
             "epochs_recorded": len(rows),
             "recall": (float(str(best[recall_key]).strip()) if recall_key else None),
             "selection_scope": "internal_validation_only",
