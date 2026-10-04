@@ -1,0 +1,57 @@
+# Unified checkpoint registry — every stage resolves checkpoints by NAME through this file.
+#
+#   val          : python tools/eval_yolo26_v1.py --split val          --ckpt-name a_best --ckpt-name b_best
+#   frozen test  : python tools/eval_yolo26_v1.py --split frozen_test  --ckpt-name a_best --ckpt-name b_best --ckpt-name b_last
+#   ad-hoc       : --ckpt NAME=PATH  (wins over a registry entry with the same name)
+#
+# `path`  = LOCAL copy used for evaluation (results are the local SSOT).
+# `remote`= where the run lives on the training host (documentation only, never read by the tool).
+# A name may omit/have an empty `path` (placeholder): the evaluator prints SKIP and keeps going.
+checkpoints:
+  a_best:
+    path: D:/_eth_dl/ckpts/stageA_best.pt
+    run: gate6A_imgsz1024_b16_w8_20260926-083331
+    remote: /home/T7/ojh/robot_sim/runs/shuttle_yolo26_v1/gate6A_imgsz1024_b16_w8_20260926-083331/weights/best.pt
+    epoch: 6
+    role: baseline
+    note: "Stage A best (backbone frozen), 20,125,499 B, sha256 3214aaf1...5a33"
+
+  b_best:
+    path: D:/_eth_dl/ckpts/stageB_best_e10_stripped.pt
+    run: gate6B_lr0001_musgd_b16_w8_20260927-235730
+    remote: /home/T7/ojh/robot_sim/runs/shuttle_yolo26_v1/gate6B_lr0001_musgd_b16_w8_20260927-235730/weights/best.pt
+    epoch: 10
+    role: candidate
+    note: "Stage B best by fitness 0.58263; stripped inference weights, 20,136,763 B, sha256 419a3eef...208b"
+
+  b_last:
+    path: D:/_eth_dl/ckpts/stageB_last_e70.pt
+    run: gate6B_lr0001_musgd_b16_w8_20260927-235730
+    remote: /home/T7/ojh/robot_sim/runs/shuttle_yolo26_v1/gate6B_lr0001_musgd_b16_w8_20260927-235730/weights/last.pt
+    epoch: 70
+    role: overfit_control
+    note: "Stage B final epoch (overfitting control), 20,136,763 B, sha256 42f0043a...98a4"
+
+  c_best:
+    path: ""
+    run: ""
+    remote: ""
+    epoch: null
+    role: future
+    note: "Stage C (15 epochs, mosaic 0) has not run yet — placeholder so the name still resolves"
+
+  eth_only_v1_best:
+    path: _scratch_eth_only_v1/best.pt       # SCRATCH copy: resource stays remote, delete after evaluation
+    run: full_e50 (runs/detect/runs_eth_only_v1/full_e50)
+    remote: /home/dgut/.dsh-bench/runs/detect/runs_eth_only_v1/full_e50/weights/best.pt
+    epoch: 21
+    role: candidate
+    note: "ETH-only YOLO26s 1024 baseline V1 (task 4). Plain YOLO26s initialised from the official
+      yolo26s.pt (20,422,725 B, sha256 646f8bc3...), trained only on ETH real positives + coco_train
+      negatives at the official fraction 0.1 (no iPhone/Isaac/synthetic/our-eval frames), 50 epochs,
+      batch 8 / nbs 32 / AdamW lr0 1e-4 (only batch+nbs deviate from the ETH official recipe).
+      Selected on the internal location-disjoint val (2,920 frames) by mAP50-95 only: epoch 21,
+      mAP50-95 0.67733 / mAP50 0.96384 / R 0.91448 (fitness argmax == mAP50-95 argmax, so
+      ultralytics best.pt is that checkpoint). 20,344,069 B, sha256
+      7a836a2621686affbdd3f1da7c3a0a57c4b86f14432835be2bc562c2899fc6f2. Trained 2026-10-03
+      03:55:49Z-11:19:33Z on the shared A6000 under a 24 GiB per-process cap."

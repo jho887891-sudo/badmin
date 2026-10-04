@@ -1,0 +1,13 @@
+checkpoint,bucket,GT,TP,FN,Recall,AP50,AP50-95,low_sample
+eth_only_v1_best,<4,24,0,24,0.0,0.041667,0.004167,True
+eth_only_v1_best,4-6,71,13,58,0.183099,0.365148,0.173618,False
+eth_only_v1_best,6-8,251,110,141,0.438247,0.732869,0.484137,False
+eth_only_v1_best,8-12,1724,1174,550,0.680974,0.847831,0.610822,False
+eth_only_v1_best,12-16,755,345,410,0.456954,0.701496,0.496175,False
+eth_only_v1_best,16-24,343,144,199,0.419825,0.699278,0.472059,False
+eth_only_v1_best,24-32,52,13,39,0.25,0.462179,0.33391,False
+eth_only_v1_best,32-64,29,10,19,0.344828,0.775862,0.548276,True
+eth_only_v1_best,>64,11,0,11,0.0,0.121212,0.048485,True
+eth_only_v1_best,OVERALL,3260,1809,1451,0.554908,0.763768,0.539057,
+eth_only_v1_best,COMBINED_6-16,2730,1629,1101,0.596703,,,
+eth_only_v1_best,COMBINED_4-16,2801,1642,1159,0.586219,,,

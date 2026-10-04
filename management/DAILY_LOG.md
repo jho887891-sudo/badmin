@@ -4,6 +4,23 @@
 
 ---
 
+# 2026-10-04（续 15）Task 4 完成：ETH-only YOLO26s 1024 全量 50 epoch 训练 + 内部 val 选点
+
+**约束**：未用任何外部/评估集做选点（选点只用内部 location-disjoint val 的 mAP50-95）；未改数据/标签/evaluator；旧产物未覆盖（新产物一律新文件名）。
+
+**训练窗口**：2026-10-03 03:55:49Z → 11:19:33Z（**7.4 h**），50/50 epoch，manifest `diagnostic_only=false`、`eligible_for_final_report=true`。
+- **选点**（内部 val 2,920 帧，仅 mAP50-95）：**epoch 21，mAP50-95 0.67733 / mAP50 0.96384 / R 0.91448**
+- **契约细节已核对**：ultralytics 的 `best.pt` 按 fitness（0.1·mAP50+0.9·mAP50-95）保存，本轮 **fitness argmax 与 mAP50-95 argmax 同为 epoch 21** → `best.pt` 就是契约要求的那个 checkpoint（无偏差）；top6 落在 0.6756–0.6773，平台期稳定
+- best.pt：**20,344,069 B / sha256 `7a836a2621686affbdd3f1da7c3a0a57c4b86f14432835be2bc562c2899fc6f2`**（远端 `runs/detect/runs_eth_only_v1/full_e50/weights/best.pt`；本地仅 `_scratch_eth_only_v1/best.pt` 临时副本，评估后删除）
+- val 曲线：e1 0.4086 → e5 0.6483 → e10 0.6530 → e20 0.6671 → **e21 0.6773** → e30 0.6745 → e40 0.6706 → e50 0.6709
+- 运行配置：batch 8（首次即成功，未触发 6/4 回退）、24 GiB 上限（fraction 0.5063）、`WANDB_MODE=disabled`、workers 8；显存 6.0–6.7 GB；远端 `/` 由 9.0 G → 7.4 G（本次净占 ~1.6 G）
+- 入库产物：`outputs/shuttle_capability/metrics/eth_only_v1_full_e50_manifest.json`（3350 B, sha16 `cf99df172841168b`）、`eth_only_v1_full_e50_results.csv`（6143 B, sha16 `a8688b9f81ff8482`）
+
+**Task 5 起步**（本地评估，权重只落 `_scratch_*`）：
+- `configs/shuttle_detection/checkpoints_v1.yaml` 新增 `eth_only_v1_best`（path 指向 scratch、remote/epoch/sha256 全记录）
+- 我们 SSOT 评估器全 `val`（4,413 帧 / 3,260 GT）首测：**P 0.9752 / R 0.5549 / mAP50 0.7638**（TP 1,809 / FP 46 / FN 1,451）；分尺寸桶入库 `eth_only_v1_val_size_buckets.{json,csv}`
+- **该对比不公平，不得直接下结论**：`val` 有 2,765 帧就是 ETH 官方训练帧，且 a_best/b_best 当年在含这些帧的 v1 上训练过；公平对照必须走 `val|eth_unseen` + 两个冻结集（用同一个 `eval_eth_official_baseline.py`，2 模型同评估器）
+
 # 2026-10-03（续 14）Task 3 收官（集成跑跑通全链路）+ **Task 4 50 epoch 全量已启动**
 
 **约束**：仍未用任何中间指标做选点或调参；smoke/集成跑均标记 `diagnostic_only=true`、`eligible_for_final_report=false`（新增"epochs 与契约 50 不同即不可作为最终结果"的判定）；旧产物一律保留。

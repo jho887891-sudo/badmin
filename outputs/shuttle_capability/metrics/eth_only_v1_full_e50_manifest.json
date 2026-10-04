@@ -1,0 +1,132 @@
+{
+ "experiment": "eth_only_yolo26s_1024_v1",
+ "spec": "docs/superpowers/specs/2026-10-02-eth-only-yolo26s-1024-baseline-v1-design.md",
+ "contract": {
+  "path": "eth_only_yolo26s_1024_v1.yaml",
+  "sha256": "fd9f95dc85361fdd9bf2188d715ee30196bef7a607e340e590b2205191917bc6"
+ },
+ "weights": {
+  "path": "/home/T7/dgut/robot_sim/yolo26s.pt",
+  "bytes": 20422725,
+  "sha256": "646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b"
+ },
+ "data": {
+  "yaml": "eth_only_v1_train_remote.yaml",
+  "sha256": "d2e0c66b13c09d937e79b69dc9bce9976d8f411f92bd7c0fc922ff8d2d62b55a",
+  "nc": 1,
+  "names": [
+   "shuttlecock"
+  ],
+  "root": "/home/dgut/.dsh-bench/data/eth_only_v1",
+  "lists": {
+   "train": {
+    "file": "/home/dgut/.dsh-bench/data/eth_only_v1/eth_only_v1_train_train.txt",
+    "images": 14543,
+    "sha256": "d0947c2c5cd67d0e875176aa3f563ea337ec824d0d6afbe34c0a02d148e53659"
+   },
+   "val": {
+    "file": "/home/dgut/.dsh-bench/data/eth_only_v1/eth_only_v1_train_val.txt",
+    "images": 2920,
+    "sha256": "1863b6a1d5b5412176a956272dc3d7f28b7d7fef8fac952aa490b2bbca9d62c5"
+   }
+  }
+ },
+ "resolved_kwargs": {
+  "imgsz": 1024,
+  "epochs": 50,
+  "optimizer": "AdamW",
+  "lr0": 0.0001,
+  "momentum": 0.9,
+  "weight_decay": 0.0005,
+  "seed": 42,
+  "box": 7.5,
+  "cls": 0.5,
+  "dfl": 1.5,
+  "mosaic": 1.0,
+  "degrees": 0.0,
+  "translate": 0.1,
+  "scale": 0.5,
+  "shear": 0.0,
+  "perspective": 0.0,
+  "copy_paste": 0.0,
+  "copy_paste_mode": "flip",
+  "fliplr": 0.5,
+  "flipud": 0.0,
+  "mixup": 0.7,
+  "cutmix": 0.0,
+  "hsv_h": 0.015,
+  "hsv_s": 0.7,
+  "hsv_v": 0.4,
+  "deterministic": true,
+  "nbs": 32,
+  "freeze": 0,
+  "batch": 8
+ },
+ "batch_attempts": [
+  8,
+  6,
+  4
+ ],
+ "smoke": false,
+ "dry_run": false,
+ "selection_metric": "mAP50-95",
+ "contract_epochs": 50,
+ "device": "0",
+ "workers": 8,
+ "mem_cap_gib": 24.0,
+ "started": "2026-10-03T03:55:49+00:00",
+ "third_party_loggers": {
+  "WANDB_MODE": "disabled",
+  "WANDB_DISABLED": "true",
+  "COMET_MODE": "DISABLED"
+ },
+ "notes": [
+  "physical batch may fall back only on CUDA OOM",
+  "imgsz/nbs/optimizer/lr0 are frozen by the contract",
+  "augmentation + loss values mirror the ETH official recipe (only batch/nbs deviate)"
+ ],
+ "gpu_cap": {
+  "cap_gib": 24.0,
+  "device_total_gib": 47.4,
+  "fraction": 0.5063099464224323,
+  "applied": true
+ },
+ "batch_attempts_tried": [
+  {
+   "batch": 8,
+   "outcome": "ok",
+   "detail": ""
+  }
+ ],
+ "batch": 8,
+ "save_dir": "/home/dgut/.dsh-bench/runs/detect/runs_eth_only_v1/full_e50",
+ "selection": {
+  "metric": "mAP50-95",
+  "column": "metrics/mAP50-95(B)",
+  "value": 0.67733,
+  "epoch": 21,
+  "epochs_recorded": 50,
+  "recall": 0.91448,
+  "selection_scope": "internal_validation_only",
+  "results_csv": "/home/dgut/.dsh-bench/runs/detect/runs_eth_only_v1/full_e50/results.csv"
+ },
+ "best_checkpoint": {
+  "path": "/home/dgut/.dsh-bench/runs/detect/runs_eth_only_v1/full_e50/weights/best.pt",
+  "bytes": 20344069,
+  "sha256": "7a836a2621686affbdd3f1da7c3a0a57c4b86f14432835be2bc562c2899fc6f2"
+ },
+ "finished": "2026-10-03T11:19:33+00:00",
+ "diagnostic_reasons": [],
+ "diagnostic_only": false,
+ "eligible_for_final_report": true,
+ "checkpoint_selection": {
+  "scope": "internal_validation_only",
+  "metric": "mAP50-95"
+ },
+ "never_used_for_selection": [
+  "val|eth_unseen",
+  "external_real_only",
+  "controlled_capability",
+  "challenge_test"
+ ]
+}
