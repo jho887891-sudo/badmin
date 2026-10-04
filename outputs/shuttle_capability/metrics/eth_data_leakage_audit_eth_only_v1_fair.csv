@@ -1,0 +1,13 @@
+model,set,leakage_class,images,GT,TP@0.5,Recall@0.5
+eth_official,val,C_outside_eth_dataset,150,120,4,0.033333
+eth_official,val,C_eth_benchmark_other_split,1235,112,16,0.142857
+eth_official,val,A_eth_trained_folder,2765,2765,2759,0.99783
+eth_official,val,B_same_location_not_trained,263,263,249,0.946768
+eth_official,controlled_capability/images,C_outside_eth_dataset,2070,2070,5,0.002415
+eth_official,challenge_test/images,C_outside_eth_dataset,227,194,0,0.0
+eth_only_v1_best,val,C_outside_eth_dataset,150,120,3,0.025
+eth_only_v1_best,val,C_eth_benchmark_other_split,1235,112,16,0.142857
+eth_only_v1_best,val,A_eth_trained_folder,2765,2765,1728,0.624955
+eth_only_v1_best,val,B_same_location_not_trained,263,263,62,0.235741
+eth_only_v1_best,controlled_capability/images,C_outside_eth_dataset,2070,2070,11,0.005314
+eth_only_v1_best,challenge_test/images,C_outside_eth_dataset,227,194,1,0.005155
