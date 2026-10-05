@@ -1,0 +1,179 @@
+{
+ "scope": "supplementary read-only analysis: cost of excluding every evaluation image from training",
+ "inputs": {
+  "recipe": "outputs/shuttle_capability/metrics/eth_only_v1_official_recipe.json",
+  "v1_audit": "outputs/shuttle_capability/metrics/eth_only_v1_data_audit.json",
+  "inventory": "outputs/shuttle_capability/metrics/eth_data_leakage_inventory.csv",
+  "fn": "outputs/shuttle_capability/metrics/eth_only_v1_fn_analysis.json"
+ },
+ "summary": {
+  "locations_total": 11,
+  "locations_fully_consumed": [
+   "ml_6",
+   "ml_3",
+   "uetlibergstrasse_1"
+  ],
+  "frames_consumed_total": 2765,
+  "frames_remaining_trainable_total": 16913,
+  "dropped_locations_val_gt": 263,
+  "dropped_locations_fn": 201,
+  "dropped_locations_fn_rate": 0.7642585551330798,
+  "trained_locations_val_gt": 0,
+  "trained_locations_fn": 0,
+  "trained_locations_fn_rate": null,
+  "recoverable_fn_total_in_eth_locations": 187,
+  "recoverable_fn_total_global": 194,
+  "recoverable_share_of_eth_locations": 1.0,
+  "recoverable_share_of_global": 0.9639175257731959,
+  "note_trained_locations_val_gt_zero": "val|eth_unseen contains no GT from any location this model trained on, so its recall is a pure out-of-location (plus cross-domain) number; a trained-location FN rate does not exist.",
+  "non_eth_domains": [
+   {
+    "domain": "iphone_20251015",
+    "val_unseen_gt": 112,
+    "v1_fn": 96,
+    "v1_fn_rate": 0.8571428571428571
+   },
+   {
+    "domain": "synthetic",
+    "val_unseen_gt": 120,
+    "v1_fn": 117,
+    "v1_fn_rate": 0.975
+   }
+  ]
+ },
+ "by_location": [
+  {
+   "location": "cab_2",
+   "eth_easy_medium_frames": 3271,
+   "consumed_by_our_evaluation": 0,
+   "remaining_trainable": 3271,
+   "fully_consumed": false,
+   "v1_train_frames_used": 3271,
+   "val_unseen_gt": 0,
+   "v1_fn": 0,
+   "v1_fn_rate": null,
+   "recoverable_fn": 0
+  },
+  {
+   "location": "glc_1",
+   "eth_easy_medium_frames": 2446,
+   "consumed_by_our_evaluation": 0,
+   "remaining_trainable": 2446,
+   "fully_consumed": false,
+   "v1_train_frames_used": 2446,
+   "val_unseen_gt": 0,
+   "v1_fn": 0,
+   "v1_fn_rate": null,
+   "recoverable_fn": 0
+  },
+  {
+   "location": "ticino_1",
+   "eth_easy_medium_frames": 2437,
+   "consumed_by_our_evaluation": 0,
+   "remaining_trainable": 2437,
+   "fully_consumed": false,
+   "v1_train_frames_used": 2437,
+   "val_unseen_gt": 0,
+   "v1_fn": 0,
+   "v1_fn_rate": null,
+   "recoverable_fn": 0
+  },
+  {
+   "location": "ticino_2",
+   "eth_easy_medium_frames": 2369,
+   "consumed_by_our_evaluation": 0,
+   "remaining_trainable": 2369,
+   "fully_consumed": false,
+   "v1_train_frames_used": 2369,
+   "val_unseen_gt": 0,
+   "v1_fn": 0,
+   "v1_fn_rate": null,
+   "recoverable_fn": 0
+  },
+  {
+   "location": "cab_1",
+   "eth_easy_medium_frames": 2127,
+   "consumed_by_our_evaluation": 0,
+   "remaining_trainable": 2127,
+   "fully_consumed": false,
+   "v1_train_frames_used": 2127,
+   "val_unseen_gt": 0,
+   "v1_fn": 0,
+   "v1_fn_rate": null,
+   "recoverable_fn": 0
+  },
+  {
+   "location": "glc_2",
+   "eth_easy_medium_frames": 1613,
+   "consumed_by_our_evaluation": 0,
+   "remaining_trainable": 1613,
+   "fully_consumed": false,
+   "v1_train_frames_used": 0,
+   "val_unseen_gt": 0,
+   "v1_fn": 0,
+   "v1_fn_rate": null,
+   "recoverable_fn": 0
+  },
+  {
+   "location": "ml_4",
+   "eth_easy_medium_frames": 1343,
+   "consumed_by_our_evaluation": 0,
+   "remaining_trainable": 1343,
+   "fully_consumed": false,
+   "v1_train_frames_used": 1343,
+   "val_unseen_gt": 0,
+   "v1_fn": 0,
+   "v1_fn_rate": null,
+   "recoverable_fn": 0
+  },
+  {
+   "location": "uetlibergstrasse_2",
+   "eth_easy_medium_frames": 1307,
+   "consumed_by_our_evaluation": 0,
+   "remaining_trainable": 1307,
+   "fully_consumed": false,
+   "v1_train_frames_used": 0,
+   "val_unseen_gt": 0,
+   "v1_fn": 0,
+   "v1_fn_rate": null,
+   "recoverable_fn": 0
+  },
+  {
+   "location": "ml_6",
+   "eth_easy_medium_frames": 1123,
+   "consumed_by_our_evaluation": 1123,
+   "remaining_trainable": 0,
+   "fully_consumed": true,
+   "v1_train_frames_used": 0,
+   "val_unseen_gt": 115,
+   "v1_fn": 84,
+   "v1_fn_rate": 0.7304347826086957,
+   "recoverable_fn": 79
+  },
+  {
+   "location": "ml_3",
+   "eth_easy_medium_frames": 1004,
+   "consumed_by_our_evaluation": 1004,
+   "remaining_trainable": 0,
+   "fully_consumed": true,
+   "v1_train_frames_used": 0,
+   "val_unseen_gt": 144,
+   "v1_fn": 115,
+   "v1_fn_rate": 0.7986111111111112,
+   "recoverable_fn": 108
+  },
+  {
+   "location": "uetlibergstrasse_1",
+   "eth_easy_medium_frames": 638,
+   "consumed_by_our_evaluation": 638,
+   "remaining_trainable": 0,
+   "fully_consumed": true,
+   "v1_train_frames_used": 0,
+   "val_unseen_gt": 4,
+   "v1_fn": 2,
+   "v1_fn_rate": 0.5,
+   "recoverable_fn": 0
+  }
+ ],
+ "headline": "3 of the 11 ETH locations are consumed 100% by our evaluation sets: 2765 frames are unusable for training and only 16913 trainable frames remain. The fair subset carries 263 GT from those dropped locations (FN rate 0.7643), 232 GT from our own synthetic/iPhone domains, and exactly 0 GT from locations this model trained on - so its recall is an out-of-location number and no trained-location FN rate exists. 187 of the 194 recoverable FNs (96.4%) sit in the dropped locations."
+}

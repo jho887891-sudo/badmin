@@ -64,6 +64,29 @@ Reading: V1's dominant real-domain failure is **missed detections**, not false a
 positives on 496 real no-target images. The planned primary endpoint therefore has a single-digit event count,
 which is why ruling 3 requires the raw count, the interval and the per-set breakdown.
 
+### 4b. Supplementary: what the leakage-free protocol cost (read-only)
+
+`eth_only_v1_protocol_cost.{json,csv}` turns the exclusion into per-location numbers (tool:
+`tools/analyze_protocol_cost.py`, 9 tests).
+
+| fact | value |
+|---|---|
+| ETH locations consumed 100% by our evaluation sets | ml_6 (1,123 frames), ml_3 (1,004), uetlibergstrasse_1 (638) |
+| frames unusable for training / trainable frames left | **2,765** / 16,913 |
+| `val|eth_unseen` GT from those dropped locations | **263**, FN rate 0.7643 (ml_3 115/144, ml_6 84/115, uetli 2/4) |
+| `val|eth_unseen` GT from our own domains | **232**: synthetic 120 (FN 0.9750), iPhone 112 (FN 0.8571) |
+| `val|eth_unseen` GT from locations this model trained on | **0** |
+| recoverable FNs inside the dropped locations | **187 of 194** (96.4%) |
+
+The budget closes exactly: 263 + 232 = 495 GT, the total of the canonical table.
+
+Consequence for interpretation: the secondary endpoint has **no in-distribution component at all** - every GT
+in it is either from a location the model never saw or from a domain it never saw. That is why its recall is
+0.1636, and it is also why 89 hard negatives cannot move it. The primary false-positive endpoint is the one this
+experiment can actually move. Closing the recall gap requires a protocol change (release part of those
+evaluation frames, or collect frames from those locations that are in no evaluation manifest), not a data-mixture
+tweak.
+
 Two structural caveats that this analysis makes explicit and that later sections must respect:
 1. `val|eth_unseen` is **not purely real ETH data**: by frame domain its 495 GT split into eth_main 263
    (same-location ETH frames), synthetic 120 and iPhone 112. Nearly half of the secondary endpoint therefore
@@ -169,7 +192,10 @@ Filled from the decision: `FILL(next_experiment)`. The predetermined branches ar
   elsewhere; re-measure with the pooled endpoint and its interval.
 - `HARMFUL_TRADEOFF` / `LOW_VALUE`: stop spending training budget on negative-only data and target
   **positive-domain coverage**, because V1's dominant real-domain failure is missed detections (414 of 495 GT),
-  not false alarms (6 of 496 images).
+  not false alarms (6 of 496 images). Section 4b already localises that gap: 187 of the 194 recoverable misses sit
+  in the two ETH locations our evaluation sets consume entirely, and 232 of the 495 GT come from our own
+  synthetic/iPhone domains - so the first lever is protocol scope (release or re-collect those frames), the second
+  is domain coverage, and only then model capacity.
 - `INCONCLUSIVE`: raise the endpoint's power first (larger verified real no-target pool, or a pre-registered
   repeat/aggregation change) before another negative-only run.
 
