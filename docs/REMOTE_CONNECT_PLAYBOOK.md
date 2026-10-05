@@ -148,6 +148,28 @@ PYTHONPATH=/home/T7/ojh/robot_sim/experiments/yolo26_p2_ab/_wheel_extract。
 产物/结论要能自证：给出路径、张数或 sha256。删除远端文件前必须先问用户。
 ```
 
+## 8b. 铁律：跑评估工具必须显式指定输出路径（血泪教训）
+
+`tools/eval_eth_official_baseline.py` 的 `--report` 与 `--out-dir` **都有默认值**，默认指向工作区内的既有产物：
+
+```text
+--out-dir  outputs/shuttle_capability/metrics
+--report   outputs/shuttle_capability/reports/ETH_OFFICIAL_BASELINE_AUDIT.md
+```
+
+**任何一次试跑（哪怕只有 8 张图）都会覆盖它们。** 2026-10-05 我就这样覆盖掉了上一轮一份 49 KB 的报告
+（ISSUE-035，且当时未入库，无法恢复）。
+
+正确做法：
+```powershell
+# 试跑/对照跑一律把两个路径都指到 scratch
+python tools/eval_eth_official_baseline.py --repo . --models <...> `
+  --out-dir _scratch_xxx\out --report _scratch_xxx\out\DRYRUN.md --no-examples --no-latency
+```
+
+同理 `tools/eval_yolo26_v1.py` 的 `--out-dir` 也有默认值，试跑时同样显式指定。
+
+
 ## 9. 不要做的事
 
 1. 不要 `sudo`（不接受密码，也没必要）。

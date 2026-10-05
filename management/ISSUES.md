@@ -391,4 +391,16 @@ excluded-but-trained: 7
 - **是否彻底解决：** 是（四类缺陷全部修完并有测试/产物双证据）
 - **相关 commit：** a7ce718、8d834fc、ef313d8
 
+## ISSUE-035 我误覆盖了早期轮次未入库的报告产物 ETH_OFFICIAL_BASELINE_AUDIT.md（无副本，不可恢复）
+- **日期：** 2026-10-05
+- **模块：** 实验产物保护 / 评估工具默认参数
+- **现象：** 为验证"ETH 对比工具能否不带 134 MB 官方权重跑双模型"，我执行了 `eval_eth_official_baseline.py --models eth_only_v1_best --max-images 8 --no-examples --no-latency --out-dir <scratch>`，**没有传 `--report`**。该参数默认值是 `outputs/shuttle_capability/reports/ETH_OFFICIAL_BASELINE_AUDIT.md`，于是上一轮（2026-10-01）产出的 515 行 / **49,056 B / sha16 `7922b0425d16d9a2`** 报告被 8 张图的 dry-run 报告覆盖为 **7,184 B / sha16 `b0b6d5f4f0547c69`**。
+- **根因：** ① 该报告当时**从未入库**（`git status` 显示 `??`，不是已跟踪文件），所以 `git checkout --` 无法恢复；② 工具的报告输出路径有默认值且指向工作区内的已知产物路径，一次不带 `--report` 的"只读性"试跑就会覆盖它；③ 我把它当成了已跟踪产物（此前会话摘要里被列为产物，但从未 `git add`）。
+- **影响：** 该报告正文丢失。**其全部数值表仍在已入库 CSV 中**（`eth_official_{overall,ap_by_iou,size_buckets,localization,false_positive,latency,center_metric}.csv`、`eth_vs_ours.csv`、`eth_data_leakage_audit*.csv`、`eth_checkpoint_manifest.json`、`gpu_bench_a6000*.{csv,json}`），其结论仍在已入库 `management/DAILY_LOG.md` 续 12 条目中；生成它的工具 `tools/eval_eth_official_baseline.py` 也已入库，因此**可通过重跑再生**（需要 134 MB 的官方 ckpt，当前链路 ~9 KB/s，需数小时）。
+- **已做的排查：** `C:\Users\abcd1\Desktop\LOCALIZATION_AUDIT_2026-10-01`（已不存在）、`D:\LOCALIZATION_AUDIT_2026-10-01`（无归档、无 ETH 命名文件）、本地 `_scratch_*`、远端 `~/.dsh-bench` 与 `/home/T7/dgut/robot_sim` —— **均无副本**。
+- **解决方案（进行中）：** ① 本条目 + `docs/REMOTE_CONNECT_PLAYBOOK.md` 增加"评估工具必须显式传 `--report` 到 scratch"的铁律；② 待链路恢复后重跑审计并**这次入库**（写入同一路径，正文由同一工具再生，不再声称与原文件逐字节相同）；③ 把仍处于未跟踪状态的其他早期报告（`HARD_NEGATIVE_EVAL.md`、`LOCALIZATION_AUDIT.md`、`SIZE_BUCKET_EVAL_VAL.md`、`STAGE_B_*.md`、`YOLO26_V1_*.md`、`FROZEN_TEST_EVAL.md` 等）列为待入库，避免同类损失。
+- **修改文件：** management/ISSUES.md、docs/REMOTE_CONNECT_PLAYBOOK.md
+- **是否彻底解决：** 否（报告本身待重跑再生；防复发措施已落地）
+- **相关 commit：** 待补
+
 

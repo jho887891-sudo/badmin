@@ -41,15 +41,17 @@ checkpoints:
     note: "Stage C (15 epochs, mosaic 0) has not run yet — placeholder so the name still resolves"
 
   eth_real_hardneg_v2_best:
-    path: ""                                 # filled in after the 50-epoch V2 run (scratch copy, deleted after evaluation)
+    path: _scratch_eth_hardneg_v2/best.pt    # SCRATCH copy: resource stays remote, delete after evaluation
     run: full_v2_e50 (runs/detect/runs_eth_hardneg_v2/full_v2_e50)
     remote: /home/dgut/.dsh-bench/runs/detect/runs_eth_hardneg_v2/full_v2_e50/weights/best.pt
-    epoch: null
+    epoch: 21
     role: candidate
-    note: "ETH real-hard-negative YOLO26s V2 (task 4, running since 2026-10-05T06:23:05Z). Same frozen recipe as
-      V1; only the dataset changes: V1 positives + V1 negatives + 89 verified real hard negatives at repeat 8
-      (ruling 2, +712 rows = +4.67%). Selection is the internal location-disjoint val mAP50-95 only. Path, epoch
-      and hashes are filled in once the run finishes."
+    note: "ETH real-hard-negative YOLO26s V2 (task 4, 2026-10-05T06:23:08Z-13:53:51Z, 7.51 h). Same frozen recipe
+      as V1; only the dataset changes: V1 positives + V1 negatives + 89 verified real hard negatives at repeat 8
+      (ruling 2, +712 rows = +4.67%). Selected on the internal location-disjoint val by mAP50-95 only: epoch 21,
+      mAP50-95 0.66923 / mAP50 0.95781 / R 0.91634 (fitness argmax == mAP50-95 argmax, so best.pt is that
+      checkpoint). 20,344,133 B, sha256
+      3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7."
 
   eth_only_v1_best:
     path: ""                                 # local scratch copy deleted 2026-10-05 after task 5/6; refetch with:
