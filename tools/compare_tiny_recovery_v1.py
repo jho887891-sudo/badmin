@@ -136,6 +136,8 @@ def main(argv=None) -> int:
     ap.add_argument("--v2-model", default="eth_real_hardneg_v2_best")
     ap.add_argument("--tiny-model", default="eth_tiny_recovery_v1_best")
     ap.add_argument("--threshold", type=float, default=0.25)
+    ap.add_argument("--cohorts", default="v1,v2,tiny",
+                    help="which cohorts to emit; use v1,v2 before the tiny run exists")
     ap.add_argument("--out-dir", default="outputs/shuttle_capability/metrics")
     a = ap.parse_args(argv)
     repo = Path(__file__).resolve().parents[1]
@@ -164,8 +166,14 @@ def main(argv=None) -> int:
     main_rows = build_main_table(v1, v2, tiny)
     write_csv(out / "tiny_recovery_v1_vs_v2.csv", main_rows, MAIN_COLUMNS)
 
+    wanted = [c.strip() for c in str(a.cohorts).split(",") if c.strip()]
+    cohort_models = {"v1": (a.v1_model, v1_rows), "v2": (a.v2_model, v2_rows),
+                     "tiny": (a.tiny_model, tiny_rows)}
     size_rows = []
-    for model, rows in ((a.v1_model, v1_rows), (a.v2_model, v2_rows), (a.tiny_model, tiny_rows)):
+    for _cohort in wanted:
+        model, rows = cohort_models.get(_cohort, (None, []))
+        if model is None:
+            continue
         for r in rows:
             if r.get("set") != "val|eth_unseen":
                 continue
@@ -178,6 +186,8 @@ def main(argv=None) -> int:
     fp_rows = []
     for name, model, pool in (("v1", a.v1_model, v1_pool), ("v2", a.v2_model, v2_pool),
                               ("tiny", a.tiny_model, tiny_pool)):
+        if name not in wanted:
+            continue
         fp_rows.append({"cohort": name, "model": model, "images": pool.get("images"),
                         "fp_total": pool.get("fp_total"), "fp_per_image": pool.get("fp_per_image"),
                         "fp_total_ci95_low": (pool.get("fp_total_ci95") or [None, None])[0],
@@ -186,6 +196,8 @@ def main(argv=None) -> int:
                         "image_fp_rate_ci95_low": (pool.get("image_fp_rate_ci95") or [None, None])[0],
                         "image_fp_rate_ci95_high": (pool.get("image_fp_rate_ci95") or [None, None])[1]})
     for name, pool in (("v1", v1_pool), ("v2", v2_pool), ("tiny", tiny_pool)):
+        if name not in wanted:
+            continue
         for set_name, s in (pool.get("per_set") or {}).items():
             fp_rows.append({"cohort": name + ":" + set_name, "model": "", "images": s.get("images"),
                             "fp_total": s.get("fp_total"), "fp_per_image": s.get("fp_per_image"),
@@ -194,6 +206,11 @@ def main(argv=None) -> int:
     write_csv(out / "tiny_recovery_v1_no_target_fp.csv", fp_rows)
 
     decision = compute_tiny_decision(v2, tiny)
+    if "tiny" not in wanted:
+        decision["status"] = "BASELINE_ONLY"
+        decision["note"] = ("tiny cohort not evaluated yet: the decision fields compare V2 against empty tiny inputs "
+                            "and must not be read as a result")
+    decision["cohorts_requested"] = wanted
     decision["primary_endpoint"] = "val|eth_unseen TP_<8"
     decision["cohorts"] = {"v1": v1, "v2": v2, "tiny": tiny}
     (out / "tiny_recovery_v1_decision.json").write_text(json.dumps(decision, indent=1, ensure_ascii=False),

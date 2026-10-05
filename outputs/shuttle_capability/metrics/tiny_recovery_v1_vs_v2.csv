@@ -1,0 +1,10 @@
+metric,v1,v2_hardneg,tiny_recovery,delta_vs_v2,delta_kind
+Precision,0.686441,0.878261,,,absolute
+Recall,0.163636,0.20404,,,absolute
+mAP50-95,0.190877,0.189727,,,absolute
+TP<8,8.0,4.0,,,absolute
+Recall<8,0.07619,0.038095,,,absolute
+Recall 8-16,0.189655,0.282759,,,absolute
+no-target FP,6,1,,,absolute
+no-target FP/image,0.012096774193548387,0.0020161290322580645,,,absolute
+no-target FP/image relative,,,,,relative
