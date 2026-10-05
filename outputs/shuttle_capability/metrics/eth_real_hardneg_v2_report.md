@@ -54,13 +54,25 @@ V2 positives and the V2 val manifest are provably unchanged from V1 (hash-set di
 | pooled real no-target FP (496 images @ conf 0.25) | **6** -> FP/image 0.012097, 95% CI [0.004439, 0.026330] |
 | per set | backgrounds 2/30, raw 3/59, video 0/150, match_frames 0/235, real_train 1/22 |
 | `val|eth_unseen` GT hit / missed | 81 / **414** of 495 (recall 0.1636) |
-| FN profile per size bucket | `FILL(fn_by_bucket)` |
-| worst locations by FN rate | `FILL(fn_by_location)` |
-| FNs that the ETH official model hits (recoverable) | `FILL(recoverable_fn)` |
+| FN rate by size bucket (gt/fn/rate) | <4 24/24/1.0000, 4-6 37/37/1.0000, 6-8 44/36/0.8182, 8-12 180/140/0.7778, 12-16 110/95/0.8636, 16-24 66/53/0.8030, 24-32 11/9/0.8182, 32-64 12/9/0.7500, >64 11/11/1.0000; **<8px aggregate 105/97/0.9238** |
+| worst locations by FN rate | synthetic 120/117/0.9750, iphone_20251015 112/96/0.8571, ml_3 144/115/0.7986, ml_6 115/84/0.7304, uetlibergstrasse_1 4/2/0.5000 |
+| FN by frame domain (source) | eth_main 263/201/0.7643, synthetic 120/117/0.9750, eth_iphone 112/96/0.8571 |
+| FNs the ETH official model hits (recoverable) | **194 of 414** (46.9% of the V1 gap; 72.1% of ETH's 269 hits); only **6** GT go the other way; concentrated in ml_3 108/137 and ml_6 79/110 and in 8-16px boxes (8-12 101/141, 12-16 57/72); zero in <4 and >64 |
+| FN-rate confidence | 0.83636, Wilson 95% CI [0.80121, 0.86634]; Poisson FN count [375.08, 455.87] |
 
 Reading: V1's dominant real-domain failure is **missed detections**, not false alarms - it fires only 6 false
 positives on 496 real no-target images. The planned primary endpoint therefore has a single-digit event count,
 which is why ruling 3 requires the raw count, the interval and the per-set breakdown.
+
+Two structural caveats that this analysis makes explicit and that later sections must respect:
+1. `val|eth_unseen` is **not purely real ETH data**: by frame domain its 495 GT split into eth_main 263
+   (same-location ETH frames), synthetic 120 and iPhone 112. Nearly half of the secondary endpoint therefore
+   measures our own synthetic/iPhone domains, not the ETH real domain.
+2. 187 of the 194 recoverable FNs sit in ml_3 and ml_6 - precisely the two ETH locations that the leakage-free
+   protocol had to remove from training entirely because our evaluation frames live there (ISSUE-031). A large
+   part of the recall gap is the **price of the protocol**, not a data-mixture or negative-sampling defect. The
+   97 <8px FNs are essentially unrecoverable (the ETH official model misses them too), so they need data or
+   scale, not a different head or more negatives.
 
 ## 5. Training and checkpoint selection
 
@@ -95,13 +107,13 @@ Decision arithmetic: a 20% reduction of 6 requires landing at **<= 4 FPs**; rela
 
 | bucket | V1 GT | V1 FN | V1 FN rate | V2 GT | V2 FN | V2 FN rate |
 |---|---|---|---|---|---|---|
-| <4 | `FILL(b_lt4)` | | | | | |
-| 4-6 | `FILL(b_4_6)` | | | | | |
-| 6-8 | `FILL(b_6_8)` | | | | | |
-| 8-12 | `FILL(b_8_12)` | | | | | |
-| 12-16 | `FILL(b_12_16)` | | | | | |
-| 16-24 | `FILL(b_16_24)` | | | | | |
-| <8px aggregate | `FILL(b_lt8)` | | | | | |
+| <4 | 24 | 24 | 1.0000 | | | |
+| 4-6 | 37 | 37 | 1.0000 | | | |
+| 6-8 | 44 | 36 | 0.8182 | | | |
+| 8-12 | 180 | 140 | 0.7778 | | | |
+| 12-16 | 110 | 95 | 0.8636 | | | |
+| 16-24 | 66 | 53 | 0.8030 | | | |
+| **<8px aggregate** | **105** | **97** | **0.9238** | | | |
 Sources: `eth_only_v1_fn_analysis.csv` (V1) and the V2 run of the same tool.
 
 ## 9. Synthetic diagnostic sets (clearly non-real)
@@ -142,7 +154,12 @@ Source of truth: `eth_real_hardneg_v2_decision.json` (produced by `tools/compare
    negatives, the recipe, the val set and the evaluator are unchanged, which is what makes the contrast causal.
 4. Both models are plain YOLO26s at batch 8 / nbs 32; nothing here supports claims about other architectures,
    batch sizes or data mixtures (see the scope block at the top).
-4b. Synthetic sets are reported separately and are not evidence about real-domain behaviour.
+5. `val|eth_unseen` mixes frame domains (eth_main 263 GT, synthetic 120, iPhone 112), so the secondary endpoint
+   is a mixed-domain number; `eth_only_v1_fn_analysis.csv` keeps the per-domain split.
+6. Because the leakage-free protocol removed ml_3 and ml_6 from training entirely, 187 of the 194 recoverable
+   FNs are located there: the secondary-endpoint ceiling is set by protocol scope, not by the hard negatives. A
+   V2 gain on that endpoint could only come from generalising to unseen locations, which 89 negatives cannot
+   deliver - so the primary (false-positive) endpoint is the one this experiment can actually move.
 
 ## 12. Next experiment recommendation
 
