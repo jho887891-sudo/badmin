@@ -41,7 +41,8 @@ checkpoints:
     note: "Stage C (15 epochs, mosaic 0) has not run yet — placeholder so the name still resolves"
 
   eth_only_v1_best:
-    path: _scratch_eth_only_v1/best.pt       # SCRATCH copy: resource stays remote, delete after evaluation
+    path: ""                                 # local scratch copy deleted 2026-10-05 after task 5/6; refetch with:
+                                             #   scp dgut@jxxy.taildd42cc.ts.net:<remote> _scratch_eth_only_v1/best.pt
     run: full_e50 (runs/detect/runs_eth_only_v1/full_e50)
     remote: /home/dgut/.dsh-bench/runs/detect/runs_eth_only_v1/full_e50/weights/best.pt
     epoch: 21
