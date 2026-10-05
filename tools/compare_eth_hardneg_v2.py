@@ -32,7 +32,7 @@ def compute_v2_decision(v1: dict, v2: dict) -> dict:
     r1, r2 = v1.get("recall", 0.0), v2.get("recall", 0.0)
     m1, m2 = v1.get("map5095", 0.0), v2.get("map5095", 0.0)
     s1, s2 = v1.get("recall_lt8"), v2.get("recall_lt8")
-    reduction = None if not fp1 else (fp1 - fp2) / fp1
+    reduction = ((fp1 - fp2) / fp1) if (fp1 and fp2 is not None) else None
     d_recall = (r2 - r1) if (r1 is not None and r2 is not None) else None
     d_map = (m2 - m1) if (m1 is not None and m2 is not None) else None
     d_lt8 = (s2 - s1) if (s1 is not None and s2 is not None) else None
