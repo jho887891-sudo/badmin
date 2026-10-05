@@ -1,0 +1,186 @@
+{
+ "scope": "read-only pre-training V1 diagnostic; cannot change V2 membership or hyperparameters",
+ "false_positives_real_no_target": {
+  "threshold": 0.25,
+  "sets": [
+   "real_images/backgrounds",
+   "real_images/raw",
+   "real_match_frames/images",
+   "real_train/raw",
+   "real_video/frames"
+  ],
+  "images": 496,
+  "fp_total": 6,
+  "fp_per_image": 0.012096774193548387,
+  "fp_per_image_ci95": [
+   0.004439,
+   0.02633
+  ],
+  "fp_total_ci95": [
+   2.201894,
+   13.059474
+  ],
+  "images_with_fp": 5,
+  "image_fp_rate": 0.010080645161290322,
+  "image_fp_rate_ci95": [
+   0.004313,
+   0.023378
+  ],
+  "per_set": {
+   "real_images/backgrounds": {
+    "images": 30,
+    "fp_total": 2,
+    "fp_per_image": 0.06666666666666667,
+    "images_with_fp": 2,
+    "image_fp_rate": 0.06666666666666667,
+    "max_confidence_fp": 0.306658
+   },
+   "real_images/raw": {
+    "images": 59,
+    "fp_total": 3,
+    "fp_per_image": 0.05084745762711865,
+    "images_with_fp": 2,
+    "image_fp_rate": 0.03389830508474576,
+    "max_confidence_fp": 0.567521
+   },
+   "real_video/frames": {
+    "images": 150,
+    "fp_total": 0,
+    "fp_per_image": 0.0,
+    "images_with_fp": 0,
+    "image_fp_rate": 0.0,
+    "max_confidence_fp": null
+   },
+   "real_match_frames/images": {
+    "images": 235,
+    "fp_total": 0,
+    "fp_per_image": 0.0,
+    "images_with_fp": 0,
+    "image_fp_rate": 0.0,
+    "max_confidence_fp": null
+   },
+   "real_train/raw": {
+    "images": 22,
+    "fp_total": 1,
+    "fp_per_image": 0.045454545454545456,
+    "images_with_fp": 1,
+    "image_fp_rate": 0.045454545454545456,
+    "max_confidence_fp": 0.567521
+   }
+  }
+ },
+ "false_positives_synthetic_diagnostic": {
+  "threshold": 0.25,
+  "sets": [
+   "synthetic_3d/images",
+   "synthetic_on_real_bg/images"
+  ],
+  "images": 244,
+  "fp_total": 30,
+  "fp_per_image": 0.12295081967213115,
+  "fp_per_image_ci95": [
+   0.082954,
+   0.17552
+  ],
+  "fp_total_ci95": [
+   20.240874,
+   42.826865
+  ],
+  "images_with_fp": 27,
+  "image_fp_rate": 0.11065573770491803,
+  "image_fp_rate_ci95": [
+   0.077171,
+   0.156209
+  ],
+  "per_set": {
+   "synthetic_on_real_bg/images": {
+    "images": 160,
+    "fp_total": 17,
+    "fp_per_image": 0.10625,
+    "images_with_fp": 15,
+    "image_fp_rate": 0.09375,
+    "max_confidence_fp": 0.801982
+   },
+   "synthetic_3d/images": {
+    "images": 84,
+    "fp_total": 13,
+    "fp_per_image": 0.15476190476190477,
+    "images_with_fp": 12,
+    "image_fp_rate": 0.14285714285714285,
+    "max_confidence_fp": 0.778701
+   }
+  }
+ },
+ "val_eth_unseen_v1": {
+  "gt_total": 495,
+  "fn_total": 414,
+  "fn_rate": 0.8363636363636363,
+  "fn_by_bucket": {
+   "8-12": 140,
+   "12-16": 95,
+   "16-24": 53,
+   "24-32": 9,
+   "32-64": 9,
+   ">64": 11,
+   "6-8": 36,
+   "<4": 24,
+   "4-6": 37
+  },
+  "gt_by_bucket": {
+   "8-12": 180,
+   "12-16": 110,
+   "16-24": 66,
+   "24-32": 11,
+   "32-64": 12,
+   ">64": 11,
+   "6-8": 44,
+   "<4": 24,
+   "4-6": 37
+  },
+  "fn_rate_by_bucket": {
+   "8-12": 0.7777777777777778,
+   "12-16": 0.8636363636363636,
+   "16-24": 0.803030303030303,
+   "24-32": 0.8181818181818182,
+   "32-64": 0.75,
+   ">64": 1.0,
+   "6-8": 0.8181818181818182,
+   "<4": 1.0,
+   "4-6": 1.0
+  },
+  "small_lt8_gt": 105,
+  "small_lt8_fn": 97,
+  "small_lt8_fn_rate": 0.9238095238095239,
+  "median_best_iou_of_fn": null
+ },
+ "val_eth_unseen_v1_vs_eth": {
+  "common_gt": 495,
+  "eth_tp_v1_fn": 194,
+  "v1_tp_eth_fn": 6,
+  "eth_tp_v1_fn_examples": [
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00001.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00002.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00003.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00006.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00007.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00016.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00018.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00040.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00041.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00088.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00089.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00090.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00099.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00100.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00102.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00106.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00107.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00108.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00112.jpg#0",
+   "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00178.jpg#0"
+  ],
+  "eth_tp_total": 269,
+  "v1_tp_total": 81
+ },
+ "headline": "V1 real no-target FP total 6 over 496 images (FP/image 0.012096774193548387, 95% CI [0.004439, 0.02633]); val|eth_unseen V1 misses 414 of 495 GT"
+}
