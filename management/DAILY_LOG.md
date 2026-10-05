@@ -4,6 +4,30 @@
 
 ---
 
+# 2026-10-05（续 16）Task 6 代价 + Task 7 统一对比报告：**ETH-only 基线在公平真实集上明显弱于 ETH 官方与我们的 v1 模型**
+
+**约束**：本轮未训练新模型、未改评估器/数据/标签、未按模型调阈值、旧产物未覆盖（新产物一律新文件名）；本地临时权重用完即删。
+
+**Task 6 代价**（同协议：A6000、fp32、process 显存上限 24 GiB、四模型交错、02:08:05Z–02:16:21Z = **8.3 min**）
+| 模型 | 参数 | GFLOPs | imgsz1024/batch1 | batch64 吞吐 | batch64 显存 |
+|---|---|---|---|---|---|
+| eth_official (yolov8s) | 11,166,560 | 73.76 | **8.28 ms / 120.8 fps** | **157.5 img/s** | 9,196 MB |
+| eth_only_v1_best (yolo26s) | 9,948,638 | 59.19 | 15.62 ms / 64.0 fps | 126.9 img/s | 10,127 MB |
+| a_best (yolo26-P2) | 9,663,464 | 69.09 | 18.19 ms / 55.0 fps | 80.0 img/s | 16,639 MB |
+| b_best (yolo26-P2) | 9,663,464 | 69.09 | 18.95 ms / 52.8 fps | 79.9 img/s | 16,639 MB |
+- 24 GiB 上限从未触发（最高 16.6 GB 在 batch64）；新模型 batch32/64 分别 5.2/10.1 GB
+- **每 FLOP 效率**：yolov8s 73.76 GFLOPs/8.28 ms ≈ **8.9 TFLOP/s**，plain yolo26s 59.19/15.62 ≈ **3.8 TFLOP/s** → 同卡 fp32 下 YOLO26s 算子效率仅约 43%，这是"更慢"的主因，而非参数量
+- 产物 `gpu_bench_a6000_24g_eth_only_v1.{json,csv}`；新增转换器 `tools/remote/bench_json_to_csv.py`，**用旧 JSON 逐字节复现了已发布的 `gpu_bench_a6000_24g.csv`**（映射被证明，非猜测）
+
+**Task 7 统一对比报告**：`outputs/shuttle_capability/reports/ETH_ONLY_V1_FINAL_COMPARISON.md`（148 行，含证据链/阈值判定/局限/下一实验决策）
+- **公平真实集 `val|eth_unseen`（1,648 图 / 495 GT）**：eth_official R 0.5434 / mAP50-95 0.4261；a_best 0.5576 / 0.3801；b_best 0.4869 / 0.3708；**eth_only_v1_best 0.1636 / 0.1909**（ΔR −0.38 ~ −0.39，远超 0.05 阈值 → 可行动）
+- **合成域**：eth_only_v1_best controlled R 0.0053 / challenge R 0.0052；b_best 0.2527 / 0.0722 → **v1 的合成域能力来自合成训练数据，不是真实域泛化**（本实验最硬结论）
+- **小目标**：`val|eth_unseen` 的 105 个 <8px GT，新模型只召回 **8** 个（ETH 官方 18 / a_best 21 / b_best 27）
+- 局限（已写明）：新模型同时少 5 个 location + 全部 iPhone/合成/困难负样本，且 batch/nbs 8/32 vs ETH 32/64 → 差距不能单独归因于"ETH-only 数据口径"
+- 下一实验决策：**A（推荐）**用同一无泄漏协议重训 v1 混合物（分离"泄漏"与"数据配比"）；**B** 对齐 batch/nbs 做算力对等；**C** 零成本做 `val|eth_unseen` 的 FN 误差分析
+
+**清理**：删除 `_scratch_eth_official/best.pt`（134 MB）与 `_scratch_eth_only_v1/best.pt`（20 MB）；注册表 `eth_only_v1_best` 的 `path` 改为占位并写明 scp 取回命令（远端为真源）。测试 87 passed / 1 skipped（跳过项=权重哈希校验，因本地副本按规矩已删）。
+
 # 2026-10-04（续 15）Task 4 完成：ETH-only YOLO26s 1024 全量 50 epoch 训练 + 内部 val 选点
 
 **约束**：未用任何外部/评估集做选点（选点只用内部 location-disjoint val 的 mAP50-95）；未改数据/标签/evaluator；旧产物未覆盖（新产物一律新文件名）。
