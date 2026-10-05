@@ -1,0 +1,6 @@
+path: data/eth_real_hardneg_v2
+train: eth_real_hardneg_v2_train_train.txt
+val: eth_real_hardneg_v2_val.txt
+nc: 1
+names:
+  0: shuttlecock
