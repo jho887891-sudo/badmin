@@ -1,0 +1,59 @@
+{
+ "status": "PASS",
+ "problems": [],
+ "unique_positive_set_v2_sha256": "6f2b3453175c31b4d3bad996c68d35278482aa0ed2ced7f0b2e51dac33fe48bd",
+ "unique_positive_set_tiny_sha256": "6f2b3453175c31b4d3bad996c68d35278482aa0ed2ced7f0b2e51dac33fe48bd",
+ "unique_positive_set_identical": true,
+ "v2_positive_count": 13992,
+ "tiny_positive_count": 14704,
+ "extra_tiny_exposure": 712,
+ "extra_non_tiny_positive": 0,
+ "tiny_extra_per_unique_image_max": 1,
+ "eligible_tiny_unique": 5965,
+ "v2_train_rows": 15255,
+ "tiny_train_rows": 15967,
+ "extra_exposure_fraction_of_train": 0.04459197094006388,
+ "extra_exposure_fraction_of_v2_train": 0.04667322189446083,
+ "eval_path_overlap_count": 0,
+ "eval_sha256_overlap_count": 0,
+ "prohibited_source_counts": {},
+ "hard_negative_rows": 712,
+ "v2_val_manifest_sha256": "0ed405719af1d62763fb41fdad79b2581e0e7787da9a9c237c203a62ef735918",
+ "tiny_val_manifest_sha256": "0ed405719af1d62763fb41fdad79b2581e0e7787da9a9c237c203a62ef735918",
+ "exposure_summary": [
+  {
+   "bucket": "<4",
+   "v2_exposure": 161,
+   "extra_exposure": 19,
+   "final_exposure": 180
+  },
+  {
+   "bucket": "4-6",
+   "v2_exposure": 1282,
+   "extra_exposure": 153,
+   "final_exposure": 1435
+  },
+  {
+   "bucket": "6-8",
+   "v2_exposure": 4522,
+   "extra_exposure": 540,
+   "final_exposure": 5062
+  },
+  {
+   "bucket": ">=8",
+   "v2_exposure": 8027,
+   "extra_exposure": 0,
+   "final_exposure": 8027
+  }
+ ],
+ "allocation": {
+  "4-6": 153,
+  "<4": 19,
+  "6-8": 540
+ },
+ "config_sha256": "473ab4513c2137e6ec1148ef9f1c455986c3cb0924062a638acc45440035b9b5",
+ "train_manifest_sha256": "9e2bf91152cf393c3a4b5d16c7d2f7a901824a56c7835c4530b80aeb3c925352",
+ "train_list_sha256": "00de1471b171e220d6b60c18910eaada0c53e25208979fcea837bc92f108e22c",
+ "val_list_sha256": "578da7435615cbf8911e9a7610900270eb888f8d4941e594e4f868e3f9020d77",
+ "yaml_sha256": "f9851ed7ded1e3a6efb8fcc1f3c5e662a943f56f49f3a3c97f18942221b9ae27"
+}

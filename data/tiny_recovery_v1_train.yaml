@@ -1,0 +1,6 @@
+path: data/tiny_recovery_v1
+train: tiny_recovery_v1_train_train.txt
+val: tiny_recovery_v1_val.txt
+nc: 1
+names:
+  0: shuttlecock

@@ -1,0 +1,134 @@
+# ETH-only YOLO26s 1024 baseline V1 - frozen experiment contract (Task 1).
+# Every value here is pinned BEFORE any metric is observed. Do not tune from intermediate metrics.
+experiment: eth_hardneg_tiny_recovery_v1
+spec: docs/superpowers/specs/2026-10-05-tiny-object-recovery-v1-design.md
+
+# --- model ---
+model: yolo26s.pt
+model_variant: yolo26s          # plain YOLO26s, standard strides only, no P2 / no custom head
+model_source: assets/external/_staging/F_yolo/weights/yolo26s.pt
+model_sha256: 646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b
+model_bytes: 20422725
+model_source_verified_on_remote: /home/T7/dgut/robot_sim/yolo26s.pt
+ultralytics_version: 8.4.150
+
+# --- training recipe (pinned; official ETH recipe recorded separately in the recipe json) ---
+imgsz: 1024
+freeze: 0
+optimizer: AdamW
+lr0: 1.0e-4
+epochs: 50
+nbs: 32
+batch: 8
+batch_fallback: [8, 6, 4]       # physical batch only; imgsz/nbs/optimizer/lr0 stay fixed
+never_touch: [imgsz, nbs, optimizer, lr0]
+seed: 42
+
+# --- data contract ---
+classes: [shuttlecock]
+train_domains: eth_only
+data:
+  positives: ETH real positives only (locations and difficulties from the official config.json)
+  negatives: ETH official negatives (coco_train images)
+  eth_iphone: excluded_unless_official_recipe_proves_same_distribution
+  exclude:
+    - project synthetic positives
+    - project synthetic negatives
+    - Isaac Sim renders
+    - near-field synthetic
+    - synthetic_on_real_background
+    - D455 hard negatives
+    - Roboflow pseudo boxes
+    - every evaluation image
+split:
+  kind: location_disjoint
+  frozen_before_any_metric: true
+  internal_val_fraction_target: [0.15, 0.20]
+  leakage_checks: [path, sha256, location]
+
+# --- evaluation contract ---
+evaluation_only_sets: [val|eth_unseen, external_real_only, controlled_capability, challenge_test]
+selection_metric: mAP50-95        # internal location-disjoint validation only; Recall reported alongside
+checkpoint_selection_scope: internal_validation_only
+evaluator_family: tools/eval_yolo26_v1.py + tools/audit_localization_yolo26_v1.py
+confidence_policy: {operating: 0.25, ap_floor: 0.001}
+nms_policy: {iou: 0.7, max_det: 300, rect: false}
+size_bucket: equiv_size_640
+
+# --- interpretation thresholds ---
+inconclusive_abs_diff: 0.02
+confirmation_range: [0.02, 0.05]
+actionable_abs_diff: 0.05
+
+# --- smoke ---
+smoke_epochs: 3
+smoke_checkpoint_is_final: false
+
+# --- V2 data policy (rulings 2026-10-05) ---
+# 计划里的 hardneg_train / hardneg2_train 无法核验（hardneg2_train 不存在；hardneg_train 86 行里 53 张
+# 本地与远端都缺，见 management/shuttle_detection/DATASET_RESOLUTION.md 第 4/7 节）→ 按裁决 1 改用
+# 两个已核验池（本地与远端 sha256 96/96 一致），并剔除 excluded.txt 里的 7 个名字 = 89 张唯一负样本。
+include_synthetic: false
+include_iphone: false
+include_d455_positive: false
+include_roboflow: false
+adds_positives: false
+hard_negative_sources: [hard_negatives, hard_negatives2]
+hard_negative_root: outputs/shuttle_capability       # local copy (resource SSOT: /home/T7/dgut/robot_sim/...)
+hard_negative_remote_root: /home/T7/dgut/robot_sim/outputs/shuttle_capability
+hard_negative_exclude_list: outputs/shuttle_capability/hard_negatives2/excluded.txt
+hard_negative_expected_unique: 89
+hard_negative_repeat: 8            # ruling 2: repeat=1 gives only +0.61% exposure, endpoint would be underpowered
+hard_negative_oversample: false    # no other oversampling / source weighting is allowed
+hard_negative_source_weights: null
+v1_train_manifest: data/eth_only_v1_train_manifest.csv
+v1_val_manifest: data/eth_only_v1_val_manifest.csv
+training_launcher: tools/train_eth_only_v1.py       # ruling 4: reuse, do not duplicate
+evaluator: tools/eval_yolo26_v1.py
+
+# --- primary endpoint (ruling 3) ---
+v2_primary_endpoint: pooled_real_no_target_fp_per_image
+v2_primary_endpoint_images: 496        # real_images/backgrounds 30 + real_images/raw 59 + real_video/frames 150
+                                    # + real_match_frames/images 235 + real_train/raw 22
+no_target_pool_sets: [real_images/backgrounds, real_images/raw, real_video/frames, real_match_frames/images, real_train/raw]
+no_target_pool_requires_ci: true  # raw FP counts + 95% CI on the pooled rate, per-set breakdown kept
+v2_secondary_endpoint: val|eth_unseen recall / mAP50-95 / Recall_<8
+
+# --- rulings (frozen 2026-10-05) ---
+rulings:
+  - id: 1
+    text: "replace the nonexistent/incomplete historical source names with the two verified real pools hard_negatives/raw and hard_negatives2/raw; exclude the 7 entries in excluded.txt; freeze 89 unique SHA256s"
+  - id: 2
+    text: "hard_negative_repeat 1 -> 8 because repeat=1 yields only 0.61% training exposure and makes the planned endpoint underpowered; no other oversampling or source weighting"
+  - id: 3
+    text: "evaluate the pooled 496-image real no-target FP/image with raw FP counts and 95% confidence intervals while retaining per-set breakdowns"
+  - id: 4
+    text: "reuse the repository train_eth_only_v1.py CLI and checkpoint-selection implementation instead of creating duplicate launchers"
+
+# --- tiny-object recovery V1: the only allowed change is the exposure of existing real tiny positives ---
+# Gate verified before writing this file: the V2 training positives contain 5,965 unique images with
+# equiv_size_640 < 8 (161 <4 / 1,282 4-6 / 4,522 6-8), all from real ETH frames and free of synthetic /
+# iPhone / D455 / Roboflow sources, so the 712-exposure budget is reachable with at most one extra copy per
+# unique image (the design forbids raising the per-image repeat if it were not).
+tiny_positive_max_equiv_size_640: 8.0
+tiny_positive_extra_exposure: 712
+tiny_extra_per_unique_image_max: 1
+tiny_selection_seed: 42
+tiny_stratify_buckets: ["<4", "4-6", "6-8"]
+tiny_require_exact_budget: true
+tiny_stop_if_insufficient: true
+tiny_source_manifest: data/eth_real_hardneg_v2_train_manifest.csv
+tiny_hard_negative_contract_frozen: true      # 89 unique x repeat 8, pool and exclusion list unchanged
+
+# --- endpoints and guards (design 2026-10-05, pre-registered) ---
+primary_endpoint: val|eth_unseen_recall_lt8
+primary_min_tp_lt8: 8
+strong_tp_lt8: 12
+guard_recall_min: 0.1840
+guard_no_target_fp_max: 3
+guard_map5095_delta_min: -0.01
+guard_recall_8_16_delta_min: -0.02
+no_target_pool_images: 496
+v2_reference: {recall: 0.2040, map5095: 0.189727, tp_lt8: 4, fp_no_target: 1, recall_lt8: 0.0381}
+v1_reference: {tp_lt8: 8, recall_lt8: 0.0762, fp_no_target: 6}
+decisions: [USEFUL, STRONG_SUCCESS, NO_TINY_GAIN, FP_REGRESSION, SIZE_TRADEOFF, HARMFUL]

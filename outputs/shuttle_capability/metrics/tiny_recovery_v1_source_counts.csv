@@ -1,0 +1,4 @@
+source,size_bucket,v2_exposure,extra_exposure,final_exposure
+eth_main,4-6,1282,153,1435
+eth_main,6-8,4522,540,5062
+eth_main,<4,161,19,180
