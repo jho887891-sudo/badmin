@@ -1,0 +1,11 @@
+set,model,Precision,Recall,F1,AP50,mAP50-95,Recall_<8,FP_per_image,delta_vs_v1
+val,eth_only_v1_best,0.975202,0.554908,0.707331,0.763768,0.539057,0.355491,0.010424,
+val,eth_real_hardneg_v2_best,0.985234,0.593558,0.740812,0.771475,0.534863,0.367052,0.006571,delta_recall +0.03865; delta_map5095 -0.00419; delta_recall_lt8 +0.01156; delta_fp_per_image -0.00385
+val|eth_unseen,eth_only_v1_best,0.686441,0.163636,0.264274,0.351003,0.190877,0.07619,0.022451,
+val|eth_unseen,eth_real_hardneg_v2_best,0.878261,0.20404,0.331148,0.37101,0.189727,0.038095,0.008495,delta_recall +0.04040; delta_map5095 -0.00115; delta_recall_lt8 -0.03809; delta_fp_per_image -0.01396
+controlled_capability/images,eth_only_v1_best,0.229167,0.005314,0.010387,0.066888,0.045538,0.0,0.017874,
+controlled_capability/images,eth_real_hardneg_v2_best,0.7,0.003382,0.006731,0.034461,0.024058,0.0,0.001449,delta_recall -0.00193; delta_map5095 -0.02148; delta_recall_lt8 +0.00000; delta_fp_per_image -0.01643
+challenge_test/images,eth_only_v1_best,0.090909,0.005155,0.009756,0.093385,0.053451,0.0,0.044053,
+challenge_test/images,eth_real_hardneg_v2_best,,0.0,,0.043814,0.024485,0.0,0.0,delta_recall -0.00515; delta_map5095 -0.02897; delta_recall_lt8 +0.00000; delta_fp_per_image -0.04405
+real_no_target_pooled(496 images),eth_only_v1_best,,,,,,,0.012096774193548387,
+real_no_target_pooled(496 images),eth_real_hardneg_v2_best,,,,,,,0.0020161290322580645,delta_fp_per_image_relative -0.83333

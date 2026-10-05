@@ -196,24 +196,24 @@ def recoverable_fn_profile(eth_rows, v1_rows, dataset_manifest) -> dict:
 # --------------------------------------------------------------------------------------------------
 # report assembly
 # --------------------------------------------------------------------------------------------------
-def _headline(gt_total, fn_total, fn_rate, by_size, by_location, rec) -> str:
+def _headline(gt_total, fn_total, fn_rate, by_size, by_location, rec, model_tag="the model") -> str:
     if not gt_total:
         return "val|eth_unseen: no GT rows -- nothing to analyse"
     small = next((r for r in by_size if r["key"] == SMALL_AGG_KEY), None)
     worst = by_location[0] if by_location else None
     worst_txt = ("%s %.4f (%d/%d)" % (worst["key"], worst["fn_rate"], worst["fn"], worst["gt"])
                  if worst is not None else "n/a")
-    return ("val|eth_unseen (fair real ETH-unseen subset): V1 misses %d of %d GT "
+    return ("val|eth_unseen (fair real ETH-unseen subset): %s misses %d of %d GT "
             "(FN rate %.4f); worst location %s; <8px %d/%d missed (FN rate %s); of the %d FN, %d are "
             "recoverable (ETH official hits them, %.4f of ETH's hits) while only %d go the other way"
-            % (fn_total, gt_total, fn_rate or 0.0, worst_txt,
+            % (model_tag, fn_total, gt_total, fn_rate or 0.0, worst_txt,
                small["fn"] if small else 0, small["gt"] if small else 0,
                ("%.4f" % small["fn_rate"]) if (small and small["fn_rate"] is not None) else "n/a",
                fn_total, rec["recoverable"]["count"],
                rec["recoverable"]["fn_rate_of_eth_tp"] or 0.0, rec["symmetric"]["count"]))
 
 
-def build_report(v1_rows, eth_rows, dataset_manifest, inputs=None) -> dict:
+def build_report(v1_rows, eth_rows, dataset_manifest, inputs=None, model_tag="the model") -> dict:
     """Assemble the four analysis blocks plus the top-level headline for one operating point."""
     summary = err.summarize_false_negatives(v1_rows)
     by_location = fn_by_location(v1_rows, dataset_manifest)
@@ -236,7 +236,8 @@ def build_report(v1_rows, eth_rows, dataset_manifest, inputs=None) -> dict:
         "by_size": by_size,
         "by_source": by_source,
         "recoverable_fn": rec,
-        "headline": _headline(gt_total, fn_total, fn_rate, by_size, by_location, rec),
+        "headline": _headline(gt_total, fn_total, fn_rate, by_size, by_location, rec, model_tag),
+        "model_tag": model_tag,
     }
 
 
@@ -328,7 +329,12 @@ def main(argv=None) -> int:
         "v1_per_gt_rows": len(v1_rows),
         "eth_per_gt_rows": len(eth_rows),
     }
-    report = build_report(v1_rows, eth_rows, manifest, inputs)
+    tag = "the model"
+    try:
+        tag = str(json.loads(v1_dump.read_text(encoding="utf-8")).get("checkpoint") or tag)
+    except (OSError, ValueError):
+        pass
+    report = build_report(v1_rows, eth_rows, manifest, inputs, model_tag=tag)
     rows = flatten_report(report)
 
     out_json, out_csv = repo / a.out_json, repo / a.out_csv
