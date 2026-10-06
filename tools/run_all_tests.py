@@ -43,6 +43,15 @@ def main() -> int:
                 count = int(ran.split()[1])
             except (IndexError, ValueError):
                 count = 0
+        else:
+            # pytest-style suites report "<N> passed in <t>s" instead of unittest's "Ran N tests".
+            # Without this branch a pytest file would show rc=0 with 0 tests, i.e. a silent zero-count pass.
+            passed = next((l for l in reversed(tail) if ' passed' in l), '')
+            if passed:
+                try:
+                    count = int(passed.split()[0])
+                except (IndexError, ValueError):
+                    count = 0
         total_tests += count
         ok = proc.returncode == 0
         failures += 0 if ok else 1
