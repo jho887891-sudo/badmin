@@ -5,9 +5,10 @@
 > so section "Step 2a" below holds measured numbers for the 20 real `eth_main` tiny GT. What is still missing is the
 > synthetic half of the tiny population (the `<4` and `4-6` buckets are mostly our renders and those images are
 > local-only), so the pre-registered branch in the next section is **not yet decided** - deciding it now would mean
-> deciding on a bucket that was not measured. The local copy of the checkpoint is still partial (12 of 20 MiB
-> chunks outstanding) and the per-chunk verified, resumable fetch is running in the background; the sections below
-> fix the protocol and the pre-registered reading so that the numbers cannot be reinterpreted later.
+> deciding on a bucket that was not measured. The local checkpoint copy that blocked the full-coverage run is now
+> complete: 20/20 chunks, 20,344,133 B, sha256 `3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7`
+> (identical to the remote file), fetched with a per-chunk verified resumable transfer. The sections below fix the
+> protocol and the pre-registered reading so that the numbers cannot be reinterpreted later.
 
 ## Question
 
@@ -141,8 +142,9 @@ over confidence thresholds, never a lone threshold count.
 ### Still missing before the branch can be fixed
 
 1. the 85 synthetic tiny images (24.9 MB, local-only) to populate `<4` (23 GT) and `4-6` (37 GT); or
-2. the local full-coverage run on all 105 tiny GT once the V2 checkpoint finishes downloading (needs only ~364 MiB
-   VRAM at 1536 per Table 2).
+2. the local full-coverage run on all 105 tiny GT (20 real + 85 synthetic) - **now unblocked**: the frozen V2
+   checkpoint is local and sha256-verified, and Table 2 shows it needs only ~364 MiB VRAM at 1536, so it fits the 8 GB
+   local card with room to spare.
 
 ## Pre-registered decision (three branches, frozen)
 
