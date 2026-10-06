@@ -1,0 +1,175 @@
+{
+ "scope": "read-only diagnostic of the tiny-object hypothesis (present-but-suppressed vs absent evidence)",
+ "model": "eth_tiny_recovery_v1_best",
+ "dump": "_scratch_localization_audit\\loc_eth_tiny_recovery_v1_best_val.json",
+ "net_factor_1024_over_640": 1.6,
+ "p3_stride_px": 8.0,
+ "operating_point": {
+  "conf": 0.25,
+  "iou": 0.5
+ },
+ "weak_evidence_point": {
+  "conf": 0.01,
+  "iou": 0.1
+ },
+ "representability": {
+  "overall": {
+   "gt": 495,
+   "tp": 83,
+   "fn": 412,
+   "recall": 0.16767676767676767,
+   "median_net_px_1024": 17.936527619429576,
+   "max_net_px_1024": 209.20832700881016,
+   "below_one_stride": 43,
+   "below_half_stride": 4,
+   "fn_below_one_stride": 43
+  },
+  "by_bucket": {
+   "<4": {
+    "gt": 24,
+    "tp": 0,
+    "fn": 24,
+    "recall": 0.0,
+    "median_net_px_1024": 5.332992,
+    "max_net_px_1024": 6.3104273966139575,
+    "below_one_stride": 24,
+    "below_half_stride": 4,
+    "fn_below_one_stride": 24
+   },
+   "4-6": {
+    "gt": 37,
+    "tp": 0,
+    "fn": 37,
+    "recall": 0.0,
+    "median_net_px_1024": 7.982225224079812,
+    "max_net_px_1024": 9.54051853558998,
+    "below_one_stride": 19,
+    "below_half_stride": 0,
+    "fn_below_one_stride": 19
+   },
+   "6-8": {
+    "gt": 44,
+    "tp": 6,
+    "fn": 38,
+    "recall": 0.13636363636363635,
+    "median_net_px_1024": 11.463398728125966,
+    "max_net_px_1024": 12.755449577648605,
+    "below_one_stride": 0,
+    "below_half_stride": 0,
+    "fn_below_one_stride": 0
+   },
+   "8-12": {
+    "gt": 180,
+    "tp": 50,
+    "fn": 130,
+    "recall": 0.2777777777777778,
+    "median_net_px_1024": 16.01755978754317,
+    "max_net_px_1024": 19.174766940710697,
+    "below_one_stride": 0,
+    "below_half_stride": 0,
+    "fn_below_one_stride": 0
+   },
+   "12-16": {
+    "gt": 110,
+    "tp": 19,
+    "fn": 91,
+    "recall": 0.17272727272727273,
+    "median_net_px_1024": 21.404318562387292,
+    "max_net_px_1024": 25.466451657033023,
+    "below_one_stride": 0,
+    "below_half_stride": 0,
+    "fn_below_one_stride": 0
+   },
+   "16-24": {
+    "gt": 66,
+    "tp": 8,
+    "fn": 58,
+    "recall": 0.12121212121212122,
+    "median_net_px_1024": 27.86622029626551,
+    "max_net_px_1024": 38.080919198592845,
+    "below_one_stride": 0,
+    "below_half_stride": 0,
+    "fn_below_one_stride": 0
+   },
+   "24-32": {
+    "gt": 11,
+    "tp": 0,
+    "fn": 11,
+    "recall": 0.0,
+    "median_net_px_1024": 43.10469236515951,
+    "max_net_px_1024": 50.528820765974736,
+    "below_one_stride": 0,
+    "below_half_stride": 0,
+    "fn_below_one_stride": 0
+   },
+   "32-64": {
+    "gt": 12,
+    "tp": 0,
+    "fn": 12,
+    "recall": 0.0,
+    "median_net_px_1024": 70.83459849826959,
+    "max_net_px_1024": 100.74530234510371,
+    "below_one_stride": 0,
+    "below_half_stride": 0,
+    "fn_below_one_stride": 0
+   },
+   ">64": {
+    "gt": 11,
+    "tp": 0,
+    "fn": 11,
+    "recall": 0.0,
+    "median_net_px_1024": 121.85784318838682,
+    "max_net_px_1024": 209.20832700881016,
+    "below_one_stride": 0,
+    "below_half_stride": 0,
+    "fn_below_one_stride": 0
+   }
+  },
+  "tiny_lt8": {
+   "gt": 105,
+   "tp": 6,
+   "fn": 99,
+   "recall": 0.05714285714285714,
+   "median_net_px_1024": 8.924720391814187,
+   "max_net_px_1024": 12.755449577648605,
+   "below_one_stride": 43,
+   "below_half_stride": 4,
+   "fn_below_one_stride": 43
+  }
+ },
+ "weak_evidence": {
+  "false_negatives_tiny": {
+   "n": 99,
+   "with_weak_detection": 5,
+   "share_with_weak_detection": 0.050505050505050504,
+   "median_best_conf_weak": 0.036507,
+   "median_best_iou_weak": 0.724959,
+   "weak_iou_threshold": 0.1
+  },
+  "true_positives_tiny": {
+   "n": 6,
+   "with_weak_detection": 6,
+   "share_with_weak_detection": 1.0,
+   "median_best_conf_weak": 0.597685,
+   "median_best_iou_weak": 0.717135,
+   "weak_iou_threshold": 0.1
+  },
+  "false_negatives_all": {
+   "n": 412,
+   "with_weak_detection": 68,
+   "share_with_weak_detection": 0.1650485436893204,
+   "median_best_conf_weak": 0.044096,
+   "median_best_iou_weak": 0.666867,
+   "weak_iou_threshold": 0.1
+  },
+  "true_positives_all": {
+   "n": 83,
+   "with_weak_detection": 83,
+   "share_with_weak_detection": 1.0,
+   "median_best_conf_weak": 0.5928,
+   "median_best_iou_weak": 0.737799,
+   "weak_iou_threshold": 0.1
+  }
+ },
+ "headline": "eth_tiny_recovery_v1_best: tiny (<8 equiv_640) GT 105, TP 6, FN 99; in the 1024 frame a tiny GT is 2.61-12.76 px (stride 8), and 5 of the 99 tiny FNs still have a detection with IoU >= 0.10 at conf >= 0.01 (share 0.0505, median conf 0.036507)"
+}

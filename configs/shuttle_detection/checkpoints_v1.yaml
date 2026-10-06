@@ -40,6 +40,19 @@ checkpoints:
     role: future
     note: "Stage C (15 epochs, mosaic 0) has not run yet — placeholder so the name still resolves"
 
+  eth_tiny_recovery_v1_best:
+    path: ""                                 # local scratch copy deleted 2026-10-06 after evaluation; refetch with:
+                                             #   scp dgut@jxxy.taildd42cc.ts.net:<remote> _scratch_tiny_recovery_v1/best.pt
+    run: tiny_full_e50 (runs/detect/runs_tiny_recovery_v1/tiny_full_e50)
+    remote: /home/dgut/.dsh-bench/runs/detect/runs_tiny_recovery_v1/tiny_full_e50/weights/best.pt
+    epoch: 48
+    role: candidate
+    note: "Tiny-object recovery V1 (2026-10-05T16:25Z-23:02:31Z, ~6.6 h). V2 dataset plus 712 extra exposures of
+      existing real <8px positives at repeat 1 each ({<4: 19, 4-6: 153, 6-8: 540}); hard negatives frozen at
+      89 x 8. Selected on the internal location-disjoint val by mAP50-95 only: epoch 48, mAP50-95 0.67581 /
+      mAP50 0.95516 / R 0.9015 (fitness argmax == mAP50-95 argmax, so best.pt is that checkpoint).
+      20,344,133 B, sha256 7af5a563b28e5f642e2209d7eca6e94281cad858d0758d47fc4e932dab8fbd57."
+
   eth_real_hardneg_v2_best:
     path: ""                                 # local scratch copy deleted 2026-10-05 after task 5/6; refetch with:
                                              #   scp dgut@jxxy.taildd42cc.ts.net:<remote> _scratch_eth_hardneg_v2/best.pt

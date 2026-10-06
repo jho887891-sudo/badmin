@@ -1,22 +1,22 @@
 {
- "decision": "NO_TINY_GAIN",
- "why": "TP_<8 is None (target >= 8) and no other rule triggered; tiny exposure did not buy tiny recall",
+ "decision": "HARMFUL",
+ "why": "recall change -0.036363000000000006 or mAP change -0.050897 breached the harm guard",
  "tp_lt8_v2": 4.0,
- "tp_lt8_tiny": null,
- "delta_tp_lt8": null,
+ "tp_lt8_tiny": 6.0,
+ "delta_tp_lt8": 2,
  "recall_v2": 0.20404,
- "recall_tiny": null,
- "delta_recall": null,
+ "recall_tiny": 0.167677,
+ "delta_recall": -0.036363000000000006,
  "map5095_v2": 0.189727,
- "map5095_tiny": null,
- "delta_map5095": null,
+ "map5095_tiny": 0.13883,
+ "delta_map5095": -0.050897,
  "fp_no_target_v2": 1,
- "fp_no_target_tiny": null,
+ "fp_no_target_tiny": 0,
  "recall_lt8_v2": 0.038095,
- "recall_lt8_tiny": null,
+ "recall_lt8_tiny": 0.057143,
  "recall_8_16_v2": 0.282759,
- "recall_8_16_tiny": null,
- "delta_recall_8_16": null,
+ "recall_8_16_tiny": 0.237931,
+ "delta_recall_8_16": -0.04482799999999998,
  "thresholds": {
   "tp_lt8_min": 8,
   "tp_lt8_strong": 12,
@@ -33,11 +33,10 @@
   "USEFUL",
   "NO_TINY_GAIN"
  ],
- "status": "BASELINE_ONLY",
- "note": "tiny cohort not evaluated yet: the decision fields compare V2 against empty tiny inputs and must not be read as a result",
  "cohorts_requested": [
   "v1",
-  "v2"
+  "v2",
+  "tiny"
  ],
  "primary_endpoint": "val|eth_unseen TP_<8",
  "cohorts": {
@@ -164,18 +163,65 @@
    }
   },
   "tiny": {
-   "precision": null,
-   "recall": null,
-   "map5095": null,
-   "tp_lt8": null,
-   "recall_lt8": null,
-   "recall_8_16": null,
-   "fp_no_target": null,
-   "fp_per_image": null,
-   "fp_per_image_ci95": null,
-   "fp_total_ci95": null,
-   "pooled_images": null,
-   "pooled_per_set": null
+   "precision": 0.838384,
+   "recall": 0.167677,
+   "map5095": 0.13883,
+   "tp_lt8": 6.0,
+   "recall_lt8": 0.057143,
+   "recall_8_16": 0.237931,
+   "fp_no_target": 0,
+   "fp_per_image": 0.0,
+   "fp_per_image_ci95": [
+    0.0,
+    0.007438
+   ],
+   "fp_total_ci95": [
+    0.0,
+    3.689
+   ],
+   "pooled_images": 496,
+   "pooled_per_set": {
+    "real_images/backgrounds": {
+     "images": 30,
+     "fp_total": 0,
+     "fp_per_image": 0.0,
+     "images_with_fp": 0,
+     "image_fp_rate": 0.0,
+     "max_confidence_fp": null
+    },
+    "real_images/raw": {
+     "images": 59,
+     "fp_total": 0,
+     "fp_per_image": 0.0,
+     "images_with_fp": 0,
+     "image_fp_rate": 0.0,
+     "max_confidence_fp": null
+    },
+    "real_video/frames": {
+     "images": 150,
+     "fp_total": 0,
+     "fp_per_image": 0.0,
+     "images_with_fp": 0,
+     "image_fp_rate": 0.0,
+     "max_confidence_fp": null
+    },
+    "real_match_frames/images": {
+     "images": 235,
+     "fp_total": 0,
+     "fp_per_image": 0.0,
+     "images_with_fp": 0,
+     "image_fp_rate": 0.0,
+     "max_confidence_fp": null
+    },
+    "real_train/raw": {
+     "images": 22,
+     "fp_total": 0,
+     "fp_per_image": 0.0,
+     "images_with_fp": 0,
+     "image_fp_rate": 0.0,
+     "max_confidence_fp": null
+    }
+   }
   }
  }
 }

@@ -1,7 +1,6 @@
 # Tiny-object Recovery V1 - decision report
 
-> **STATUS: SKELETON (2026-10-05 16:0x UTC).** The smoke gate and the 50-epoch run are in flight, so every
-> `FILL(id)` cell is pending. Sections 2, 3, 4, 11, 12 and 13 are already measured, and section 4 was measured
+> **STATUS: FINAL (2026-10-06).** The 50-epoch run finished 2026-10-05T23:02:26Z and every cell below is measured. Sections 2, 3, 4, 11, 12 and 13 are already measured, and section 4 was measured
 > **before** the run finished (pre-registered, not post-hoc). The appendix maps every filler to its source artifact.
 >
 > Experiment `ETH_HARDNEG_TINY_RECOVERY_V1`; authoritative design:
@@ -22,11 +21,11 @@
 | V3 train manifest | `data/tiny_recovery_v1_train_manifest.csv`, 15,967 rows, sha256 `9e2bf91152cf393c3a4b5d16c7d2f7a901824a56c7835c4530b80aeb3c925352` |
 | V3 val manifest | `data/tiny_recovery_v1_val_manifest.csv`, sha256 `0ed405719af1d62763fb41fdad79b2581e0e7787da9a9c237c203a62ef735918` (byte-identical to V2/V1) |
 | train/val lists | `00de1471b171e220d6b60c18910eaada0c53e25208979fcea837bc92f108e22c` / `578da7435615cbf8911e9a7610900270eb888f8d4941e594e4f868e3f9020d77` |
-| run | `tiny_full_e50`, started `FILL(run_started)`, finished `FILL(run_finished)` |
-| selected checkpoint | epoch `FILL(best_epoch)`, bytes `FILL(best_bytes)`, sha256 `FILL(best_sha256)` |
-| selection rule | internal val mAP50-95 argmax only; fitness argmax must equal it: `FILL(fitness_check)` |
-| memory | 24 GiB per-process cap, fraction 0.5063; peak VRAM `FILL(peak_vram)` |
-| smoke | `tiny_recovery_v1_smoke.json` -> `FILL(smoke_status)` (diagnostic only, never a result) |
+| run | `tiny_full_e50`, started **2026-10-05T16:20:34Z**, finished **2026-10-05T23:02:26Z (6.70 h)** |
+| selected checkpoint | **epoch 48**, **20,344,133 B**, sha256 `7af5a563b28e5f642e2209d7eca6e94281cad858d0758d47fc4e932dab8fbd57` |
+| selection rule | internal val mAP50-95 argmax only; fitness argmax equals it: **True** (both epoch 48) |
+| memory | 24 GiB per-process cap, fraction 0.5063; peak VRAM **6.78 GiB** |
+| smoke | `tiny_recovery_v1_smoke.json` -> **PASS** (batch 8 first try, 3 epochs, finite losses; diagnostic only) |
 
 ## 2. Data composition (measured)
 
@@ -99,22 +98,22 @@ Reading, stated before any V3 number existed:
 
 | item | value |
 |---|---|
-| epochs | `FILL(epochs_recorded)` of 50 |
-| selection | epoch `FILL(best_epoch)`, internal val mAP50-95 `FILL(best_map5095)`, mAP50 `FILL(best_map50)`, recall `FILL(best_recall)` |
-| curve | `FILL(curve)` from `tiny_recovery_v1_full_e50_results.csv` |
+| epochs | **50 of 50** |
+| selection | epoch **48**, internal val mAP50-95 **0.67581**, mAP50 0.95516, recall 0.9015 |
+| curve | e5 0.63742, e10 0.65889, e15 0.67265, e20 0.66848, e25 0.66610, e30 0.67002, e35 0.67185, e40 0.67273, e45 0.67429, e50 0.67563 (best 0.67581 at e48) |
 | V2 reference | epoch 21, mAP50-95 0.66923 / R 0.91634 |
 
 ## 6. Primary endpoint: `<8 px` recovery on `val|eth_unseen`
 
 | bucket | V1 TP/FN | V2 TP/FN | V3 TP/FN | V3 recall | delta vs V2 |
 |---|---|---|---|---|---|
-| <4 | 0 / 24 | 0 / 24 | `FILL(v3_lt4)` | `FILL(v3_lt4_r)` | `FILL(v3_lt4_d)` |
-| 4-6 | 1 / 36 | 0 / 37 | `FILL(v3_4_6)` | `FILL(v3_4_6_r)` | `FILL(v3_4_6_d)` |
-| 6-8 | 7 / 37 | 4 / 40 | `FILL(v3_6_8)` | `FILL(v3_6_8_r)` | `FILL(v3_6_8_d)` |
-| **<8 total** | **8 / 97** | **4 / 101** | `FILL(v3_lt8)` | `FILL(v3_lt8_r)` | `FILL(v3_lt8_d)` |
-| 8-12 | `FILL(v1_8_12)` | 56 / 124 | `FILL(v3_8_12)` | `FILL(v3_8_12_r)` | `FILL(v3_8_12_d)` |
-| 12-16 | `FILL(v1_12_16)` | 26 / 84 | `FILL(v3_12_16)` | `FILL(v3_12_16_r)` | `FILL(v3_12_16_d)` |
-| 8-16 combined | `FILL(v1_8_16_r)` | 0.282759 | `FILL(v3_8_16_r)` | | `FILL(v3_8_16_d)` |
+| <4 | 0 / 24 | 0 / 24 | 0 / 24 | 0.0000 | 0 (recall 0.0000 -> 0.0000) |
+| 4-6 | 1 / 36 | 0 / 37 | 0 / 37 | 0.0000 | 0 (recall 0.0000 -> 0.0000) |
+| 6-8 | 7 / 37 | 4 / 40 | **6 / 38** | 0.1364 | **+2 hits (recall 0.0909 -> 0.1364)** |
+| **<8 total** | **8 / 97** | **4 / 101** | **6 / 99** | **0.057143** | **+2 hits (recall 0.038095 -> 0.057143)**; target >= 8 hits NOT met |
+| 8-12 | 0.222222 | 56 / 124 (0.3111) | 50 / 130 | 0.2778 | **-0.0333** |
+| 12-16 | 0.136364 | 26 / 84 (0.2364) | 19 / 91 | 0.1727 | **-0.0636** |
+| 8-16 combined | 0.189655 | 0.282759 | 0.237931 | | **-0.0448** |
 
 Source: `tiny_recovery_v1_vs_v2.csv` and `tiny_recovery_v1_size_buckets.csv` (V1/V2 columns already committed).
 Every cell is reported with raw TP/FN counts as well as the rate, per design section 23.
@@ -123,10 +122,10 @@ Every cell is reported with raw TP/FN counts as well as the rate, per design sec
 
 | guard | threshold | V2 | V3 | verdict |
 |---|---|---|---|---|
-| overall Recall | >= 0.1840 (drop <= 0.02) | 0.2040 | `FILL(v3_recall)` | `FILL(v3_recall_verdict)` |
-| frozen real no-target FP | <= 3 of 496 | 1 | `FILL(v3_fp)` | `FILL(v3_fp_verdict)` |
-| mAP50-95 | delta > -0.01 | 0.189727 | `FILL(v3_map5095)` | `FILL(v3_map_verdict)` |
-| 8-16 px recall | delta >= -0.02 (else SIZE_TRADEOFF) | 0.282759 | `FILL(v3_8_16_r)` | `FILL(v3_8_16_verdict)` |
+| overall Recall | >= 0.1840 (drop <= 0.02) | 0.2040 | **0.167677** | **FAIL (change -0.0364)** |
+| frozen real no-target FP | <= 3 of 496 | 1 | **0** | **PASS (0 <= 3, better than V2)** |
+| mAP50-95 | delta > -0.01 | 0.189727 | **0.138830** | **FAIL (change -0.0509)** |
+| 8-16 px recall | delta >= -0.02 (else SIZE_TRADEOFF) | 0.282759 | **0.237931** | **FAIL (change -0.0448) -> the SIZE_TRADEOFF condition is also met, but HARMFUL has precedence** |
 
 ## 8. Frozen real no-target pool (496 images, primary guard)
 
@@ -134,7 +133,7 @@ Every cell is reported with raw TP/FN counts as well as the rate, per design sec
 |---|---|---|---|---|---|
 | V1 | 496 | 6 | 0.012097 | [0.004439, 0.026330] | 0.010081 [0.004507, 0.022482] |
 | V2 | 496 | 1 | 0.002016 | [0.000051, 0.011233] | 0.002016 [0.000356, 0.011331] |
-| V3 | 496 | `FILL(v3_fp)` | `FILL(v3_fp_image)` | `FILL(v3_fp_ci)` | `FILL(v3_fp_imgrate)` |
+| V3 | 496 | **0** | **0.000000** | [0.000000, 0.007438] (raw count [0, 3.689]) | 0.000000 [0.000000, 0.007685] |
 
 Per-set breakdown and per-set intervals: `tiny_recovery_v1_no_target_fp.csv`.
 
@@ -142,24 +141,43 @@ Per-set breakdown and per-set intervals: `tiny_recovery_v1_no_target_fp.csv`.
 
 | set | V2 R / mAP50-95 | V3 R / mAP50-95 |
 |---|---|---|
-| controlled_capability/images | 0.0034 / 0.0241 | `FILL(v3_ctrl)` |
-| challenge_test/images | 0.0000 / 0.0245 | `FILL(v3_chal)` |
+| controlled_capability/images | 0.0034 / 0.0241 | 0.0024 / 0.0324 |
+| challenge_test/images | 0.0000 / 0.0245 | 0.0000 / 0.0227 |
 
 ## 10. Decision
 
-**`FILL(decision)`** - `FILL(decision_why)`.
+**`HARMFUL`** - recall change **-0.0364** (<= -0.02) and mAP50-95 change **-0.0509** (<= -0.01) breached the harm guard.
 
 Matrix applied in the frozen precedence `HARMFUL -> FP_REGRESSION -> SIZE_TRADEOFF -> STRONG_SUCCESS -> USEFUL ->
 NO_TINY_GAIN`, from `tiny_recovery_v1_decision.json` (which also records every threshold and the measured values).
 
 | label | condition | measured |
 |---|---|---|
-| STRONG_SUCCESS | TP_<8 >= 12 with all guards | `FILL(m_strong)` |
-| USEFUL | TP_<8 >= 8, recall >= 0.1840, FP <= 3, mAP delta > -0.01 | `FILL(m_useful)` |
-| NO_TINY_GAIN | TP_<8 < 8 with other metrics stable | `FILL(m_nogain)` |
-| FP_REGRESSION | frozen no-target FP >= 4 | `FILL(m_fpreg)` |
-| SIZE_TRADEOFF | 8-16 px recall delta < -0.02 | `FILL(m_size)` |
-| HARMFUL | recall delta <= -0.02 or mAP delta <= -0.01 | `FILL(m_harm)` |
+| STRONG_SUCCESS | TP_<8 >= 12 with all guards | not met (TP_<8 = 6) |
+| USEFUL | TP_<8 >= 8, recall >= 0.1840, FP <= 3, mAP delta > -0.01 | **not met**: TP_<8 = 6 (target 8), recall 0.1677 (needs >= 0.1840), mAP delta -0.0509; only the FP guard passed |
+| NO_TINY_GAIN | TP_<8 < 8 with other metrics stable | TP_<8 = 6 < 8 **but** the other metrics are not stable (recall -0.0364, mAP -0.0509), so this label does not apply |
+| FP_REGRESSION | frozen no-target FP >= 4 | not met (0 of 496 - the opposite of a regression) |
+| SIZE_TRADEOFF | 8-16 px recall delta < -0.02 | **condition met** (-0.0448), but HARMFUL has higher precedence |
+| HARMFUL | recall delta <= -0.02 or mAP delta <= -0.01 | **both met** (-0.0364 and -0.0509) -> the reported decision |
+
+### What the intervention actually did
+
+The target moved in the intended direction but far too little, and everything else moved backwards:
+
+- `<8 px` hits **4 -> 6** (all of them in the 6-8 bucket, recall 0.038095 -> 0.057143) against a minimum success line
+  of 8 hits; the `<4` and `4-6` buckets stayed at exactly 0.0000.
+- Overall `val|eth_unseen` recall **0.2040 -> 0.1677** and mAP50-95 **0.1897 -> 0.1388**: most of V2's hard-negative
+  gain was given back, which is why the harm guard fires before any tiny-specific label.
+- The 8-16 px range that V2 had improved also regressed (Recall_8_12 0.3111 -> 0.2778, Recall_12_16 0.2364 ->
+  0.1727), so the SIZE_TRADEOFF condition is met as well.
+- The one metric that improved is the frozen no-target false-positive rate: **1 -> 0 of 496**.
+
+Mechanism check, using the same probe as section 4b but on the V3 predictions
+(`tiny_representability_v1_v3.{json,csv}`): the share of tiny false negatives that have *any* detection on them at
+conf >= 0.01 is **5 of 99 (0.0505)** versus **5 of 101 (0.0495)** before. The exposure change did not create new
+localisation evidence - it nudged two 6-8 bucket objects over the operating threshold while perturbing the shared
+features enough to lose mid-size recall. That is exactly the outcome the pre-registered representability reading
+anticipated for a sub-stride object population.
 
 ## 11. Known confounder (required by the design)
 

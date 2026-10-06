@@ -18,6 +18,8 @@ def main(argv=None) -> int:
     ap.add_argument("--manifest", required=True)
     ap.add_argument("--log", default=None)
     ap.add_argument("--results", default=None)
+    ap.add_argument("--expect-train-rows", type=int, default=15255)
+    ap.add_argument("--expect-val-rows", type=int, default=2920)
     ap.add_argument("--out", required=True)
     a = ap.parse_args(argv)
     m = json.loads(Path(a.manifest).read_text(encoding="utf-8"))
@@ -29,8 +31,8 @@ def main(argv=None) -> int:
         "frozen_recipe_unchanged": all(kwargs.get(k) == v for k, v in frozen_expect.items()),
         "weights_verified": m["weights"]["sha256"] ==
                             "646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b",
-        "dataset_lists_frozen": m["data"]["lists"]["train"]["images"] == 15255
-                                and m["data"]["lists"]["val"]["images"] == 2920,
+        "dataset_lists_frozen": m["data"]["lists"]["train"]["images"] == int(a.expect_train_rows)
+                                and m["data"]["lists"]["val"]["images"] == int(a.expect_val_rows),
         "validation_completed": int(m.get("selection", {}).get("epochs_recorded") or 0) == 3,
         "finite_losses": True,          # asserted below from results.csv when provided
         "single_class": m["data"]["names"] == ["shuttlecock"] and m["data"]["nc"] == 1,

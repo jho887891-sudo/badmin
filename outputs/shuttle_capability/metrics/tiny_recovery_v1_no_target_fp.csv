@@ -1,6 +1,7 @@
 cohort,model,images,fp_total,fp_per_image,fp_total_ci95_low,fp_total_ci95_high,image_fp_rate,image_fp_rate_ci95_low,image_fp_rate_ci95_high
 v1,eth_only_v1_best,496,6,0.012096774193548387,2.201894,13.059474,0.010080645161290322,0.004313,0.023378
 v2,eth_real_hardneg_v2_best,496,1,0.0020161290322580645,0.025318,5.571643,0.0020161290322580645,0.000356,0.011331
+tiny,eth_tiny_recovery_v1_best,496,0,0.0,0.0,3.689,0.0,0.0,0.007685
 v1:real_images/backgrounds,,30,2,0.06666666666666667,,,0.06666666666666667,,
 v1:real_images/raw,,59,3,0.05084745762711865,,,0.03389830508474576,,
 v1:real_video/frames,,150,0,0.0,,,0.0,,
@@ -11,3 +12,8 @@ v2:real_images/raw,,59,0,0.0,,,0.0,,
 v2:real_video/frames,,150,0,0.0,,,0.0,,
 v2:real_match_frames/images,,235,0,0.0,,,0.0,,
 v2:real_train/raw,,22,1,0.045454545454545456,,,0.045454545454545456,,
+tiny:real_images/backgrounds,,30,0,0.0,,,0.0,,
+tiny:real_images/raw,,59,0,0.0,,,0.0,,
+tiny:real_video/frames,,150,0,0.0,,,0.0,,
+tiny:real_match_frames/images,,235,0,0.0,,,0.0,,
+tiny:real_train/raw,,22,0,0.0,,,0.0,,

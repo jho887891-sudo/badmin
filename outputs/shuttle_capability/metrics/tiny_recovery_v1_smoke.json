@@ -1,0 +1,120 @@
+{
+ "experiment": "eth_hardneg_tiny_recovery_v1",
+ "purpose": "3-epoch diagnostic smoke of the frozen V2 dataset; never a final result",
+ "status": "PASS",
+ "checks": {
+  "batch_8_first_try": true,
+  "frozen_recipe_unchanged": true,
+  "weights_verified": true,
+  "dataset_lists_frozen": true,
+  "validation_completed": true,
+  "finite_losses": true,
+  "single_class": true,
+  "diagnostic_only": true
+ },
+ "epochs_recorded": [
+  1,
+  2,
+  3
+ ],
+ "contract": {
+  "path": "tiny_recovery_yolo26s_v1.yaml",
+  "sha256": "473ab4513c2137e6ec1148ef9f1c455986c3cb0924062a638acc45440035b9b5"
+ },
+ "weights": {
+  "path": "/home/T7/dgut/robot_sim/yolo26s.pt",
+  "bytes": 20422725,
+  "sha256": "646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b"
+ },
+ "data": {
+  "yaml": "tiny_recovery_v1_remote.yaml",
+  "sha256": "1feda3ec996f231927966f96c602a8671c3fa30ff25358bd26e8df70e1f79cd4",
+  "nc": 1,
+  "names": [
+   "shuttlecock"
+  ],
+  "root": "/home/dgut/.dsh-bench/data/tiny_recovery_v1",
+  "lists": {
+   "train": {
+    "file": "/home/dgut/.dsh-bench/data/tiny_recovery_v1/tiny_recovery_v1_train_train.txt",
+    "images": 15967,
+    "sha256": "00de1471b171e220d6b60c18910eaada0c53e25208979fcea837bc92f108e22c"
+   },
+   "val": {
+    "file": "/home/dgut/.dsh-bench/data/tiny_recovery_v1/tiny_recovery_v1_val.txt",
+    "images": 2920,
+    "sha256": "578da7435615cbf8911e9a7610900270eb888f8d4941e594e4f868e3f9020d77"
+   }
+  }
+ },
+ "resolved_kwargs": {
+  "imgsz": 1024,
+  "epochs": 3,
+  "optimizer": "AdamW",
+  "lr0": 0.0001,
+  "momentum": 0.9,
+  "weight_decay": 0.0005,
+  "seed": 42,
+  "box": 7.5,
+  "cls": 0.5,
+  "dfl": 1.5,
+  "mosaic": 1.0,
+  "degrees": 0.0,
+  "translate": 0.1,
+  "scale": 0.5,
+  "shear": 0.0,
+  "perspective": 0.0,
+  "copy_paste": 0.0,
+  "copy_paste_mode": "flip",
+  "fliplr": 0.5,
+  "flipud": 0.0,
+  "mixup": 0.7,
+  "cutmix": 0.0,
+  "hsv_h": 0.015,
+  "hsv_s": 0.7,
+  "hsv_v": 0.4,
+  "deterministic": true,
+  "nbs": 32,
+  "freeze": 0,
+  "batch": 8
+ },
+ "batch": 8,
+ "batch_attempts_tried": [
+  {
+   "batch": 8,
+   "outcome": "ok",
+   "detail": ""
+  }
+ ],
+ "gpu_cap": {
+  "cap_gib": 24.0,
+  "device_total_gib": 47.4,
+  "fraction": 0.5063099464224323,
+  "applied": true
+ },
+ "peak_vram_gib": 6.78,
+ "selection": {
+  "metric": "mAP50-95",
+  "column": "metrics/mAP50-95(B)",
+  "value": 0.61411,
+  "epoch": 3,
+  "epochs_recorded": 3,
+  "recall": 0.80514,
+  "selection_scope": "internal_validation_only",
+  "results_csv": "/home/dgut/.dsh-bench/runs/detect/runs_tiny_recovery_v1/tiny_smoke_e3/results.csv"
+ },
+ "best_checkpoint": {
+  "path": "/home/dgut/.dsh-bench/runs/detect/runs_tiny_recovery_v1/tiny_smoke_e3/weights/best.pt",
+  "bytes": 20338117,
+  "sha256": "3ad0368eb5e925a6fef816e5b467cf474b39bb8d45d990f3debcacab73ae5459"
+ },
+ "diagnostic_reasons": [
+  "smoke",
+  "epochs 3 != contract 50"
+ ],
+ "third_party_loggers": {
+  "WANDB_MODE": "disabled",
+  "WANDB_DISABLED": "true",
+  "COMET_MODE": "DISABLED"
+ }
+}

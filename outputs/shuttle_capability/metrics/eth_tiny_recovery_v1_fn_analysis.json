@@ -1,0 +1,412 @@
+{
+ "fn_total_ci95": [
+  373.172531,
+  453.769705
+ ],
+ "fn_rate_ci95": [
+  0.796881,
+  0.862647
+ ],
+ "scope": "read-only V1 false-negative error analysis on val|eth_unseen; cannot change any dataset membership, manifest, evaluator or artifact",
+ "inputs": {
+  "v1_dump": "E:\\具身智能\\badmin_project\\_scratch_localization_audit\\loc_eth_tiny_recovery_v1_best_val.json",
+  "eth_dump": "E:\\具身智能\\badmin_project\\_scratch_localization_audit\\loc_eth_official_val.json",
+  "dataset_manifest": "E:\\具身智能\\badmin_project\\outputs\\shuttle_capability\\v1_dataset\\v1_dataset_manifest.csv",
+  "leakage_inventory": "E:\\具身智能\\badmin_project\\outputs\\shuttle_capability\\metrics\\eth_data_leakage_inventory.csv",
+  "split": "val",
+  "set": "val|eth_unseen",
+  "leakage_classes": [
+   "B_same_location_not_trained",
+   "C_outside_eth_dataset",
+   "C_eth_benchmark_other_split"
+  ],
+  "iou_thr": 0.5,
+  "conf_thr": 0.25,
+  "v1_per_gt_rows": 495,
+  "eth_per_gt_rows": 495
+ },
+ "gt_total": 495,
+ "fn_total": 412,
+ "tp_total": 83,
+ "fn_rate": 0.8323232323232324,
+ "by_location": [
+  {
+   "key": "synthetic",
+   "gt": 120,
+   "fn": 120,
+   "fn_rate": 1.0,
+   "fn_rate_ci95": [
+    0.968981,
+    1.0
+   ],
+   "extra": {
+    "images": 120,
+    "field": "location"
+   }
+  },
+  {
+   "key": "iphone_20251015",
+   "gt": 112,
+   "fn": 108,
+   "fn_rate": 0.9642857142857143,
+   "fn_rate_ci95": [
+    0.911753,
+    0.986025
+   ],
+   "extra": {
+    "images": 112,
+    "field": "location"
+   }
+  },
+  {
+   "key": "ml_3",
+   "gt": 144,
+   "fn": 97,
+   "fn_rate": 0.6736111111111112,
+   "fn_rate_ci95": [
+    0.593383,
+    0.744817
+   ],
+   "extra": {
+    "images": 144,
+    "field": "location"
+   }
+  },
+  {
+   "key": "ml_6",
+   "gt": 115,
+   "fn": 85,
+   "fn_rate": 0.7391304347826086,
+   "fn_rate_ci95": [
+    0.652076,
+    0.810725
+   ],
+   "extra": {
+    "images": 115,
+    "field": "location"
+   }
+  },
+  {
+   "key": "uetlibergstrasse_1",
+   "gt": 4,
+   "fn": 2,
+   "fn_rate": 0.5,
+   "fn_rate_ci95": [
+    0.150039,
+    0.849961
+   ],
+   "extra": {
+    "images": 4,
+    "field": "location"
+   }
+  }
+ ],
+ "by_size": [
+  {
+   "key": "<4",
+   "gt": 24,
+   "fn": 24,
+   "fn_rate": 1.0,
+   "fn_rate_ci95": [
+    0.862024,
+    1.0
+   ],
+   "extra": {
+    "bucket": "<4"
+   }
+  },
+  {
+   "key": "4-6",
+   "gt": 37,
+   "fn": 37,
+   "fn_rate": 1.0,
+   "fn_rate_ci95": [
+    0.905942,
+    1.0
+   ],
+   "extra": {
+    "bucket": "4-6"
+   }
+  },
+  {
+   "key": "6-8",
+   "gt": 44,
+   "fn": 38,
+   "fn_rate": 0.8636363636363636,
+   "fn_rate_ci95": [
+    0.732905,
+    0.93597
+   ],
+   "extra": {
+    "bucket": "6-8"
+   }
+  },
+  {
+   "key": "8-12",
+   "gt": 180,
+   "fn": 130,
+   "fn_rate": 0.7222222222222222,
+   "fn_rate_ci95": [
+    0.652667,
+    0.782491
+   ],
+   "extra": {
+    "bucket": "8-12"
+   }
+  },
+  {
+   "key": "12-16",
+   "gt": 110,
+   "fn": 91,
+   "fn_rate": 0.8272727272727273,
+   "fn_rate_ci95": [
+    0.745918,
+    0.886541
+   ],
+   "extra": {
+    "bucket": "12-16"
+   }
+  },
+  {
+   "key": "16-24",
+   "gt": 66,
+   "fn": 58,
+   "fn_rate": 0.8787878787878788,
+   "fn_rate_ci95": [
+    0.778626,
+    0.937282
+   ],
+   "extra": {
+    "bucket": "16-24"
+   }
+  },
+  {
+   "key": "24-32",
+   "gt": 11,
+   "fn": 11,
+   "fn_rate": 1.0,
+   "fn_rate_ci95": [
+    0.741167,
+    1.0
+   ],
+   "extra": {
+    "bucket": "24-32"
+   }
+  },
+  {
+   "key": "32-64",
+   "gt": 12,
+   "fn": 12,
+   "fn_rate": 1.0,
+   "fn_rate_ci95": [
+    0.757506,
+    1.0
+   ],
+   "extra": {
+    "bucket": "32-64"
+   }
+  },
+  {
+   "key": ">64",
+   "gt": 11,
+   "fn": 11,
+   "fn_rate": 1.0,
+   "fn_rate_ci95": [
+    0.741167,
+    1.0
+   ],
+   "extra": {
+    "bucket": ">64"
+   }
+  },
+  {
+   "key": "<8",
+   "gt": 105,
+   "fn": 99,
+   "fn_rate": 0.9428571428571428,
+   "fn_rate_ci95": [
+    0.880903,
+    0.97355
+   ],
+   "extra": {
+    "bucket": "<8",
+    "aggregate": true,
+    "buckets": [
+     "<4",
+     "4-6",
+     "6-8"
+    ]
+   }
+  }
+ ],
+ "by_source": [
+  {
+   "key": "eth_main",
+   "gt": 263,
+   "fn": 184,
+   "fn_rate": 0.6996197718631179,
+   "fn_rate_ci95": [
+    0.641668,
+    0.751824
+   ],
+   "extra": {
+    "images": 263,
+    "field": "source"
+   }
+  },
+  {
+   "key": "synthetic",
+   "gt": 120,
+   "fn": 120,
+   "fn_rate": 1.0,
+   "fn_rate_ci95": [
+    0.968981,
+    1.0
+   ],
+   "extra": {
+    "images": 120,
+    "field": "source"
+   }
+  },
+  {
+   "key": "eth_iphone",
+   "gt": 112,
+   "fn": 108,
+   "fn_rate": 0.9642857142857143,
+   "fn_rate_ci95": [
+    0.911753,
+    0.986025
+   ],
+   "extra": {
+    "images": 112,
+    "field": "source"
+   }
+  }
+ ],
+ "recoverable_fn": {
+  "common_gt": 495,
+  "eth_tp_total": 269,
+  "v1_tp_total": 83,
+  "v1_fn_total": 412,
+  "eth_fn_total": 226,
+  "recoverable": {
+   "count": 186,
+   "fn_rate_of_eth_tp": 0.6914498141263941,
+   "share_of_v1_fn": 0.45145631067961167,
+   "size_profile": {
+    "4-6": 1,
+    "6-8": 11,
+    "8-12": 91,
+    "12-16": 53,
+    "16-24": 22,
+    "24-32": 4,
+    "32-64": 4
+   },
+   "size_denominator": {
+    "4-6": 1,
+    "6-8": 17,
+    "8-12": 141,
+    "12-16": 72,
+    "16-24": 30,
+    "24-32": 4,
+    "32-64": 4
+   },
+   "size_fn_rate": {
+    "4-6": 1.0,
+    "6-8": 0.6470588235294118,
+    "8-12": 0.6453900709219859,
+    "12-16": 0.7361111111111112,
+    "16-24": 0.7333333333333333,
+    "24-32": 1.0,
+    "32-64": 1.0
+   },
+   "location_profile": {
+    "ml_3": 90,
+    "ml_6": 80,
+    "iphone_20251015": 12,
+    "synthetic": 4,
+    "uetlibergstrasse_1": 0
+   },
+   "location_denominator": {
+    "ml_3": 137,
+    "ml_6": 110,
+    "iphone_20251015": 16,
+    "synthetic": 4,
+    "uetlibergstrasse_1": 2
+   },
+   "location_fn_rate": {
+    "ml_3": 0.656934306569343,
+    "ml_6": 0.7272727272727273,
+    "iphone_20251015": 0.75,
+    "synthetic": 1.0,
+    "uetlibergstrasse_1": 0.0
+   },
+   "examples": [
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00001.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00003.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00006.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00007.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00016.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00018.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00040.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00041.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00088.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00090.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00099.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00100.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00102.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00107.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00108.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00112.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00179.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00180.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00198.jpg#0",
+    "D:\\_eth_data\\eth_shuttle_detection\\ml_3_hard\\images\\train\\ml_3_00199.jpg#0"
+   ]
+  },
+  "symmetric": {
+   "count": 0,
+   "fn_rate_of_v1_tp": 0.0,
+   "share_of_eth_fn": 0.0,
+   "size_profile": {
+    "6-8": 0,
+    "8-12": 0,
+    "12-16": 0,
+    "16-24": 0
+   },
+   "size_denominator": {
+    "6-8": 6,
+    "8-12": 50,
+    "12-16": 19,
+    "16-24": 8
+   },
+   "size_fn_rate": {
+    "6-8": 0.0,
+    "8-12": 0.0,
+    "12-16": 0.0,
+    "16-24": 0.0
+   },
+   "location_profile": {
+    "iphone_20251015": 0,
+    "ml_3": 0,
+    "ml_6": 0,
+    "uetlibergstrasse_1": 0
+   },
+   "location_denominator": {
+    "iphone_20251015": 4,
+    "ml_3": 47,
+    "ml_6": 30,
+    "uetlibergstrasse_1": 2
+   },
+   "location_fn_rate": {
+    "iphone_20251015": 0.0,
+    "ml_3": 0.0,
+    "ml_6": 0.0,
+    "uetlibergstrasse_1": 0.0
+   },
+   "examples": []
+  }
+ },
+ "headline": "val|eth_unseen (fair real ETH-unseen subset): eth_tiny_recovery_v1_best misses 412 of 495 GT (FN rate 0.8323); worst location synthetic 1.0000 (120/120); <8px 99/105 missed (FN rate 0.9429); of the 412 FN, 186 are recoverable (ETH official hits them, 0.6914 of ETH's hits) while only 0 go the other way",
+ "model_tag": "eth_tiny_recovery_v1_best"
+}
