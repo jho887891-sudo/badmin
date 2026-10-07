@@ -1,0 +1,140 @@
+# YOLO26S_V2_FULL_ETH_CONTINUATION_V1 - frozen experiment contract.
+# Pre-registered: every value and threshold below is pinned BEFORE any metric is observed.
+# Design spec (verbatim copy): docs/superpowers/specs/2026-10-07-yolo26s-v2-full-eth-continuation-v1-spec.md
+# sha256 3ab4a61acbbfaa4b412fc435ad619e2a0ddd2985d20dad1f3bffac5cbf443e92 (20514 bytes)
+experiment: yolo26s_v2_full_eth_cont_v1
+spec: docs/superpowers/specs/2026-10-07-yolo26s-v2-full-eth-continuation-v1-spec.md
+
+# --- model: CONTINUATION from the frozen V2 checkpoint (not from official yolo26s.pt) ---
+model: eth_real_hardneg_v2_best.pt
+model_variant: yolo26s            # plain YOLO26s, standard strides only, no P2 / no custom head
+model_sha256: 3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7
+model_bytes: 20344133
+model_origin: /home/dgut/.dsh-bench/runs/detect/runs_eth_hardneg_v2/full_v2_e50/weights/best.pt
+continuation_from: eth_real_hardneg_v2_best   # epoch 21 of the V2 hard-negative run
+ultralytics_version: 8.4.150
+architecture_change: none
+p2_forbidden: true
+
+# --- training recipe (spec section 9 + 10; frozen) ---
+imgsz: 1024
+freeze: 0
+optimizer: AdamW
+lr0: 3.0e-5
+epochs: 20
+nbs: 64
+batch: 32
+batch_fallback: [24, 16]          # physical batch only; imgsz/nbs/optimizer/lr0/epochs stay fixed
+never_touch: [imgsz, nbs, optimizer, lr0]   # shape required by load_contract; epochs is frozen separately
+never_touch_extra: [epochs]        # enforced by the fixed-epoch endpoint below (20 epochs or the run refuses)
+seed: 42
+save_period: 5                     # spec section 13: epoch 5/10/15/20 must be saved
+selection_metric: mAP50-95         # internal-val metric: DIAGNOSTIC ONLY, the primary endpoint is fixed epoch 20
+
+# --- primary endpoint (spec section 13, fixed before training) ---
+endpoint:
+  mode: fixed_epoch
+  epoch: 20
+  use_best_pt_for_primary_comparison: false
+  internal_val_selection_is_diagnostic_only: true
+
+# --- data contract (spec sections 5, 6) ---
+classes: [shuttlecock]
+data:
+  positives: official ETH <location>_easy + <location>_medium real images, all locations
+  negatives: official ETH background pool coco_train_easy
+  eligible_difficulties: [easy, medium]
+  excluded_sets:
+    - {pattern: "*_hard", reason: "difficulty not eligible per spec 5.1"}
+    - {pattern: "coco_val_easy", reason: "official background val split, not the official train pool"}
+    - {pattern: "old/", reason: "project iPhone extras, prohibited by spec 6"}
+  exclude:
+    - project synthetic positives
+    - project synthetic negatives
+    - Isaac Sim renders
+    - numpy-rendered shuttle images
+    - synthetic_on_real_background
+    - Roboflow pseudo boxes
+    - D455 positive data
+    - new D455 negatives
+    - new mined hard negatives
+    - ETH iPhone extras
+    - near-field synthetic
+    - controlled_capability images
+    - challenge_test images
+    - legacy external evaluation images that are not official ETH train-pool members
+  expected_positive_images: 19678
+  expected_negative_images: 5500
+  expected_rows: 25178
+  hard_negative_policy: frozen_inside_starting_checkpoint_no_new_intervention
+  hard_negative_repeat_this_experiment: 1
+split:
+  kind: sha256_ordered_1_in_50_slice_of_the_same_pool
+  internal_val_overlaps_train_pool: true      # deliberate: this is not an unseen-generalization benchmark
+  internal_val_used_for_checkpoint_selection: false
+  leakage_checks: [path, sha256, location]
+
+# --- evaluation contract (spec sections 14-18) ---
+evaluation_only_sets: [legacy_eth_eval, real_no_target_496, controlled_capability, challenge_test]
+legacy_eval_label: training-overlap diagnostic / official_overlap_diagnostic
+legacy_eval_must_not_be_called: [unseen, held-out, generalization, test set]
+evaluator_family: tools/eval_yolo26_v1.py
+confidence_policy: {operating: 0.25, ap_floor: 0.001}
+nms_policy: {iou: 0.7, max_det: 300, rect: false}
+size_bucket: equiv_size_640
+required_buckets: ["<4", "4-6", "6-8", "<8", "8-12", "12-16", "16-24", "24-32", "32-64", ">64"]
+primary_tiny_endpoints: [TP_<8, Recall_<8, Recall_6-8]
+source_aware_tiny_table: [eth_main, synthetic]
+
+# --- baseline (V2, measured) ---
+baseline_v2:
+  recall: 0.2040
+  map5095: 0.189727
+  precision: 0.8783
+  recall_lt8: 0.0381
+  tp_lt8: 4
+  gt_lt8: 105
+  no_target_fp: 1
+  no_target_images: 496
+
+# --- pre-registered decision (spec sections 19-22) ---
+decision_criteria:
+  primary:
+    - label: POSITIVE_EXPANSION_STRONG
+      all_of: [{delta_recall_min: 0.10}, {delta_recall_lt8_min: 0.05}]
+    - label: POSITIVE_EXPANSION_USEFUL
+      any_of: [{delta_recall_min: 0.05}, {delta_recall_lt8_min: 0.03}]
+    - label: POSITIVE_EXPANSION_LOW_EFFECT
+      all_of: [{delta_recall_max: 0.05}, {delta_recall_lt8_max: 0.03}]
+  flags:
+    FP_STABLE: {fp_max: 3, images: 496}
+    FP_REGRESSION: {fp_min: 4, images: 496}
+    RECALL_GAIN_WITH_FP_REGRESSION: {delta_recall_min: 0.0, fp_min: 4}
+    MAP_REGRESSION: {delta_map5095_max: -0.02}
+  precedence: [POSITIVE_EXPANSION_STRONG, POSITIVE_EXPANSION_USEFUL, POSITIVE_EXPANSION_LOW_EFFECT]
+  emit_exactly_one_primary: true
+
+# --- smoke (spec section 12) ---
+smoke_epochs: 2
+smoke_checkpoint_is_final: false
+smoke_checkpoint_label: DIAGNOSTIC_ONLY
+
+# --- required outputs (spec section 26) ---
+required_outputs:
+  - configs/yolo26s_v2_full_eth_cont_v1.yaml
+  - data/yolo26s_v2_full_eth_cont_v1_train_manifest.csv
+  - outputs/shuttle_capability/metrics/yolo26s_v2_full_eth_cont_v1_data_audit.json
+  - outputs/shuttle_capability/metrics/yolo26s_v2_full_eth_cont_v1_resolved_recipe.json
+  - outputs/shuttle_capability/metrics/yolo26s_v2_full_eth_cont_v1_environment.json
+  - outputs/shuttle_capability/metrics/yolo26s_v2_full_eth_cont_v1_smoke.json
+  - outputs/shuttle_capability/metrics/yolo26s_v2_full_eth_cont_v1_train_metrics.csv
+  - outputs/shuttle_capability/metrics/yolo26s_v2_full_eth_cont_v1_overall.csv
+  - outputs/shuttle_capability/metrics/yolo26s_v2_full_eth_cont_v1_size_buckets.csv
+  - outputs/shuttle_capability/metrics/yolo26s_v2_full_eth_cont_v1_source_size_buckets.csv
+  - outputs/shuttle_capability/metrics/yolo26s_v2_full_eth_cont_v1_no_target_fp.csv
+  - outputs/shuttle_capability/metrics/yolo26s_v2_full_eth_cont_v1_vs_v2.csv
+  - outputs/shuttle_capability/metrics/yolo26s_v2_full_eth_cont_v1_decision.json
+  - outputs/shuttle_capability/reports/YOLO26S_V2_FULL_ETH_CONTINUATION_V1_REPORT.md
+training_launcher: tools/train_eth_only_v1.py
+evaluator: tools/eval_yolo26_v1.py
+next_architecture_experiment: P2_STRIDE_4

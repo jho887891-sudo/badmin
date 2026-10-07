@@ -1,0 +1,230 @@
+{
+ "GATE_all_pass": true,
+ "GATE_manifest_complete": true,
+ "GATE_manifest_complete_definition": "manifest_rows + excluded_unlabeled_positives == plan_rows; the one excluded row is an official ETH image with no label file, reported here and in the final report",
+ "GATE_missing_images_zero": true,
+ "GATE_non_empty_negative_labels_zero": true,
+ "GATE_prohibited_hits_zero": true,
+ "GATE_unreadable_images_zero": true,
+ "boxes_by_set": {
+  "cab_1_easy": 1606,
+  "cab_1_medium": 521,
+  "cab_2_easy": 2543,
+  "cab_2_medium": 728,
+  "coco_train_easy": 0,
+  "glc_1_easy": 2118,
+  "glc_1_medium": 328,
+  "glc_2_easy": 1506,
+  "glc_2_medium": 107,
+  "ml_3_easy": 606,
+  "ml_3_medium": 398,
+  "ml_4_easy": 1214,
+  "ml_4_medium": 129,
+  "ml_6_easy": 674,
+  "ml_6_medium": 449,
+  "ticino_1_easy": 1249,
+  "ticino_1_medium": 1187,
+  "ticino_2_easy": 1733,
+  "ticino_2_medium": 636,
+  "uetlibergstrasse_1_easy": 591,
+  "uetlibergstrasse_1_medium": 47,
+  "uetlibergstrasse_2_easy": 1244,
+  "uetlibergstrasse_2_medium": 63
+ },
+ "boxes_total": 19677,
+ "difficulty_counts": {
+  "easy": 15084,
+  "medium": 4593,
+  "n/a": 5500
+ },
+ "duplicate_sha256": [],
+ "duplicate_sha256_examples": [],
+ "duplicate_sha256_extra_rows": 0,
+ "duplicate_sha256_groups": 0,
+ "elapsed_s": 2020.9,
+ "excluded_sets": [
+  {
+   "images": 169,
+   "reason": "difficulty not eligible (spec section 5.1: easy + medium only)",
+   "set_dir": "cab_1_hard"
+  },
+  {
+   "images": 135,
+   "reason": "difficulty not eligible (spec section 5.1: easy + medium only)",
+   "set_dir": "cab_2_hard"
+  },
+  {
+   "images": 1000,
+   "reason": "official background val split, not part of the official train pool",
+   "set_dir": "coco_val_easy"
+  },
+  {
+   "images": 55,
+   "reason": "difficulty not eligible (spec section 5.1: easy + medium only)",
+   "set_dir": "glc_1_hard"
+  },
+  {
+   "images": 35,
+   "reason": "difficulty not eligible (spec section 5.1: easy + medium only)",
+   "set_dir": "glc_2_hard"
+  },
+  {
+   "images": 144,
+   "reason": "difficulty not eligible (spec section 5.1: easy + medium only)",
+   "set_dir": "ml_3_hard"
+  },
+  {
+   "images": 23,
+   "reason": "difficulty not eligible (spec section 5.1: easy + medium only)",
+   "set_dir": "ml_4_hard"
+  },
+  {
+   "images": 115,
+   "reason": "difficulty not eligible (spec section 5.1: easy + medium only)",
+   "set_dir": "ml_6_hard"
+  },
+  {
+   "images": 0,
+   "reason": "project iPhone extras (spec section 6 prohibits ETH iPhone extras)",
+   "set_dir": "old"
+  },
+  {
+   "images": 135,
+   "reason": "difficulty not eligible (spec section 5.1: easy + medium only)",
+   "set_dir": "ticino_1_hard"
+  },
+  {
+   "images": 13,
+   "reason": "difficulty not eligible (spec section 5.1: easy + medium only)",
+   "set_dir": "ticino_2_hard"
+  },
+  {
+   "images": 4,
+   "reason": "difficulty not eligible (spec section 5.1: easy + medium only)",
+   "set_dir": "uetlibergstrasse_1_hard"
+  },
+  {
+   "images": 3,
+   "reason": "difficulty not eligible (spec section 5.1: easy + medium only)",
+   "set_dir": "uetlibergstrasse_2_hard"
+  }
+ ],
+ "excluded_unlabeled_positives": 1,
+ "excluded_unlabeled_positives_detail": [
+  "ticino_1_easy/images/train/ticino_1_00212.jpg"
+ ],
+ "images_by_set": {
+  "cab_1_easy": 1606,
+  "cab_1_medium": 521,
+  "cab_2_easy": 2543,
+  "cab_2_medium": 728,
+  "coco_train_easy": 5500,
+  "glc_1_easy": 2118,
+  "glc_1_medium": 328,
+  "glc_2_easy": 1506,
+  "glc_2_medium": 107,
+  "ml_3_easy": 606,
+  "ml_3_medium": 398,
+  "ml_4_easy": 1214,
+  "ml_4_medium": 129,
+  "ml_6_easy": 674,
+  "ml_6_medium": 449,
+  "ticino_1_easy": 1249,
+  "ticino_1_medium": 1187,
+  "ticino_2_easy": 1733,
+  "ticino_2_medium": 636,
+  "uetlibergstrasse_1_easy": 591,
+  "uetlibergstrasse_1_medium": 47,
+  "uetlibergstrasse_2_easy": 1244,
+  "uetlibergstrasse_2_medium": 63
+ },
+ "images_total": 25178,
+ "label_parse_errors": [],
+ "lists": {
+  "dir": "/home/dgut/.dsh-bench/data/yolo26s_v2_full_eth_cont_v1",
+  "internal_val_overlaps_train_pool": true,
+  "internal_val_used_for_selection": false,
+  "train_rows": 24673,
+  "val_rows": 504,
+  "val_stride": 50
+ },
+ "location_counts": {
+  "cab_1": 2127,
+  "cab_2": 3271,
+  "coco_train_easy": 5500,
+  "glc_1": 2446,
+  "glc_2": 1613,
+  "ml_3": 1004,
+  "ml_4": 1343,
+  "ml_6": 1123,
+  "ticino_1": 2436,
+  "ticino_2": 2369,
+  "uetlibergstrasse_1": 638,
+  "uetlibergstrasse_2": 1307
+ },
+ "manifest": "/home/dgut/.dsh-bench/yolo26s_v2_full_eth_cont_v1_train_manifest.csv",
+ "manifest_rows": 25177,
+ "manifest_sha256": "e740537b9815687fcc4c9fdb18f066e1ca4be2c4de1d0a66b5dff4ec6d34bc39",
+ "missing_images": [],
+ "missing_labels": [
+  "ticino_1_easy/images/train/ticino_1_00212.jpg"
+ ],
+ "negative_images": 5500,
+ "negative_set_dirs": [
+  "coco_train_easy"
+ ],
+ "non_empty_negative_labels": [],
+ "plan_rows": 25178,
+ "positive_images": 19677,
+ "positive_set_dirs": [
+  "cab_1_easy",
+  "cab_1_medium",
+  "cab_2_easy",
+  "cab_2_medium",
+  "glc_1_easy",
+  "glc_1_medium",
+  "glc_2_easy",
+  "glc_2_medium",
+  "ml_3_easy",
+  "ml_3_medium",
+  "ml_4_easy",
+  "ml_4_medium",
+  "ml_6_easy",
+  "ml_6_medium",
+  "ticino_1_easy",
+  "ticino_1_medium",
+  "ticino_2_easy",
+  "ticino_2_medium",
+  "uetlibergstrasse_1_easy",
+  "uetlibergstrasse_1_medium",
+  "uetlibergstrasse_2_easy",
+  "uetlibergstrasse_2_medium"
+ ],
+ "prohibited_source_hits": [],
+ "resume_from": 0,
+ "root": "/home/T7/dgut/robot_sim/eth_shuttle_detection",
+ "size_bucket_counts_boxes_max_eq_per_image": {
+  "12-16": 2921,
+  "16-24": 1102,
+  "24-32": 167,
+  "32-64": 59,
+  "4-6": 1469,
+  "6-8": 5295,
+  "8-12": 8496,
+  "<4": 165,
+  ">64": 3
+ },
+ "size_bucket_counts_images": {
+  "12-16": 2921,
+  "16-24": 1102,
+  "24-32": 167,
+  "32-64": 59,
+  "4-6": 1469,
+  "6-8": 5295,
+  "8-12": 8496,
+  "<4": 165,
+  ">64": 3
+ },
+ "unreadable_images": [],
+ "workers": 12
+}

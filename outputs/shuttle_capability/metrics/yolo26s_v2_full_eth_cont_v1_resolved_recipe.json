@@ -1,0 +1,100 @@
+{
+  "augmentation_and_loss_source": "outputs/shuttle_capability/metrics/eth_only_v1_official_recipe.json",
+  "batch_policy": {
+    "batch_attempts": [
+      32,
+      24,
+      16
+    ],
+    "contract_batch": 32,
+    "note": "only the physical batch may fall back, and only on CUDA OOM"
+  },
+  "contract": {
+    "path": "/home/dgut/.dsh-bench/cont_v1/yolo26s_v2_full_eth_cont_v1.yaml",
+    "sha256": "94148d2a19b0f6a88e2ffa907a07cc4fd31e69a708c510a8afb83db15cd172a6"
+  },
+  "data": {
+    "lists": {
+      "train": {
+        "file": "/home/dgut/.dsh-bench/data/yolo26s_v2_full_eth_cont_v1/train.txt",
+        "images": 24673,
+        "sha256": "5cdc6c298f15adf33882783d0bfd46c37b3e9bd4d6d15573190da605b66b8cfe"
+      },
+      "val": {
+        "file": "/home/dgut/.dsh-bench/data/yolo26s_v2_full_eth_cont_v1/val.txt",
+        "images": 504,
+        "sha256": "7ed88e03a633a53540f356eee00aab260941f8e076732c1a80b657d39beade9a"
+      }
+    },
+    "names": [
+      "shuttlecock"
+    ],
+    "nc": 1,
+    "root": "/home/dgut/.dsh-bench/data/yolo26s_v2_full_eth_cont_v1",
+    "sha256": "3b9a7e02c2955c74756b0f55b4733ceb919516c24a82ba8055d65b608c768c75",
+    "yaml": "/home/dgut/.dsh-bench/data/yolo26s_v2_full_eth_cont_v1/dataset.yaml"
+  },
+  "endpoint": {
+    "diagnostic_only": false,
+    "epoch": 20,
+    "internal_val_selection_is_diagnostic_only": true,
+    "mode": "fixed_epoch",
+    "use_best_pt_for_primary_comparison": false
+  },
+  "experiment": "yolo26s_v2_full_eth_cont_v1",
+  "frozen_knobs": [
+    "imgsz",
+    "nbs",
+    "optimizer",
+    "lr0",
+    "epochs"
+  ],
+  "generated_from": {
+    "dryrun_manifest": "_scratch_cont_v1\\cont_v1_dryrun_manifest.json",
+    "sha256": "feb83b3d54db6816b6734355fed7468a85c82de4a052deb5a76d4f22faf90ced"
+  },
+  "mem_cap_gib": 24.0,
+  "optimizer_steps_nominal": null,
+  "resolved_kwargs": {
+    "box": 7.5,
+    "cls": 0.5,
+    "copy_paste": 0.0,
+    "copy_paste_mode": "flip",
+    "cutmix": 0.0,
+    "degrees": 0.0,
+    "deterministic": true,
+    "dfl": 1.5,
+    "epochs": 20,
+    "fliplr": 0.5,
+    "flipud": 0.0,
+    "freeze": 0,
+    "hsv_h": 0.015,
+    "hsv_s": 0.7,
+    "hsv_v": 0.4,
+    "imgsz": 1024,
+    "lr0": 3e-05,
+    "mixup": 0.7,
+    "momentum": 0.9,
+    "mosaic": 1.0,
+    "nbs": 64,
+    "optimizer": "AdamW",
+    "perspective": 0.0,
+    "save_period": 5,
+    "scale": 0.5,
+    "seed": 42,
+    "shear": 0.0,
+    "translate": 0.1,
+    "weight_decay": 0.0005
+  },
+  "selection_metric": "mAP50-95",
+  "spec_sections": [
+    "11 resolved recipe",
+    "9 schedule",
+    "10 batch configuration"
+  ],
+  "weights": {
+    "bytes": 20344133,
+    "path": "/home/dgut/.dsh-bench/runs/detect/runs_eth_hardneg_v2/full_v2_e50/weights/best.pt",
+    "sha256": "3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7"
+  }
+}

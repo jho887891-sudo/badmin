@@ -103,6 +103,8 @@ def resolve_recipe(contract: dict, recipe_json: dict | None = None, epochs: int 
     kwargs["nbs"] = contract["nbs"]
     kwargs["freeze"] = contract["freeze"]
     kwargs["seed"] = contract["seed"]
+    if contract.get("save_period") is not None:
+        kwargs["save_period"] = int(contract["save_period"])
     if epochs is not None:
         kwargs["epochs"] = int(epochs)
     for key, value in (deviating or {}).items():
@@ -318,6 +320,10 @@ def build_manifest(run: dict) -> dict:
     manifest["eligible_for_final_report"] = not diagnostic
     manifest["checkpoint_selection"] = {"scope": "internal_validation_only",
                                         "metric": run.get("selection_metric", SELECTION_METRIC)}
+    endpoint = run.get("endpoint") or {}
+    if endpoint.get("mode") == "fixed_epoch":
+        manifest["checkpoint_selection"]["used_for_primary_comparison"] = False
+        manifest["checkpoint_selection"]["primary_endpoint"] = endpoint
     manifest["never_used_for_selection"] = list(EVALUATION_ONLY_SPLITS)
     return manifest
 
@@ -336,6 +342,34 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
+def resolve_endpoint(contract: dict, epochs: int, smoke: bool = False) -> dict:
+    """The primary checkpoint endpoint, fixed by the contract before any metric is observed.
+
+    This continuation reports a fixed epoch (20) rather than the best post-hoc epoch: the internal validation is an
+    overlapping slice of the same training pool, so it must not be able to choose the reported checkpoint."""
+    endpoint = contract.get("endpoint") or {}
+    mode = endpoint.get("mode", "best_epoch_internal_val")
+    if mode != "fixed_epoch":
+        return {"mode": mode, "epoch": None, "diagnostic_only": bool(smoke)}
+    want = int(endpoint["epoch"])
+    if not smoke and int(epochs) != want:
+        raise RecipeViolationError("endpoint epoch %d does not match the resolved epochs %d" % (want, epochs))
+    return {"mode": "fixed_epoch", "epoch": want, "diagnostic_only": bool(smoke),
+            "use_best_pt_for_primary_comparison": bool(endpoint.get("use_best_pt_for_primary_comparison", False)),
+            "internal_val_selection_is_diagnostic_only":
+                bool(endpoint.get("internal_val_selection_is_diagnostic_only", True))}
+
+
+def optimizer_steps(train_images: int, batch: int, epochs: int, nbs: int) -> dict:
+    """Gradient accumulation and the nominal optimizer-step count (provenance, spec section 27)."""
+    batch = max(1, int(batch))
+    nbs = max(1, int(nbs))
+    accum = max(1, int(round(nbs / batch)))
+    per_epoch = max(0, int(train_images) // batch)
+    return {"gradient_accumulation": accum, "nominal_batch": nbs, "steps_per_epoch": per_epoch,
+            "optimizer_steps": per_epoch * int(epochs)}
+
+
 def run_cli(argv=None) -> int:
     ap = argparse.ArgumentParser(description="ETH-only YOLO26s 1024 baseline V1 trainer (24 GB safe)")
     ap.add_argument("--contract", default="configs/eth_only_yolo26s_1024_v1.yaml")
@@ -349,7 +383,8 @@ def run_cli(argv=None) -> int:
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--epochs", type=int, default=None, help="default: contract epochs (50)")
     ap.add_argument("--batch", type=int, default=None, help="default: contract batch (8)")
-    ap.add_argument("--smoke", action="store_true", help="3-epoch diagnostic run; never a final result")
+    ap.add_argument("--smoke", action="store_true", help="diagnostic run; never a final result")
+    ap.add_argument("--smoke-epochs", type=int, default=3, help="epochs for --smoke (default 3)")
     ap.add_argument("--dry-run", action="store_true", help="verify inputs and write the manifest, no training")
     ap.add_argument("--cache", default=False, help="ultralytics image cache (False recommended on NTFS)")
     ap.add_argument("--mem-cap-gib", type=float, default=24.0,
@@ -360,9 +395,10 @@ def run_cli(argv=None) -> int:
     recipe_json = {}
     if args.recipe_json and Path(args.recipe_json).is_file():
         recipe_json = json.loads(Path(args.recipe_json).read_text(encoding="utf-8"))
-    epochs = 3 if args.smoke else (args.epochs if args.epochs is not None else contract["epochs"])
-    if args.smoke and args.epochs not in (None, 3):
-        raise RecipeViolationError("--smoke implies 3 epochs, got %r" % args.epochs)
+    smoke_epochs = int(args.smoke_epochs if args.smoke_epochs is not None else 3)
+    epochs = smoke_epochs if args.smoke else (args.epochs if args.epochs is not None else contract["epochs"])
+    if args.smoke and args.epochs not in (None, smoke_epochs):
+        raise RecipeViolationError("--smoke implies %d epochs, got %r" % (smoke_epochs, args.epochs))
     primary = int(args.batch if args.batch is not None else contract["batch"])
     attempts = plan_batch_attempts(primary, contract["batch_fallback"])
     kwargs = resolve_recipe(contract, recipe_json, epochs=epochs)
@@ -381,6 +417,10 @@ def run_cli(argv=None) -> int:
         "dry_run": bool(args.dry_run),
         "selection_metric": contract["selection_metric"],
         "contract_epochs": contract["epochs"],
+        "endpoint": resolve_endpoint(contract, epochs, bool(args.smoke)),
+        "contract_lr0": float(contract["lr0"]),
+        "contract_nbs": int(contract["nbs"]),
+        "contract_optimizer": contract["optimizer"],
         "device": args.device,
         "workers": args.workers,
         "mem_cap_gib": args.mem_cap_gib,
@@ -423,6 +463,20 @@ def run_cli(argv=None) -> int:
                                   "sha256": (sha256_file(best) if best.is_file() else None)}
     else:
         run["selection"] = {"error": "results.csv missing after training", "results_csv": str(results_csv)}
+    run["steps"] = optimizer_steps((run.get("data", {}).get("lists", {}).get("train", {}) or {}).get("images", 0),
+                                   batch, epochs, contract["nbs"])
+    endpoint = run.get("endpoint") or {}
+    if endpoint.get("mode") == "fixed_epoch" and endpoint.get("epoch"):
+        want = int(endpoint["epoch"])
+        cand = save_dir / "weights" / ("epoch%d.pt" % want)
+        if not cand.is_file():
+            cand = save_dir / "weights" / "last.pt"
+            run["endpoint_checkpoint_note"] = ("epoch%d.pt not found (save_period=%s); last.pt recorded instead"
+                                               % (want, contract.get("save_period")))
+        run["primary_endpoint_checkpoint"] = {
+            "epoch": want, "path": str(cand), "bytes": (cand.stat().st_size if cand.is_file() else None),
+            "sha256": (sha256_file(cand) if cand.is_file() else None),
+            "used_for_primary_comparison": True}
     run["finished"] = _now()
     print("[train] manifest -> %s" % write_manifest(args.out_manifest, build_manifest(run)))
     return 0
