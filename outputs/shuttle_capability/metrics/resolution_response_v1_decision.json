@@ -1,0 +1,177 @@
+{
+  "decision": {
+    "base_imgsz": 1024,
+    "branch": "P2_STRIDE_4",
+    "max_imgsz": 1536,
+    "mid_bucket_weak_ge_0.1": {
+      "1024": 9,
+      "1536": 9
+    },
+    "sub_stride_weak_ge_0.1": {
+      "1024": 0,
+      "1536": 1
+    },
+    "why": "sub-stride objects still produce essentially no response at 1536 (weak candidates 0 -> 1), so the binding constraint is the sampling grid itself"
+  },
+  "env": {
+    "cuda": "12.6",
+    "platform": "Windows-10-10.0.26100-SP0",
+    "python": "3.11.9",
+    "torch": "2.14.0+cu126",
+    "ultralytics": "8.4.150"
+  },
+  "n_gt": 105,
+  "probe_json": "_scratch_resdiag\\local_tiny_resolution.json",
+  "probe_sha256": "823fae225a2fb4a81cfcd50684f2d5f19f2799cd2b0731cbb9c14368631ba32a",
+  "resolutions": [
+    1024,
+    1280,
+    1536
+  ],
+  "rule_source": "tools/analyze_resolution_response.py:compute_branch (frozen before the run)",
+  "summaries": [
+    {
+      "by_bucket": {
+        "4-6": {
+          "fn": 37,
+          "gt": 37,
+          "max_best_iou_weak": 0.0,
+          "median_best_iou_weak": 0.0,
+          "recall": 0.0,
+          "tp": 0,
+          "weak_ge_0.1": 0,
+          "weak_ge_0.3": 0,
+          "weak_ge_0.5": 0
+        },
+        "6-8": {
+          "fn": 38,
+          "gt": 44,
+          "max_best_iou_weak": 0.9380757559225926,
+          "median_best_iou_weak": 0.0,
+          "recall": 0.13636363636363635,
+          "tp": 6,
+          "weak_ge_0.1": 9,
+          "weak_ge_0.3": 9,
+          "weak_ge_0.5": 8
+        },
+        "<4": {
+          "fn": 24,
+          "gt": 24,
+          "max_best_iou_weak": 0.0,
+          "median_best_iou_weak": 0.0,
+          "recall": 0.0,
+          "tp": 0,
+          "weak_ge_0.1": 0,
+          "weak_ge_0.3": 0,
+          "weak_ge_0.5": 0
+        }
+      },
+      "gt_total": 105,
+      "imgsz": 1024,
+      "strict_sub_stride": {
+        "gt": 43,
+        "max_best_iou_weak": 0.0,
+        "median_best_iou_weak": 0.0,
+        "tp": 0,
+        "weak_ge_0.1": 0,
+        "weak_ge_0.3": 0
+      }
+    },
+    {
+      "by_bucket": {
+        "4-6": {
+          "fn": 37,
+          "gt": 37,
+          "max_best_iou_weak": 0.0,
+          "median_best_iou_weak": 0.0,
+          "recall": 0.0,
+          "tp": 0,
+          "weak_ge_0.1": 0,
+          "weak_ge_0.3": 0,
+          "weak_ge_0.5": 0
+        },
+        "6-8": {
+          "fn": 37,
+          "gt": 44,
+          "max_best_iou_weak": 0.8446334167249381,
+          "median_best_iou_weak": 0.0,
+          "recall": 0.1590909090909091,
+          "tp": 7,
+          "weak_ge_0.1": 11,
+          "weak_ge_0.3": 11,
+          "weak_ge_0.5": 11
+        },
+        "<4": {
+          "fn": 23,
+          "gt": 24,
+          "max_best_iou_weak": 0.6642635800263743,
+          "median_best_iou_weak": 0.0,
+          "recall": 0.041666666666666664,
+          "tp": 1,
+          "weak_ge_0.1": 1,
+          "weak_ge_0.3": 1,
+          "weak_ge_0.5": 1
+        }
+      },
+      "gt_total": 105,
+      "imgsz": 1280,
+      "strict_sub_stride": {
+        "gt": 24,
+        "max_best_iou_weak": 0.6642635800263743,
+        "median_best_iou_weak": 0.0,
+        "tp": 1,
+        "weak_ge_0.1": 1,
+        "weak_ge_0.3": 1
+      }
+    },
+    {
+      "by_bucket": {
+        "4-6": {
+          "fn": 37,
+          "gt": 37,
+          "max_best_iou_weak": 0.0,
+          "median_best_iou_weak": 0.0,
+          "recall": 0.0,
+          "tp": 0,
+          "weak_ge_0.1": 0,
+          "weak_ge_0.3": 0,
+          "weak_ge_0.5": 0
+        },
+        "6-8": {
+          "fn": 39,
+          "gt": 44,
+          "max_best_iou_weak": 0.8739429833987806,
+          "median_best_iou_weak": 0.0,
+          "recall": 0.11363636363636363,
+          "tp": 5,
+          "weak_ge_0.1": 9,
+          "weak_ge_0.3": 9,
+          "weak_ge_0.5": 9
+        },
+        "<4": {
+          "fn": 23,
+          "gt": 24,
+          "max_best_iou_weak": 0.606143704490127,
+          "median_best_iou_weak": 0.0,
+          "recall": 0.041666666666666664,
+          "tp": 1,
+          "weak_ge_0.1": 1,
+          "weak_ge_0.3": 1,
+          "weak_ge_0.5": 1
+        }
+      },
+      "gt_total": 105,
+      "imgsz": 1536,
+      "strict_sub_stride": {
+        "gt": 13,
+        "max_best_iou_weak": 0.606143704490127,
+        "median_best_iou_weak": 0.0,
+        "tp": 1,
+        "weak_ge_0.1": 1,
+        "weak_ge_0.3": 1
+      }
+    }
+  ],
+  "tag": "local_v1",
+  "weights_sha256": "3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7"
+}

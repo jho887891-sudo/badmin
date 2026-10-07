@@ -6,6 +6,7 @@ Usage: ./env_isaaclab/bin/python tools/run_all_tests.py [--pattern tests/**/test
 from __future__ import annotations
 
 import argparse
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -46,12 +47,11 @@ def main() -> int:
         else:
             # pytest-style suites report "<N> passed in <t>s" instead of unittest's "Ran N tests".
             # Without this branch a pytest file would show rc=0 with 0 tests, i.e. a silent zero-count pass.
+            # pytest decorates the summary with '=' padding ("===== 16 passed in 2.9s ====="), so the count is the
+            # integer token *before* the word "passed", not the first token of the line.
             passed = next((l for l in reversed(tail) if ' passed' in l), '')
-            if passed:
-                try:
-                    count = int(passed.split()[0])
-                except (IndexError, ValueError):
-                    count = 0
+            m = re.search(r'(\d+)\s+passed', passed) if passed else None
+            count = int(m.group(1)) if m else 0
         total_tests += count
         ok = proc.returncode == 0
         failures += 0 if ok else 1

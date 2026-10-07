@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
-"""Analyse the frozen-checkpoint resolution-response probe JSON (remote A6000 run).
+"""Analyse a frozen-checkpoint resolution-response probe JSON produced by tools/remote/remote_tiny_resolution.py.
 
-Input : outputs/shuttle_capability/metrics/resolution_response_remote_v1_probe.json
-        (the raw probe output, copied verbatim from the A6000 run; produced by tools/remote/remote_tiny_resolution.py)
-        tools/remote/eth_tiny_part.csv                (the 20-GT part list + local V2@1024 references)
-Output: outputs/shuttle_capability/metrics/resolution_response_remote_v1_gt.csv
-        outputs/shuttle_capability/metrics/resolution_response_remote_v1_summary.csv
+Defaults describe the A6000 real-ETH part; --json/--part/--tag switch to another probe run (e.g. the local
+full-coverage 105-GT run) without touching the defaults:
+
+  remote_v1 : --json outputs/.../resolution_response_remote_v1_probe.json  --part tools/remote/eth_tiny_part.csv
+  local_v1  : --json outputs/.../resolution_response_local_v1_probe.json   --part tools/remote/local_tiny_part.csv
+
+Outputs: outputs/shuttle_capability/metrics/resolution_response_<tag>_{gt,summary}.csv
 Nothing here trains or modifies weights; it is a pure post-processing of measured detections.
 """
+import argparse
 import csv
 import json
 import statistics
@@ -37,9 +40,21 @@ def op_breakdown(rs):
             "images_with_no_confident_candidate": sum(1 for r in rs if r["n_candidates_op"] == 0)}
 
 
-def main() -> int:
-    rep = json.loads(JSON_PATH.read_text(encoding="utf-8"))
-    part = {r["basename"]: r for r in csv.DictReader(open(PART_PATH, encoding="utf-8"))}
+def parse_args(argv=None):
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--json", default=str(JSON_PATH))
+    ap.add_argument("--part", default=str(PART_PATH))
+    ap.add_argument("--out-dir", default=str(OUT_DIR))
+    ap.add_argument("--tag", default="remote_v1")
+    # argv=None means "called as a library" (e.g. from tests): use the defaults rather than sys.argv.
+    return ap.parse_args([] if argv is None else argv)
+
+
+def main(argv=None) -> int:
+    args = parse_args(argv)
+    out_dir = Path(args.out_dir)
+    rep = json.loads(Path(args.json).read_text(encoding="utf-8"))
+    part = {r["basename"]: r for r in csv.DictReader(open(args.part, encoding="utf-8"))}
     res_list = sorted(int(k) for k in rep["resolutions"])
     print("weights sha256 : %s" % rep["weights_sha256"])
     print("env            : %s" % json.dumps(rep["env"]))
@@ -60,7 +75,9 @@ def main() -> int:
             assert pairs is not None, (g["image"], g["gt_index"])
             meta = part.get(g["image"], {})
             row = {"imgsz": R, "image": g["image"], "gt_index": g["gt_index"],
-                   "rel_dir": meta.get("rel_path", "").split("/images/")[0],
+                   "source": meta.get("source", "") or "",
+                   "rel_dir": (meta.get("rel_path", "").split("/images/")[0]
+                               or Path(meta.get("abs_image", "")).parent.name),
                    "bucket": g["bucket"], "eq640": round(g["eq640"], 6),
                    "net_px": round(1.6 * g["eq640"] * R / 1024.0, 3),
                    "n_candidates": g["n_dets"], "n_candidates_op": g["n_dets_op"],
@@ -68,9 +85,12 @@ def main() -> int:
                    "best_iou": round(g["best_iou_weak"], 6),
                    "best_conf_at_best_iou": (round(g["best_conf_at_best_iou"], 6)
                                              if g["best_conf_at_best_iou"] else ""),
-                   "local_v2_matched_op_1024": meta.get("v2_matched_op_1024", ""),
-                   "local_v2_best_iou_1024": meta.get("v2_best_iou_weak_1024", ""),
-                   "local_v2_best_conf_1024": meta.get("v2_best_conf_weak_1024", "")}
+                   "ref_v2_matched_op_1024": (meta.get("v2_matched_op_1024")
+                                              or meta.get("local_ref_matched_op") or ""),
+                   "ref_v2_best_iou_1024": (meta.get("v2_best_iou_weak_1024")
+                                            or meta.get("local_ref_best_iou") or ""),
+                   "ref_v2_best_conf_1024": (meta.get("v2_best_conf_weak_1024")
+                                             or meta.get("local_ref_best_conf") or "")}
             for op in IOU_OPS:
                 for t in CONF_GRID:
                     row["hit_iou%s_conf%s" % (op, t)] = matched_at(pairs, t, op)
@@ -84,8 +104,8 @@ def main() -> int:
                      if e["gt_index"] == g["gt_index"]][0]
             assert len(pairs) == g["n_dets"], (R, g["image"], len(pairs), g["n_dets"])
 
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    gt_csv = OUT_DIR / "resolution_response_remote_v1_gt.csv"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    gt_csv = out_dir / ("resolution_response_%s_gt.csv" % args.tag)
     with gt_csv.open("w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(gt_rows[0].keys()))
         w.writeheader()
@@ -93,7 +113,8 @@ def main() -> int:
             w.writerow(r)
 
     # ---------------- summary ----------------
-    print("\n== response by resolution (operation IoU 0.5, 20 GT) ==")
+    n_gt_first = sum(1 for r in gt_rows if r["imgsz"] == res_list[0])
+    print("\n== response by resolution (operation IoU 0.5, %d GT) ==" % n_gt_first)
     hdr = "imgsz  cand  cand>=.25 | " + " ".join("%5s" % ("c>=%g" % t) for t in CONF_GRID) + " |  IoU0.3: " + \
           " ".join("%5s" % ("c>=%g" % t) for t in CONF_GRID)
     print(hdr)
@@ -137,7 +158,7 @@ def main() -> int:
         print("      latency : e2e median=%.2f ms | preprocess=%.2f inference=%.2f postprocess=%.2f ms | %.2f img/s | peak %.0f MiB"
               % (lat["median"], pre, inf, post, block["img_per_s"], block["peak_vram_mib"]))
 
-    sum_csv = OUT_DIR / "resolution_response_remote_v1_summary.csv"
+    sum_csv = out_dir / ("resolution_response_%s_summary.csv" % args.tag)
     with sum_csv.open("w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(summary[0].keys()))
         w.writeheader()
@@ -159,6 +180,24 @@ def main() -> int:
                 sum(1 for r in rs if r["hit_iou0.5_conf0.01"]), len(rs),
                 statistics.median([r["best_iou"] for r in rs])))
         print("  %-4s n=%d: %s" % (b, len(rs0), " | ".join(line)))
+
+    # ---------------- source x bucket (the coverage question) ----------------
+    if any(r["source"] for r in gt_rows):
+        print("\n== by source x bucket (operation IoU 0.5) ==")
+        for src in sorted({r["source"] for r in gt_rows if r["source"]}):
+            for b in ("<4", "4-6", "6-8"):
+                rs0 = [r for r in gt_rows if r["source"] == src and r["bucket"] == b
+                       and r["imgsz"] == res_list[0]]
+                if not rs0:
+                    continue
+                cells = []
+                for R in res_list:
+                    rs = [r for r in gt_rows if r["source"] == src and r["bucket"] == b and r["imgsz"] == R]
+                    cells.append("R%d %d/%d(iou>=.5) %d/%d(any) medIoU %.3f"
+                                 % (R, sum(1 for r in rs if r["hit_iou0.5_conf0.25"]), len(rs),
+                                    sum(1 for r in rs if r["hit_iou0.5_conf0.01"]), len(rs),
+                                    statistics.median([r["best_iou"] for r in rs])))
+                print("  %-10s %-4s n=%-3d %s" % (src, b, len(rs0), " | ".join(cells)))
 
     # ---------------- operating-point breakdown (conf >= 0.25) ----------------
     print("\n== operating-point breakdown (conf>=0.25, IoU 0.5) ==")
@@ -189,11 +228,9 @@ def main() -> int:
                  sum(r["n_candidates_op"] for r in rs)))
 
     # ---------------- per-GT table ----------------
-    print("\n== per-GT best IoU / best conf (local V2@1024 -> remote 1024/1280/1536) ==")
+    print("\n== per-GT best IoU / best conf (carried V2@1024 reference -> probed resolutions) ==")
     print("%-32s %-4s %6s %7s | %7s %6s | %s" % ("image", "bkt", "eq640", "netpx1024", "locIoU", "locCnf",
                                              "  ".join("R%-4d iou/conf" % R for R in res_list)))
-    for b in sorted({r["basename"] for r in part.values()}):
-        pass
     by_img = {}
     for r in gt_rows:
         by_img.setdefault(r["image"], {})[r["imgsz"]] = r
@@ -205,31 +242,31 @@ def main() -> int:
             cells.append("%6.3f/%-6s" % (r["best_iou"], ("%.3f" % r["best_conf_at_best_iou"])
                                          if r["best_conf_at_best_iou"] != "" else "-"))
         print("%-32s %-4s %6.2f %7.1f | %7s %6s | %s" % (
-            img, row0["bucket"], row0["eq640"], 1.6 * row0["eq640"], row0["local_v2_best_iou_1024"],
-            row0["local_v2_best_conf_1024"] or "-", "  ".join(cells)))
+            img, row0["bucket"], row0["eq640"], 1.6 * row0["eq640"], row0["ref_v2_best_iou_1024"],
+            row0["ref_v2_best_conf_1024"] or "-", "  ".join(cells)))
 
     # ---------------- cross-machine consistency ----------------
-    print("\n== local V2@1024 vs remote V2@1024 (per-GT) ==")
+    print("\n== carried V2@1024 reference vs this probe at 1024 (per-GT) ==")
     n_iou_ok = n_conf_low = n_conf_hi = 0
     devs = []
     for img, d in by_img.items():
         r = d[1024]
-        if r["local_v2_best_iou_1024"] == "":
+        if r["ref_v2_best_iou_1024"] == "":
             continue
-        dl = abs(r["best_iou"] - float(r["local_v2_best_iou_1024"]))
+        dl = abs(r["best_iou"] - float(r["ref_v2_best_iou_1024"]))
         devs.append(dl)
         n_iou_ok += dl <= 0.02
-        if r["local_v2_best_conf_1024"]:
-            dc = r["best_conf_at_best_iou"] - float(r["local_v2_best_conf_1024"])
+        if r["ref_v2_best_conf_1024"]:
+            dc = r["best_conf_at_best_iou"] - float(r["ref_v2_best_conf_1024"])
             if dc < 0:
                 n_conf_low += 1
             else:
                 n_conf_hi += 1
     print("best-IoU agreement within 0.02: %d/%d (max dev %.4f)"
           % (n_iou_ok, len(devs), max(devs) if devs else 0.0))
-    print("best-conf shift remote-local: lower=%d higher=%d" % (n_conf_low, n_conf_hi))
-    print("matched@0.25/0.5  local=%d  remote=%d"
-          % (sum(1 for d in by_img.values() if d[1024]["local_v2_matched_op_1024"] == "True"),
+    print("best-conf shift probe-minus-reference: lower=%d higher=%d" % (n_conf_low, n_conf_hi))
+    print("matched@0.25/0.5  reference=%d  probe=%d"
+          % (sum(1 for d in by_img.values() if d[1024]["ref_v2_matched_op_1024"] == "True"),
              sum(1 for d in by_img.values() if d[1024]["hit_iou0.5_conf0.25"])))
 
     print("\nWROTE %s (%d B)" % (gt_csv, gt_csv.stat().st_size))
@@ -238,4 +275,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main(sys.argv[1:]))

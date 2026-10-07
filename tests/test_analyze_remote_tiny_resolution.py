@@ -105,12 +105,12 @@ def test_main_writes_curve_and_net_px(monkeypatch, tmp_path, capsys):
     assert small["hit_iou0.5_conf0.2"] == "True"
     assert small["hit_iou0.3_conf0.25"] == "True"
     assert small["net_px"] == "5.28"                      # 1.6 * 3.3 * 1024/1024
-    assert small["local_v2_matched_op_1024"] == "False"
+    assert small["ref_v2_matched_op_1024"] == "False"
     # b.jpg only has a 0.13-conf candidate with IoU 0.60 -> hit up to conf 0.10, miss from 0.15 on
     assert big["hit_iou0.5_conf0.1"] == "True"          # column names come from "%s" % 0.10 -> 0.1
     assert big["hit_iou0.5_conf0.15"] == "False"
     assert big["hit_iou0.5_conf0.25"] == "False"
-    assert big["local_v2_matched_op_1024"] == "True"
+    assert big["ref_v2_matched_op_1024"] == "True"
 
     summary = list(csv.DictReader((tmp_path / "out" / "resolution_response_remote_v1_summary.csv").open(encoding="utf-8")))
     assert len(summary) == 1
@@ -125,7 +125,7 @@ def test_main_writes_curve_and_net_px(monkeypatch, tmp_path, capsys):
     out = capsys.readouterr().out
     # the fixture deliberately disagrees with the carried local references, so agreement must be reported as 0/2
     assert "best-IoU agreement within 0.02: 0/2" in out
-    assert "matched@0.25/0.5  local=1  remote=1" in out
+    assert "matched@0.25/0.5  reference=1  probe=1" in out
 
 
 def test_main_rejects_candidate_count_mismatch(monkeypatch, tmp_path):
@@ -154,3 +154,27 @@ def test_main_reports_per_resolution_latency_split(monkeypatch, tmp_path, capsys
     assert [s["images_with_no_confident_candidate"] for s in summary] == ["1", "1"]
     assert [s["net_input_px"] for s in summary] == ["1024", "1536"]
     assert "image_had_none= 1" in out
+
+
+def test_real_probe_json_and_gt_csv_are_consistent():
+    """Artifact test: the committed probe JSON and the committed GT CSV must describe the same run."""
+    probe = REPO / "outputs" / "shuttle_capability" / "metrics" / "resolution_response_remote_v1_probe.json"
+    gt_csv = REPO / "outputs" / "shuttle_capability" / "metrics" / "resolution_response_remote_v1_gt.csv"
+    if not probe.is_file() or not gt_csv.is_file():
+        pytest.skip("resolution-response artifacts not built yet")
+    rep = json.loads(probe.read_text(encoding="utf-8"))
+    assert rep["weights_sha256"] == "3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7"
+    assert sorted(rep["resolutions"]) == ["1024", "1280", "1536"]
+    rows = list(csv.DictReader(gt_csv.open(encoding="utf-8")))
+    assert len(rows) == 3 * 20 == 60
+    for R in ("1024", "1280", "1536"):
+        block = rep["resolutions"][R]
+        rs = [r for r in rows if r["imgsz"] == R]
+        assert len(rs) == 20
+        assert sum(1 for r in rs if r["hit_iou0.5_conf0.25"] == "True") == sum(
+            1 for g in block["gt"] if g["best_iou_weak"] >= 0.5 and g["best_conf_at_best_iou"] >= 0.25)
+        assert sum(int(r["n_candidates"]) for r in rs) == block["n_candidates"]
+
+
+if __name__ == "__main__":
+    raise SystemExit(pytest.main([__file__, "-q"]))

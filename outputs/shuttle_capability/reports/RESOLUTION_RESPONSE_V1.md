@@ -1,14 +1,14 @@
 # Resolution-response diagnostic V1 (zero training) - report
 
-> **STATUS 2026-10-06 (updated): the remote part is DONE, the full-coverage part is not.** The A6000 route worked
-> without moving the checkpoint: the frozen V2 weights were already on the remote host with a byte-identical sha256,
-> so section "Step 2a" below holds measured numbers for the 20 real `eth_main` tiny GT. What is still missing is the
-> synthetic half of the tiny population (the `<4` and `4-6` buckets are mostly our renders and those images are
-> local-only), so the pre-registered branch in the next section is **not yet decided** - deciding it now would mean
-> deciding on a bucket that was not measured. The local checkpoint copy that blocked the full-coverage run is now
-> complete: 20/20 chunks, 20,344,133 B, sha256 `3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7`
-> (identical to the remote file), fetched with a per-chunk verified resumable transfer. The sections below fix the
-> protocol and the pre-registered reading so that the numbers cannot be reinterpreted later.
+> **STATUS 2026-10-06: DONE - the pre-registered rule returns `P2_STRIDE_4`.** Two runs, same frozen weights, no
+> training. Step 2a inferred the 20 real `eth_main` tiny GT on the remote A6000 (the checkpoint was already there
+> with a byte-identical sha256). Step 2b completed the full 105-GT coverage on the local RTX 4060 after the checkpoint
+> arrived as 20 verified chunks (20,344,133 B, sha256
+> `3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7`, identical to the remote file). The frozen
+> `compute_branch` then chose the branch from the measured weak-candidate counts - see "Step 2b" for the decision and
+> its two coverage caveats: the `4-6` bucket is 100 % synthetic renders, and the real-object sub-stride evidence rests
+> on a single GT. The protocol and the pre-registered reading were fixed before the numbers and are kept verbatim
+> below.
 
 ## Question
 
@@ -139,12 +139,109 @@ over confidence thresholds, never a lone threshold count.
   sub-stride object available, a larger input made it detectable **without any weight change**, which is the
   strongest single piece of evidence so far for the resolution/representability reading.
 
-### Still missing before the branch can be fixed
+### Resolved
 
-1. the 85 synthetic tiny images (24.9 MB, local-only) to populate `<4` (23 GT) and `4-6` (37 GT); or
-2. the local full-coverage run on all 105 tiny GT (20 real + 85 synthetic) - **now unblocked**: the frozen V2
-   checkpoint is local and sha256-verified, and Table 2 shows it needs only ~364 MiB VRAM at 1536, so it fits the 8 GB
-   local card with room to spare.
+Both gaps listed here (the 85 synthetic tiny images and the local checkpoint) were closed before Step 2b: the render
+pool is present in `outputs/shuttle_capability/train_data/val/images` and the frozen V2 checkpoint is local and
+sha256-verified. Nothing on this list is outstanding.
+
+## Step 2b - full coverage (105 tiny GT) on the local RTX 4060, and the frozen decision
+
+The synthetic half of the tiny population turned out to be fully present locally, so the diagnostic was completed on
+all 105 tiny GT with the same frozen weights (the checkpoint that had been blocking this was finally fetched as 20
+verified chunks and assembled to the exact SSOT sha256).
+
+### Provenance
+
+| item | value |
+|---|---|
+| host / runtime | RTX 4060 Laptop 8 GB; python 3.11.9, torch 2.14.0+cu126, ultralytics 8.4.150, CUDA 12.6 |
+| checkpoint | local `_scratch_resdiag/v2_best.pt`, 20,344,133 B, sha256 `3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7` (20/20 verified chunks; scratch copy, not a deliverable) |
+| part list | `tools/remote/local_tiny_part.csv` 27,132 B: 105 rows, 20 `eth_main` + 85 synthetic, every image and label verified present before the run |
+| probe | `tools/remote/remote_tiny_resolution.py` (extended with absolute-path support so one part list can span the ETH pool on D: and the render pool under `outputs/`) |
+| raw result | `outputs/shuttle_capability/metrics/resolution_response_local_v1_probe.json` 303,125 B sha256 `823fae225a2fb4a81cfcd50684f2d5f19f2799cd2b0731cbb9c14368631ba32a` |
+| derived | `resolution_response_local_v1_{gt,summary}.csv` by `tools/analyze_remote_tiny_resolution.py --tag local_v1` |
+| decision | `resolution_response_v1_decision.json` sha256 `5ab594f4a6029f63216e1403ea9984199f1b9f353e7afcf9c5532473300fd5d8`, written by `tools/derive_resolution_branch.py`, which calls the **frozen** `summarise`/`compute_branch` in `tools/analyze_resolution_response.py` |
+
+### Table 4 - response by resolution (105 tiny GT, operation IoU 0.5)
+
+| imgsz | candidates >=0.01 | candidates >=0.25 | hits @conf .25 | @.10 | @.01 | bestIoU >=0.5 | >=0.3 | <0.01 | images with no candidate at all |
+|---|---|---|---|---|---|---|---|---|---|
+| 1024 | 42 | 7 | 6 | 7 | 8 | 8 | 9 | 96 | 78 |
+| 1280 | 40 | 13 | 8 | 8 | 12 | 12 | 12 | 93 | 78 |
+| 1536 | 31 | 8 | 6 | 8 | 10 | 10 | 10 | 95 | 78 |
+
+By bucket (hits at IoU 0.5, conf 0.25; "weak" = best IoU >= 0.1):
+
+| bucket | n | 1024 | 1280 | 1536 |
+|---|---|---|---|---|
+| `<4` | 24 | 0/24 (weak 0) | 1/24 (weak 1) | 1/24 (weak 1) |
+| `4-6` | 37 | 0/37 (weak 0) | 0/37 (weak 0) | 0/37 (weak 0) |
+| `6-8` | 44 | 6/44 (weak 9) | 7/44 (weak 11) | 5/44 (weak 9) |
+
+By source x bucket:
+
+| source | bucket | n | 1024 | 1280 | 1536 |
+|---|---|---|---|---|---|
+| eth_main | `<4` | 1 | 0/1 | 1/1, IoU 0.664 | 1/1, IoU 0.606 |
+| eth_main | `6-8` | 19 | 6/19 (weak 7) | 7/19 (weak 8) | 5/19 (weak 6) |
+| synthetic | `<4` | 23 | 0/23, no candidate anywhere | 0/23, no candidate anywhere | 0/23, no candidate anywhere |
+| synthetic | `4-6` | 37 | 0/37, no candidate anywhere | 0/37, no candidate anywhere | 0/37, no candidate anywhere |
+| synthetic | `6-8` | 25 | 0/25 (weak 1) | 0/25 (weak 3) | 0/25 (weak 3) |
+
+Two facts that Table 4 does not show on its own:
+
+- **78 of the 105 images emit no detection anywhere in the frame at any of the three input sizes** - the same 78 at
+  1024, 1280 and 1536. For those images input scale is not the question; the object is simply not represented. All 23
+  synthetic `<4` and all 37 synthetic `4-6` GT sit inside that group.
+- **The synthetic tiny GT produce zero true hits in every bucket** (0/85 at IoU 0.5, conf 0.25) with only 1-3 weak
+  responses confined to `6-8`. That is a domain-gap statement about our renders, not about real shuttles, and it is
+  why the branch below is reported with its coverage attached.
+
+Strict sub-stride subset (net_px < 8 px at the given input, i.e. smaller than one P3 stride): 43 GT at 1024, 24 at
+1280, 13 at 1536 - the subset itself shrinks as the input grows. Weak responses (best IoU >= 0.1): 0 / 1 / 1. At 1536,
+12 of the 13 GT that are still strictly sub-stride remain completely silent; the one that responds is the real ETH GT
+already singled out in Step 2a.
+
+### Table 5 - latency (local RTX 4060, batch 1, median of 30 passes)
+
+| imgsz | end-to-end ms | preprocess ms | inference ms | postprocess ms | sequential img/s | peak VRAM |
+|---|---|---|---|---|---|---|
+| 1024 | 50.58 | 10.61 | 26.71 | 1.41 | 15.44 | 177 MiB |
+| 1280 | 53.61 | 16.33 | 22.23 | 1.45 | 17.26 | 238 MiB |
+| 1536 | 64.77 | 23.18 | 26.11 | 1.56 | 13.77 | 364 MiB |
+
+The local inference medians are non-monotone (26.7 -> 22.2 -> 26.1 ms) because this is a laptop dGPU sharing its power
+budget; **use the A6000 numbers in Step 2a Table 2 for any cost statement**. Peak VRAM again stays under 400 MiB, so
+the 8 GB card was never the limit.
+
+### The pre-registered decision, applied by the frozen code
+
+`tools/derive_resolution_branch.py` reshapes the probe JSON into the row format `summarise()` expects and calls the
+`compute_branch()` frozen before any number existed. It compares 1024 with the largest tested input:
+
+    sub-stride (<4 + 4-6) weak candidates, IoU >= 0.1 : 0 -> 1   (trigger needs a gain of >= 3)
+    mid bucket (6-8)      weak candidates, IoU >= 0.1 : 9 -> 9   (P2_PLUS_MID needs a gain of >= 3)
+    DECISION: P2_STRIDE_4
+      "sub-stride objects still produce essentially no response at 1536 (weak candidates 0 -> 1),
+       so the binding constraint is the sampling grid itself"
+
+The same rule applied to the real-ETH 20 GT alone returns `P2_STRIDE_4` as well (sub-stride 0 -> 1, mid 8 -> 6), so
+the decision does not hinge on the synthetic majority. Both invocations are reproducible; the full-coverage one is the
+committed `resolution_response_v1_decision.json` (tag `local_v1`).
+
+### What this decision does and does not say
+
+- It says: for the measured tiny population, enlarging the input by 1.25x/1.5x does not make the sub-stride population
+  appear (gain +1 against a pre-registered threshold of +3), while `6-8` responds and is already partly detectable.
+  The sampling grid, not the input scale, is the binding constraint - so P2 / stride 4 is the next experiment.
+- It does **not** say higher resolution is useless: the single real sub-stride GT in the set goes from no candidate at
+  1024 to IoU 0.665 @conf 0.325 at 1280 and IoU 0.606 @conf 0.600 at 1536, still below one stride at 1536. n = 1, so
+  the rule's answer stands, but the counter-example is recorded rather than averaged away.
+- It does **not** measure real 4-6 px shuttles: the `4-6` bucket is 100 % our synthetic renders and this evaluation
+  set contains no real `4-6` tiny GT at all. "4-6 stays silent" is therefore a statement about renders.
+- The renders' total silence (0/85 hits) is itself the strongest confound here: most of the sub-stride evidence is
+  about synthetic objects that this model never detects in any bucket.
 
 ## Pre-registered decision (three branches, frozen)
 
@@ -157,16 +254,22 @@ over confidence thresholds, never a lone threshold count.
 Implementation: `compute_branch` in the tool applies exactly this table to the measured weak-candidate counts and
 writes `resolution_response_v1_decision.json`; the report cannot choose the branch after seeing the numbers.
 
+**Applied outcome (Step 2b):** the code returned `P2_STRIDE_4` - sub-stride (`<4` + `4-6`) weak candidates at
+IoU >= 0.1 moved 0 -> 1 between 1024 and 1536 (the trigger required >= 3) and the `6-8` bucket did not gain either
+(9 -> 9, so the `P2_PLUS_MID_BUCKET_WEIGHTING` condition also failed). The real-ETH 20-GT subset alone returns the
+same branch.
+
 ## Expected tables to fill
 
 1. per resolution: `<4 / 4-6 / 6-8` GT, TP, recall, weak-candidate counts at IoU 0.1/0.3/0.5, median and max best IoU
-   - **partially filled**: the real-ETH part (20 GT, buckets `<4` = 1 and 6-8 = 19) is in Step 2a Tables 1-3 with the
-   full confidence-threshold curve; `4-6` has no real GT, so its row stays open until the synthetic part runs;
-2. strict sub-stride subset (43 GT) at each resolution - the decisive table - **open**: 42 of those 43 GT are synthetic;
-3. latency per resolution (ms/image) and the relative cost versus 1024 - **filled for the real-ETH part** (Step 2a
-   Table 2, with the preprocess/inference/postprocess split);
-4. the branch and its evidence - **open by construction**: the pre-registered trigger needs the `<4`/`4-6` weak
-   counts, and those buckets were not measured here.
+   - **filled**: Step 2a Tables 1-3 for the 20 real GT, Step 2b Table 4 for all 105 GT, both with the full
+   confidence-threshold curve and the source x bucket split;
+2. strict sub-stride subset at each resolution - the decisive table - **filled**: 43 / 24 / 13 GT at 1024 / 1280 / 1536
+   (the subset shrinks as the input grows), weak responses 0 / 1 / 1, in Step 2b;
+3. latency per resolution (ms/image) and the relative cost versus 1024 - **filled twice**: Step 2a Table 2 (A6000,
+   the numbers to quote) and Step 2b Table 5 (local 4060), both with the preprocess/inference/postprocess split;
+4. the branch and its evidence - **filled**: `P2_STRIDE_4` by the frozen `compute_branch`, with the two coverage
+   caveats stated in Step 2b.
 
 ## What would make this diagnostic inconclusive
 

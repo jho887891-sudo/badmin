@@ -19,6 +19,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent))   # tools/ : where eval_yolo26_v1.py lives in the repo
 import eval_yolo26_v1 as ev  # noqa: E402
 
 
@@ -53,7 +54,7 @@ def read_dets(res):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--part-csv", required=True)
-    ap.add_argument("--root", required=True)
+    ap.add_argument("--root", default=".", help="root for rel_path rows; unused when rows carry abs_image")
     ap.add_argument("--weights", required=True)
     ap.add_argument("--resolutions", nargs="+", type=int, default=[1024, 1280, 1536])
     ap.add_argument("--conf-floor", type=float, default=0.01)
@@ -77,20 +78,25 @@ def main() -> int:
     print("weights: %s  %d B  sha256=%s" % (weights, weights.stat().st_size, wsha), flush=True)
     print("root: %s" % root, flush=True)
 
-    idx = index_images(root)
-    print("image index: %d files under */images/" % len(idx), flush=True)
+    need_index = any(not Path((r.get("abs_image") or "").strip()).is_file() for r in rows)
+    idx = index_images(root) if need_index else {}
+    print("image index: %d files (index built: %s)" % (len(idx), need_index), flush=True)
 
     imgs, meta = [], []
     missing = []
     picked = []
     for r in rows:
         p = None
-        rel = (r.get("rel_path") or "").strip()
-        if rel:
-            cand = root / rel
-            if cand.exists():
-                p = cand
+        absimg = (r.get("abs_image") or "").strip()
+        if absimg and Path(absimg).is_file():
+            p = Path(absimg)
         if p is None:
+            rel = (r.get("rel_path") or "").strip()
+            if rel:
+                cand = root / rel
+                if cand.exists():
+                    p = cand
+        if p is None and idx:
             p = idx.get(r["basename"])
         if p is None:
             missing.append(r["basename"])
@@ -104,6 +110,9 @@ def main() -> int:
         print("no images located; abort", flush=True)
         return 2
     print("located %d/%d images" % (len(imgs), len(rows)), flush=True)
+    if len({p.name for p in imgs}) != len(imgs):
+        print("ERROR: duplicate basenames in the part list, keys must be unique", flush=True)
+        return 3
     for x in picked:
         print("  pick %s" % x, flush=True)
 
@@ -121,8 +130,14 @@ def main() -> int:
 
     # GT per image (frozen decode)
     gts = {}
+    meta_by_name = {m["basename"]: m for m in meta}
     for p in imgs:
-        lp = label_for(p)
+        lp = None
+        absl = (meta_by_name.get(p.name, {}).get("abs_label") or "").strip()
+        if absl and Path(absl).is_file():
+            lp = Path(absl)
+        if lp is None:
+            lp = label_for(p)
         g = ev.load_gt_boxes(str(p), str(lp))
         gts[p.name] = (g if g is not None else [], str(lp))
     n_gt_tiny = sum(1 for p in imgs for b in gts[p.name][0] if b["eq640"] < 8.0)
@@ -237,12 +252,14 @@ def main() -> int:
             if pick is None or abs(pick["eq640"] - want_eq) > 1e-6:
                 mism.append({"image": m["basename"], "why": "gt_not_found"})
                 continue
-            if "v2_matched_op_1024" in m and m["v2_matched_op_1024"]:
-                if str(pick["matched_op"]) != m["v2_matched_op_1024"]:
+            ref_hit = m.get("v2_matched_op_1024") or m.get("local_ref_matched_op") or ""
+            ref_iou = m.get("v2_best_iou_weak_1024") or m.get("local_ref_best_iou") or ""
+            if ref_hit:
+                if str(pick["matched_op"]) != ref_hit:
                     mism.append({"image": m["basename"], "why": "matched_op",
-                                 "local": m["v2_matched_op_1024"], "remote": str(pick["matched_op"])})
-            if "v2_best_iou_weak_1024" in m and m["v2_best_iou_weak_1024"]:
-                want = float(m["v2_best_iou_weak_1024"])
+                                 "local": ref_hit, "remote": str(pick["matched_op"])})
+            if ref_iou:
+                want = float(ref_iou)
                 if abs(pick["best_iou_weak"] - want) > 0.02:
                     mism.append({"image": m["basename"], "why": "best_iou_weak",
                                  "local": want, "remote": round(pick["best_iou_weak"], 6)})
