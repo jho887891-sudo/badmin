@@ -156,7 +156,7 @@ verified chunks and assembled to the exact SSOT sha256).
 | item | value |
 |---|---|
 | host / runtime | RTX 4060 Laptop 8 GB; python 3.11.9, torch 2.14.0+cu126, ultralytics 8.4.150, CUDA 12.6 |
-| checkpoint | local `_scratch_resdiag/v2_best.pt`, 20,344,133 B, sha256 `3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7` (20/20 verified chunks; scratch copy, not a deliverable) |
+| checkpoint | local `_scratch_resdiag/v2_best.pt`, 20,344,133 B, sha256 `3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7` (20/20 verified chunks; scratch copy, deleted after the run - re-fetch with `tools/remote/fetch_chunks.ps1` and concatenate `v2c.00..v2c.19` in name order) |
 | part list | `tools/remote/local_tiny_part.csv` 27,132 B: 105 rows, 20 `eth_main` + 85 synthetic, every image and label verified present before the run |
 | probe | `tools/remote/remote_tiny_resolution.py` (extended with absolute-path support so one part list can span the ETH pool on D: and the render pool under `outputs/`) |
 | raw result | `outputs/shuttle_capability/metrics/resolution_response_local_v1_probe.json` 303,125 B sha256 `823fae225a2fb4a81cfcd50684f2d5f19f2799cd2b0731cbb9c14368631ba32a` |
