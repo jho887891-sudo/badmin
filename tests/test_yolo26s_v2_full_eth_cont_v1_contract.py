@@ -137,8 +137,12 @@ def test_real_manifest_and_audit_when_present():
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
     rows = list(csv.DictReader(MANIFEST.open(encoding="utf-8")))
     assert audit["GATE_all_pass"] is True and audit["GATE_manifest_complete"] is True
-    assert audit["manifest_rows"] == len(rows) == 25178
-    assert audit["positive_images"] == 19678 and audit["negative_images"] == 5500
+    # 25,177 manifest rows + the 1 official ETH image that has no label file == the 25,178 planned rows
+    assert audit["plan_rows"] == 25178
+    assert audit["manifest_rows"] == len(rows) == 25177
+    assert audit["excluded_unlabeled_positives"] == len(audit["missing_labels"]) == 1
+    assert audit["missing_labels"] == ["ticino_1_easy/images/train/ticino_1_00212.jpg"]
+    assert audit["positive_images"] == 19677 and audit["negative_images"] == 5500
     assert not audit["missing_images"] and not audit["unreadable_images"]
     assert not audit["non_empty_negative_labels"] and not audit["prohibited_source_hits"]
     assert audit["manifest_sha256"] == T.sha256_file(MANIFEST)
