@@ -1,0 +1,101 @@
+{
+  "batch": 16,
+  "batch_attempts_tried": [
+    {
+      "batch": 16,
+      "detail": "",
+      "outcome": "ok"
+    }
+  ],
+  "checkpoint": {
+    "bytes": 20344133,
+    "path": "/home/dgut/.dsh-bench/runs/detect/runs_eth_hardneg_v2/full_v2_e50/weights/best.pt",
+    "sha256": "3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7"
+  },
+  "data": {
+    "train_images": 24673,
+    "train_list_sha256": "5cdc6c298f15adf33882783d0bfd46c37b3e9bd4d6d15573190da605b66b8cfe",
+    "val_images": 504
+  },
+  "diagnostic_only": true,
+  "eligible_for_final_report": false,
+  "endpoint": {
+    "diagnostic_only": true,
+    "epoch": 20,
+    "internal_val_selection_is_diagnostic_only": true,
+    "mode": "fixed_epoch",
+    "use_best_pt_for_primary_comparison": false
+  },
+  "epoch_rows": [
+    {
+      "epoch": "1",
+      "lr/pg0": "2.99806e-05",
+      "lr/pg1": "2.99806e-05",
+      "lr/pg2": "9.47894e-05",
+      "metrics/mAP50(B)": "0.99478",
+      "metrics/mAP50-95(B)": "0.70181",
+      "metrics/precision(B)": "0.99833",
+      "metrics/recall(B)": "0.98759",
+      "time": "1748.11",
+      "train/box_loss": "1.64969",
+      "train/cls_loss": "1.24633",
+      "train/l1_loss": "0.00124",
+      "val/box_loss": "0.9008",
+      "val/cls_loss": "0.29151",
+      "val/l1_loss": "0.00089"
+    },
+    {
+      "epoch": "2",
+      "lr/pg0": "1.515e-05",
+      "lr/pg1": "1.515e-05",
+      "lr/pg2": "1.515e-05",
+      "metrics/mAP50(B)": "0.99495",
+      "metrics/mAP50-95(B)": "0.70449",
+      "metrics/precision(B)": "0.99749",
+      "metrics/recall(B)": "0.98709",
+      "time": "3572.16",
+      "train/box_loss": "1.53873",
+      "train/cls_loss": "1.10759",
+      "train/l1_loss": "0.00114",
+      "val/box_loss": "0.90614",
+      "val/cls_loss": "0.28732",
+      "val/l1_loss": "0.00089"
+    }
+  ],
+  "experiment": "yolo26s_v2_full_eth_cont_v1",
+  "gpu_cap": {
+    "applied": true,
+    "cap_gib": 24.0,
+    "device_total_gib": 47.4,
+    "fraction": 0.5063099464224323
+  },
+  "kind": "smoke",
+  "label": "DIAGNOSTIC_ONLY",
+  "notes": [
+    "smoke checkpoint is DIAGNOSTIC_ONLY and is never used for the final comparison",
+    "the internal-val metrics here come from a slice of the same training pool (spec section 8), so they are not a capability measurement",
+    "launcher incident 2026-10-08: the first detached launcher refused to start the full run because grep -c prints 0 while exiting 1, so the fallback corrupted the NaN count into two lines and the integer test failed; the smoke itself had already passed every condition. Fixed in tools/remote/launch_full_cont_v1.sh."
+  ],
+  "pass_conditions": {
+    "adamw_confirmed": true,
+    "all_locations_loaded": true,
+    "checkpoint_sha256_verified": true,
+    "checkpoints_saved": true,
+    "gpu_memory_stable": true,
+    "loss_decreases": true,
+    "lr0_is_3e-5": true,
+    "no_nan_or_inf": true,
+    "no_prohibited_source": true,
+    "official_negatives_loaded": true,
+    "plain_yolo26s": true
+  },
+  "runtime": {
+    "cuda_build": "12.4",
+    "gpu": "NVIDIA RTX A6000",
+    "python": "3.10.12",
+    "torch": "2.5.1+cu124",
+    "ultralytics": "8.4.144"
+  },
+  "source_manifest": "_scratch_cont_v1\\smoke_b16_manifest.json",
+  "spec_section": "12"
+}

@@ -108,5 +108,25 @@
     "rect": false,
     "seed": 42
   },
+  "training_runtime": {
+    "chosen": {
+      "cuda_build": "12.4",
+      "gpu": "NVIDIA RTX A6000",
+      "interpreter": "/usr/bin/python3",
+      "python": "3.10.12",
+      "pythonpath": "/home/dgut/.dsh-bench/wheel_xfs",
+      "torch": "2.5.1+cu124",
+      "ultralytics": "8.4.150"
+    },
+    "consequence": "training numerics/throughput may differ from V1/V2/V3 at the margin; the evaluation stays on the frozen local evaluator with ultralytics 8.4.150, and both runtimes are recorded here.",
+    "deviation": true,
+    "previous_experiments_v1_v2_v3": {
+      "interpreter": "/home/T7/public/miniconda3/bin/python",
+      "python": "3.13.2",
+      "torch": "2.10.0+cu128",
+      "ultralytics": "8.4.150"
+    },
+    "reason": "the ETH pool and the miniconda prefix live on a fuseblk (NTFS) mount whose per-request latency is ~200 ms; importing torch from that prefix exceeded a 120 s timeout, while the xfs interpreter imports torch + ultralytics in 4.65 s (measured 2026-10-07 17:36 UTC). Bulk FUSE throughput is fine (200 MB in 1.19 s), so only metadata-heavy imports were affected."
+  },
   "weights": "/home/dgut/.dsh-bench/runs/detect/runs_eth_hardneg_v2/full_v2_e50/weights/best.pt"
 }
