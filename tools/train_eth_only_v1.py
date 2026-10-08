@@ -439,6 +439,10 @@ def run_cli(argv=None) -> int:
 
     from ultralytics import YOLO  # lazy: keeps this module importable without torch
     import torch
+    import ultralytics
+    run["runtime"] = {"python": sys.version.split()[0], "torch": torch.__version__,
+                      "cuda_build": torch.version.cuda, "ultralytics": ultralytics.__version__,
+                      "gpu": (torch.cuda.get_device_name(0) if torch.cuda.is_available() else None)}
 
     device_index = int(str(args.device).split(",")[0])
     run["gpu_cap"] = cap_gpu_memory(args.mem_cap_gib, device_index, torch)
