@@ -1,0 +1,78 @@
+# YOLO26 V1 unified training configuration (spec: YOLO26 羽毛球超小目标统一训练方案 V1).
+# Single source of truth for every V1 run: 640 / 960 / 1024 / 1280 differ ONLY in imgsz and
+# the physical batch that fits VRAM (effective batch stays 32 via Ultralytics nbs=64 semantics
+# or gradient accumulation where the framework supports it).
+
+model:
+  variant: yolo26s-p2        # scale letter BEFORE -p2; yolo26-p2s.yaml silently falls back to n
+  config: yolo26s-p2.yaml    # official config shipped in ultralytics 8.4.150 cfg/models/26/
+  pretrained: assets/external/_staging/F_yolo/weights/yolo26s.pt
+  nc: 1
+  names: {0: shuttlecock}
+
+run:
+  imgsz: 1024                # first formal resolution (spec section 24)
+  imgsz_allowed: [640, 960, 1024, 1280]
+  seed: 42
+  amp: true
+  physical_batch: 2          # VRAM-driven; 1024 on a 8 GiB card
+  effective_batch: 32
+  workers: 4
+  cache: false
+  device: cuda:0
+  # ISSUE-026: never use optimizer=auto. With auto, ultralytics 8.4.150 IGNORES lr0 entirely
+  # (trainer.py:1140 "ignoring lr0") and picks (MuSGD lr=0.01, head param groups at lr*3) when
+  # iterations > 10000 -> the 70-epoch Stage B ran the detection head at 0.03 and destroyed the
+  # Stage A weights. Pinning the optimizer makes stage lr0 effective.
+  optimizer: MuSGD            # same family that auto selected for Stage A; only lr0 differs now
+  warmup_bias_lr: 0.0         # matches what the auto branch forced for the muon/Adam path
+
+stages:                      # spec sections 11-13
+  A: {name: p2_warmup, epochs: 8, freeze: backbone, mosaic: 0.2, lr0: 0.002}
+  # ISSUE-026: Stage B continues from Stage A best.pt (epoch 6). Full unfreeze at lr0=0.01
+  # destroyed the converged weights (mAP50 0.871 -> 0.34/0.44/0.23). Only lr0 changes here.
+  B: {name: main, epochs: 70, freeze: none, mosaic: 0.2, lr0: 0.001}
+  C: {name: real_finish, epochs: 15, freeze: none, mosaic: 0.0, lr0: 0.001}
+
+augmentation:                # spec sections 9-10
+  mosaic: 0.2
+  mixup: 0.0
+  cutmix: 0.0
+  copy_paste: 0.0
+  close_mosaic: 10
+  degrees: 5.0
+  translate: 0.1
+  scale: 0.3
+  fliplr: 0.5
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  bbox_size_guard_px: 4.0    # reject an augmented positive that falls below 4 px at network input
+  motion_blur_p: 0.15
+
+data:
+  manifest: outputs/shuttle_capability/v1_dataset/v1_dataset_manifest.csv
+  digest: outputs/shuttle_capability/v1_dataset/v1_dataset_digest.json
+  train_list: outputs/shuttle_capability/v1_dataset/train_weighted.txt
+  val_list: outputs/shuttle_capability/v1_dataset/val.txt
+  split_file: configs/shuttle_detection/eth_location_split_v1.yaml
+  sampler: outputs/shuttle_capability/v1_dataset/v1_sampler.json
+  negative_ratio: 0.20
+  hard_negative_weight: 3.0
+  frozen_test_sets: [outputs/shuttle_capability/controlled_capability,
+                     outputs/shuttle_capability/challenge_test,
+                     outputs/shuttle_capability/synthetic_on_real_bg,
+                     outputs/shuttle_capability/synthetic_3d,
+                     outputs/shuttle_capability/real_images,
+                     outputs/shuttle_capability/real_video,
+                     outputs/shuttle_capability/real_match_frames,
+                     outputs/shuttle_capability/real_train]
+
+eval:
+  primary_metric: iou_0.5
+  secondary_metric: center_distance_25px
+  size_buckets_px: ["<4", "4-6", "6-8", "8-12", "12-16", "16-24", "24-32", "32-64", ">64"]
+  hard_negative_eval: true
+
+outputs:
+  runs_dir: runs/shuttle_yolo26_v1

@@ -1,6 +1,6 @@
 # reBot B601-DM badminton capability: delivery package
 
-Assembled by `tools/assemble_b601dm_delivery.py` from commit `74ff1a31a1a4f5e470624a41e2919776add746f8`.
+Assembled by `tools/assemble_b601dm_delivery.py` from commit `c798f789c4a9891a9e9704d31502bcb447b576f4`.
 
 **This folder is generated. Do not edit it in place.** The repository above it is the single point of
 truth; a change made here is lost the next time the assembler runs, and is not in the repository at all.
@@ -67,7 +67,7 @@ ones enforced 2864.789 and 11459.156. Everything else exists to make that correc
 | `management/rebot_b601dm/ARM_IDENTITY_DECISION.md` | 2,530 B | `17a9a502e7c9b8fb` |
 | `management/rebot_b601dm/REBOT_B601DM_REPORT.md` | 11,619 B | `90ebb75153fc3568` |
 | `management/rebot_b601dm/BADMINTON_CAPABILITY_RESULT.md` | 7,898 B | `bf6b41af3c2cf04d` |
-| `management/rebot_b601dm/DELIVERABLES.md` | 7,793 B | `e49e6500f008a6c4` |
+| `management/rebot_b601dm/DELIVERABLES.md` | 7,793 B | `c6480aeb2a0d23b5` |
 | `management/rebot_b601dm/TEMP_README.md` | 4,615 B | `3e303e6966459020` |
 | `management/rebot_b601dm/TASK7_MEASUREMENT_STATUS.md` | 4,125 B | `f7c49e4ed3373e5a` |
 | `management/rebot_b601dm/FIRST_SWING_RECORD_INVALID.md` | 2,722 B | `f8870e3a84226281` |

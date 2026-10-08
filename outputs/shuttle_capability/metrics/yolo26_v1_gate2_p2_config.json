@@ -1,0 +1,43 @@
+{
+ "gate": 2,
+ "requested_config": "yolo26s-p2.yaml",
+ "baseline": {
+  "params_total": 10009784,
+  "params_trainable": 0,
+  "detect_levels": 3,
+  "detect_strides_px": [
+   8.0,
+   16.0,
+   32.0
+  ],
+  "nc": 80,
+  "gflops": 23.0793216,
+  "head_attributes": [
+   "one2many",
+   "one2one",
+   "end2end",
+   "export"
+  ]
+ },
+ "p2": {
+  "params_total": 9765856,
+  "params_trainable": 9765856,
+  "detect_levels": 4,
+  "detect_strides_px": [
+   4.0,
+   8.0,
+   16.0,
+   32.0
+  ],
+  "nc": 80,
+  "gflops": 28.0226048,
+  "head_attributes": [
+   "one2many",
+   "one2one",
+   "end2end",
+   "export"
+  ]
+ },
+ "p2_resolved_yaml": null,
+ "verdict": "PASS"
+}

@@ -1,0 +1,76 @@
+{
+ "manifest": "outputs\\shuttle_capability\\v1_dataset\\v1_dataset_manifest.csv",
+ "rows": 30321,
+ "problems": [],
+ "frozen_dirs_excluded": [
+  "controlled_capability",
+  "challenge_test",
+  "synthetic_on_real_bg",
+  "synthetic_3d",
+  "real_images",
+  "real_video",
+  "real_match_frames",
+  "real_train"
+ ],
+ "val_locations": [
+  "ml_3",
+  "ml_6",
+  "uetlibergstrasse_1"
+ ],
+ "train_locations": [
+  "cab_1",
+  "cab_2",
+  "glc_1",
+  "glc_2",
+  "ml_4",
+  "ticino_1",
+  "ticino_2",
+  "uetlibergstrasse_2"
+ ],
+ "by_source_split": {
+  "eth_main_train": 17481,
+  "eth_main_val": 3028,
+  "eth_iphone_train": 2133,
+  "eth_iphone_val": 235,
+  "coco_bg_train": 5500,
+  "coco_bg_val": 1000,
+  "synthetic_train": 673,
+  "synthetic_val": 144,
+  "bg_negative_train": 25,
+  "bg_negative_val": 6,
+  "hard_negative_train": 96
+ },
+ "by_bucket": {
+  "4-6_train": 1666,
+  "<4_train": 363,
+  "6-8_train": 5416,
+  "8-12_train": 7532,
+  "12-16_train": 2601,
+  "32-64_train": 136,
+  "24-32_train": 184,
+  "16-24_train": 963,
+  ">64_train": 115,
+  "8-12_val": 1724,
+  "12-16_val": 755,
+  "16-24_val": 343,
+  "6-8_val": 251,
+  "24-32_val": 52,
+  "32-64_val": 29,
+  "negative_train": 6932,
+  "4-6_val": 71,
+  "<4_val": 24,
+  "negative_val": 1153,
+  ">64_val": 11
+ },
+ "by_source": {
+  "eth_main": 20509,
+  "eth_iphone": 2368,
+  "coco_bg": 6500,
+  "synthetic": 817,
+  "bg_negative": 31,
+  "hard_negative": 96
+ },
+ "positives": 22236,
+ "negatives": 8085,
+ "manifest_sha256": "11d850263b370fc67b78b1264609a5a3d2f79d9f235f9d943bfb322de91ed539"
+}

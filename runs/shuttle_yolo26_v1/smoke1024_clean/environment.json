@@ -1,0 +1,17 @@
+{
+ "python": "3.11.9",
+ "platform": "Windows-10-10.0.26100-SP0",
+ "torch": "2.14.0+cu126",
+ "cuda_available": true,
+ "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+ "ultralytics": "8.4.150",
+ "seed": 42,
+ "stage": "smoke",
+ "epochs": 1,
+ "imgsz": 1024,
+ "batch": 2,
+ "train_images_resolved": 200,
+ "val_images": 4413,
+ "manifest": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_project\\outputs\\shuttle_capability\\v1_dataset\\v1_dataset_manifest.csv",
+ "manifest_sha256": "11d850263b370fc67b78b1264609a5a3d2f79d9f235f9d943bfb322de91ed539"
+}

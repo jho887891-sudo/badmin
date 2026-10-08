@@ -1,0 +1,6 @@
+E:/具身智能/badmin_project/outputs/shuttle_capability/train_data/bg_val/tbg_010.jpg
+E:/具身智能/badmin_project/outputs/shuttle_capability/train_data/bg_val/tbg_015.jpg
+E:/具身智能/badmin_project/outputs/shuttle_capability/train_data/bg_val/tbg_020.jpg
+E:/具身智能/badmin_project/outputs/shuttle_capability/train_data/bg_val/tbg_025.jpg
+E:/具身智能/badmin_project/outputs/shuttle_capability/train_data/bg_val/tbg_035.jpg
+E:/具身智能/badmin_project/outputs/shuttle_capability/train_data/bg_val/tbg_040.jpg

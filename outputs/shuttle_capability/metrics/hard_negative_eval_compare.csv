@@ -1,0 +1,13 @@
+set,in_stage_b_training,provenance,images,threshold,stageA_best_total_FP,stageA_best_FP_per_image,stageA_best_image_FP_rate,stageA_best_max_conf,stageB_best_e10_total_FP,stageB_best_e10_FP_per_image,stageB_best_e10_image_FP_rate,stageB_best_e10_max_conf,delta_total_FP_B_minus_A,delta_FP_per_image_B_minus_A,delta_image_FP_rate_B_minus_A,delta_max_conf_B_minus_A
+frozen_real_backgrounds,False,"real_images/backgrounds (30 imgs, frozen, never trained)",30,0.25,2,0.066667,0.066667,0.592071,3,0.1,0.066667,0.592772,1,0.033333,0.0,0.000701
+frozen_real_backgrounds,False,"real_images/backgrounds (30 imgs, frozen, never trained)",30,0.5,1,0.033333,0.033333,0.592071,2,0.066667,0.066667,0.592772,1,0.033333,0.033333,0.000701
+frozen_real_backgrounds,False,"real_images/backgrounds (30 imgs, frozen, never trained)",30,0.75,0,0.0,0.0,,0,0.0,0.0,,0,0.0,0.0,
+hard_negative,True,"hard_negatives/raw + hard_negatives2/raw (96 imgs, split=train)",96,0.25,2,0.020833,0.020833,0.40142,0,0.0,0.0,,-2,-0.020833,-0.020833,
+hard_negative,True,"hard_negatives/raw + hard_negatives2/raw (96 imgs, split=train)",96,0.5,0,0.0,0.0,,0,0.0,0.0,,0,0.0,0.0,
+hard_negative,True,"hard_negatives/raw + hard_negatives2/raw (96 imgs, split=train)",96,0.75,0,0.0,0.0,,0,0.0,0.0,,0,0.0,0.0,
+normal_neg_bg_val,False,"bg_negative split=val (6 imgs, unseen)",6,0.25,1,0.166667,0.166667,0.366166,5,0.833333,0.166667,0.684025,4,0.666667,0.0,0.317859
+normal_neg_bg_val,False,"bg_negative split=val (6 imgs, unseen)",6,0.5,0,0.0,0.0,,3,0.5,0.166667,0.684025,3,0.5,0.166667,
+normal_neg_bg_val,False,"bg_negative split=val (6 imgs, unseen)",6,0.75,0,0.0,0.0,,0,0.0,0.0,,0,0.0,0.0,
+normal_neg_coco_val,False,"coco_bg split=val (1000 imgs, unseen)",1000,0.25,10,0.01,0.008,0.654601,1,0.001,0.001,0.289959,-9,-0.009,-0.007,-0.364642
+normal_neg_coco_val,False,"coco_bg split=val (1000 imgs, unseen)",1000,0.5,2,0.002,0.002,0.654601,0,0.0,0.0,,-2,-0.002,-0.002,
+normal_neg_coco_val,False,"coco_bg split=val (1000 imgs, unseen)",1000,0.75,0,0.0,0.0,,0,0.0,0.0,,0,0.0,0.0,

@@ -1,0 +1,35 @@
+{
+ "experiment": "YOLO26S_INFERENCE_SPEED_OPT_V1",
+ "tracks": [
+  "A3",
+  "B",
+  "C",
+  "D",
+  "E",
+  "A4"
+ ],
+ "records_dir": "outputs\\yolo26s_speed_opt",
+ "rules": {
+  "gate_gpu_util_max": 10.0,
+  "gate_gpu_mem_max": 1200,
+  "gate_load1_max": 4.0,
+  "gate_compute_apps_max": 0,
+  "run_foreign_apps_max": 1,
+  "run_mem_ceiling_MiB": 2500,
+  "run_mem_sustained_samples": 3
+ },
+ "historical_reference_ms": 15.9,
+ "thresholds_ms": {
+  "useful": 12.72,
+  "strong": 10.0,
+  "excellent": 8.0
+ },
+ "inputs_found": {
+  "A3": true,
+  "B": true,
+  "C": true,
+  "D": false,
+  "E": false,
+  "A4": false
+ }
+}

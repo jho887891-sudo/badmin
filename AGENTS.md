@@ -40,3 +40,23 @@ Morph One + PiPER 执行
 ↓
 状态修正 / 自适应
 ↺
+
+#数据与产物存放规则
+
+用户指令：**资源不落本地，本地只放结果。**
+
+| 类别 | 放哪 | 例子 |
+|---|---|---|
+| **结果**（进本地仓库） | `outputs/**` 的文本/CSV/JSON、`management/**`、`docs/**`、`deliverables/**` | manifest、指标 CSV/JSON、报告、审计表、交付包、证据缩略图 |
+| **资源**（不落本地） | 远端 `/home/T7/dgut/robot_sim/` 或指定的外部存储 | 图像池、数据集、权重 `*.pt`、第三方大素材、仿真几何二进制 `geometries.usd` |
+
+判定口径（可再讨论）：可再生且体积大（批量图像、数据集、权重）→ 资源。
+本地如确需临时资源：只放 `_scratch_*`（`.gitignore:82-89` 已忽略），用完即删，不计入交付物。
+
+**硬要求：结果必须能自证。** 报告里要写清资源在哪、如何再生、以及可校验的量（张数 / sha256），
+使人在拿不到资源的情况下也能核对结论。
+
+历史教训（不得重演）：`outputs/shuttle_capability/isaac_pool/` 曾只存在于一处，现已消失，
+导致 382 行 `isaac_train_*` + 53 行 `hardneg_train_*` 共 **435 行 manifest 悬空**
+（见 `management/shuttle_detection/DATASET_RESOLUTION.md` 第 4 节）。
+**把资源移出本地之前，必须先确认目标位置可访问、且副本完整（逐一比对张数与 sha256）；未确认前不删本地副本。**

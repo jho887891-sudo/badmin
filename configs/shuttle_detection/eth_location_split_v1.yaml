@@ -1,0 +1,28 @@
+version: eth_location_split_v1
+rule: val = the 3 recording locations with the fewest frames (ties broken by name);
+  frozen
+train_locations:
+- cab_1
+- cab_2
+- glc_1
+- glc_2
+- ml_4
+- ticino_1
+- ticino_2
+- uetlibergstrasse_2
+val_locations:
+- ml_3
+- ml_6
+- uetlibergstrasse_1
+location_frame_counts:
+  uetlibergstrasse_1: 642
+  ml_3: 1148
+  ml_6: 1238
+  uetlibergstrasse_2: 1310
+  ml_4: 1366
+  glc_2: 1648
+  cab_1: 2296
+  ticino_2: 2382
+  glc_1: 2501
+  ticino_1: 2572
+  cab_2: 3406

@@ -1,0 +1,11 @@
+{
+ "run_id": "smoke1024_clean",
+ "stage": "smoke",
+ "imgsz": 1024,
+ "epochs": 1,
+ "batch": 2,
+ "elapsed_s": 896.2,
+ "best_pt": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_project\\runs\\shuttle_yolo26_v1\\smoke1024_clean\\weights\\best.pt",
+ "last_pt": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_project\\runs\\shuttle_yolo26_v1\\smoke1024_clean\\weights\\last.pt",
+ "train_images": 200
+}

@@ -1,0 +1,6 @@
+path: E:/具身智能/badmin_project/runs/shuttle_yolo26_v1/smoke_imgsz1024_20260921-170646
+train: train_resolved.txt
+val: val_resolved.txt
+nc: 1
+names:
+  0: shuttlecock

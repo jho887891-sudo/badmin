@@ -1,0 +1,4 @@
+track,backend,precision,compile,median_ms,p95_ms,p99_ms,FPS_median,delta_vs_historical_A_ms,delta_vs_same_window_A3_ms,grade_vs_same_window_A3,validity
+A3,pytorch,fp32,no,15.6584,17.7274,28.2863,63.86,-0.2416,0.0,below_useful,VALID
+B,pytorch,fp16,no,19.011,21.4285,22.8313,52.6,3.111,3.3526,below_useful,VALID
+C,pytorch,fp16,yes,14.8554,16.5679,17.5381,67.32,-1.0446,-0.803,below_useful,VALID

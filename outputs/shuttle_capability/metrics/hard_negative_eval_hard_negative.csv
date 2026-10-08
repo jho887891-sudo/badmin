@@ -1,0 +1,10 @@
+checkpoint,threshold,total_images,total_FP,FP_per_image,images_with_FP,image_FP_rate,max_confidence_FP,mean_confidence_FP,median_confidence_FP,P95_FP_confidence
+stageA_best,0.25,96,2,0.020833,2,0.020833,0.40142,0.339831,0.339831,0.395261
+stageA_best,0.5,96,0,0.0,0,0.0,,,,
+stageA_best,0.75,96,0,0.0,0,0.0,,,,
+stageB_best_e10,0.25,96,0,0.0,0,0.0,,,,
+stageB_best_e10,0.5,96,0,0.0,0,0.0,,,,
+stageB_best_e10,0.75,96,0,0.0,0,0.0,,,,
+stageB_last_e70,0.25,96,0,0.0,0,0.0,,,,
+stageB_last_e70,0.5,96,0,0.0,0,0.0,,,,
+stageB_last_e70,0.75,96,0,0.0,0,0.0,,,,

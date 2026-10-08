@@ -1,0 +1,16 @@
+[Unit]
+Description=DeepSeek Harness Web UI (loopback; exposed to the tailnet via tailscale serve)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/T7/ojh/badmin_project
+ExecStart=/home/dgut/.local/bin/dsh web --no-open --host 127.0.0.1 --port 3080 --trusted-host 100.88.178.19:3080 --trusted-host jxxy.taildd42cc.ts.net:3080
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

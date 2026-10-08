@@ -1,0 +1,19 @@
+{
+ "_comment": "spec section 6 Track F capability record - determined by reading the installed stack, not guessed",
+ "track": "F",
+ "purpose": "TensorRT end-to-end / NMS-free",
+ "supported": "POSSIBLY - documented export path exists, NOT YET VERIFIED END TO END",
+ "export_api": "model.export(format=engine, nms=False)  ->  exporter sets model.end2end = (self.args.nms is False)",
+ "evidence": [
+  "ultralytics/engine/exporter.py:682-683  if hasattr(model, end2end): model.end2end = self.args.nms is False",
+  "ultralytics/engine/exporter.py:684-688  end2end branch is DISABLED with a warning for formats without top-k support - watch the export log for this line",
+  "ultralytics/engine/exporter.py:699-701  requires TensorRT >= 8.5.0 for the Mod operator; installed 10.13.3.9 satisfies it",
+  "ultralytics/engine/exporter.py:export_engine() calls onnx2engine(f_onnx, f, workspace, quantize, dynamic, im.shape, dla, dataset, metadata, verbose, prefix) - it passes NO nms argument",
+  "ultralytics/utils/export/engine.py contains ZERO occurrences of nms / end2end / EfficientNMS / TRT_NMS - i.e. no GPU NMS plugin is ever inserted"
+ ],
+ "gpu_nms": false,
+ "cpu_postprocess_remaining": true,
+ "interpretation": "There is no EfficientNMS/TRT_NMS plugin path in this stack. A genuinely NMS-free engine could only come from the MODEL-side end2end ONNX branch (nms=False), which folds top-k into the graph. Whether that survives the TRT build must be measured, and the exporter can silently disable it (exporter.py:684-688).",
+ "decision_rule": "Run Track F only after Tracks A-E are complete, and only if the export log does NOT contain the disable warning. If it does, record NOT_SUPPORTED_IN_CURRENT_STACK.",
+ "tensorrt_module_alias_required": true
+}

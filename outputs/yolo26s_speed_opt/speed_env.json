@@ -1,0 +1,36 @@
+{
+ "_comment": "spec section 5 frozen environment contract - measured on jxxy 2026-10-05",
+ "checkpoint_path": "/home/dgut/.dsh-bench/eth_only_v1_best.pt",
+ "checkpoint_sha256": "7a836a2621686affbdd3f1da7c3a0a57c4b86f14432835be2bc562c2899fc6f2",
+ "checkpoint_bytes": 20344069,
+ "git_commit": "NOT_A_GIT_TREE",
+ "git_commit_note": "/home/T7/ojh/robot_sim is not a git repository; no revision id exists for the remote tree",
+ "model_name": "YOLO26s (plain, not P2)",
+ "task": "detect",
+ "nc": 1,
+ "names": {
+  "0": "shuttlecock"
+ },
+ "parameter_count": 9948638,
+ "GFLOPs_1024": null,
+ "GFLOPs_1024_note": "UNKNOWN - ultralytics.utils.torch_utils.get_flops returned 0.0 for this model; the spec figure ~59.19 is UNVERIFIED",
+ "Ultralytics_version": "8.4.150",
+ "PyTorch_version": "2.10.0+cu128",
+ "CUDA_version": "12.8",
+ "cuDNN_version": 91002,
+ "TensorRT_version": "10.13.3.9",
+ "GPU_name": "NVIDIA RTX A6000",
+ "GPU_driver": "580.178.04",
+ "GPU_memory_total_MiB": 49140,
+ "python_version": "3.12.13 (env_isaaclab interpreter)",
+ "python_note": "miniconda base is 3.13.2 and has NO TensorRT wheel available; env_isaaclab 3.12.13 is the one used",
+ "tensorrt_module_alias": true,
+ "tensorrt_module_alias_note": "TRT >=10.0 ships the API as tensorrt_bindings; the top-level tensorrt package is a namespace shim with only plugin/. ultralytics 8.4.150 calls trt.Logger / trt.__version__, so the harness aliases tensorrt_bindings attributes onto tensorrt before importing ultralytics. No ultralytics source was modified, no graph surgery.",
+ "tensorrt_install": {
+  "method": "pip install --target",
+  "target": "/home/T7/dgut/trt_env/pkgs",
+  "shared_env_modified": false
+ },
+ "measured_on": "dgut@jxxy.taildd42cc.ts.net",
+ "measured_at": "2026-10-05T15:58:00Z"
+}

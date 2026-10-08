@@ -1,0 +1,20 @@
+{
+ "_comment": "spec section 17 required artifact - the exact frozen checkpoint, two independent copies",
+ "canonical_sha256": "7a836a2621686affbdd3f1da7c3a0a57c4b86f14432835be2bc562c2899fc6f2",
+ "bytes": 20344069,
+ "copies": [
+  {
+   "path": "/home/dgut/.dsh-bench/eth_only_v1_best.pt",
+   "sha256": "7a836a2621686affbdd3f1da7c3a0a57c4b86f14432835be2bc562c2899fc6f2",
+   "mtime": "2026-10-05 02:08"
+  },
+  {
+   "path": "/home/dgut/.dsh-bench/runs/detect/runs_eth_only_v1/full_e50/weights/best.pt",
+   "sha256": "7a836a2621686affbdd3f1da7c3a0a57c4b86f14432835be2bc562c2899fc6f2",
+   "mtime": "2026-10-03 11:18"
+  }
+ ],
+ "copies_identical": true,
+ "training_run": "runs/detect/runs_eth_only_v1/full_e50",
+ "all_variants_must_originate_from_this_sha256": true
+}

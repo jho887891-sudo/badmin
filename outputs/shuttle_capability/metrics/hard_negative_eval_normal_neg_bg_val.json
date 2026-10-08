@@ -1,0 +1,119 @@
+{
+ "set": "normal_neg_bg_val",
+ "images": 6,
+ "skipped_because_positive_label": [],
+ "conf_floor": 0.01,
+ "imgsz": 1024,
+ "thresholds": [
+  0.25,
+  0.5,
+  0.75
+ ],
+ "results": {
+  "stageA_best": {
+   "0.25": {
+    "total_images": 6,
+    "total_FP": 1,
+    "FP_per_image": 0.16666666666666666,
+    "images_with_FP": 1,
+    "image_FP_rate": 0.16666666666666666,
+    "max_confidence_FP": 0.36616575717926025,
+    "mean_confidence_FP": 0.36616575717926025,
+    "median_confidence_FP": 0.36616575717926025,
+    "P95_FP_confidence": 0.36616575717926025
+   },
+   "0.5": {
+    "total_images": 6,
+    "total_FP": 0,
+    "FP_per_image": 0.0,
+    "images_with_FP": 0,
+    "image_FP_rate": 0.0,
+    "max_confidence_FP": null,
+    "mean_confidence_FP": null,
+    "median_confidence_FP": null,
+    "P95_FP_confidence": null
+   },
+   "0.75": {
+    "total_images": 6,
+    "total_FP": 0,
+    "FP_per_image": 0.0,
+    "images_with_FP": 0,
+    "image_FP_rate": 0.0,
+    "max_confidence_FP": null,
+    "mean_confidence_FP": null,
+    "median_confidence_FP": null,
+    "P95_FP_confidence": null
+   }
+  },
+  "stageB_best_e10": {
+   "0.25": {
+    "total_images": 6,
+    "total_FP": 5,
+    "FP_per_image": 0.8333333333333334,
+    "images_with_FP": 1,
+    "image_FP_rate": 0.16666666666666666,
+    "max_confidence_FP": 0.6840245723724365,
+    "mean_confidence_FP": 0.5098373711109161,
+    "median_confidence_FP": 0.5630938410758972,
+    "P95_FP_confidence": 0.671172297000885
+   },
+   "0.5": {
+    "total_images": 6,
+    "total_FP": 3,
+    "FP_per_image": 0.5,
+    "images_with_FP": 1,
+    "image_FP_rate": 0.16666666666666666,
+    "max_confidence_FP": 0.6840245723724365,
+    "mean_confidence_FP": 0.6222938696543375,
+    "median_confidence_FP": 0.619763195514679,
+    "P95_FP_confidence": 0.6775984346866608
+   },
+   "0.75": {
+    "total_images": 6,
+    "total_FP": 0,
+    "FP_per_image": 0.0,
+    "images_with_FP": 0,
+    "image_FP_rate": 0.0,
+    "max_confidence_FP": null,
+    "mean_confidence_FP": null,
+    "median_confidence_FP": null,
+    "P95_FP_confidence": null
+   }
+  },
+  "stageB_last_e70": {
+   "0.25": {
+    "total_images": 6,
+    "total_FP": 0,
+    "FP_per_image": 0.0,
+    "images_with_FP": 0,
+    "image_FP_rate": 0.0,
+    "max_confidence_FP": null,
+    "mean_confidence_FP": null,
+    "median_confidence_FP": null,
+    "P95_FP_confidence": null
+   },
+   "0.5": {
+    "total_images": 6,
+    "total_FP": 0,
+    "FP_per_image": 0.0,
+    "images_with_FP": 0,
+    "image_FP_rate": 0.0,
+    "max_confidence_FP": null,
+    "mean_confidence_FP": null,
+    "median_confidence_FP": null,
+    "P95_FP_confidence": null
+   },
+   "0.75": {
+    "total_images": 6,
+    "total_FP": 0,
+    "FP_per_image": 0.0,
+    "images_with_FP": 0,
+    "image_FP_rate": 0.0,
+    "max_confidence_FP": null,
+    "mean_confidence_FP": null,
+    "median_confidence_FP": null,
+    "P95_FP_confidence": null
+   }
+  }
+ }
+}

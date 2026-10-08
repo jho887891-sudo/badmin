@@ -1,0 +1,102 @@
+{
+ "root": "D:\\_eth_data\\eth_shuttle_detection",
+ "images_total": 20509,
+ "boxes_total": 20508,
+ "empty_label_files": 0,
+ "images_without_label_file": 1,
+ "boxes_per_image": {
+  "0": 1,
+  "1": 20508
+ },
+ "class_ids": {
+  "0": 20508
+ },
+ "resolutions": {
+  "1920x1200": 20509
+ },
+ "size_buckets_original_px": {
+  "12-16": 583,
+  "16-24": 6510,
+  "8-12": 209,
+  "24-32": 6778,
+  "32-64": 5941,
+  ">64": 416,
+  "6-8": 67,
+  "4-6": 4
+ },
+ "size_buckets_at_640_input": {
+  "4-6": 1574,
+  "<4": 280,
+  "6-8": 5519,
+  "8-12": 8746,
+  "12-16": 3014,
+  "32-64": 60,
+  "24-32": 173,
+  "16-24": 1139,
+  ">64": 3
+ },
+ "size_pct_at_640_input": {
+  "<4": 1.37,
+  "4-6": 7.68,
+  "6-8": 26.91,
+  "8-12": 42.65,
+  "12-16": 14.7,
+  "16-24": 5.55,
+  "24-32": 0.84,
+  "32-64": 0.29,
+  ">64": 0.01
+ },
+ "equivalent_size_at_640_px_quantiles": {
+  "p1": 3.67,
+  "p5": 5.5,
+  "p25": 7.21,
+  "p50": 9.04,
+  "p75": 11.44,
+  "p95": 17.15,
+  "p99": 24.71,
+  "mean": 9.9,
+  "min": 1.63,
+  "max": 108.87
+ },
+ "per_location_frames": {
+  "cab_1": 2296,
+  "cab_2": 3406,
+  "glc_1": 2501,
+  "glc_2": 1648,
+  "ml_3": 1148,
+  "ml_4": 1366,
+  "ml_6": 1238,
+  "ticino_1": 2572,
+  "ticino_2": 2382,
+  "uetlibergstrasse_1": 642,
+  "uetlibergstrasse_2": 1310
+ },
+ "paper_per_location_frames": {
+  "cab_1": 2296,
+  "cab_2": 3407,
+  "glc_1": 2501,
+  "glc_2": 1648,
+  "ml_3": 1148,
+  "ml_4": 1366,
+  "ml_6": 1238,
+  "ticino_1": 2572,
+  "ticino_2": 2382,
+  "uetlibergstrasse_1": 642,
+  "uetlibergstrasse_2": 1310
+ },
+ "per_location_delta_vs_paper": {
+  "cab_1": 0,
+  "cab_2": -1,
+  "glc_1": 0,
+  "glc_2": 0,
+  "ml_3": 0,
+  "ml_4": 0,
+  "ml_6": 0,
+  "ticino_1": 0,
+  "ticino_2": 0,
+  "uetlibergstrasse_1": 0,
+  "uetlibergstrasse_2": 0
+ },
+ "paper_total_11_locations": 20510,
+ "measured_total_11_locations": 20509
+}

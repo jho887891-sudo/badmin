@@ -1,0 +1,4 @@
+name,path,sha256,bytes,run,epoch,role,imgsz,conf_op,ap_conf
+a_best,D:/_eth_dl/ckpts/stageA_best.pt,3214aaf15fd9d9a238dce81db8932467b3c76df7251cba5c954a2b29e9b95a33,20125499,gate6A_imgsz1024_b16_w8_20260926-083331,6,baseline,1024,0.25,0.001
+b_best,D:/_eth_dl/ckpts/stageB_best_e10_stripped.pt,419a3eefa7e4ca44b7da29457fddcc142ed56a04de0735f116cb46121097208b,20136763,gate6B_lr0001_musgd_b16_w8_20260927-235730,10,candidate,1024,0.25,0.001
+b_last,D:/_eth_dl/ckpts/stageB_last_e70.pt,42f0043a1b902b40780c9781cc36bb0559b828c7b3722b2da3d114830d7f98a4,20136763,gate6B_lr0001_musgd_b16_w8_20260927-235730,70,overfit_control,1024,0.25,0.001

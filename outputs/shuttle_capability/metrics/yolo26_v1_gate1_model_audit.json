@@ -1,0 +1,240 @@
+{
+ "gate": 1,
+ "ultralytics_version": "8.4.150",
+ "ultralytics_file": "D:\\_yolo26v1\\_wheel_extract\\ultralytics\\__init__.py",
+ "torch_version": "2.14.0+cu126",
+ "torch_cuda_build": "12.6",
+ "python": "3.11.9",
+ "yolo26_cfg_dir": "D:\\_yolo26v1\\_wheel_extract\\ultralytics\\cfg\\models\\26",
+ "yolo26_cfg_files": [
+  "yolo26-cls.yaml",
+  "yolo26-depth.yaml",
+  "yolo26-obb.yaml",
+  "yolo26-p2.yaml",
+  "yolo26-p6.yaml",
+  "yolo26-pose.yaml",
+  "yolo26-seg.yaml",
+  "yolo26-sem.yaml",
+  "yolo26.yaml",
+  "yoloe-26-seg.yaml",
+  "yoloe-26.yaml"
+ ],
+ "official_p2_config_present": true,
+ "weight_file": "assets\\external\\_staging\\F_yolo\\weights\\yolo26s.pt",
+ "weight_exists": true,
+ "weight_bytes": 20422725,
+ "weight_sha256": "646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b",
+ "ckpt_keys": [
+  "best_fitness",
+  "date",
+  "docs",
+  "ema",
+  "epoch",
+  "git",
+  "license",
+  "model",
+  "optimizer",
+  "scaler",
+  "train_args",
+  "train_metrics",
+  "train_results",
+  "updates",
+  "version"
+ ],
+ "weight_scale_letter": "s",
+ "weight_nc": 80,
+ "training_mechanism": {
+  "defaults": {},
+  "trainer_class": "ultralytics.models.yolo.detect.train.DetectionTrainer",
+  "loss_class": "E2ELoss",
+  "loss_module": "ultralytics.utils.loss",
+  "loss_attrs": {
+   "one2many": "v8DetectionLoss",
+   "one2one": "v8DetectionLoss"
+  },
+  "assigner_class": "NoneType",
+  "stal_search_hits": [
+   {
+    "file": "data\\augment.py",
+    "keyword": "stal",
+    "count": 3
+   },
+   {
+    "file": "data\\base.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "data\\build.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "engine\\exporter.py",
+    "keyword": "stal",
+    "count": 8
+   },
+   {
+    "file": "engine\\model.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "engine\\tuner.py",
+    "keyword": "stal",
+    "count": 2
+   },
+   {
+    "file": "nn\\distill_model.py",
+    "keyword": "stal",
+    "count": 2
+   },
+   {
+    "file": "nn\\tasks.py",
+    "keyword": "stal",
+    "count": 7
+   },
+   {
+    "file": "nn\\backends\\ascend.py",
+    "keyword": "stal",
+    "count": 2
+   },
+   {
+    "file": "nn\\backends\\deepx.py",
+    "keyword": "stal",
+    "count": 3
+   },
+   {
+    "file": "nn\\backends\\qnn.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "nn\\modules\\__init__.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "solutions\\parking_management.py",
+    "keyword": "stal",
+    "count": 10
+   },
+   {
+    "file": "trackers\\byte_tracker.py",
+    "keyword": "stal",
+    "count": 2
+   },
+   {
+    "file": "trackers\\fast_tracker.py",
+    "keyword": "stal",
+    "count": 3
+   },
+   {
+    "file": "trackers\\track.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "utils\\checks.py",
+    "keyword": "STAL",
+    "count": 2
+   },
+   {
+    "file": "utils\\checks.py",
+    "keyword": "stal",
+    "count": 49
+   },
+   {
+    "file": "utils\\downloads.py",
+    "keyword": "stal",
+    "count": 2
+   },
+   {
+    "file": "utils\\events.py",
+    "keyword": "stal",
+    "count": 3
+   },
+   {
+    "file": "utils\\ops.py",
+    "keyword": "stal",
+    "count": 3
+   },
+   {
+    "file": "utils\\torch_utils.py",
+    "keyword": "stal",
+    "count": 8
+   },
+   {
+    "file": "utils\\tuner.py",
+    "keyword": "stal",
+    "count": 10
+   },
+   {
+    "file": "utils\\__init__.py",
+    "keyword": "STAL",
+    "count": 2
+   },
+   {
+    "file": "utils\\__init__.py",
+    "keyword": "stal",
+    "count": 16
+   },
+   {
+    "file": "utils\\callbacks\\clearml.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "utils\\callbacks\\comet.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "utils\\callbacks\\dvc.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "utils\\callbacks\\tensorboard.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "utils\\export\\ascend.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "utils\\export\\engine.py",
+    "keyword": "stal",
+    "count": 2
+   },
+   {
+    "file": "utils\\export\\imx.py",
+    "keyword": "stal",
+    "count": 6
+   },
+   {
+    "file": "utils\\export\\ncnn.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "utils\\export\\paddle.py",
+    "keyword": "stal",
+    "count": 2
+   },
+   {
+    "file": "utils\\export\\qnn.py",
+    "keyword": "stal",
+    "count": 1
+   },
+   {
+    "file": "utils\\export\\tensorflow.py",
+    "keyword": "stal",
+    "count": 7
+   }
+  ],
+  "stal_present": true
+ }
+}
