@@ -8,11 +8,11 @@
 
 | 想了解 | 文件 |
 |---|---|
-| 项目现在在哪 | `PROJECT_STATUS.md` |
-| 下一步做什么 / 优先级 | `TODO.md`、`ROADMAP.md` |
-| 为什么这么设计 | `management/DECISIONS.md` |
-| 踩过什么坑 | `management/ISSUES.md` |
-| 每天做了什么 | `management/DAILY_LOG.md` |
+| 项目位置 | `PROJECT_STATUS.md` |
+| 下一步 / 优先级 | `TODO.md`、`ROADMAP.md` |
+| 设计方案 | `management/DECISIONS.md` |
+| 历史问题 | `management/ISSUES.md` |
+| 每日历程 | `management/DAILY_LOG.md` |
 | 训练实验登记 | `experiments/EXPERIMENT_INDEX.md` |
 
 ## 目录结构
