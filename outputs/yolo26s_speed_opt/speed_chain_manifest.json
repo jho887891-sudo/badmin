@@ -28,8 +28,8 @@
   "A3": true,
   "B": true,
   "C": true,
-  "D": false,
-  "E": false,
-  "A4": false
+  "D": true,
+  "E": true,
+  "A4": true
  }
 }

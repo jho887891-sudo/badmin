@@ -1,0 +1,86 @@
+{
+ "track": "E",
+ "backend": "tensorrt",
+ "precision": "fp16",
+ "compile": "no",
+ "imgsz": 1024,
+ "batch": 1,
+ "latency_level": "model_only (TensorRT runtime execute_async_v3, no python postprocess)",
+ "warmup_iterations": 50,
+ "timed_iterations": 500,
+ "timestamp": "2026-10-08T17:27:57+0000",
+ "checkpoint": "eth_only_v1_best.pt",
+ "checkpoint_sha256": "7a836a2621686affbdd3f1da7c3a0a57c4b86f14432835be2bc562c2899fc6f2",
+ "checkpoint_bytes": 20344069,
+ "engine": "/home/T7/dgut/trt_env/speed_E_dynamic.engine",
+ "git_commit": "NOT_A_GIT_TREE",
+ "PyTorch": "2.10.0+cu128",
+ "CUDA_build": "12.8",
+ "Ultralytics": "8.4.150",
+ "TensorRT": "10.13.3.9",
+ "python": "3.12.13",
+ "clean_gate": {
+  "passed": true,
+  "streak": 3,
+  "requirements": {
+   "gate_gpu_util_max": 10.0,
+   "gate_gpu_mem_max": 1200,
+   "gate_load1_max": 4.0,
+   "gate_compute_apps_max": 0
+  },
+  "gpu_at_start": {
+   "t_s": 0.0,
+   "gpu_util": 0.0,
+   "gpu_mem": 35.0,
+   "compute_apps": 0,
+   "load1": 2.31
+  }
+ },
+ "monitor_samples": 3,
+ "monitor_csv": "/home/T7/dgut/trt_env/speed_E.monitor.csv",
+ "gpu_snapshot_start": "0 %, 35 MiB, 49140 MiB",
+ "VRAM_peak_MB": 18.0,
+ "n": 500,
+ "median_ms": 2.318667946383357,
+ "mean_ms": 2.338861294556409,
+ "std_ms": 0.19204540873571962,
+ "p90_ms": 2.3527515586465597,
+ "p95_ms": 2.3772345623001456,
+ "p99_ms": 2.5224248110316694,
+ "min_ms": 2.3011849261820316,
+ "max_ms": 6.496954010799527,
+ "engine_metadata": {
+  "description": "Ultralytics YOLO26s model trained on eth_only_v1_train_remote.yaml",
+  "author": "Ultralytics",
+  "date": "2026-10-08T17:21:08.258772+00:00",
+  "version": "8.4.150",
+  "license": "AGPL-3.0 License (https://ultralytics.com/license)",
+  "docs": "https://docs.ultralytics.com",
+  "stride": 32,
+  "task": "detect",
+  "head": "Detect",
+  "batch": 1,
+  "imgsz": [
+   1024,
+   1024
+  ],
+  "names": {
+   "0": "shuttlecock"
+  },
+  "args": {
+   "data": null,
+   "batch": 1,
+   "fraction": 1.0,
+   "quantize": 16,
+   "nms": null,
+   "dynamic": true,
+   "simplify": true,
+   "opset": null,
+   "workspace": null
+  },
+  "channels": 3,
+  "end2end": false
+ },
+ "FPS_median": 431.28,
+ "gpu_snapshot_end": "97 %, 385 MiB, 49140 MiB"
+}

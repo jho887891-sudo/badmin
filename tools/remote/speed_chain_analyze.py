@@ -138,8 +138,15 @@ def build(records_dir, summary_prefix):
     for tag, _b, _p, _c, fname in TRACKS:
         p = os.path.join(records_dir, fname)
         recs[tag] = read_json(p)
-        mons[tag] = read_monitor(os.path.join(records_dir, fname.replace(".json", ".monitor.csv")))
+        # The chain writes monitors as speed_<TAG>.monitor.csv while this module names records
+        # speed_<backend>_<precision>[_clean].json. On 2026-10-08 that mismatch made every track look
+        # like NO_MONITOR_DATA and the whole summary came out CONTAMINATED_INVALID. Accept both names.
+        cands = [fname.replace(".json", ".monitor.csv"), "speed_%s.monitor.csv" % tag]
+        mon_path = next((os.path.join(records_dir, c) for c in cands
+                         if os.path.exists(os.path.join(records_dir, c))), None)
+        mons[tag] = read_monitor(mon_path)
         validity[tag] = judge(recs[tag], mons[tag])
+        validity[tag]["monitor_file"] = mon_path
 
     dr = drift(recs.get("A3"), recs.get("A4"))
     # Window validity is a property of the A3/A4 sentinels plus the drift guard, NOT of every track.

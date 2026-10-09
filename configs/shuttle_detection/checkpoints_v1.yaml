@@ -54,8 +54,8 @@ checkpoints:
       20,344,133 B, sha256 7af5a563b28e5f642e2209d7eca6e94281cad858d0758d47fc4e932dab8fbd57."
 
   eth_real_hardneg_v2_best:
-    path: ""                                 # local scratch copy deleted 2026-10-05 after task 5/6; refetch with:
-                                             #   scp dgut@jxxy.taildd42cc.ts.net:<remote> _scratch_eth_hardneg_v2/best.pt
+    path: _scratch_cont_v1/ckpt/v2_best.pt   # scratch copy for the continuation comparison; refetch with:
+                                             #   scp dgut@jxxy.taildd42cc.ts.net:<remote> _scratch_cont_v1/ckpt/v2_best.pt
     run: full_v2_e50 (runs/detect/runs_eth_hardneg_v2/full_v2_e50)
     remote: /home/dgut/.dsh-bench/runs/detect/runs_eth_hardneg_v2/full_v2_e50/weights/best.pt
     epoch: 21
@@ -66,6 +66,21 @@ checkpoints:
       mAP50-95 0.66923 / mAP50 0.95781 / R 0.91634 (fitness argmax == mAP50-95 argmax, so best.pt is that
       checkpoint). 20,344,133 B, sha256
       3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7."
+
+  cont_v1_e20:
+    path: _scratch_cont_v1/ckpt/e20_infer.pt   # scratch copy; strip of the epoch-20 last.pt via
+                                               #   tools/remote/strip_cont_v1_ckpt.py (optimizer/EMA removed)
+    run: full_cont_e20 (runs/detect/runs_cont_v1/full_cont_e20)
+    remote: /home/dgut/.dsh-bench/runs/detect/runs_cont_v1/full_cont_e20/weights/last.pt
+    epoch: 20
+    role: candidate
+    note: "YOLO26S_V2_FULL_ETH_CONTINUATION_V1 epoch 20, the pre-registered primary endpoint (not best.pt).
+      Continuation from eth_real_hardneg_v2_best over the full eligible ETH pool: 19,677 real positives (all 11
+      locations, easy+medium) + 5,500 official coco_train_easy backgrounds = 25,177 rows; 20 epochs, imgsz 1024,
+      AdamW lr0 3e-5, nbs 64, physical batch 16 (32 fit but ran ~4x slower while pinned at 98.6% of the 24 GiB
+      per-process cap). Trained 2026-10-08T10:30:10Z-17:10Z on the A6000. Inference weights stripped from
+      last.pt (20,389,054 B, sha256 7c9c1168...) down to 20,426,170 B, sha256
+      f3935047062faf1c8990d01920463df0712bf5ad277b47cd08711122e257384b."
 
   eth_only_v1_best:
     path: ""                                 # local scratch copy deleted 2026-10-05 after task 5/6; refetch with:

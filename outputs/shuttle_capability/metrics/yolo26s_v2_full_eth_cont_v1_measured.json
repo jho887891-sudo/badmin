@@ -1,0 +1,135 @@
+{
+  "baseline": {
+    "legacy_eth_eval": {
+      "ap50": 0.37101,
+      "caveat": "legacy_eth_eval deliberately overlaps the continuation training pool (TRAIN_EVAL_OVERLAP_EXPECTED, spec section 8): it is an official-overlap diagnostic, not an unseen/held-out/generalization measurement",
+      "f1": 0.331148,
+      "fn": 394,
+      "fp": 14,
+      "gt": 495,
+      "gt_4_6": 37,
+      "gt_6_8": 44,
+      "gt_lt4": 24,
+      "gt_lt8": 105,
+      "images": 1648,
+      "map5095": 0.189727,
+      "precision": 0.878261,
+      "recall": 0.20404,
+      "recall_4_6": 0.0,
+      "recall_6_8": 0.090909,
+      "recall_lt4": 0.0,
+      "recall_lt8": 0.038095,
+      "set": "legacy_eth_eval (val|eth_unseen, official overlap diagnostic)",
+      "tp": 101,
+      "tp_4_6": 0,
+      "tp_6_8": 4,
+      "tp_lt4": 0,
+      "tp_lt8": 4
+    },
+    "no_target": {
+      "fp": 1,
+      "fp_per_image": 0.0020161290322580645,
+      "images": 496,
+      "sets": {
+        "real_images/backgrounds": {
+          "fp": 0,
+          "images": 30,
+          "images_with_fp": 0
+        },
+        "real_images/raw": {
+          "fp": 0,
+          "images": 59,
+          "images_with_fp": 0
+        },
+        "real_match_frames/images": {
+          "fp": 0,
+          "images": 235,
+          "images_with_fp": 0
+        },
+        "real_train/raw": {
+          "fp": 1,
+          "images": 22,
+          "images_with_fp": 1
+        },
+        "real_video/frames": {
+          "fp": 0,
+          "images": 150,
+          "images_with_fp": 0
+        }
+      }
+    }
+  },
+  "baseline_model": {
+    "name": "eth_real_hardneg_v2_best",
+    "sha256": "3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7"
+  },
+  "legacy_eth_eval": {
+    "ap50": 0.612121,
+    "caveat": "legacy_eth_eval deliberately overlaps the continuation training pool (TRAIN_EVAL_OVERLAP_EXPECTED, spec section 8): it is an official-overlap diagnostic, not an unseen/held-out/generalization measurement",
+    "f1": 0.677083,
+    "fn": 235,
+    "fp": 13,
+    "gt": 495,
+    "gt_4_6": 37,
+    "gt_6_8": 44,
+    "gt_lt4": 24,
+    "gt_lt8": 105,
+    "images": 1648,
+    "map5095": 0.390507,
+    "precision": 0.952381,
+    "recall": 0.525253,
+    "recall_4_6": 0.0,
+    "recall_6_8": 0.386364,
+    "recall_lt4": 0.0,
+    "recall_lt8": 0.161905,
+    "set": "legacy_eth_eval (val|eth_unseen, official overlap diagnostic)",
+    "tp": 260,
+    "tp_4_6": 0,
+    "tp_6_8": 17,
+    "tp_lt4": 0,
+    "tp_lt8": 17
+  },
+  "model": {
+    "checkpoint": "_scratch_cont_v1/ckpt/e20_infer.pt",
+    "epoch": 20,
+    "name": "cont_v1_e20",
+    "note": "pre-registered primary endpoint, not best.pt",
+    "sha256": "f3935047062faf1c8990d01920463df0712bf5ad277b47cd08711122e257384b"
+  },
+  "no_target": {
+    "fp": 1,
+    "fp_per_image": 0.0020161290322580645,
+    "images": 496,
+    "sets": {
+      "real_images/backgrounds": {
+        "fp": 1,
+        "images": 30,
+        "images_with_fp": 1
+      },
+      "real_images/raw": {
+        "fp": 0,
+        "images": 59,
+        "images_with_fp": 0
+      },
+      "real_match_frames/images": {
+        "fp": 0,
+        "images": 235,
+        "images_with_fp": 0
+      },
+      "real_train/raw": {
+        "fp": 0,
+        "images": 22,
+        "images_with_fp": 0
+      },
+      "real_video/frames": {
+        "fp": 0,
+        "images": 150,
+        "images_with_fp": 0
+      }
+    }
+  },
+  "overlap": {
+    "caveat": "legacy_eth_eval deliberately overlaps the continuation training pool (TRAIN_EVAL_OVERLAP_EXPECTED, spec section 8): it is an official-overlap diagnostic, not an unseen/held-out/generalization measurement",
+    "train_eval_overlap_expected": true
+  }
+}

@@ -2,3 +2,6 @@ track,backend,precision,compile,median_ms,p95_ms,p99_ms,FPS_median,delta_vs_hist
 A3,pytorch,fp32,no,15.6584,17.7274,28.2863,63.86,-0.2416,0.0,below_useful,VALID
 B,pytorch,fp16,no,19.011,21.4285,22.8313,52.6,3.111,3.3526,below_useful,VALID
 C,pytorch,fp16,yes,14.8554,16.5679,17.5381,67.32,-1.0446,-0.803,below_useful,VALID
+D,tensorrt,fp16,n/a,2.1255,2.225,2.4168,470.47,-13.7745,-13.5329,excellent,VALID
+E,tensorrt,fp16,n/a,2.3187,2.3772,2.5224,431.28,-13.5813,-13.3397,excellent,VALID
+A4,pytorch,fp32,no,15.4117,16.6333,17.182,64.89,-0.4883,-0.2467,below_useful,VALID

@@ -1,0 +1,53 @@
+{
+ "script": "speed_eth_export.py",
+ "timestamp": "2026-10-08T17:32:33+0000",
+ "checkpoint": "/home/T7/dgut/robot_sim/eth_official_code/shuttle_detection/runs/final-model/best.pt",
+ "imgsz": 1024,
+ "batch": 1,
+ "backend": "tensorrt",
+ "precision": "fp16",
+ "shape": "static",
+ "dynamic": false,
+ "export_api": "ultralytics YOLO.export(format=engine, half=True, dynamic=False)",
+ "file_size": 134312133,
+ "sha256": "f1aea7dec784a24d53d475f89510ef45fc13255df6298c6a0ea2fbd4419c7d6d",
+ "sha256_matches_record": true,
+ "bytes_match_record": true,
+ "tensorrt": "10.13.3.9",
+ "tensorrt_module_alias": true,
+ "PyTorch": "2.10.0+cu128",
+ "CUDA_build": "12.8",
+ "python": "3.12.13",
+ "Ultralytics": "8.4.150",
+ "gpu_driver": "580.178.04",
+ "gpu_name": "NVIDIA RTX A6000",
+ "model_meta": {
+  "model_name": "yolov8s",
+  "nc": 3,
+  "nc_note": "stock head, all training labels were class 0",
+  "names": "{0: '0', 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9',",
+  "stride": [
+   8,
+   16,
+   32
+  ],
+  "head_modules": [
+   "ModuleList",
+   "ModuleList",
+   "DFL"
+  ],
+  "params": 11166560,
+  "load_state_dict_strict_ok": true
+ },
+ "state_dict_missing_keys": 0,
+ "state_dict_unexpected_keys": 0,
+ "state_dict_note": "load_eth_model raises SystemExit if either is non-empty; reaching here means both are 0",
+ "gpu_snapshot_before_build": "0 %, 35 MiB",
+ "export_duration_s": 295.3,
+ "gpu_snapshot_after_build": "0 %, 639 MiB",
+ "engine_file": "yolov8s.engine",
+ "engine_size_bytes": 26888806,
+ "engine_sha256": "c1a364a0de19fca255f4c6ca84ae25afe7e36c04744e553c89ada76c3ee360b7",
+ "engine_copy": "/home/T7/dgut/trt_env/eth_yolov8s_static.engine",
+ "status": "OK"
+}

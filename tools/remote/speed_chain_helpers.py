@@ -89,7 +89,9 @@ def main():
     g = sub.add_parser("gate")
     g.add_argument("--need", type=int, default=3)
     g.add_argument("--poll", type=float, default=60.0)
-    g.add_argument("--max-wait", type=float, default=7200.0)
+    # 7200 s (2 h) was too short: on 2026-10-08 the window never opened inside 4 h and two stages died
+    # waiting. 24 h makes the gate patient instead of giving up between windows.
+    g.add_argument("--max-wait", type=float, default=86400.0)
     g.add_argument("--out", default=None)
     g.set_defaults(fn=cmd_gate)
     e = sub.add_parser("export")
