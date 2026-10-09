@@ -102,3 +102,4 @@ outputs/simulation/rebot_b601dm/*/payloads/geometries.usd
 
 # superpowers SDD workspaces (plan ledgers, briefs, review packages)
 .superpowers/
+_scratch_*.ps1
