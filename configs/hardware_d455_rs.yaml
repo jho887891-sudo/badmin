@@ -1,0 +1,7 @@
+# Real hardware profile; no extrinsics are fabricated here.
+robot_model: rs
+camera_model: Intel RealSense D455
+camera_mount: chassis_fixed
+chassis_model: M1-4WD4S
+motion_enabled: false
+calibration_status: UNCALIBRATED
