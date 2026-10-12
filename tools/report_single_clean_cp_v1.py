@@ -149,6 +149,26 @@ def _fmt_metric(block: dict, label: str) -> str:
     return "- %s: raw %s / %s" % (label, count, denominator)
 
 
+def collect_gates(audit_dir) -> dict:
+    """Read every audit JSON in a directory into {filename: status}. An unreadable audit is never PASS."""
+    gates: dict = {}
+    for path in sorted(Path(audit_dir).glob("*.json")):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            gates[path.name] = "UNREADABLE"
+            continue
+        gate = payload.get("gate")
+        if isinstance(gate, dict):
+            status = gate.get("status")
+        elif isinstance(gate, str):
+            status = gate
+        else:
+            status = payload.get("status")
+        gates[path.name] = status or "UNKNOWN"
+    return gates
+
+
 def build_artifact_manifest(paths, repo_root=None) -> dict:
     """Hash every deliverable so the report can be checked without trusting the report."""
     root = Path(repo_root) if repo_root else None
@@ -224,14 +244,23 @@ def render_report(context: dict) -> str:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Decision report for CLEAN_OUTDOOR_CP_V1 (Task 10)")
-    parser.add_argument("--audit", type=Path, required=True, help="JSON with the collected gate statuses")
+    parser.add_argument("--audit", type=Path, default=None, help="JSON with the collected gate statuses")
+    parser.add_argument("--audits-dir", type=Path, default=None,
+                        help="directory of audit JSONs; every gate in it is collected and must be PASS")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--artifact", type=Path, action="append", default=[],
                         help="deliverable to hash into the final artifact manifest (repeatable)")
     parser.add_argument("--artifact-manifest", type=Path, default=None)
     args = parser.parse_args(argv)
 
-    payload = json.loads(args.audit.read_text(encoding="utf-8"))
+    if args.audits_dir is not None:
+        gates = collect_gates(args.audits_dir)
+        payload = {"gates": gates, "audit": {"gates": gates}, "metrics": {}}
+    elif args.audit is not None:
+        payload = json.loads(args.audit.read_text(encoding="utf-8"))
+    else:
+        raise SystemExit("either --audit or --audits-dir is required")
+
     decision = decide_clean_cp_v1(payload.get("audit", payload), payload.get("metrics", {}),
                                   payload.get("thresholds"))
     report = render_report({"decision": decision, "gates": payload.get("gates", {}),

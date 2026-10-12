@@ -430,3 +430,26 @@ def test_artifact_manifest_hashes_every_deliverable(tmp_path):
     assert manifest["artifacts"][0]["bytes"] > 0
     assert manifest["missing"] == ["does/not/exist.json"]
 
+
+def test_collect_gates_reads_every_audit_and_never_defaults_to_pass(tmp_path):
+    """The final decision is driven by the audit files themselves, and an unreadable file is not a pass."""
+    (tmp_path / "repo_contract_map.json").write_text('{"gate": {"status": "PASS"}}', encoding="utf-8")
+    (tmp_path / "foreground_audit.json").write_text('{"gate": "FOREGROUND_INSUFFICIENT"}', encoding="utf-8")
+    (tmp_path / "coco_provenance_audit.json").write_text('{"gate": {"status": "BLOCKED_COCO_INVENTORY"}}',
+                                                         encoding="utf-8")
+    (tmp_path / "broken.json").write_text("{not json", encoding="utf-8")
+
+    gates = R.collect_gates(tmp_path)
+    assert gates["repo_contract_map.json"] == "PASS"
+    assert gates["foreground_audit.json"] == "FOREGROUND_INSUFFICIENT"
+    assert gates["coco_provenance_audit.json"] == "BLOCKED_COCO_INVENTORY"
+    assert gates["broken.json"] == "UNREADABLE"
+    assert R.decide_clean_cp_v1({"gates": gates}, {}) == R.PILOT_ONLY
+
+    only_pass = tmp_path / "good"
+    only_pass.mkdir()
+    (only_pass / "repo_contract_map.json").write_text('{"gate": {"status": "PASS"}}', encoding="utf-8")
+    assert R.decide_clean_cp_v1({"gates": R.collect_gates(only_pass)}, {}) == R.PILOT_ONLY, \
+        "even all-PASS gates cannot verify outdoor capability without a real OOD set"
+
+
