@@ -247,7 +247,8 @@ def _manifest_source_rows(manifest, role: str, only_negatives: bool = True):
             is_negative = str(row.get("is_negative", "")).strip().lower() in {"true", "1", "yes"}
             if only_negatives and not is_negative:
                 continue
-            image = row.get("image") or row.get("abs_path") or row.get("path") or ""
+            # Also accept an index-style manifest (source_id/role/sha256), e.g. the frozen evaluation index.
+            image = row.get("image") or row.get("abs_path") or row.get("path") or row.get("source_id") or ""
             digest = row.get("sha256") or None
             coco_id = coco_id_from_file_name(image)
             yield {
