@@ -1,0 +1,144 @@
+{
+  "counts": {
+    "bytes": 6319040,
+    "hard_negative_exposures": 712,
+    "hard_negative_unique": 89,
+    "locations": [
+      "cab_1",
+      "cab_2",
+      "coco_train",
+      "glc_1",
+      "hard_negative",
+      "ml_4",
+      "ticino_1",
+      "ticino_2"
+    ],
+    "ordinary_negatives": 551,
+    "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_project\\data\\eth_real_hardneg_v2_train_manifest.csv",
+    "positives": 13992,
+    "repeat_factor": 8,
+    "role_column_anomalies": 1,
+    "role_column_anomaly_examples": [
+      {
+        "image": "/home/T7/dgut/robot_sim/eth_shuttle_detection/ticino_1_easy/images/train/ticino_1_00212.jpg",
+        "n_boxes": "0",
+        "role": "official_positives",
+        "sha256": "2656efe79f4140bb4b881a105d72c146a8280b14188699ae406a5c68098e6c4f"
+      }
+    ],
+    "rows": 15255,
+    "sha256": "d2bd887357555c9262f769ba81d3bfd49350e1670e80a94ecdc1d166898a8d4d",
+    "train_rows": 15255,
+    "val_locations": [
+      "glc_2",
+      "uetlibergstrasse_2"
+    ],
+    "val_negative_rows": 0,
+    "val_rows": 2920,
+    "val_sha256": "0ed405719af1d62763fb41fdad79b2581e0e7787da9a9c237c203a62ef735918"
+  },
+  "experiment": "eth_real_clean_outdoor_copypaste_v1",
+  "frozen_recipe": {
+    "batch": 8,
+    "epochs": 50,
+    "freeze": 0,
+    "imgsz": 1024,
+    "lr0": 0.0001,
+    "nbs": 32,
+    "optimizer": "AdamW",
+    "seed": 42
+  },
+  "gate": {
+    "missing": [],
+    "name": "Source contract",
+    "rule": "V2 weights/config/manifest/evaluator verified before Tasks 2-10 may start",
+    "status": "PASS"
+  },
+  "generated_by": "tools/clean_cp_contract.py",
+  "missing_inputs": [
+    {
+      "name": "new_spec",
+      "path": "docs/superpowers/specs/2026-10-13-eth-coco-clean-outdoor-copypaste-hardneg-v1-design.md"
+    }
+  ],
+  "plan": "ETH_COCO_CLEAN_OUTDOOR_COPYPASTE_HARDNEG_V1_IMPLEMENTATION_PLAN.md",
+  "repo_root": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_project",
+  "run_id": "CLEAN_OUTDOOR_CP_V1",
+  "spec_gate": {
+    "missing": [
+      {
+        "name": "new_spec",
+        "path": "docs/superpowers/specs/2026-10-13-eth-coco-clean-outdoor-copypaste-hardneg-v1-design.md"
+      }
+    ],
+    "name": "Authoritative spec",
+    "path": "docs/superpowers/specs/2026-10-13-eth-coco-clean-outdoor-copypaste-hardneg-v1-design.md",
+    "rule": "the plan designates this spec section as authoritative and asks for it to be reviewed and checked in before execution; it was not supplied with the plan",
+    "status": "BLOCKED_MISSING_SPEC"
+  },
+  "task": "Task 1: read-only repository mapping and contract freeze",
+  "v2_reference": {
+    "checkpoint_epoch": 21,
+    "checkpoint_registry_name": "eth_real_hardneg_v2_best",
+    "checkpoint_sha256": "3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7",
+    "experiment": "eth_real_hardneg_yolo26s_v2",
+    "resolved_args_remote": "/home/dgut/.dsh-bench/runs/detect/runs_eth_hardneg_v2/full_v2_e50/args.yaml"
+  },
+  "verified": {
+    "canonical_evaluator": {
+      "bytes": 40764,
+      "path": "tools/eval_yolo26_v1.py",
+      "sha256": "3dbf00264ba16c9c411fde6fb4fd92bfd85495936b6c2eeebd4f0370d77ad955"
+    },
+    "canonical_localization_audit": {
+      "bytes": 56667,
+      "path": "tools/audit_localization_yolo26_v1.py",
+      "sha256": "1ce5dfa609e6feb3d76f0470d2f0ad61b6de4465741c4e5f198e4c26e15f0f13"
+    },
+    "new_config": {
+      "bytes": 6679,
+      "path": "configs/eth_real_clean_outdoor_copypaste_v1.yaml",
+      "sha256": "2602c903a1106da504d866f56c96e81aa6aa87c030a1f26c15f69cfd16303f18"
+    },
+    "pretrained": {
+      "bytes": 20422725,
+      "path": "assets/external/_staging/F_yolo/weights/yolo26s.pt",
+      "sha256": "646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b"
+    },
+    "training_launcher": {
+      "bytes": 24213,
+      "path": "tools/train_eth_only_v1.py",
+      "sha256": "a021b1e49d009c58e54b3da567fd7433622a6540e518eb66baef2cd6f7fda5bd"
+    },
+    "v2_checkpoint_registry": {
+      "bytes": 6330,
+      "path": "configs/shuttle_detection/checkpoints_v1.yaml",
+      "sha256": "f3a372392b7009ed4b0b60882fdd2f4536cc03f40a28a62988932dcc22c4af3d"
+    },
+    "v2_config": {
+      "bytes": 5227,
+      "path": "configs/eth_real_hardneg_yolo26s_v2.yaml",
+      "sha256": "01ba35b2e0fbdc4ce90fdd5c2dff5e6ebedf0ac43fef683b82fdf671d63b150b"
+    },
+    "v2_resolved_args": {
+      "bytes": 1747,
+      "path": "configs/shuttle_detection/eth_real_hardneg_v2_resolved_args.yaml",
+      "sha256": "41e96b029f250c12256743522af65e30dd4ac2cf5c62187f7513b4017c751c3b"
+    },
+    "v2_spec": {
+      "bytes": 5592,
+      "path": "docs/superpowers/specs/2026-10-05-eth-real-hardneg-yolo26s-v2-design.md",
+      "sha256": "b49bc81e3251baa2e42269395a28c5e885f4525f73fb10b68136bc1d5d670ac4"
+    },
+    "v2_train_manifest": {
+      "bytes": 6319040,
+      "path": "data/eth_real_hardneg_v2_train_manifest.csv",
+      "sha256": "d2bd887357555c9262f769ba81d3bfd49350e1670e80a94ecdc1d166898a8d4d"
+    },
+    "v2_val_manifest": {
+      "bytes": 1214369,
+      "path": "data/eth_real_hardneg_v2_val_manifest.csv",
+      "sha256": "0ed405719af1d62763fb41fdad79b2581e0e7787da9a9c237c203a62ef735918"
+    }
+  }
+}

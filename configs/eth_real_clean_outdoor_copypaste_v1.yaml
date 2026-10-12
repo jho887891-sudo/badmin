@@ -1,0 +1,226 @@
+experiment: eth_real_clean_outdoor_copypaste_v1
+run_id: CLEAN_OUTDOOR_CP_V1
+spec: docs/superpowers/specs/2026-10-13-eth-coco-clean-outdoor-copypaste-hardneg-v1-design.md
+plan: ETH_COCO_CLEAN_OUTDOOR_COPYPASTE_HARDNEG_V1_IMPLEMENTATION_PLAN.md
+status: FROZEN_CONTRACT
+model: yolo26s.pt
+model_variant: yolo26s
+model_source: assets/external/_staging/F_yolo/weights/yolo26s.pt
+model_source_verified_on_remote: /home/T7/dgut/robot_sim/yolo26s.pt
+model_bytes: 20422725
+model_sha256: 646f8bc3fe0a656803d95c294f7852321748cb29d13466a1af8862e2db384a1b
+resume: false
+frozen:
+  imgsz: 1024
+  epochs: 50
+  optimizer: AdamW
+  lr0: 0.0001
+  freeze: 0
+  batch: 8
+  nbs: 32
+  seed: 42
+resolved_kwargs:
+  epochs: 50
+  patience: 100
+  batch: 8
+  imgsz: 1024
+  save: true
+  save_period: -1
+  cache: false
+  device: '0'
+  workers: 8
+  pretrained: true
+  cls_remap: true
+  optimizer: AdamW
+  verbose: true
+  seed: 42
+  deterministic: true
+  single_cls: false
+  rect: false
+  cos_lr: false
+  close_mosaic: 10
+  amp: true
+  fraction: 1.0
+  profile: false
+  freeze: 0
+  multi_scale: 0.0
+  compile: false
+  channels_last: null
+  overlap_mask: true
+  mask_ratio: 4
+  dropout: 0.0
+  val: true
+  split: val
+  iou: 0.7
+  max_det: 300
+  quantize: null
+  dnn: false
+  plots: true
+  agnostic_nms: false
+  retina_masks: false
+  save_conf: false
+  lr0: 0.0001
+  lrf: 0.01
+  momentum: 0.9
+  weight_decay: 0.0005
+  warmup_epochs: 3.0
+  warmup_momentum: 0.8
+  warmup_bias_lr: 0.1
+  distill_model: null
+  dis: 6.0
+  box: 7.5
+  cls: 0.5
+  cls_pw: 0.0
+  dfl: 1.5
+  pose: 12.0
+  kobj: 1.0
+  rle: 1.0
+  angle: 1.0
+  dlog: 1.0
+  dgrad: 0.5
+  dlam: 1.0
+  nbs: 32
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  degrees: 0.0
+  translate: 0.1
+  scale: 0.5
+  shear: 0.0
+  perspective: 0.0
+  flipud: 0.0
+  fliplr: 0.5
+  bgr: 0.0
+  mosaic: 1.0
+  mixup: 0.7
+  cutmix: 0.0
+  copy_paste: 0.0
+  copy_paste_mode: flip
+  auto_augment: randaugment
+  erasing: 0.4
+counts:
+  positives: 13992
+  ordinary_negatives: 551
+  hard_negative_exposures: 712
+  hard_negative_unique: 89
+  hard_negative_repeat: 8
+  train_rows: 15255
+  val_rows: 2920
+v2_reference:
+  experiment: eth_real_hardneg_yolo26s_v2
+  resolved_args: configs/shuttle_detection/eth_real_hardneg_v2_resolved_args.yaml
+  resolved_args_sha256: 41e96b029f250c12256743522af65e30dd4ac2cf5c62187f7513b4017c751c3b
+  resolved_args_remote: /home/dgut/.dsh-bench/runs/detect/runs_eth_hardneg_v2/full_v2_e50/args.yaml
+  train_manifest: data/eth_real_hardneg_v2_train_manifest.csv
+  train_manifest_sha256: d2bd887357555c9262f769ba81d3bfd49350e1670e80a94ecdc1d166898a8d4d
+  val_manifest: data/eth_real_hardneg_v2_val_manifest.csv
+  val_manifest_sha256: 0ed405719af1d62763fb41fdad79b2581e0e7787da9a9c237c203a62ef735918
+  val_locations:
+  - glc_2
+  - uetlibergstrasse_2
+  checkpoint_registry: configs/shuttle_detection/checkpoints_v1.yaml
+  checkpoint_registry_name: eth_real_hardneg_v2_best
+  checkpoint_epoch: 21
+  checkpoint_sha256: 3c8339c6d16fc6e9808bd68c1f274ef48f3f5cb1d14e222b093e9871d69e9ff7
+  read_only_uses:
+  - hard-negative candidate diagnostics
+  - historical evaluation replay
+new_pools:
+  coco_source_contract:
+    allowed_split: train2017
+    annotations: annotations/instances_train2017.json
+    forbidden:
+    - val2017
+    - test2017
+    - any frozen evaluation image or its derivation
+    note: COCO has no shuttlecock category; absence of an annotation is not proof of absence
+  copy_paste_backgrounds:
+    source: COCO train2017 only, real outdoor photos with no shuttlecock
+    min_unique_images: 100
+    min_scene_types: 3
+    min_source_clusters: 3
+    clean_roi_rank_rule: keep only the bottom quartile of the frozen candidate-only clean_score
+    human_review_required: true
+    review_fields:
+    - outdoor_reviewed
+    - no_shuttle_reviewed
+    - clean_roi
+    - reviewer_id
+  outdoor_hard_negatives:
+    source: COCO train2017 only
+    min_unique_images: 150
+    min_categories: 3
+    min_clusters: 3
+    categories:
+    - white_reflection
+    - paper_plastic
+    - feather_leaf
+    - metal_glint
+    - bright_signage
+    - other_reviewed
+    labels: empty YOLO .txt (zero bytes), single class 0
+    human_review_required: true
+    max_exposures_per_unique_image_per_epoch: 1
+  foregrounds:
+    source: ETH train-only real shuttlecock RGB + reviewed instance masks
+    min_reviewed_instances: 100
+    min_train_sessions: 2
+    bbox_is_not_a_mask: true
+    human_review_required: true
+  mutual_exclusion:
+  - coco_image_id
+  - source_sha256
+  - near_duplicate_group
+budget:
+  total_slots_per_epoch: 15255
+  min_original_positives_per_epoch: 11194
+  old_ordinary_negatives: 551
+  old_hard_negative_exposures: 712
+  max_new_hard_negative_fraction: 0.05
+  max_new_hard_negative_slots: 762
+  max_joint_cp_and_new_hn_slots: 2798
+  epochs: 50
+  step_inflation_allowed: false
+  optimizer_steps_source: measured from the real V2 dataloader and gradient accumulation, not assumed
+gates:
+  source_contract: BLOCKED_MISSING_V2_ARTIFACTS
+  foreground: FOREGROUND_INSUFFICIENT
+  clean_backgrounds: CLEAN_BG_INSUFFICIENT
+  outdoor_hard_negatives: OUTDOOR_HARDNEG_INSUFFICIENT
+  leakage: INVALID_OR_LEAK
+  sampling: BLOCKED_BUDGET_CONFLICT
+  composite_qa: COMPOSITE_QA_FAIL
+  trainer_smoke: SMOKE_FAIL
+  evaluator_parity: EVALUATOR_PARITY_FAIL
+  real_ood: PILOT_ONLY
+evaluation:
+  selection_metric: mAP50-95
+  selection_scope: internal V2 validation only (2920 frames, locations glc_2 / uetlibergstrasse_2)
+  imgsz: 1024
+  conf: 0.25
+  ap_floor: 0.001
+  nms_iou: 0.7
+  max_det: 300
+  size_bucket: equiv_size_640 = sqrt(w_640 * h_640)
+  eval_sets:
+  - val|eth_unseen
+  - real_no_target_496
+  - controlled_capability
+  - challenge_test
+  real_no_target_fp_gate: 'FP <= 3 over the 496 frozen no-target images (V2 historical value: 1)'
+  ood_targets:
+    recall_at_conf_0_25: 0.3
+    mAP50-95: 0.2
+    requires: independent real outdoor test set
+  evaluator: tools/eval_yolo26_v1.py
+  localization_audit: tools/audit_localization_yolo26_v1.py
+forbidden:
+- A0 / no-augmentation control arm
+- a second model or a second training run
+- P2 head or any non-standard YOLO26s variant
+- resuming from the frozen V2 checkpoint for the new run
+- COCO val2017 / test2017 or any frozen evaluation image
+- reusing historical V2 COCO images (coco_train_easy, old negatives, old hard negatives)
+- campus photos or any source other than COCO train2017 for the two new pools
+- letting a model score pick copy-paste backgrounds
+- inventing test results, human reviews or licences
