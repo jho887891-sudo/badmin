@@ -100,7 +100,21 @@ Artifacts (full inventories stay on the resource host; the two small ones are co
   sha256 ea34b873a0f803155bf8c39bb5805eb4310b467ab4c6fa4e1e0067b6e5936847
 - outputs/shuttle_capability/clean_outdoor_cp_v1/audits/coco_provenance_audit.json (committed)
 
-## 7. Honest deviations and notes
+## 7. Still running at handoff (not required for any gate)
+
+The COCO review worksheet/sheet generator was still running on the resource host when this handoff was written
+(it samples 2,000 of the 106,382 candidates, computes the frozen CLEAN metrics on six ROIs per photo and renders
+the review sheets; the fuseblk reads make it slower than the local benchmark suggested). Finish or repeat it with:
+
+    ssh dgut@jxxy
+    cd /home/T7/dgut/robot_sim/clean_cp_v1_work
+    python3 coco_sheets.py /home/T7/dgut/robot_sim/data/clean_outdoor_cp_v1/coco_candidates.csv out/coco_review 2000 100
+
+It writes out/coco_review/coco_review_worksheet.csv (the human fill-in sheet), coco_clean_candidates_01.png,
+coco_hardneg_random_01.png and coco_review_index.json. Nothing downstream is built on it yet, and no gate depends
+on it: it is the fastest path to the two reviews in section 4.
+
+## 8. Honest deviations and notes
 
 - **Task 6 TDD order**: the module and its tests were written together, so a captured RED run for that task does
   not exist (Tasks 1, 2, 7, 8, 9, 10 do have captured RED). The tests were the specification and all pass.
