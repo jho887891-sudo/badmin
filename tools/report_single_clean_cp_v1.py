@@ -21,6 +21,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import clean_cp_contract as C  # noqa: E402
 
+PASS = "PASS"
 INVALID_OR_LEAK = "INVALID_OR_LEAK"
 PILOT_ONLY = "PILOT_ONLY"
 FP_REGRESSION_OR_REAL_HARM = "FP_REGRESSION_OR_REAL_HARM"
@@ -83,6 +84,27 @@ def assert_run_evidence(run: dict) -> None:
         raise ValueError("run recorded no epochs")
 
 
+def first_open_gate(audit: dict):
+    """Any gate that is not exactly PASS keeps the run from claiming a capability.
+
+    Originally only BLOCKED_* strings were treated as blockers, which let an insufficiency gate such as
+    FOREGROUND_INSUFFICIENT or CLEAN_BG_INSUFFICIENT fall through to a success verdict. Every non-PASS status
+    is now a blocker, whatever its spelling.
+    """
+    if not isinstance(audit, dict):
+        return None
+    for key in ("blocked_gate", "gate"):
+        value = audit.get(key)
+        if isinstance(value, str) and value.strip().upper() != PASS:
+            return value
+    gates = audit.get("gates")
+    if isinstance(gates, dict):
+        for name, value in sorted(gates.items()):
+            if isinstance(value, str) and value.strip().upper() != PASS:
+                return "%s=%s" % (name, value)
+    return None
+
+
 def decide_clean_cp_v1(audit: dict, metrics: dict, thresholds: dict = None) -> str:
     """The Task 10 state machine. Leakage outranks everything; missing real OOD can never look like success."""
     thresholds = {**DEFAULT_THRESHOLDS, **(thresholds or {})}
@@ -93,8 +115,7 @@ def decide_clean_cp_v1(audit: dict, metrics: dict, thresholds: dict = None) -> s
     if violations or str(audit.get("status", "")).upper() == INVALID_OR_LEAK:
         return INVALID_OR_LEAK
 
-    blocked_gate = audit.get("blocked_gate") or audit.get("gate")
-    if isinstance(blocked_gate, str) and blocked_gate.startswith("BLOCKED"):
+    if first_open_gate(audit) is not None:
         return PILOT_ONLY
 
     fp_block = metrics.get("real_no_target_496") or {}
@@ -126,6 +147,27 @@ def _fmt_metric(block: dict, label: str) -> str:
     if count is None or denominator is None:
         return "- %s: %s (no denominator recorded)" % (label, value)
     return "- %s: raw %s / %s" % (label, count, denominator)
+
+
+def build_artifact_manifest(paths, repo_root=None) -> dict:
+    """Hash every deliverable so the report can be checked without trusting the report."""
+    root = Path(repo_root) if repo_root else None
+    entries = []
+    missing = []
+    for path in paths:
+        candidate = Path(path)
+        if not candidate.is_file() and root is not None:
+            candidate = root / path
+        if not candidate.is_file():
+            missing.append(str(path))
+            continue
+        relative = str(candidate.relative_to(root)) if root and root in candidate.parents else str(candidate)
+        entries.append({
+            "path": relative.replace("\\", "/"),
+            "bytes": candidate.stat().st_size,
+            "sha256": C.sha256_file(candidate),
+        })
+    return {"generated_by": "tools/report_single_clean_cp_v1.py", "artifacts": entries, "missing": missing}
 
 
 def render_report(context: dict) -> str:
@@ -184,6 +226,9 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Decision report for CLEAN_OUTDOOR_CP_V1 (Task 10)")
     parser.add_argument("--audit", type=Path, required=True, help="JSON with the collected gate statuses")
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--artifact", type=Path, action="append", default=[],
+                        help="deliverable to hash into the final artifact manifest (repeatable)")
+    parser.add_argument("--artifact-manifest", type=Path, default=None)
     args = parser.parse_args(argv)
 
     payload = json.loads(args.audit.read_text(encoding="utf-8"))
@@ -193,7 +238,15 @@ def main(argv=None) -> int:
                             "metrics": payload.get("metrics", {})})
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(report, encoding="utf-8")
-    print(json.dumps({"decision": decision, "out": str(args.out)}, indent=2, sort_keys=True))
+    summary = {"decision": decision, "out": str(args.out)}
+    if args.artifact_manifest is not None:
+        manifest = build_artifact_manifest(list(args.artifact) + [args.out], repo_root=C.REPO)
+        args.artifact_manifest.parent.mkdir(parents=True, exist_ok=True)
+        args.artifact_manifest.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        summary["artifact_manifest"] = str(args.artifact_manifest)
+        summary["artifacts"] = len(manifest["artifacts"])
+        summary["missing_artifacts"] = manifest["missing"]
+    print(json.dumps(summary, indent=2, sort_keys=True))
     return 0
 
 
