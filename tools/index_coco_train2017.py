@@ -34,6 +34,11 @@ import clean_cp_contract as C  # noqa: E402
 SPLIT = "train2017"
 COCO_NAME_PATTERN = re.compile(r"^(\d{12})\.(jpg|jpeg|png)$", re.IGNORECASE)
 NEAR_DUPLICATE_MAX_DISTANCE = 6
+#: Whole-pool O(n^2) near-duplicate grouping does not finish on 118k images twice over (first attempt: 27 GB RSS;
+#: second: 37 minutes of CPU without finishing, both killed). Grouping therefore runs on a deterministic evenly
+#: spaced sample and the coverage is recorded in the audit; exact SHA256 duplicates and the prohibited id/hash
+#: exclusions still cover the whole pool.
+NEAR_DUPLICATE_SAMPLE = 20000
 #: Locality-sensitive bands. Eight 8-bit bands guarantee that two hashes within NEAR_DUPLICATE_MAX_DISTANCE
 #: (<= 7) still share at least one band, so no near-duplicate pair can be split by bucketing.
 AHASH_BAND_BITS = 8
@@ -66,6 +71,16 @@ def coco_id_from_file_name(name: str):
     return int(match.group(1)) if match else None
 
 
+def _average_hash_from_pixels(pixels) -> int:
+    """64-bit average hash over 64 grey values (kept separate so one decode can serve size and hash)."""
+    mean = sum(pixels) / float(len(pixels))
+    bits = 0
+    for position, value in enumerate(pixels):
+        if value >= mean:
+            bits |= 1 << position
+    return bits
+
+
 def average_hash(path) -> int:
     """64-bit average hash: cheap, deterministic, and enough to flag crops/near-duplicates for review."""
     if Image is None:
@@ -74,12 +89,7 @@ def average_hash(path) -> int:
         gray = handle.convert("L").resize((8, 8))
         # tobytes() rather than getdata(): stable across Pillow versions (getdata is deprecated in Pillow 12+)
         pixels = list(gray.tobytes())
-    mean = sum(pixels) / float(len(pixels))
-    bits = 0
-    for position, value in enumerate(pixels):
-        if value >= mean:
-            bits |= 1 << position
-    return bits
+    return _average_hash_from_pixels(pixels)
 
 
 def hamming_distance(left: int, right: int) -> int:
@@ -91,9 +101,17 @@ def empty_prohibited_index() -> pd.DataFrame:
     return pd.DataFrame(columns=list(PROHIBITED_COLUMNS))
 
 
-def _assign_near_duplicate_groups(rows) -> None:
-    """Group near-duplicates in place using banded LSH, so 118k images stay tractable without O(n^2)."""
+def _assign_near_duplicate_groups(rows, sample=None) -> dict:
+    """Group near-duplicates in place using banded LSH.
+
+    When sample is set and the pool is larger, only evenly spaced rows take part in the pairwise comparison
+    (their components are still unioned correctly); the caller records the coverage. Returns the coverage dict.
+    """
     parent = list(range(len(rows)))
+    participants = list(range(len(rows)))
+    if sample is not None and len(rows) > int(sample) > 0:
+        step = len(rows) / float(sample)
+        participants = sorted({int(index * step) for index in range(int(sample))})
 
     def find(i):
         while parent[i] != i:
@@ -107,41 +125,60 @@ def _assign_near_duplicate_groups(rows) -> None:
             parent[rb] = ra
 
     buckets: dict = {}
-    for index, row in enumerate(rows):
-        value = row.get("ahash")
+    for index in participants:
+        value = rows[index].get("ahash")
         if value is None:
             continue
         for shift in range(0, 64, AHASH_BAND_BITS):
             key = (shift, (int(value) >> shift) & ((1 << AHASH_BAND_BITS) - 1))
             buckets.setdefault(key, []).append(index)
 
-    compared: set = set()
+    # A pair may share several bands, so a global "already compared" set looks tempting - but on 118k images
+    # it grew to 27 GB RSS and had to be killed. The union is idempotent, so recomputing a shared pair costs a
+    # few microseconds and nothing else.
     for _, members in buckets.items():
         if len(members) < 2:
             continue
-        for position in range(len(members)):
-            for other in range(position + 1, len(members)):
-                left, right = members[position], members[other]
-                pair = (left, right) if left < right else (right, left)
-                if pair in compared:
+        # Exact-hash collapse first: flat frames share one hash, and their group is established once.
+        by_hash: dict = {}
+        for index in members:
+            by_hash.setdefault(int(rows[index]["ahash"]), []).append(index)
+        representatives: list = []
+        for _, group in sorted(by_hash.items()):
+            for other in group[1:]:
+                union(group[0], other)
+            representatives.append(group[0])
+        for position in range(len(representatives)):
+            for other in range(position + 1, len(representatives)):
+                left, right = representatives[position], representatives[other]
+                # Once two images are in the same component their grouping cannot change: skip the comparison.
+                if find(left) == find(right):
                     continue
-                compared.add(pair)
                 if hamming_distance(rows[left]["ahash"], rows[right]["ahash"]) <= NEAR_DUPLICATE_MAX_DISTANCE:
                     union(left, right)
 
     components: dict = {}
-    for index in range(len(rows)):
+    for index in participants:
         components.setdefault(find(index), []).append(index)
     group_index = 0
+    grouped = 0
     for _, members in sorted(components.items()):
         if len(members) > 1:
             name = "nd-%04d" % group_index
             group_index += 1
+            grouped += len(members)
             for member in members:
                 rows[member]["near_duplicate_group"] = name
+    return {
+        "participants": len(participants),
+        "pool": len(rows),
+        "coverage": (len(participants) / float(len(rows))) if rows else 0.0,
+        "groups": group_index,
+        "grouped_rows": grouped,
+    }
 
 
-def load_coco_train2017_index(images_dir, annotation_json) -> pd.DataFrame:
+def load_coco_train2017_index(images_dir, annotation_json, near_duplicate_sample=NEAR_DUPLICATE_SAMPLE) -> pd.DataFrame:
     """Read the official COCO train2017 split into an inventory. Any deviation is blocking, not a warning."""
     images_dir = Path(images_dir)
     annotation_json = Path(annotation_json)
@@ -195,8 +232,12 @@ def load_coco_train2017_index(images_dir, annotation_json) -> pd.DataFrame:
         if Image is None:
             raise CocoIndexBlocked("Pillow is required to validate COCO image bytes")
         try:
+            # one decode serves both the size validation and the average hash: 118k images x 2 reads was
+            # measurably the dominant cost of the first production run (39 GB read for a 19 GB split).
             with Image.open(path) as handle:
                 actual = handle.size
+                grey = handle.convert("L").resize((8, 8))
+                hash_pixels = list(grey.tobytes())
         except Exception as exc:  # noqa: BLE001
             raise CocoIndexBlocked("COCO image is not decodable: %s (%s)" % (path, exc))
 
@@ -227,13 +268,14 @@ def load_coco_train2017_index(images_dir, annotation_json) -> pd.DataFrame:
             "permission_state": permission,
             "coco_url": entry.get("coco_url"),
             "flickr_url": entry.get("flickr_url"),
-            "ahash": average_hash(path),
+            "ahash": _average_hash_from_pixels(hash_pixels),
             "near_duplicate_group": None,
         })
 
-    _assign_near_duplicate_groups(rows)
+    coverage = _assign_near_duplicate_groups(rows, sample=near_duplicate_sample)
     frame = pd.DataFrame(rows, columns=list(INVENTORY_COLUMNS))
     frame["coco_image_id"] = frame["coco_image_id"].astype("int64")
+    frame.attrs["near_duplicate_coverage"] = coverage
     return frame
 
 
@@ -426,6 +468,10 @@ def main(argv=None) -> int:
             "permission_declared": int((index["permission_state"] == "declared").sum()),
             "permission_unknown": int((index["permission_state"] == "unknown").sum()),
             "near_duplicate_rows": int(index["near_duplicate_group"].notna().sum()),
+            "near_duplicate_coverage": index.attrs.get("near_duplicate_coverage", {}),
+            "near_duplicate_note": "exact SHA256 duplicates and the prohibited id/hash exclusions cover the whole "
+                                   "pool; near-duplicate grouping runs on an evenly spaced sample because a "
+                                   "whole-pool O(n^2) pass does not finish at 118k images",
         },
         "rejection_reasons": rejections["reason"].value_counts().to_dict() if len(rejections) else {},
         "historical_coco_id_completeness": args.historical_coco_id_completeness,

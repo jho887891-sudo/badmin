@@ -201,3 +201,25 @@ def test_crop_or_near_duplicate_flagged_for_review(tmp_path):
     candidates, rejections = I.filter_coco_candidates(index, I.empty_prohibited_index())
     assert 3 in set(candidates["coco_image_id"])
     assert any(r["reason"] == "near_duplicate_review" for r in rejections.to_dict("records"))
+
+
+def test_near_duplicate_grouping_is_bounded_and_reported(tmp_path):
+    """Whole-pool grouping is sampled (and the coverage is reported); the sample still finds its duplicates."""
+    specs = [{"id": 1000 + index, "file_name": "img_%03d.jpg" % index} for index in range(40)]
+    # index 4 is an exact copy of index 0; with sample=10 the evenly spaced participants are 0, 4, 8, ... 36
+    specs[4] = {"id": 1004, "file_name": "img_004.jpg", "copy_of": "img_000.jpg"}
+    img_dir, ann = _make_coco(tmp_path / "t", specs=specs)
+
+    sampled = I.load_coco_train2017_index(img_dir, ann, near_duplicate_sample=10)
+    coverage = sampled.attrs["near_duplicate_coverage"]
+    assert coverage["pool"] == 40
+    assert coverage["participants"] == 10
+    assert 0.0 < coverage["coverage"] < 1.0
+    grouped = sampled[sampled["near_duplicate_group"].notna()]
+    assert {1000, 1004}.issubset(set(grouped["coco_image_id"]))
+    assert len(grouped) < 40, "the unsampled rows carry no group, which the coverage record makes explicit"
+
+    full = I.load_coco_train2017_index(img_dir, ann)
+    assert full.attrs["near_duplicate_coverage"]["participants"] == 40
+    assert full.attrs["near_duplicate_coverage"]["coverage"] == 1.0
+
