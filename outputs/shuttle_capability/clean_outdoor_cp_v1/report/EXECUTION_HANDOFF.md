@@ -13,7 +13,7 @@ because three gates need a human or a completed download:
 | Gate | Status at handoff | What unblocks it |
 |---|---|---|
 | Source contract (V2 recipe/weights/manifests/evaluator) | **PASS** | nothing, verified by hash |
-| COCO train2017 inventory | run in progress (download ~10.7/18 GB, then the index) | let the download + index finish |
+| COCO train2017 inventory | **PASS** (see section 7) | nothing: candidate review is the next step |
 | ETH foreground masks | **FOREGROUND_INSUFFICIENT** (0 approved / 100) | human review of the 120-instance contact sheet |
 | COCO CLEAN backgrounds | not runnable yet (needs the COCO inventory) | index + human review |
 | COCO outdoor hard negatives | **OUTDOOR_HARDNEG_INSUFFICIENT** (0 approved / 150) | index + human review |
@@ -75,7 +75,32 @@ because three gates need a human or a completed download:
 Neither defect was visible to the unit tests, which is exactly why the real run mattered; both are now fixed and
 the index was re-run. The first pass produced no artifact, so nothing downstream was built on it.
 
-## 6. Honest deviations and notes
+## 6. COCO train2017 inventory: real result (Task 2 gate PASS)
+
+The official COCO train2017 split was downloaded from images.cocodataset.org (19,336,861,798 bytes, annotations
+252,907,541 bytes), extracted to /home/T7/dgut/robot_sim/data/coco2017/train2017 with **118,287 images**, which is
+the exact official count, and indexed on the resource host:
+
+| quantity | value |
+|---|---|
+| inventory rows | 118,287 (one per image id, ids unique, bytes validated, no path escapes) |
+| licence declaration resolvable | 118,287 (100 %), 0 unknown |
+| prohibited source rows | 13,672 (5,500 historical coco_train_easy ids + 8,172 historical/eval content hashes) |
+| candidates | 106,382 |
+| rejected | 11,905 = 5,500 historical_v2_coco_id + 6,392 near_duplicate_review + 13 duplicate_content |
+| historical COCO id completeness | KNOWN (every coco_train_easy file name is a COCO id) |
+| near-duplicate grouping | 20,000-image evenly spaced sample (16.9 %): 211 groups / 6,714 rows; coverage recorded in the audit |
+
+Artifacts (full inventories stay on the resource host; the two small ones are committed):
+
+- /home/T7/dgut/robot_sim/data/clean_outdoor_cp_v1/coco_train2017_inventory.csv - 49,028,440 B,
+  sha256 f1d6f8206e50825906807ba2ec9f91ff9c0cf7bd68495f3e620fd93f13e86ae0
+- .../coco_candidates.csv - 44,066,454 B, sha256 c7647ce0f2a7f3b34cb838b4a1b44b9f4c164f9fe6947a97e0965e05c9821084
+- data/clean_outdoor_cp_v1/coco_exclusion_index.csv (committed) - 1,355,972 B,
+  sha256 ea34b873a0f803155bf8c39bb5805eb4310b467ab4c6fa4e1e0067b6e5936847
+- outputs/shuttle_capability/clean_outdoor_cp_v1/audits/coco_provenance_audit.json (committed)
+
+## 7. Honest deviations and notes
 
 - **Task 6 TDD order**: the module and its tests were written together, so a captured RED run for that task does
   not exist (Tasks 1, 2, 7, 8, 9, 10 do have captured RED). The tests were the specification and all pass.
