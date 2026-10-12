@@ -1,0 +1,30 @@
+{
+  "approved": 0,
+  "approved_required": 100,
+  "candidate_instances": 10627,
+  "candidate_locations": [
+    "cab_1",
+    "cab_2",
+    "glc_1",
+    "ml_4",
+    "ticino_1",
+    "ticino_2"
+  ],
+  "contact_sheet_dir": "/home/T7/dgut/robot_sim/clean_cp_v1_work/outputs/shuttle_capability/clean_outdoor_cp_v1/contact_sheets/foreground_masks",
+  "distinct_locations": [],
+  "gate": "FOREGROUND_INSUFFICIENT",
+  "inventory": "out/foreground_manifest.csv",
+  "locations_required": 2,
+  "manifest": "data/eth_real_hardneg_v2_train_manifest.csv",
+  "reasons": [
+    "only 0 approved instance(s), 100 required",
+    "only 0 distinct train location(s), 2 required"
+  ],
+  "rejections_by_reason": {
+    "below_min_size": 3365,
+    "not_positive": 1263
+  },
+  "rows": 10627,
+  "rule": ">=100 human-approved ETH train-only masks across >=2 train locations/sessions, each mask hash-verified against the review record",
+  "unverified": []
+}
