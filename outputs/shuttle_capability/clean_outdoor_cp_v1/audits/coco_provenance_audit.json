@@ -1,0 +1,37 @@
+{
+  "annotations": "/home/T7/dgut/robot_sim/data/coco2017/annotations/instances_train2017.json",
+  "counts": {
+    "candidates": 106382,
+    "inventory": 118287,
+    "near_duplicate_coverage": {
+      "coverage": 0.16908028777464978,
+      "grouped_rows": 6714,
+      "groups": 211,
+      "participants": 20000,
+      "pool": 118287
+    },
+    "near_duplicate_note": "exact SHA256 duplicates and the prohibited id/hash exclusions cover the whole pool; near-duplicate grouping runs on an evenly spaced sample because a whole-pool O(n^2) pass does not finish at 118k images",
+    "near_duplicate_rows": 6714,
+    "permission_declared": 118287,
+    "permission_unknown": 0,
+    "prohibited_coco_ids": 5500,
+    "prohibited_rows": 13672,
+    "rejected": 11905
+  },
+  "gate": {
+    "name": "COCO inventory",
+    "rule": "usable COCO train2017 candidates exist and no historical/eval overlap survives",
+    "status": "PASS"
+  },
+  "generated_by": "tools/index_coco_train2017.py",
+  "historical_coco_id_completeness": "KNOWN",
+  "images_dir": "/home/T7/dgut/robot_sim/data/coco2017/train2017",
+  "note": "COCO has no shuttlecock category: no annotation is never proof that a picture has no shuttlecock",
+  "rejection_reasons": {
+    "duplicate_content": 13,
+    "historical_v2_coco_id": 5500,
+    "near_duplicate_review": 6392
+  },
+  "split": "train2017",
+  "task": "Task 2: COCO train2017 index, historical overlap exclusion and leakage firewall"
+}
