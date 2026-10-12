@@ -22,7 +22,9 @@ import hashlib
 import json
 import re
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Optional
 
 import yaml
 
@@ -326,6 +328,123 @@ def assert_single_model_config(cfg: dict) -> None:
     model_block = cfg.get("model_block")
     if isinstance(model_block, dict) and model_block.get("sha256") not in (None, FROZEN_PRETRAINED_SHA256):
         raise ContractBlocked("frozen pretrained sha256 mismatch in the config")
+
+
+# --- source-role bookkeeping (Task 2) --------------------------------------------------------------
+
+ROLE_ETH_TRAIN_FOREGROUND = "ETH_TRAIN_FOREGROUND"
+ROLE_COCO_CLEAN_BG = "COCO_CLEAN_BG"
+ROLE_COCO_OUTDOOR_HARDNEG = "COCO_OUTDOOR_HARDNEG"
+ROLE_V2_HISTORICAL_NEGATIVE = "V2_HISTORICAL_NEGATIVE"
+ROLE_FROZEN_EVAL = "FROZEN_EVAL"
+
+#: The frozen role enum the plan fixes for every source-audit row.
+SOURCE_ROLES = (
+    ROLE_ETH_TRAIN_FOREGROUND,
+    ROLE_COCO_CLEAN_BG,
+    ROLE_COCO_OUTDOOR_HARDNEG,
+    ROLE_V2_HISTORICAL_NEGATIVE,
+    ROLE_FROZEN_EVAL,
+)
+TRAINING_ROLES = (
+    ROLE_ETH_TRAIN_FOREGROUND,
+    ROLE_COCO_CLEAN_BG,
+    ROLE_COCO_OUTDOOR_HARDNEG,
+    ROLE_V2_HISTORICAL_NEGATIVE,
+)
+NEW_COCO_ROLES = (ROLE_COCO_CLEAN_BG, ROLE_COCO_OUTDOOR_HARDNEG)
+
+
+@dataclass(frozen=True)
+class SourceRecord:
+    """One provenance row. The five roles are mutually exclusive over image_id / hash / near-dup group."""
+
+    source_id: str
+    role: str
+    coco_image_id: Optional[int] = None
+    path: Optional[str] = None
+    sha256: Optional[str] = None
+    origin: Optional[str] = None
+    license_or_permission: Optional[str] = None
+    near_duplicate_group: Optional[str] = None
+    location_id: Optional[str] = None
+    session_id: Optional[str] = None
+    qa_status: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        return {
+            "source_id": self.source_id,
+            "role": self.role,
+            "coco_image_id": self.coco_image_id,
+            "path": self.path,
+            "sha256": self.sha256,
+            "origin": self.origin,
+            "license_or_permission": self.license_or_permission,
+            "near_duplicate_group": self.near_duplicate_group,
+            "location_id": self.location_id,
+            "session_id": self.session_id,
+            "qa_status": self.qa_status,
+        }
+
+
+def audit_source_roles(records, frozen_eval) -> dict:
+    """Cross-role leakage audit. Returns PASS or INVALID_OR_LEAK with every violation enumerated.
+
+    Rules enforced here (plan Task 2, Review Focus 2 and 5):
+    * roles come from the frozen enum, and FROZEN_EVAL never appears among the training rows;
+    * a source_id may not appear twice (double counting one picture);
+    * no training row shares a path or a content hash with a frozen evaluation row;
+    * one COCO image_id may not carry two different new roles;
+    * blank/unknown location ids are counted separately and never inflate the location count.
+    """
+    records = list(records)
+    frozen_eval = list(frozen_eval)
+    violations: list = []
+
+    seen: dict = {}
+    for rec in records:
+        if rec.role not in SOURCE_ROLES:
+            violations.append({"kind": "unknown_role", "source_id": rec.source_id, "role": rec.role})
+        if rec.role == ROLE_FROZEN_EVAL:
+            violations.append({"kind": "eval_role_in_training", "source_id": rec.source_id})
+        if rec.source_id in seen:
+            violations.append({"kind": "duplicate_source_id", "source_id": rec.source_id})
+        seen[rec.source_id] = rec
+
+    frozen_hashes = {r.sha256 for r in frozen_eval if r.sha256}
+    frozen_paths = {str(r.path) for r in frozen_eval if r.path}
+    for rec in records:
+        if rec.role == ROLE_FROZEN_EVAL:
+            continue
+        if rec.sha256 and rec.sha256 in frozen_hashes:
+            violations.append({"kind": "eval_content_hash", "source_id": rec.source_id, "sha256": rec.sha256})
+        if rec.path and str(rec.path) in frozen_paths:
+            violations.append({"kind": "eval_path", "source_id": rec.source_id, "path": str(rec.path)})
+
+    by_coco_id: dict = {}
+    for rec in records:
+        if rec.role in NEW_COCO_ROLES and rec.coco_image_id is not None:
+            by_coco_id.setdefault(int(rec.coco_image_id), set()).add(rec.role)
+    for coco_id, roles in sorted(by_coco_id.items()):
+        if len(roles) > 1:
+            violations.append({"kind": "coco_id_in_two_new_roles", "coco_image_id": coco_id, "roles": sorted(roles)})
+
+    locations = {r.location_id for r in records if r.location_id}
+    unknown_location_count = sum(1 for r in records if not r.location_id)
+    role_counts: dict = {}
+    for rec in records:
+        role_counts[rec.role] = role_counts.get(rec.role, 0) + 1
+
+    return {
+        "status": "INVALID_OR_LEAK" if violations else "PASS",
+        "violations": violations,
+        "role_counts": role_counts,
+        "distinct_locations": locations,
+        "unknown_location_count": unknown_location_count,
+        "records": len(records),
+        "frozen_eval_records": len(frozen_eval),
+        "not_approved": [r.source_id for r in records if str(r.qa_status or "").upper() != "APPROVED"],
+    }
 
 
 def create_contract_map(repo_root) -> dict:
