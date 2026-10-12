@@ -1,0 +1,106 @@
+{
+  "artifacts": [
+    {
+      "bytes": 6679,
+      "path": "configs/eth_real_clean_outdoor_copypaste_v1.yaml",
+      "sha256": "2602c903a1106da504d866f56c96e81aa6aa87c030a1f26c15f69cfd16303f18"
+    },
+    {
+      "bytes": 1747,
+      "path": "configs/shuttle_detection/eth_real_hardneg_v2_resolved_args.yaml",
+      "sha256": "41e96b029f250c12256743522af65e30dd4ac2cf5c62187f7513b4017c751c3b"
+    },
+    {
+      "bytes": 26329,
+      "path": "tools/clean_cp_contract.py",
+      "sha256": "5eae56d01f62e791a2b3999fa606c1bd83f1a2f6da2ac3ba6989f69b67191b6d"
+    },
+    {
+      "bytes": 22796,
+      "path": "tools/index_coco_train2017.py",
+      "sha256": "73d0516459a0a336ab19e5305be1267a1a0e69a755c13abb97c4f0a6abd47fc5"
+    },
+    {
+      "bytes": 30471,
+      "path": "tools/prepare_eth_real_foregrounds.py",
+      "sha256": "376f8c4a4998cef78312fb1e4c290bc353e1d4ca547bedea084d85cc0ba53285"
+    },
+    {
+      "bytes": 13897,
+      "path": "tools/audit_clean_outdoor_backgrounds.py",
+      "sha256": "c95ba774d01bfa12dcd3b8954fc52ca0a21089aed818439c49ac6b97d9e23511"
+    },
+    {
+      "bytes": 44390,
+      "path": "tools/audit_outdoor_hardnegatives.py",
+      "sha256": "456d4994faf3765a7732c87d2e4096a28887b1abca523552e05ce30b5ed85cbd"
+    },
+    {
+      "bytes": 16071,
+      "path": "tools/generate_clean_outdoor_copypaste.py",
+      "sha256": "915dccae47e4eb9bfba7341a3c8e8e3a7240d730f0869de1b3c6e0b36861968a"
+    },
+    {
+      "bytes": 16926,
+      "path": "tools/build_single_clean_cp_train.py",
+      "sha256": "d9b1c160ee87598e671fc263ffea96fc30da91ab2b7476bc404ae24d7244296c"
+    },
+    {
+      "bytes": 11196,
+      "path": "tools/train_single_clean_cp_v1.py",
+      "sha256": "980f9ba3673df9cefef8246e67aaa559089e93c1bde7b4fdb43db66c9df129a8"
+    },
+    {
+      "bytes": 45509,
+      "path": "tools/evaluate_clean_cp_generalization.py",
+      "sha256": "cc3af7cedb4bfda505da4f73f4915a79a943daafc3fa4ed9e3c0cd39d1fe0725"
+    },
+    {
+      "bytes": 12732,
+      "path": "tools/report_single_clean_cp_v1.py",
+      "sha256": "238b7130f4ac4ba46724e733a9a22efac9199b621144dcfc2cbd1a666dc2a6fa"
+    },
+    {
+      "bytes": 4022211,
+      "path": "data/clean_outdoor_cp_v1/foreground_manifest.csv",
+      "sha256": "998e2cbad5c368aaf75fd633cf90b24bba2104b4fb1851acd4ca54351a1d6e1b"
+    },
+    {
+      "bytes": 1355972,
+      "path": "data/clean_outdoor_cp_v1/coco_exclusion_index.csv",
+      "sha256": "ea34b873a0f803155bf8c39bb5805eb4310b467ab4c6fa4e1e0067b6e5936847"
+    },
+    {
+      "bytes": 815395,
+      "path": "data/clean_outdoor_cp_v1/frozen_eval_index.csv",
+      "sha256": "cdd4440a567e8dc3b77c6b056c5d475c1c0c8c0915a4cccba8d5c7fdd8811abe"
+    },
+    {
+      "bytes": 5276,
+      "path": "outputs/shuttle_capability/clean_outdoor_cp_v1/audits/repo_contract_map.json",
+      "sha256": "a909cb67099521486569a77e2dcc275e5b756ff078b858ae7d0de1378a676b15"
+    },
+    {
+      "bytes": 925,
+      "path": "outputs/shuttle_capability/clean_outdoor_cp_v1/audits/foreground_audit.json",
+      "sha256": "b7b89b60f3ab3f920496d023d81af52eae737fdbe6b1bdda94fa0073108c4f1f"
+    },
+    {
+      "bytes": 1443,
+      "path": "outputs/shuttle_capability/clean_outdoor_cp_v1/audits/coco_provenance_audit.json",
+      "sha256": "ecb5f64a97fad7f924e1666ed45cae49717f7ccfdaa92c959e2c81bc2b7daa0c"
+    },
+    {
+      "bytes": 2738306,
+      "path": "outputs/shuttle_capability/clean_outdoor_cp_v1/contact_sheets/foreground_masks/foreground_review_01.png",
+      "sha256": "8fd1c16024fbe5f173bde5fb44ba9d6d100e2d6c47cb9b7bc49d1736069044a7"
+    },
+    {
+      "bytes": 1621,
+      "path": "outputs/shuttle_capability/clean_outdoor_cp_v1/report/ETH_REAL_CLEAN_OUTDOOR_COPYPASTE_V1_REPORT.md",
+      "sha256": "c73622c9b63a24f10488d297b90f555d31558049e58446eec2056737d605c818"
+    }
+  ],
+  "generated_by": "tools/report_single_clean_cp_v1.py",
+  "missing": []
+}

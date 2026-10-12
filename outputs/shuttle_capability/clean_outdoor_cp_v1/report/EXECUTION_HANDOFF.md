@@ -62,7 +62,20 @@ because three gates need a human or a completed download:
    docs/superpowers/specs/2026-10-13-eth-coco-clean-outdoor-copypaste-hardneg-v1-design.md was never supplied, so
    the plan itself is the only normative document available (recorded as BLOCKED_MISSING_SPEC).
 
-## 5. Honest deviations and notes
+## 5. Two defects the first production run exposed (found and fixed, not hidden)
+
+1. **Unbounded near-duplicate dedupe set.** The first COCO index pass grew to **27 GB RSS** during the LSH
+   grouping phase and had to be killed after 58 minutes with no output (the machine has 58 GB and was down to
+   1 GB free). The set existed only to avoid recomputing a pair that shares several bands; the union-find is
+   idempotent, so it was removed. A benchmark on 118,287 synthetic hashes with injected duplicates now completes
+   in **354 s** at flat memory and still recovers every injected group.
+2. **Two decodes per image.** The inventory opened every image once for the size check and again for the average
+   hash, so the first pass read **39 GB for a 19 GB split**. Both values now come from a single decode.
+
+Neither defect was visible to the unit tests, which is exactly why the real run mattered; both are now fixed and
+the index was re-run. The first pass produced no artifact, so nothing downstream was built on it.
+
+## 6. Honest deviations and notes
 
 - **Task 6 TDD order**: the module and its tests were written together, so a captured RED run for that task does
   not exist (Tasks 1, 2, 7, 8, 9, 10 do have captured RED). The tests were the specification and all pass.
