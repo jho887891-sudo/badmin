@@ -168,3 +168,167 @@ def test_sampler_replay_and_actual_exposure_match(tmp_path):
     mutated.loc[0, "sample_id"] = "tampered"
     with pytest.raises(B.BudgetConflict):
         sampler.assert_replay_matches(mutated)
+
+
+# -----------------------------------------------------------------------------------------------------------
+# Task 8: single-run launcher preflight
+# -----------------------------------------------------------------------------------------------------------
+
+import json  # noqa: E402
+
+import yaml  # noqa: E402
+
+import clean_cp_contract as C  # noqa: E402
+import train_single_clean_cp_v1 as L  # noqa: E402
+
+
+def _config(tmp_path, **overrides):
+    config = yaml.safe_load((REPO / C.NEW_CONFIG_PATH).read_text(encoding="utf-8"))
+    config.update(overrides)
+    path = tmp_path / "clean_cp_config.yaml"
+    path.write_text(yaml.safe_dump(config, sort_keys=False, allow_unicode=True), encoding="utf-8")
+    return path
+
+
+def _audits(tmp_path, statuses=None):
+    statuses = statuses or {}
+    paths = []
+    for name in ("repo_contract_map", "coco_provenance_audit", "coco_clean_bg_audit", "coco_outdoor_hardneg_audit"):
+        path = tmp_path / ("%s.json" % name)
+        path.write_text(json.dumps({"gate": {"name": name, "status": statuses.get(name, "PASS")}}), encoding="utf-8")
+        paths.append(path)
+    return paths
+
+
+def _schedule(tmp_path):
+    B.freeze_training_slots(_v2_rows(), _cp_rows(), _new_hn_rows(), CONFIG, tmp_path / "slots.csv")
+    return tmp_path / "slots.csv"
+
+
+def _preflight(tmp_path, **overrides):
+    return L.verify_training_preflight(_config(tmp_path, **overrides), _audits(tmp_path),
+                                       _schedule(tmp_path), budget=CONFIG)
+
+
+def test_one_official_pretrained_initialization(tmp_path):
+    """Only the official yolo26s.pt may initialise the run, verified by hash and byte count."""
+    report = _preflight(tmp_path)
+    assert report["ok"], report["problems"]
+    assert report["pretrained"].endswith("yolo26s.pt")
+
+    impostor = tmp_path / "yolo26s.pt"
+    impostor.write_bytes(b"nope")
+    report = L.verify_training_preflight(_config(tmp_path), _audits(tmp_path), _schedule(tmp_path),
+                                         pretrained=impostor, budget=CONFIG)
+    assert not report["ok"]
+    assert any("pretrained" in problem for problem in report["problems"])
+
+
+def test_train_requires_all_QA_gates(tmp_path):
+    """A single open gate stops the run before any epoch."""
+    missing = L.verify_training_preflight(_config(tmp_path), [tmp_path / "nope.json"], _schedule(tmp_path),
+                                          budget=CONFIG)
+    assert not missing["ok"]
+
+    open_gate = L.verify_training_preflight(
+        _config(tmp_path),
+        _audits(tmp_path, {"coco_clean_bg_audit": "CLEAN_BG_INSUFFICIENT"}),
+        _schedule(tmp_path), budget=CONFIG)
+    assert not open_gate["ok"]
+    assert any("CLEAN_BG_INSUFFICIENT" in problem for problem in open_gate["problems"])
+
+    ready = L.verify_training_preflight(_config(tmp_path), _audits(tmp_path), _schedule(tmp_path), budget=CONFIG)
+    assert ready["ok"] and ready["status"] == "PASS"
+
+
+def test_coco_permission_and_historical_overlap_gate(tmp_path):
+    for status in ("BLOCKED_COCO_INVENTORY", "INVALID_OR_LEAK"):
+        report = L.verify_training_preflight(_config(tmp_path), _audits(tmp_path, {"coco_provenance_audit": status}),
+                                             _schedule(tmp_path), budget=CONFIG)
+        assert not report["ok"], status
+        assert report["status"] == L.BLOCKED_PREFLIGHT
+
+
+def test_no_a0_or_v2_checkpoint_resume(tmp_path):
+    """No A0 arm and no resume from the frozen V2 checkpoint: the argv is refused, not softened."""
+    config = _config(tmp_path, resume=True)
+    report = L.verify_training_preflight(config, _audits(tmp_path), _schedule(tmp_path), budget=CONFIG)
+    assert not report["ok"]
+
+    calls = []
+    result = L.run_single_clean_cp(config, _audits(tmp_path), _schedule(tmp_path), tmp_path / "run", execute=True,
+                                   runner=lambda argv: calls.append(argv) or 0, budget=CONFIG)
+    assert result["status"] == L.BLOCKED_PREFLIGHT
+    assert calls == [], "no trainer process may be started while a gate is open"
+
+    argv = L.build_run_argv(_config(tmp_path), tmp_path / "run")
+    assert not any("v2_best" in part or "runs_eth_hardneg_v2" in part for part in argv)
+
+
+def test_only_internal_v2_val_selects_best(tmp_path):
+    report = _preflight(tmp_path)
+    assert report["ok"]
+    assert "internal" in str(yaml.safe_load((REPO / C.NEW_CONFIG_PATH).read_text(encoding="utf-8"))["evaluation"]["selection_scope"]).lower()
+
+    broken = _config(tmp_path)
+    payload = yaml.safe_load(broken.read_text(encoding="utf-8"))
+    payload["evaluation"]["selection_scope"] = "val|eth_unseen"
+    broken.write_text(yaml.safe_dump(payload, sort_keys=False, allow_unicode=True), encoding="utf-8")
+    report = L.verify_training_preflight(broken, _audits(tmp_path), _schedule(tmp_path), budget=CONFIG)
+    assert not report["ok"]
+    assert any("internal V2 validation" in problem for problem in report["problems"])
+
+
+def test_fp_mining_cannot_access_eval():
+    """Training-side FP work must refuse every frozen evaluation path."""
+    with pytest.raises(L.TrainingBlocked):
+        L.assert_no_eval_access(["outputs/shuttle_capability/challenge_test/images/x.jpg"])
+    with pytest.raises(L.TrainingBlocked):
+        L.assert_no_eval_access(["data/real_video/frames/y.jpg"])
+    L.assert_no_eval_access(["data/clean_outdoor_cp_v1/clean_copypaste_manifest.csv"])
+
+
+def test_optimizer_not_auto(tmp_path):
+    config = _config(tmp_path)
+    payload = yaml.safe_load(config.read_text(encoding="utf-8"))
+    payload["resolved_kwargs"]["optimizer"] = "auto"
+    config.write_text(yaml.safe_dump(payload, sort_keys=False, allow_unicode=True), encoding="utf-8")
+    report = L.verify_training_preflight(config, _audits(tmp_path), _schedule(tmp_path), budget=CONFIG)
+    assert not report["ok"]
+    assert any("optimizer" in problem for problem in report["problems"])
+
+
+def test_optimizer_steps_same_as_contract(tmp_path):
+    """The step count is derived from the frozen slot count, and the floor/ceil question is left explicit."""
+    report = _preflight(tmp_path)
+    assert report["ok"]
+    plan = report["steps"]["schedule_plan"]
+    assert plan == B.step_plan(CONFIG)
+    assert plan["dataloader_batches"] == 15255 // CONFIG["batch"] + (1 if 15255 % CONFIG["batch"] else 0)
+    assert "measured from the real len(dataloader)" in report["steps"]["note"]
+
+    # Two conventions must both be visible, and the difference must never be silently resolved:
+    # the canonical repository arithmetic counts floor(images/batch) dataloader batches per epoch, while the
+    # accumulation-adjusted optimizer steps are ceil(batches / accumulate).
+    nominal = report["steps"]["canonical_nominal"]
+    assert nominal["gradient_accumulation"] == plan["gradient_accumulation"] == 4
+    assert nominal["steps_per_epoch"] == 15255 // CONFIG["batch"] == 1906
+    assert nominal["optimizer_steps"] == 1906 * CONFIG["epochs"]
+    assert plan["steps_per_epoch"] == 477 == -(-1907 // 4)
+    assert plan["optimizer_steps"] == 477 * CONFIG["epochs"]
+    assert "authoritative" in report["steps"]["note"]
+
+
+def test_actual_epoch_exposure_matches_frozen_slots(tmp_path):
+    """What the sampler actually exposes must equal the frozen per-epoch budget for every epoch."""
+    schedule = _schedule(tmp_path)
+    sampler = B.CleanCPIndexSampler(schedule, CONFIG)
+    frozen = pd.read_csv(schedule, keep_default_na=False, dtype=str)
+    for epoch in sampler.epochs():
+        slots = frozen[frozen["epoch"].astype(int) == epoch].copy()
+        slots["slot_index"] = slots["slot_index"].astype(int)
+        report = B.validate_epoch_budget(slots, CONFIG)
+        assert report["ok"], report["violations"]
+        assert len(sampler.epoch_sample_ids(epoch)) == CONFIG["total_slots"]
+    assert sampler.exposure_report()["total_slots"] == CONFIG["total_slots"] * len(sampler.epochs())
+
