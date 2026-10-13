@@ -8,8 +8,8 @@
   "scored": 2000,
   "seed": 42,
   "sheets": [
-    "out/coco_review/coco_clean_candidates_01.png",
-    "out/coco_review/coco_hardneg_random_01.png"
+    "out/coco_review4/coco_clean_candidates_01.png",
+    "out/coco_review4/coco_hardneg_random_01.png"
   ],
-  "worksheet": "out/coco_review/coco_review_worksheet.csv"
+  "worksheet": "out/coco_review4/coco_review_worksheet.csv"
 }
