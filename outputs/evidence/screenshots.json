@@ -10,7 +10,19 @@
     "reason": "the earlier screenshots.json listed ok/visible_objects from geometric projection alone, and the renders it described came from a build where the camera pose was never applied and the scene defaulted to court-only, so the claimed objects were not in the pixels at all"
   },
   "not_reshot": {
-    "scene_128env.png": "stored file is from the invalid revision; the 128-env wide shot has not been re-taken yet and must not be quoted as evidence"
+    "scene_128env.png": {
+      "status": "REJECTED_EMPTY_FRAME",
+      "measured": {
+        "court_green_frac": 0.0,
+        "net_white_frac": 0.0,
+        "morph_blue_frac": 0.0,
+        "racket_red_frac": 0.0001,
+        "png_bytes": 10685
+      },
+      "detail": "a 128-env wide shot was attempted and produced a uniform grey frame containing only the tiny per-env axis markers: no court, no net and no robot is visible for any environment",
+      "root_cause": "create_scene() authors the court statics for env_0 only (statics_mode='first'), so 127 of the 128 environments have no court to photograph; the camera is also 130 m up looking at the grid centre, which is far from env_0",
+      "consequence": "the previously stored scene_128env.png (and any claim that it shows 128 complete environments) must not be quoted as evidence; producing it honestly needs per-env court statics (statics_mode='all') or a camera framed on env_0, and that has not been done"
+    }
   },
   "num_envs": 1,
   "shots": [
