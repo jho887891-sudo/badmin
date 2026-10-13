@@ -1,0 +1,24 @@
+{
+  "accepted": 0,
+  "clean_score_quartile_threshold": 0.3888333333333333,
+  "gate": {
+    "gate": "CLEAN_BG_INSUFFICIENT",
+    "images": 0,
+    "known_locations": [],
+    "problems": [
+      "only 0 approved images, need 100",
+      "only 0 scene types, need 3",
+      "only 0 source clusters, need 3"
+    ],
+    "scene_types": [],
+    "source_clusters": [],
+    "unknown_location_count": 0
+  },
+  "generated_by": "tools/audit_clean_outdoor_backgrounds.py",
+  "note": "a missing COCO annotation is never treated as proof that no shuttlecock is present",
+  "rejected": 2000,
+  "rejection_reasons": {
+    "not_outdoor": 2000
+  },
+  "task": "Task 4: curate COCO train2017 CLEAN outdoor copy-paste backgrounds"
+}

@@ -147,6 +147,12 @@ def audit_clean_backgrounds(coco_candidates: pd.DataFrame, excluded: pd.DataFram
             excluded_groups = {str(value) for value in excluded["near_duplicate_group"].dropna()}
 
     scored = coco_candidates.copy()
+    # The CLI reads the worksheet with dtype=str (it carries ids and free text), so the numeric columns must be
+    # coerced here: otherwise Series.quantile raises "unsupported operand type(s) for -: 'str' and 'str'".
+    for column in ("clean_score", "edge_density", "entropy", "luminance_mean", "luminance_distance",
+                   "distinct_colors"):
+        if column in scored.columns:
+            scored[column] = pd.to_numeric(scored[column], errors="coerce")
     if "clean_score" not in scored.columns:
         if {"edge_density", "entropy", "luminance_mean"} <= set(scored.columns):
             scored = rank_clean_rois(scored)

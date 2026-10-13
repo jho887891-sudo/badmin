@@ -93,6 +93,23 @@ def test_same_source_id_twice_is_a_violation():
     assert any(v["kind"] == "duplicate_source_id" for v in audit["violations"])
 
 
+def test_audit_accepts_a_string_typed_csv(tmp_path):
+    """The CLI reads the worksheet with dtype=str; the audit must coerce the numeric columns itself.
+
+    Without this, pandas raises "TypeError: unsupported operand type(s) for -: 'str' and 'str'" inside
+    Series.quantile - which is exactly what the first real run against a 2,000-row worksheet did.
+    """
+    frame = pd.DataFrame([_candidate(1000 + index, clean_score=0.05 * (index + 1)) for index in range(4)])
+    csv_path = tmp_path / "worksheet.csv"
+    frame.to_csv(csv_path, index=False)
+    as_strings = pd.read_csv(csv_path, dtype=str, keep_default_na=False)
+
+    accepted = A.audit_clean_backgrounds(as_strings, pd.DataFrame())
+    assert len(accepted) == 1, "a 4-image pool keeps its cleanest quartile even when read as text"
+    assert accepted["clean_score"].dtype.kind == "f"
+    assert accepted.attrs["clean_score_quartile_threshold"] == pytest.approx(0.0875)
+
+
 def test_roles_must_be_from_the_frozen_enum():
     """An invented role string must be rejected: the plan fixes the role enum for the audit."""
     audit = C.audit_source_roles([_rec("x", "SOMETHING_ELSE")], [])
