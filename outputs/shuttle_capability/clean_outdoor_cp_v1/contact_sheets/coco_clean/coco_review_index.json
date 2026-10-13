@@ -1,0 +1,15 @@
+{
+  "candidates_csv": "/home/T7/dgut/robot_sim/data/clean_outdoor_cp_v1/coco_candidates.csv",
+  "clean_score_quartile": 0.38883333333333336,
+  "generated_by": "COCO candidate review worksheet step (deterministic)",
+  "pool": 106382,
+  "rule": "uniform seeded sample; per photo the calmest ROI by (edge_density, entropy); clean candidates are the bottom clean_score quartile; the hard-negative sheet is a plain seeded random sample because hardness is a human judgement",
+  "sampled": 2000,
+  "scored": 2000,
+  "seed": 42,
+  "sheets": [
+    "out/coco_review/coco_clean_candidates_01.png",
+    "out/coco_review/coco_hardneg_random_01.png"
+  ],
+  "worksheet": "out/coco_review/coco_review_worksheet.csv"
+}

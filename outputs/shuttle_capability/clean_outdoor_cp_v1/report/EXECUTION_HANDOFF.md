@@ -114,7 +114,28 @@ It writes out/coco_review/coco_review_worksheet.csv (the human fill-in sheet), c
 coco_hardneg_random_01.png and coco_review_index.json. Nothing downstream is built on it yet, and no gate depends
 on it: it is the fastest path to the two reviews in section 4.
 
-## 8. Honest deviations and notes
+## 8. What the two COCO review sheets actually show (I looked at every cell)
+
+Both sheets are committed under outputs/shuttle_capability/clean_outdoor_cp_v1/contact_sheets/ (100 cells each,
+label = COCO image id + the frozen edge-density metric, red box = the proposed CLEAN ROI).
+
+1. **The frozen clean_score is a texture statistic, not an outdoor detector.** The 100 lowest-scoring ROIs are
+   dominated by flat high-key regions - sky, water, snow, walls, table tops - and the same ranking happily selects
+   **indoor** frames (bathroom, kitchen, restaurant, a mirror selfie) and non-outdoor subjects. Several frames also
+   contain white sports gear (nets, courts). This is exactly why the plan makes the human outdoor + no-shuttle
+   review load-bearing: the statistic narrows the search, it does not decide the pool.
+2. **The hard-negative sheet is a uniform random sample, on purpose.** Hardness ("this white glint could fool the
+   detector") is a human judgement, so nothing model-based picked those 100 frames; they are a broad mix of food,
+   animals, sports, trains and buildings, with a handful of genuine white-equipment scenes. The proper prioritizer
+   already exists (tools/audit_outdoor_hardnegatives.py::mine_v2_fp_candidates, read-only, refuses any evaluation
+   path) but was **not run**: it needs the V2 checkpoint plus ultralytics, and by contract it may only ever suggest
+   images for a human to inspect.
+
+Practical consequence for the morning: start the background review from
+outputs/shuttle_capability/clean_outdoor_cp_v1/contact_sheets/coco_clean/coco_clean_candidates_01.png (fast to
+accept or reject) and use the hard-negative sheet only to seed the search; the worksheet CSV is the file to fill in.
+
+## 9. Honest deviations and notes
 
 - **Task 6 TDD order**: the module and its tests were written together, so a captured RED run for that task does
   not exist (Tasks 1, 2, 7, 8, 9, 10 do have captured RED). The tests were the specification and all pass.
