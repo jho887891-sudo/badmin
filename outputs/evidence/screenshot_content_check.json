@@ -1,80 +1,103 @@
 {
-  "racket_frames.png": {
+  "world_frame.png": {
     "size": [
       1280,
       720
     ],
-    "mean_rgb": [
-      108.8,
-      207.6,
-      145.7
+    "pixel_checks": {
+      "court_green_frac": 0.5263,
+      "morph_blue_frac": 0.0007,
+      "racket_red_frac": 0.0025,
+      "net_white_frac": 0.0201
+    },
+    "axis_pixels_rgb": null,
+    "projected_without_pixel_evidence": [],
+    "missing_required": [
+      "net_center_top"
     ],
-    "court_green_frac": 1.0,
-    "racket_red_frac": 0.0
-  },
-  "scene_128env.png": {
-    "size": [
-      1600,
-      900
-    ],
-    "mean_rgb": [
-      140.7,
-      166.2,
-      155.9
-    ],
-    "court_green_frac": 0.2719,
-    "racket_red_frac": 1e-05
+    "usd_camera_authored": true,
+    "ok": false
   },
   "scene_perspective.png": {
     "size": [
       1280,
       720
     ],
-    "mean_rgb": [
-      71.9,
-      121.3,
-      91.6
-    ],
-    "court_green_frac": 0.4873,
-    "racket_red_frac": 0.0
-  },
-  "scene_side.png": {
-    "size": [
-      1280,
-      720
-    ],
-    "mean_rgb": [
-      104.5,
-      150.1,
-      121.7
-    ],
-    "court_green_frac": 0.5487,
-    "racket_red_frac": 0.0
+    "pixel_checks": {
+      "court_green_frac": 0.1102,
+      "morph_blue_frac": 0.0024,
+      "racket_red_frac": 0.0025,
+      "net_white_frac": 0.0326
+    },
+    "axis_pixels_rgb": null,
+    "projected_without_pixel_evidence": [],
+    "missing_required": [],
+    "usd_camera_authored": true,
+    "ok": true
   },
   "scene_top.png": {
     "size": [
       1280,
       720
     ],
-    "mean_rgb": [
-      120.7,
-      188.4,
-      152.0
+    "pixel_checks": {
+      "court_green_frac": 0.1521,
+      "morph_blue_frac": 0.0001,
+      "racket_red_frac": 0.0005,
+      "net_white_frac": 0.0795
+    },
+    "axis_pixels_rgb": null,
+    "projected_without_pixel_evidence": [
+      "morph",
+      "racket_body",
+      "racket_tcp",
+      "racket_contact"
     ],
-    "court_green_frac": 0.7567,
-    "racket_red_frac": 2e-05
+    "missing_required": [],
+    "usd_camera_authored": true,
+    "ok": false
   },
-  "world_frame.png": {
+  "scene_side.png": {
     "size": [
       1280,
       720
     ],
-    "mean_rgb": [
-      42.6,
-      54.0,
-      48.3
+    "pixel_checks": {
+      "court_green_frac": 0.0101,
+      "morph_blue_frac": 0.0003,
+      "racket_red_frac": 0.0001,
+      "net_white_frac": 0.005
+    },
+    "axis_pixels_rgb": null,
+    "projected_without_pixel_evidence": [
+      "morph",
+      "racket_body",
+      "racket_tcp",
+      "racket_contact"
     ],
-    "court_green_frac": 0.1071,
-    "racket_red_frac": 0.0
+    "missing_required": [],
+    "usd_camera_authored": true,
+    "ok": false
+  },
+  "racket_frames.png": {
+    "size": [
+      1280,
+      720
+    ],
+    "pixel_checks": {
+      "court_green_frac": 0.3421,
+      "morph_blue_frac": 0.0194,
+      "racket_red_frac": 0.0869,
+      "net_white_frac": 0.0274
+    },
+    "axis_pixels_rgb": [
+      9556,
+      31125,
+      7637
+    ],
+    "projected_without_pixel_evidence": [],
+    "missing_required": [],
+    "usd_camera_authored": true,
+    "ok": true
   }
 }

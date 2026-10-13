@@ -1,25 +1,50 @@
 {
+  "generated_by": "scripts/t09_local.py (re-shot 2026-10-13, Isaac Lab at /home/T7/ojh/robot_sim)",
+  "supersedes": {
+    "previous_revision_invalid": true,
+    "reason": "the earlier screenshots.json listed visible_objects/ok from geometric projection only; the renders it described came from a build where cam.set_world_poses() did not move the camera and the scene defaulted to court-only, so the claimed objects were never in the pixels",
+    "checked_against": "pixel_checks in this file (court green / placeholder blue / racket red / net white)"
+  },
+  "not_reshot": {
+    "scene_128env.png": "the 128-env wide shot was not re-taken in this run (--num_envs 1); the stored file is from the earlier invalid revision and must not be quoted as evidence"
+  },
+  "num_envs": 1,
   "shots": [
     {
       "name": "world_frame",
-      "path": "/home/T7/dgut/robot_sim/projects/badminton_scene/evidence/world_frame.png",
+      "path": "/home/T7/dgut/robot_sim/evidence/world_frame.png",
       "width": 1280,
       "height": 720,
       "eye": [
-        3.4,
-        -3.4,
-        2.6
+        2.6,
+        -2.6,
+        1.8
       ],
       "target": [
         0.0,
         0.0,
-        0.6
+        0.5
       ],
       "focal": 24.0,
-      "ferr": 8.886649223807266e-10,
+      "ferr": 9.905922308688378e-10,
       "axis_pixels_rgb": null,
-      "marker_pixels": null,
-      "missing_required": [],
+      "missing_required": [
+        "net_center_top"
+      ],
+      "projected_objects": [
+        "world_origin",
+        "robot_base",
+        "morph",
+        "piper_mount",
+        "racket_body",
+        "racket_tcp",
+        "racket_contact",
+        "net_bottom",
+        "shuttle",
+        "ground_origin",
+        "candidate_strike_roi",
+        "camera_rig"
+      ],
       "visible_objects": [
         "world_origin",
         "robot_base",
@@ -28,117 +53,123 @@
         "racket_body",
         "racket_tcp",
         "racket_contact",
-        "net_center_top",
         "net_bottom",
         "shuttle",
         "ground_origin",
-        "perception_roi",
         "candidate_strike_roi",
         "camera_rig"
       ],
       "projections": {
         "world_origin": [
           640.0,
-          509.3,
-          5.438,
+          529.9,
+          4.067,
           true
         ],
         "robot_base": [
-          379.5,
-          323.7,
-          6.368,
+          310.5,
+          305.1,
+          5.033,
           true
         ],
         "morph": [
-          382.2,
-          360.9,
-          6.435,
+          314.3,
+          353.2,
+          5.092,
           true
         ],
         "piper_mount": [
-          379.5,
-          323.7,
-          6.368,
+          310.5,
+          305.1,
+          5.033,
           true
         ],
         "racket_body": [
-          390.5,
-          372.9,
-          6.413,
+          324.2,
+          368.0,
+          5.068,
           true
         ],
         "racket_tcp": [
-          390.5,
-          372.9,
-          6.413,
+          324.2,
+          368.0,
+          5.068,
           true
         ],
         "racket_contact": [
-          461.5,
-          396.4,
-          6.071,
+          410.4,
+          392.1,
+          4.721,
           true
         ],
         "net_center_top": [
           640.0,
-          102.3,
-          4.853,
-          true
+          -37.7,
+          3.559,
+          false
         ],
         "net_bottom": [
           640.0,
-          316.9,
-          5.145,
+          264.3,
+          3.812,
           true
         ],
         "shuttle": [
           640.0,
-          506.0,
-          5.433,
+          431.3,
+          3.968,
           true
         ],
         "ground_origin": [
           640.0,
-          509.3,
-          5.438,
+          529.9,
+          4.067,
           true
         ],
         "spawn_region": [
-          928.5,
-          -8.7,
-          3.952,
+          1067.6,
+          -274.9,
+          2.667,
           false
         ],
         "target_zone": [
-          1661.8,
-          978.2,
-          3.297,
+          2428.9,
+          1286.5,
+          1.883,
           false
         ],
         "perception_roi": [
-          730.5,
-          114.1,
-          4.582,
-          true
+          766.3,
+          -39.9,
+          3.283,
+          false
         ],
         "candidate_strike_roi": [
-          555.9,
-          159.6,
-          5.236,
+          528.0,
+          59.1,
+          3.933,
           true
         ],
         "camera_rig": [
-          393.7,
-          127.5,
-          5.891,
+          324.5,
+          44.5,
+          4.6,
           true
         ]
       },
-      "ok": true
+      "pixel_checks": {
+        "court_green_frac": 0.5263,
+        "morph_blue_frac": 0.0007,
+        "racket_red_frac": 0.0025,
+        "net_white_frac": 0.0201
+      },
+      "projected_without_pixel_evidence": [],
+      "usd_camera_authored": true,
+      "ok": false
     },
     {
       "name": "scene_perspective",
-      "path": "/home/T7/dgut/robot_sim/projects/badminton_scene/evidence/scene_perspective.png",
+      "path": "/home/T7/dgut/robot_sim/evidence/scene_perspective.png",
       "width": 1280,
       "height": 720,
       "eye": [
@@ -154,8 +185,25 @@
       "focal": 24.0,
       "ferr": 9.478934561695504e-10,
       "axis_pixels_rgb": null,
-      "marker_pixels": null,
       "missing_required": [],
+      "projected_objects": [
+        "world_origin",
+        "robot_base",
+        "morph",
+        "piper_mount",
+        "racket_body",
+        "racket_tcp",
+        "racket_contact",
+        "net_center_top",
+        "net_bottom",
+        "shuttle",
+        "ground_origin",
+        "spawn_region",
+        "target_zone",
+        "perception_roi",
+        "candidate_strike_roi",
+        "camera_rig"
+      ],
       "visible_objects": [
         "world_origin",
         "robot_base",
@@ -230,9 +278,9 @@
           true
         ],
         "shuttle": [
-          710.5,
-          556.1,
-          5.709,
+          711.5,
+          488.8,
+          5.628,
           true
         ],
         "ground_origin": [
@@ -272,11 +320,19 @@
           true
         ]
       },
+      "pixel_checks": {
+        "court_green_frac": 0.1102,
+        "morph_blue_frac": 0.0024,
+        "racket_red_frac": 0.0025,
+        "net_white_frac": 0.0326
+      },
+      "projected_without_pixel_evidence": [],
+      "usd_camera_authored": true,
       "ok": true
     },
     {
       "name": "scene_top",
-      "path": "/home/T7/dgut/robot_sim/projects/badminton_scene/evidence/scene_top.png",
+      "path": "/home/T7/dgut/robot_sim/evidence/scene_top.png",
       "width": 1280,
       "height": 720,
       "eye": [
@@ -292,8 +348,25 @@
       "focal": 18.0,
       "ferr": 6.666668051602436e-11,
       "axis_pixels_rgb": null,
-      "marker_pixels": null,
       "missing_required": [],
+      "projected_objects": [
+        "world_origin",
+        "robot_base",
+        "morph",
+        "piper_mount",
+        "racket_body",
+        "racket_tcp",
+        "racket_contact",
+        "net_center_top",
+        "net_bottom",
+        "shuttle",
+        "ground_origin",
+        "spawn_region",
+        "target_zone",
+        "perception_roi",
+        "candidate_strike_roi",
+        "camera_rig"
+      ],
       "visible_objects": [
         "world_origin",
         "robot_base",
@@ -370,7 +443,7 @@
         "shuttle": [
           640.0,
           360.1,
-          14.986,
+          14.705,
           true
         ],
         "ground_origin": [
@@ -410,11 +483,24 @@
           true
         ]
       },
-      "ok": true
+      "pixel_checks": {
+        "court_green_frac": 0.1521,
+        "morph_blue_frac": 0.0001,
+        "racket_red_frac": 0.0005,
+        "net_white_frac": 0.0795
+      },
+      "projected_without_pixel_evidence": [
+        "morph",
+        "racket_body",
+        "racket_tcp",
+        "racket_contact"
+      ],
+      "usd_camera_authored": true,
+      "ok": false
     },
     {
       "name": "scene_side",
-      "path": "/home/T7/dgut/robot_sim/projects/badminton_scene/evidence/scene_side.png",
+      "path": "/home/T7/dgut/robot_sim/evidence/scene_side.png",
       "width": 1280,
       "height": 720,
       "eye": [
@@ -430,8 +516,25 @@
       "focal": 18.0,
       "ferr": 8.118699260434721e-10,
       "axis_pixels_rgb": null,
-      "marker_pixels": null,
       "missing_required": [],
+      "projected_objects": [
+        "world_origin",
+        "robot_base",
+        "morph",
+        "piper_mount",
+        "racket_body",
+        "racket_tcp",
+        "racket_contact",
+        "net_center_top",
+        "net_bottom",
+        "shuttle",
+        "ground_origin",
+        "spawn_region",
+        "target_zone",
+        "perception_roi",
+        "candidate_strike_roi",
+        "camera_rig"
+      ],
       "visible_objects": [
         "world_origin",
         "robot_base",
@@ -507,8 +610,8 @@
         ],
         "shuttle": [
           676.5,
-          459.1,
-          12.049,
+          433.5,
+          12.037,
           true
         ],
         "ground_origin": [
@@ -548,11 +651,24 @@
           true
         ]
       },
-      "ok": true
+      "pixel_checks": {
+        "court_green_frac": 0.0101,
+        "morph_blue_frac": 0.0003,
+        "racket_red_frac": 0.0001,
+        "net_white_frac": 0.005
+      },
+      "projected_without_pixel_evidence": [
+        "morph",
+        "racket_body",
+        "racket_tcp",
+        "racket_contact"
+      ],
+      "usd_camera_authored": true,
+      "ok": false
     },
     {
       "name": "racket_frames",
-      "path": "/home/T7/dgut/robot_sim/projects/badminton_scene/evidence/racket_frames.png",
+      "path": "/home/T7/dgut/robot_sim/evidence/racket_frames.png",
       "width": 1280,
       "height": 720,
       "eye": [
@@ -568,15 +684,17 @@
       "focal": 30.0,
       "ferr": 3.03396675190395e-09,
       "axis_pixels_rgb": [
-        0,
-        0,
-        0
+        9556,
+        31125,
+        7637
       ],
-      "marker_pixels": {
-        "tcp": 8133,
-        "contact": 6499
-      },
       "missing_required": [],
+      "projected_objects": [
+        "morph",
+        "racket_body",
+        "racket_tcp",
+        "racket_contact"
+      ],
       "visible_objects": [
         "morph",
         "racket_body",
@@ -639,9 +757,9 @@
           false
         ],
         "shuttle": [
-          -106.5,
-          -1469.9,
-          -0.523,
+          9.0,
+          -402.7,
+          -0.618,
           false
         ],
         "ground_origin": [
@@ -681,133 +799,15 @@
           false
         ]
       },
-      "ok": true
-    },
-    {
-      "name": "scene_128env",
-      "path": "/home/T7/dgut/robot_sim/projects/badminton_scene/evidence/scene_128env.png",
-      "width": 1600,
-      "height": 900,
-      "eye": [
-        2.578125,
-        -61.640625,
-        130.0
-      ],
-      "target": [
-        2.578125,
-        -1.640625,
-        0.0
-      ],
-      "focal": 20.0,
-      "ferr": 5.13538445102111e-10,
-      "axis_pixels_rgb": null,
-      "marker_pixels": null,
-      "missing_required": [],
-      "visible_objects": [],
-      "projections": {
-        "world_origin": [
-          1885.5,
-          1354.6,
-          112.436,
-          false
-        ],
-        "robot_base": [
-          1866.3,
-          1355.1,
-          112.164,
-          false
-        ],
-        "morph": [
-          1864.8,
-          1354.8,
-          112.323,
-          false
-        ],
-        "piper_mount": [
-          1866.3,
-          1355.1,
-          112.164,
-          false
-        ],
-        "racket_body": [
-          1865.2,
-          1354.8,
-          112.359,
-          false
-        ],
-        "racket_tcp": [
-          1865.2,
-          1354.8,
-          112.359,
-          false
-        ],
-        "racket_contact": [
-          1872.4,
-          1354.9,
-          112.319,
-          false
-        ],
-        "net_center_top": [
-          1899.0,
-          1357.1,
-          111.053,
-          false
-        ],
-        "net_bottom": [
-          1892.2,
-          1355.9,
-          111.743,
-          false
-        ],
-        "shuttle": [
-          1885.6,
-          1354.7,
-          112.424,
-          false
-        ],
-        "ground_origin": [
-          1885.5,
-          1354.6,
-          112.436,
-          false
-        ],
-        "spawn_region": [
-          1918.5,
-          1357.9,
-          110.62,
-          false
-        ],
-        "target_zone": [
-          1930.1,
-          1354.7,
-          112.391,
-          false
-        ],
-        "perception_roi": [
-          1904.7,
-          1357.2,
-          111.029,
-          false
-        ],
-        "candidate_strike_roi": [
-          1890.7,
-          1356.7,
-          111.301,
-          false
-        ],
-        "camera_rig": [
-          1876.9,
-          1356.6,
-          111.347,
-          false
-        ]
+      "pixel_checks": {
+        "court_green_frac": 0.3421,
+        "morph_blue_frac": 0.0194,
+        "racket_red_frac": 0.0869,
+        "net_white_frac": 0.0274
       },
-      "ok": true,
-      "env_origins_span_xy": [
-        165.0,
-        150.0
-      ],
-      "env_count": 128
+      "projected_without_pixel_evidence": [],
+      "usd_camera_authored": true,
+      "ok": true
     }
   ]
 }

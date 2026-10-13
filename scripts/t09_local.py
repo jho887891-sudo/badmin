@@ -99,7 +99,13 @@ def set_marker(name, pos, quat):
         if op.GetOpType() == UsdGeom.XformOp.TypeTranslate:
             op.Set(Gf.Vec3d(*[float(v) for v in pos]))
         elif op.GetOpType() == UsdGeom.XformOp.TypeOrient:
-            op.Set(Gf.Quatf(float(quat[0]), Gf.Vec3f(float(quat[1]), float(quat[2]), float(quat[3]))))
+            # The op's precision is fixed at creation (a spawner-created op wants GfQuatd, an op added on a
+            # plain UsdGeom.Xform wants GfQuatf), so match whichever the op declares - hard-coding either one
+            # fails in the other context with "Type mismatch for <path>: expected 'GfQuatX', got 'GfQuatY'".
+            if op.GetPrecision() == UsdGeom.XformOp.PrecisionDouble:
+                op.Set(Gf.Quatd(float(quat[0]), Gf.Vec3d(float(quat[1]), float(quat[2]), float(quat[3]))))
+            else:
+                op.Set(Gf.Quatf(float(quat[0]), Gf.Vec3f(float(quat[1]), float(quat[2]), float(quat[3]))))
     return True
 
 
@@ -111,6 +117,41 @@ def axis_pixels(img):
     return [r, g, b]
 
 
+def pixel_checks(img):
+    """Per-object pixel evidence, so a claim of visibility is a measurement rather than a projection.
+
+    A projected centre point proves only that the math expects the object on screen; the previous evidence run
+    claimed ok=true for objects that no pixel showed. These probes mirror the colour analysis that already
+    existed in screenshot_content_check.json.
+    """
+    a = img.astype(np.int16)
+    r, g, b = a[:, :, 0], a[:, :, 1], a[:, :, 2]
+    green = (g > 120) & (r < 130) & (b < 150) & (g - r > 25)
+    blue = (b > 140) & (b - r > 30) & (b - g > 10)
+    red = (r > 120) & (r - g > 40) & (r - b > 40)
+    white = (r > 180) & (g > 180) & (b > 180)
+    total = float(img.shape[0] * img.shape[1])
+    return {
+        "court_green_frac": round(float(green.sum()) / total, 4),
+        "morph_blue_frac": round(float(blue.sum()) / total, 4),
+        "racket_red_frac": round(float(red.sum()) / total, 4),
+        "net_white_frac": round(float(white.sum()) / total, 4),
+    }
+
+
+#: which pixel probe must be non-trivial for a required object to count as *shown* (not merely projected)
+PIXEL_EVIDENCE = {
+    "morph": "morph_blue_frac",
+    "world_origin": "court_green_frac",
+    "ground_origin": "court_green_frac",
+    "net_center_top": "net_white_frac",
+    "net_bottom": "net_white_frac",
+    "racket_body": "racket_red_frac",
+    "racket_tcp": "racket_red_frac",
+    "racket_contact": "racket_red_frac",
+}
+
+
 def main():
     shots = [s.strip() for s in args.shots.split(",") if s.strip()]
     W, H = args.width, args.height
@@ -118,11 +159,16 @@ def main():
                         spawn=sim_utils.PinholeCameraCfg(focal_length=24.0, horizontal_aperture=APERTURE,
                                                           clipping_range=(0.05, 1.0e5)),
                         data_types=["rgb"], width=W, height=H)
+    # create_scene() defaults to a court-only scene now, which silently yields robot=None (and a crash two
+    # lines later). The evidence run must ask for the full scene explicitly.
     sim, scene, robot, shuttle, _cs, extra = create_scene(
         num_envs=args.num_envs,
         extra_sensors=[("shot_cam", cam_cfg, Camera)],
         pre_axes=[("world", args.axis_len, 0.015), ("tcp", args.axis_len, 0.015), ("contact", args.axis_len, 0.015)],
+        include_robot=True, include_shuttle=True, include_ground=True,
     )
+    if robot is None:
+        raise SystemExit("create_scene returned robot=None: the evidence cannot be shot without the arm")
     cam = extra["shot_cam"]
     for _ in range(5):
         scene.write_data_to_sim(); sim.step(); scene.update(SIM_DT)
@@ -163,9 +209,35 @@ def main():
     }
     info = []
 
+    def author_camera_pose(eye, q):
+        """Author the pose on the USD prim as well as through the sensor API.
+
+        cam.set_world_poses() was measured not to affect the render in this Isaac build (the previous evidence
+        run produced a frame from the prim's default pose), so the transform is written directly on the prim.
+        """
+        ok = False
+        try:
+            stage = omni.usd.get_context().get_stage()
+            prim = stage.GetPrimAtPath("/World/shot_cam")
+            if prim:
+                xf = UsdGeom.Xformable(prim)
+                ops = {op.GetOpType(): op for op in xf.GetOrderedXformOps()}
+                translate = ops.get(UsdGeom.XformOp.TypeTranslate) or xf.AddTranslateOp()
+                orient = ops.get(UsdGeom.XformOp.TypeOrient) or xf.AddOrientOp()
+                translate.Set(Gf.Vec3d(float(eye[0]), float(eye[1]), float(eye[2])))
+                if orient.GetPrecision() == UsdGeom.XformOp.PrecisionDouble:
+                    orient.Set(Gf.Quatd(float(q[0]), Gf.Vec3d(float(q[1]), float(q[2]), float(q[3]))))
+                else:
+                    orient.Set(Gf.Quatf(float(q[0]), Gf.Vec3f(float(q[1]), float(q[2]), float(q[3]))))
+                ok = True
+        except Exception as exc:  # noqa: BLE001 - report, never crash the shot
+            print("[T09] USD camera authoring failed:", exc)
+        return ok
+
     def capture(eye, target, focal):
         q, f = look_at_quat(eye, target)
         q, ferr = ensure_forward(q, f)
+        authored = author_camera_pose(eye, q)
         cam.set_world_poses(torch.tensor([eye], dtype=torch.float32, device=dev),
                             torch.tensor([q], dtype=torch.float32, device=dev))
         for _ in range(4):
@@ -175,30 +247,46 @@ def main():
         img = arr.reshape(H, W, -1)[:, :, :3].astype("uint8")
         proj = {k: project(eye, q, v, W, H, focal) for k, v in targets.items()}
         vis = [k for k, v in proj.items() if v[3]]
-        return img, proj, vis, q, float(ferr)
+        return img, proj, vis, q, float(ferr), authored, pixel_checks(img)
+
+    def pixel_unsupported(vis, checks):
+        """Objects that are projected on screen but whose required pixel probe is empty."""
+        out = []
+        for name in vis:
+            probe = PIXEL_EVIDENCE.get(name)
+            if probe and checks.get(probe, 0.0) <= 0.0005:
+                out.append(name)
+        return out
 
     def shoot(name, cands, required, want_axis=False):
         best = None
         for i, (eye, target, focal) in enumerate(cands):
-            img, proj, vis, q, ferr = capture(eye, target, focal)
+            img, proj, vis, q, ferr, authored, checks = capture(eye, target, focal)
             missing = [r for r in required if r not in vis]
+            unsupported = pixel_unsupported(vis, checks)
             ax = axis_pixels(img) if want_axis else None
-            score = -len(missing) + (1e-6 * (sum(ax) if ax else 0))
-            print("[T09]", name, "cand", i, "missing", missing, "axis_px", ax)
+            score = -(len(missing) + len(unsupported)) + (1e-6 * (sum(ax) if ax else 0))
+            print("[T09]", name, "cand", i, "missing", missing, "no_pixel", unsupported,
+                  "checks", checks, "axis_px", ax, "usd_authored", authored)
             if best is None or score > best[0]:
-                best = (score, eye, target, focal, img.copy(), proj, vis, ax, missing, q, ferr)
-            if not missing and (not want_axis or (ax and min(ax) > 0)):
+                best = (score, eye, target, focal, img.copy(), proj, vis, ax, missing, q, ferr, authored,
+                        checks, unsupported)
+            if not missing and not unsupported and (not want_axis or (ax and min(ax) > 0)):
                 break
-        score, eye, target, focal, img, proj, vis, ax, missing, q, ferr = best
+        (score, eye, target, focal, img, proj, vis, ax, missing, q, ferr, authored, checks,
+         unsupported) = best
         path = EVID / (name + ".png")
         Image.fromarray(img).save(path)
-        ok = (not missing) and (not want_axis or (ax and min(ax) > 0))
+        # ok now means: projected AND backed by the pixel probe AND (when requested) axis pixels present.
+        ok = (not missing) and (not unsupported) and (not want_axis or (ax and min(ax) > 0))
         print("[T09] SHOT", name, str(path), img.shape[1], "x", img.shape[0], "axis_px", ax,
-              "missing", missing, "ok", ok)
+              "missing", missing, "no_pixel", unsupported, "ok", ok)
         info.append(dict(name=name, path=str(path), width=int(img.shape[1]), height=int(img.shape[0]),
                          eye=[float(v) for v in eye], target=[float(v) for v in target], focal=focal,
                          ferr=ferr, axis_pixels_rgb=ax, missing_required=missing,
-                         visible_objects=vis, projections=proj, ok=bool(ok)))
+                         projected_objects=vis, visible_objects=vis, projections=proj,
+                         pixel_checks=checks, projected_without_pixel_evidence=unsupported,
+                         usd_camera_authored=bool(authored), ok=bool(ok)))
 
     if "world" in shots:
         shoot("world_frame",

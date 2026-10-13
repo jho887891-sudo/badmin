@@ -124,7 +124,10 @@ def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_ax
     if include_ground:
         _g = _box("/World/Ground", (2.0 * _half, 2.0 * _half, 0.40), (_cx, _cy, -0.203),
                   (0.10, 0.10, 0.10), collision=True)
-        UsdGeom.Imageable(_g).MakeInvisible()
+        # _box returns a prim PATH; UsdGeom.Imageable needs the prim itself (passing the string raises
+        # Boost.Python.ArgumentError). This path is only reached with include_ground=True, which the
+        # court-only default never exercised.
+        UsdGeom.Imageable(_stage().GetPrimAtPath(_g)).MakeInvisible()
     light = sim_utils.DistantLightCfg(intensity=700.0, color=(0.8, 0.8, 0.8))
     light.func("/World/Light", light, translation=(0.0, 0.0, 10.0))
     dome = sim_utils.DomeLightCfg(intensity=350.0, color=(0.85, 0.88, 0.95))
@@ -151,7 +154,14 @@ def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_ax
             _box(_p + "/Z", (_th, _th, _ln), (0.0, 0.0, _ln / 2.0), (0.05, 0.2, 1.0))
             _xf = UsdGeom.Xform.Define(_stage(), _p)
             _xf.AddTranslateOp().Set(Gf.Vec3d(0.0, 0.0, 0.0))
-            _xf.AddOrientOp().Set(Gf.Quatf(1.0, Gf.Vec3f(0.0, 0.0, 0.0)))
+            # An xformOp's precision is fixed when the op is created: an op added here wants GfQuatf while a
+            # spawner-created op wants GfQuatd. Setting the wrong one raises "Type mismatch for ...: expected
+            # 'GfQuatf', got 'GfQuatd'" (and the mirror image), so match the op's own declared precision.
+            _orient = _xf.AddOrientOp()
+            if _orient.GetPrecision() == UsdGeom.XformOp.PrecisionDouble:
+                _orient.Set(Gf.Quatd(1.0, Gf.Vec3d(0.0, 0.0, 0.0)))
+            else:
+                _orient.Set(Gf.Quatf(1.0, Gf.Vec3f(0.0, 0.0, 0.0)))
     sim.reset()
     robot = scene.articulations.get("robot") if include_robot else None
     shuttle = scene.rigid_objects.get("shuttle") if include_shuttle else None
