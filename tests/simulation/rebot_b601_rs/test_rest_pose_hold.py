@@ -82,10 +82,10 @@ def test_the_end_effector_does_not_dive(ev):
 def test_the_command_is_recorded_and_equals_the_rest_pose(ev):
     """If the target never becomes the rest pose, a hold test would pass for the wrong reason.
 
-    NOTE: IsaacLab 3.0 beta exposes no working per-DOF target read-back for this asset - both
-    root_physx_view.get_dof_position_targets() and get_applied_joint_efforts() raise (the harness
-    records them under "unsupported_api"). The check therefore uses the articulation's own
-    joint_pos_target buffer plus a behavioural proof: the arm must actually sit where it was told.
+    Per-DOF read-back: root_physx_view.get_dof_position_targets() works and is recorded, together
+    with the articulation's joint_pos_target buffer; get_applied_joint_efforts() does NOT exist on
+    this IsaacLab build (AttributeError: ArticulationView has no such method), so the applied
+    torque is evidenced indirectly by the drive parameters and the measured hold.
     """
     for run in ev["runs"]:
         first = run["samples"][0]
@@ -93,6 +93,12 @@ def test_the_command_is_recorded_and_equals_the_rest_pose(ev):
         for name, target in zip(run["joint_names"], first["joint_pos_target"]):
             assert abs(target - run["rest_pose"].get(name, 0.0)) <= 1e-3, (
                 f"{run['name']}: {name} target is {target}, not the rest pose")
+        physx = first.get("physx_dof_position_targets")
+        assert isinstance(physx, list) and len(physx) == len(run["joint_names"]), (
+            f"{run['name']}: PhysX did not report the DOF targets: {physx}")
+        for name, target in zip(run["joint_names"], physx):
+            assert abs(target - run["rest_pose"].get(name, 0.0)) <= 1e-3, (
+                f"{run['name']}: {name} never reached PhysX (target {target})")
         for name, err in zip(run["joint_names"], first["hold_error_rad"]):
             if not name.startswith("joint"):
                 continue

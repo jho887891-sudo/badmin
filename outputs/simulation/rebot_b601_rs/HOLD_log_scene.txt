@@ -1,0 +1,50 @@
+The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792348836.347003 3710781 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792348836.347564 3710781 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+[ISAACLAB] AppLauncher initialization complete
+[INFO]: Registered backend 'physx' for factory Articulation.
+[INFO]: Simulation parameters for joints in /World/envs/env_0/Robot/RebotB601RS:
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                            Simulation Joint Information (Prim path: /World/envs/env_0/Robot/RebotB601RS)                                            |
++-------+----------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+| Index | Name           | Stiffness | Damping | Armature | Static Friction | Dynamic Friction | Viscous Friction | Position Limits | Velocity Limits | Effort Limits |
++-------+----------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+|   0   | joint1         |  100.000  |  1.000  |  0.000   |      0.000      |      0.000       |      0.000       | [-2.800, 2.800] |      50.000     |     36.000    |
+|   1   | joint2         |  100.000  |  1.000  |  0.000   |      0.000      |      0.000       |      0.000       |  [0.000, 3.140] |      50.000     |     36.000    |
+|   2   | joint3         |  100.000  |  1.000  |  0.000   |      0.000      |      0.000       |      0.000       |  [0.000, 3.140] |      50.000     |     36.000    |
+|   3   | joint4         |  100.000  |  1.000  |  0.000   |      0.000      |      0.000       |      0.000       | [-1.570, 1.570] |      40.000     |     14.000    |
+|   4   | joint5         |  100.000  |  1.000  |  0.000   |      0.000      |      0.000       |      0.000       | [-1.570, 1.570] |      40.000     |     14.000    |
+|   5   | joint6         |  100.000  |  1.000  |  0.000   |      0.000      |      0.000       |      0.000       | [-3.140, 3.140] |      40.000     |     14.000    |
+|   6   | gripper_joint1 |  100.000  |  1.000  |  0.000   |      0.000      |      0.000       |      0.000       |  [0.000, 0.050] |     572.958     |    500.000    |
+|   7   | gripper_joint2 |  100.000  |  1.000  |  0.000   |      0.000      |      0.000       |      0.000       |  [0.000, 0.072] |     572.958     |    500.000    |
++-------+----------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+/home/T7/dgut/robot_sim/check_arm_rest_pose_hold.py:104: DeprecationWarning: The `root_physx_view` property will be deprecated in a future release. Please use `root_view` instead.
+  for label, getter in (("physx_dof_stiffnesses", lambda: robot.root_physx_view.get_dof_stiffnesses()),
+/home/T7/dgut/robot_sim/check_arm_rest_pose_hold.py:105: DeprecationWarning: The `root_physx_view` property will be deprecated in a future release. Please use `root_view` instead.
+  ("physx_dof_dampings", lambda: robot.root_physx_view.get_dof_dampings()),
+/home/T7/dgut/robot_sim/check_arm_rest_pose_hold.py:106: DeprecationWarning: The `root_physx_view` property will be deprecated in a future release. Please use `root_view` instead.
+  ("physx_dof_max_forces", lambda: robot.root_physx_view.get_dof_max_forces())):
+/home/T7/dgut/robot_sim/check_arm_rest_pose_hold.py:111: DeprecationWarning: The `root_physx_view` property will be deprecated in a future release. Please use `root_view` instead.
+  for label, getter in (("physx_dof_positions", lambda: robot.root_physx_view.get_dof_positions()),
+/home/T7/dgut/robot_sim/check_arm_rest_pose_hold.py:112: DeprecationWarning: The `root_physx_view` property will be deprecated in a future release. Please use `root_view` instead.
+  ("physx_dof_position_targets", lambda: robot.root_physx_view.get_dof_position_targets()),
+/home/T7/dgut/robot_sim/check_arm_rest_pose_hold.py:113: DeprecationWarning: The `root_physx_view` property will be deprecated in a future release. Please use `root_view` instead.
+  ("applied_joint_efforts", lambda: robot.root_physx_view.get_applied_joint_efforts())):
+/home/T7/dgut/robot_sim/check_arm_rest_pose_hold.py:134: DeprecationWarning: The function 'write_joint_state_to_sim' will be deprecated in a future release. Please use 'write_joint_position_to_sim_index' and 'write_joint_velocity_to_sim_index' instead.
+  robot.write_joint_state_to_sim(target, torch.zeros_like(target))
+/home/T7/dgut/robot_sim/check_arm_rest_pose_hold.py:135: DeprecationWarning: The function 'set_joint_position_target' will be deprecated in a future release. Please use 'set_joint_position_target_index' instead.
+  robot.set_joint_position_target(target)
+/home/T7/dgut/robot_sim/check_arm_rest_pose_hold.py:159: DeprecationWarning: The `root_physx_view` property will be deprecated in a future release. Please use `root_view` instead.
+  for label, getter in (("applied_joint_efforts", lambda: robot.root_physx_view.get_applied_joint_efforts()),
+/home/T7/dgut/robot_sim/check_arm_rest_pose_hold.py:160: DeprecationWarning: The `root_physx_view` property will be deprecated in a future release. Please use `root_view` instead.
+  ("physx_dof_position_targets", lambda: robot.root_physx_view.get_dof_position_targets())):
+HOLD_JSON_START
+{"name": "scene_hold_rest", "mode": "scene", "direct_spawn": true, "verdict": {"held_5s": true, "worst_hold_error_rad": 0.042323, "joint2_joint3_inside_limits": true, "ee_final_rel_mount_z": 0.486887, "ee_drop_m": 0.014592, "worst_body_below_ground": 0.3}, "unsupported": ["applied_joint_efforts"]}
+HOLD_JSON_END
+Loading user config located at: '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-18T18:40:16Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/T7/ojh/robot_sim/IsaacLab/source/isaaclab_visualizers' or '/home/T7/ojh/robot_sim/IsaacLab/source/isaaclab_visualizers/config'
+2026-10-18T18:40:39Z [23,087ms] [Warning] [omni.platforminfo.plugin] failed to open the default display.  Can't verify X Server version.
+2026-10-18T18:40:42Z [25,900ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+2026-10-18T18:46:27Z [371,135ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
+2026-10-18T18:46:37Z [380,864ms] [Warning] [usdrt.population.plugin] Last global time was not created. Did you call setEnableUsdNoticeHandling?
