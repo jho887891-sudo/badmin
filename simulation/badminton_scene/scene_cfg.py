@@ -12,10 +12,12 @@ from isaaclab.scene import InteractiveScene, InteractiveSceneCfg
 from isaaclab.utils.configclass import configclass
 from pxr import Usd, UsdGeom, UsdShade, UsdPhysics, Sdf, Gf
 
+import torch
 from .scene_layout import (CAMERA, PIPER, MORPH_PLACEHOLDER,
                            PERCEPTION_ROI, CANDIDATE_STRIKE_ROI, SPAWN_REGION,
-                           TARGET_ZONE, SIMULATION)
-from .robot_cfg import ROBOT_ARTICULATION_CFG, MORPH
+                           TARGET_ZONE, SIMULATION, REBOT_RS)
+from .robot_cfg import (ARM_MODEL, MORPH, ROBOT_ARTICULATION_CFG,
+                        spawn_rebot_rs_directly)
 from .shuttle_cfg import SHUTTLE_CFG
 
 SIM_DT = SIMULATION["physics_dt"]
@@ -106,6 +108,12 @@ class BadmintonSceneCfg(InteractiveSceneCfg):
 
 
 @configclass
+class ShuttleOnlySceneCfg(InteractiveSceneCfg):
+    """Shuttle without the scene-registered robot (the formal arm is spawned directly)."""
+    shuttle: object = SHUTTLE_CFG
+
+
+@configclass
 class CourtOnlySceneCfg(InteractiveSceneCfg):
     """Default scene: the user's court asset only (no robot, no shuttle, no ROIs,
     no placeholders, no ground). A camera may still be attached for rendering."""
@@ -113,8 +121,24 @@ class CourtOnlySceneCfg(InteractiveSceneCfg):
 
 def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_axes=None, statics_mode="first",
                  include_robot: bool = False, include_shuttle: bool = False, include_ground: bool = False):
+    # F1: the converted B601-RS gets no drive torque when registered through InteractiveScene, so the
+    # formal arm is spawned and bound directly (verified to hold the rest pose). See
+    # management/rebot_b601_rs/ARM_MIGRATION_RECORD.md section E/F1.
+    _direct_arm = bool(include_robot) and ARM_MODEL == "rebot_b601_rs"
+    if _direct_arm and num_envs != 1:
+        raise NotImplementedError(
+            "the direct B601-RS spawn supports num_envs == 1 only; replicating it would need the "
+            "drive-binding defect in F1 solved first")
     sim = sim_utils.SimulationContext(sim_utils.SimulationCfg(dt=SIM_DT, device="cuda:0"))
-    _cfg_cls = BadmintonSceneCfg if (include_robot or include_shuttle) else CourtOnlySceneCfg
+    if _direct_arm:
+        _mount = REBOT_RS["mount_world"]
+        _origin0 = SIMULATION["env_spacing"] * 0.0  # env_0 origin x offset is 0; see env_origin helper
+        _direct_robot = spawn_rebot_rs_directly(
+            translation=(_mount[0] + _origin0, _mount[1], _mount[2]))
+        _cfg_cls = ShuttleOnlySceneCfg if include_shuttle else CourtOnlySceneCfg
+    else:
+        _direct_robot = None
+        _cfg_cls = BadmintonSceneCfg if (include_robot or include_shuttle) else CourtOnlySceneCfg
     scene = InteractiveScene(_cfg_cls(num_envs=num_envs, env_spacing=SIMULATION["env_spacing"]))
     # large static ground collider covering the whole vectorised env grid
     _eo = scene.env_origins.cpu().float()
@@ -163,13 +187,33 @@ def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_ax
             else:
                 _orient.Set(Gf.Quatf(1.0, Gf.Vec3f(0.0, 0.0, 0.0)))
     sim.reset()
-    robot = scene.articulations.get("robot") if include_robot else None
+    if _direct_arm:
+        _jp = torch.tensor(
+            [[REBOT_RS["rest_joint_pos"].get(nm, 0.0) for nm in _direct_robot.joint_names]],
+            dtype=torch.float32, device=_direct_robot.device)
+        _direct_robot.write_joint_state_to_sim(_jp, torch.zeros_like(_jp))
+        _direct_robot.set_joint_position_target(_jp)
+        _direct_robot.write_data_to_sim()
+        scene.direct_articulations = [_direct_robot]
+        robot = _direct_robot
+    else:
+        robot = scene.articulations.get("robot") if include_robot else None
     shuttle = scene.rigid_objects.get("shuttle") if include_shuttle else None
     return sim, scene, robot, shuttle, contact_sensor, extra
 
 
 def step_env(scene, sim, dt=None):
-    """One simulation step with data sync + buffer update."""
+    """One simulation step with data sync + buffer update.
+
+    Articulations spawned directly (F1 workaround) are not part of InteractiveScene, so they are
+    written before the step and refreshed after it.
+    """
+    _dt = SIM_DT if dt is None else dt
+    _direct = getattr(scene, "direct_articulations", ())
     scene.write_data_to_sim()
+    for _art in _direct:
+        _art.write_data_to_sim()
     sim.step()
-    scene.update(SIM_DT if dt is None else dt)
+    scene.update(_dt)
+    for _art in _direct:
+        _art.update(_dt)

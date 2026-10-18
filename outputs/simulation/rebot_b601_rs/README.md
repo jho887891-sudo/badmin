@@ -9,7 +9,21 @@ Every file here was produced by a real run on the GPU host; none of it is transc
 | rest_pose_probe.json | remote rest_pose_probe.py | 8 candidate rest poses measured from link geometry; the chosen pose keeps every link above the base plane |
 | conversion_config.yaml | Isaac Lab convert_urdf.py | the exact importer settings behind the USD |
 
-Regenerate (asset paths are on the GPU host, host jxxy = dgut@172.31.68.251):
+| HOLD_rest_pose.json | remote check_arm_rest_pose_hold.py (bare arm + full scene) | the B601-RS holds its rest pose for 5 s in both assemblies: worst error 0.0423 rad, joint2/joint3 inside their official ranges, wrist 0.487 m above the mount, no body below the mount plane |
+| HOLD_run_standalone.json / HOLD_run_scene.json | same harness, per-mode output | the raw per-mode runs that HOLD_rest_pose.json merges (joint names/indices, default_joint_pos, targets, velocities, limits, drive gains, checkpoints) |
+| HOLD_curve_standalone.csv / HOLD_curve_scene.csv | same harness --curve | 60 Hz joint-angle curve over the full 5 s (301 rows) |
+
+Regenerate the hold evidence with:
+
+```bash
+ssh dgut@172.31.68.251 bash /home/T7/dgut/robot_sim/run_hold_f1.sh   # writes migration_check/hold_f1/
+python tools/merge_hold_evidence.py                                # after copying the two run_*.json here
+```
+
+VERIFY_scene_load.json is the **pre-fix** record of the F1 defect (rest_error_rad, all_within_limits:
+false) and is kept on purpose; do not read it as a current result.
+
+Regenerate the conversion/USD evidence (host jxxy = dgut@172.31.68.251):
 
 ```bash
 ssh dgut@172.31.68.251 bash /home/T7/dgut/robot_sim/run_verify_rs.sh

@@ -135,23 +135,64 @@ Modified:
 | Limits as the simulator sees them | +-2.8, [0,3.14], [0,3.14], +-1.57, +-1.57, +-3.14 rad; fingers [0,0.05], [0,0.0715] m | VERIFY_usd_load.json |
 | Masses | per-link equal to the URDF; **total 6.008504 kg** (= URDF 6.0085) | VERIFY_usd_load.json |
 | Joint motion | joint1 +0.100 rad, joint2 +0.0868 rad over 240 steps, finite, all within limits | VERIFY_usd_load.json |
+| **Rest-pose hold, 5 s, bare arm** | **held: worst error 0.0423 rad; joint3 in 0.945..1.000 rad; wrist 0.487 m above mount; nothing below the mount plane** | HOLD_rest_pose.json / HOLD_curve_standalone.csv |
+| **Rest-pose hold, 5 s, full scene** | **held: identical to the bare arm (0.0423 rad)** | HOLD_rest_pose.json / HOLD_curve_scene.csv |
 | Scene assembly | prim {ENV_REGEX_NS}/Robot/RebotB601RS, base at (-1.6, 0, 0.3), 9 bodies / 8 joints, 35 robot meshes, shuttle absent | VERIFY_scene_load.json |
 | Rest-pose geometry | 8 candidate poses measured; chosen joint2=0.3, joint3=1.0 keeps every link above the base plane, link6 0.497 m above the mount | rest_pose_probe.json |
 | Local test suite | **1,666 passed, 13 skipped**; 4 pre-existing failures in tests/tools/test_usd_glb_common.py (need pxr; files unmodified by this work, git status clean) | pytest tests -q |
 | B601-RS package | **30 passed** | pytest tests/simulation/rebot_b601_rs -q |
 
-**Open defect (not hidden).** In the assembled scene the rest pose does not hold: over 60 steps joint3
-drifts from +1.0 rad to -0.067 rad, i.e. **below its own lower limit of 0**, and link6 ends at
-z = 0.108 m instead of about 0.80 m. Raising the implicit drive stiffness from 100 to 5000 changed the
-result by less than 3 mrad, which points at the drives/limits not being applied rather than at a gain
-choice. Recorded in VERIFY_scene_load.json (rest_error_rad, all_within_limits: false).
+### F1 - scene rest-pose hold: FIXED (2026-10, second pass)
+
+The defect recorded here earlier (joint3 falling from +1.0 rad to -0.067 rad, i.e. below its lower
+limit, with link6 0.19 m below the mount) is resolved. VERIFY_scene_load.json is kept as the
+**pre-fix** evidence of the failure; the acceptance evidence is HOLD_rest_pose.json.
+
+Isolation matrix (each row is a real run on the GPU host, 1200 steps = 5 s at 240 Hz):
+
+| Assembly | Drives | Result |
+| --- | --- | --- |
+| manual Articulation, /World/Robot | runtime k=400 c=10 | **holds, 0.0103 rad** |
+| manual Articulation, /World/envs/env_0/Robot/RebotB601RS | runtime k=400 c=10 | **holds, 0.0103 rad** |
+| InteractiveScene, robot only | runtime k=400 c=10 | 1.2867 rad |
+| InteractiveScene, robot only, replicate_physics=False | runtime k=400 c=10 | 1.2867 rad |
+| InteractiveScene + scene.reset() | runtime k=400 c=10 | 1.7217 rad |
+| InteractiveScene, spawn props removed | runtime k=400 c=10 | 1.7217 rad |
+| InteractiveScene, flattened self-contained USD | runtime k=400 c=10 | 1.2867 rad |
+| InteractiveScene, k swept 100 / 200 / 400 / 800 | runtime | 1.42 / 2.89 / 1.84 / 2.74 rad |
+| InteractiveScene, gravity disabled via rigid_props | runtime | identical to gravity on |
+| InteractiveScene, three different write/update paths | runtime | identical, 1.2867 rad |
+
+Reading: inside an InteractiveScene the arm's outcome is **invariant to gain, target, spawn props,
+replication, reset, asset flattening and stepping path** (identical to five decimals in every case),
+i.e. the joints receive no drive torque at all and the chain is passive; the same asset bound as a
+plain Articulation tracks the command to 1e-2 rad. Supporting facts: the live stage carries 8 drive
+stiffness attributes and exactly one articulation root (/World/envs/env_0/Robot/RebotB601RS/Geometry);
+asset drive gains are authored divided by 57.2958 (stiffness 1.745 for a requested 100) with
+targetPosition 0, and IsaacLab runtime writes (write_joint_stiffness_to_sim, set_joint_position_target,
+_initialize_impl) do not change the scene's outcome.
+
+Fix (minimal, verified): the formal arm is spawned and bound directly instead of being registered in
+InteractiveScene (simulation/badminton_scene/robot_cfg.py spawn_rebot_rs_directly + scene_cfg.py), with
+two details that cost a run each to find:
+
+* the mount pose must be passed as the spawn translation - writing it afterwards with
+  write_root_pose_to_sim detaches the fixed base and the whole robot falls through the ground
+  (measured: lowest body -0.28 m and -0.55 m on the two failed attempts);
+* step_env() writes and refreshes these direct articulations, since they are not part of the scene.
+
+Result (HOLD_rest_pose.json): bare arm and full scene both hold for 5 s with a worst error of
+0.0423 rad, joint2/joint3 stay inside their official ranges (joint3 in 0.945..1.000 rad), the wrist
+stays 0.482..0.497 m above the mount and no body ever goes below the mount plane.
+
+Caveats that stay open: direct spawn supports num_envs == 1 only (scene_cfg raises otherwise), and the
+underlying drive-binding defect inside InteractiveScene is worked around, not explained upstream.
 
 ## F. 剩余工作 (open items)
 
-1. **Scene rest-pose hold (blocks any scene/HUD evidence).** Isolate why the command does not track:
-   compare robot.data.default_joint_pos against init_state.joint_pos, inspect the USD drive attributes
-   on link2/link3, and check whether the PhysX joint limits are hard. Until fixed, no screenshot or
-   capability number may come from the B601-RS scene.
+1. ~~**Scene rest-pose hold.**~~ **Closed 2026-10 (see E/F1).** Remaining follow-up: the drive-binding
+   defect inside InteractiveScene is worked around by a direct spawn; solving it upstream would restore
+   vectorised (num_envs > 1) use of the converted arm.
 2. **Joint speed limit.** Obtain the official RobStride RS00/RS06 output speed. Until then
    joint_velocity(..., require_real=True) raises and the 50/40 values stay OFFICIAL_URDF.
 3. **Racket adapter.** configs/racket.yaml keeps mount_transform.status = REQUIRES_MEASUREMENT with null
