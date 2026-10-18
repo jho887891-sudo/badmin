@@ -1,0 +1,113 @@
+{
+  "arm_model": "rebot_b601_rs",
+  "prim_path": "{ENV_REGEX_NS}/Robot/RebotB601RS",
+  "usd_path": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+  "init_joint_pos": {
+    "joint1": 0.0,
+    "joint2": 0.3,
+    "joint3": 1.0,
+    "joint4": 0.0,
+    "joint5": 0.0,
+    "joint6": 0.0
+  },
+  "shuttle_is_none": true,
+  "num_bodies": 9,
+  "num_joints": 8,
+  "body_names": [
+    "base_link",
+    "link1",
+    "link2",
+    "link3",
+    "link4",
+    "link5",
+    "link6",
+    "gripper_left",
+    "gripper_right"
+  ],
+  "joint_names": [
+    "joint1",
+    "joint2",
+    "joint3",
+    "joint4",
+    "joint5",
+    "joint6",
+    "gripper_joint1",
+    "gripper_joint2"
+  ],
+  "ee_rest_world_pos": [
+    -1.45513,
+    -8e-05,
+    0.10297
+  ],
+  "base_rest_world_pos": [
+    -1.6,
+    0.0,
+    0.3
+  ],
+  "ee_rest_world_z": 0.10297,
+  "steps": 60,
+  "joint_limits": {
+    "joint1": [
+      -2.799999952316284,
+      2.799999952316284
+    ],
+    "joint2": [
+      0.0,
+      3.140000104904175
+    ],
+    "joint3": [
+      0.0,
+      3.140000104904175
+    ],
+    "joint4": [
+      -1.5700000524520874,
+      1.5700000524520874
+    ],
+    "joint5": [
+      -1.5700000524520874,
+      1.5700000524520874
+    ],
+    "joint6": [
+      -3.140000104904175,
+      3.140000104904175
+    ],
+    "gripper_joint1": [
+      0.0,
+      0.05000000074505806
+    ],
+    "gripper_joint2": [
+      0.0,
+      0.07150000333786011
+    ]
+  },
+  "rest_error_rad": [
+    0.00213,
+    0.02721,
+    1.06675,
+    -0.26763,
+    0.0,
+    0.0,
+    -0.0,
+    0.0
+  ],
+  "all_within_limits": false,
+  "finite_after_steps": true,
+  "joint_pos_after": [
+    -0.00213,
+    0.27279,
+    -0.06675,
+    0.26763,
+    -0.0,
+    -0.0,
+    0.0,
+    -0.0
+  ],
+  "ee_after_world_pos": [
+    -1.44488,
+    -0.00033,
+    0.10763
+  ],
+  "scene_mesh_prims": 35,
+  "robot_mesh_prims": 35,
+  "court_mesh_prims": 0
+}

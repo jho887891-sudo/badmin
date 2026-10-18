@@ -1,0 +1,213 @@
+{
+  "candidates": [
+    {
+      "q": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ee_link6_z": 0.2177,
+      "min_link_z": 0.0,
+      "max_link_z": 0.2657,
+      "links_below_base": [],
+      "per_link_z": {
+        "base_link": 0.0,
+        "link1": 0.075,
+        "link2": 0.145,
+        "link3": 0.145,
+        "link4": 0.2177,
+        "link5": 0.2657,
+        "link6": 0.2177,
+        "gripper_left": 0.2177,
+        "gripper_right": 0.2177
+      }
+    },
+    {
+      "q": [
+        0.0,
+        0.3,
+        0.6,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ee_link6_z": 0.3881,
+      "min_link_z": 0.0,
+      "max_link_z": 0.4248,
+      "links_below_base": [],
+      "per_link_z": {
+        "base_link": 0.0,
+        "link1": 0.075,
+        "link2": 0.145,
+        "link3": 0.2147,
+        "link4": 0.3516,
+        "link5": 0.4232,
+        "link6": 0.3881,
+        "gripper_left": 0.4248,
+        "gripper_right": 0.4248
+      }
+    },
+    {
+      "q": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ee_link6_z": 0.4968,
+      "min_link_z": 0.0,
+      "max_link_z": 0.5769,
+      "links_below_base": [],
+      "per_link_z": {
+        "base_link": 0.0,
+        "link1": 0.075,
+        "link2": 0.145,
+        "link3": 0.2147,
+        "link4": 0.4173,
+        "link5": 0.51,
+        "link6": 0.4968,
+        "gripper_left": 0.5769,
+        "gripper_right": 0.5769
+      }
+    },
+    {
+      "q": [
+        0.0,
+        0.6,
+        0.6,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ee_link6_z": 0.351,
+      "min_link_z": 0.0,
+      "max_link_z": 0.399,
+      "links_below_base": [],
+      "per_link_z": {
+        "base_link": 0.0,
+        "link1": 0.075,
+        "link2": 0.145,
+        "link3": 0.2783,
+        "link4": 0.351,
+        "link5": 0.399,
+        "link6": 0.351,
+        "gripper_left": 0.351,
+        "gripper_right": 0.351
+      }
+    },
+    {
+      "q": [
+        0.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ee_link6_z": 0.4163,
+      "min_link_z": 0.0,
+      "max_link_z": 0.4643,
+      "links_below_base": [],
+      "per_link_z": {
+        "base_link": 0.0,
+        "link1": 0.075,
+        "link2": 0.145,
+        "link3": 0.3436,
+        "link4": 0.4163,
+        "link5": 0.4643,
+        "link6": 0.4163,
+        "gripper_left": 0.4163,
+        "gripper_right": 0.4163
+      }
+    },
+    {
+      "q": [
+        0.0,
+        1.2,
+        1.2,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ee_link6_z": 0.4377,
+      "min_link_z": 0.0,
+      "max_link_z": 0.4857,
+      "links_below_base": [],
+      "per_link_z": {
+        "base_link": 0.0,
+        "link1": 0.075,
+        "link2": 0.145,
+        "link3": 0.365,
+        "link4": 0.4377,
+        "link5": 0.4857,
+        "link6": 0.4377,
+        "gripper_left": 0.4377,
+        "gripper_right": 0.4377
+      }
+    },
+    {
+      "q": [
+        0.0,
+        0.0,
+        1.2,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ee_link6_z": 0.499,
+      "min_link_z": 0.0,
+      "max_link_z": 0.6148,
+      "links_below_base": [],
+      "per_link_z": {
+        "base_link": 0.0,
+        "link1": 0.075,
+        "link2": 0.145,
+        "link3": 0.145,
+        "link4": 0.3839,
+        "link5": 0.4823,
+        "link6": 0.499,
+        "gripper_left": 0.6148,
+        "gripper_right": 0.6148
+      }
+    },
+    {
+      "q": [
+        0.0,
+        0.6,
+        1.8,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ee_link6_z": 0.6322,
+      "min_link_z": 0.0,
+      "max_link_z": 0.7481,
+      "links_below_base": [],
+      "per_link_z": {
+        "base_link": 0.0,
+        "link1": 0.075,
+        "link2": 0.145,
+        "link3": 0.2783,
+        "link4": 0.5171,
+        "link5": 0.6156,
+        "link6": 0.6322,
+        "gripper_left": 0.7481,
+        "gripper_right": 0.7481
+      }
+    }
+  ],
+  "best": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "criterion": "no link below the base plane, then highest min link"
+}

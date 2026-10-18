@@ -205,11 +205,21 @@ class SafetyLimits:
     def temp_proxy(cls) -> "SafetyLimits":
         """Explicitly TEMP placeholders so the shield can run in development / tests."""
         return cls(
-            joint_position_min=_temp(np.full(JOINT_COUNT, -2.6),
-                                     "PiPER-like +-2.6 rad joint range; per-joint values unknown"),
-            joint_position_max=_temp(np.full(JOINT_COUNT, 2.6),
-                                     "PiPER-like +-2.6 rad joint range; per-joint values unknown"),
-            joint_velocity_max=_temp(np.full(JOINT_COUNT, 2.0), "PiPER-like 2.0 rad/s joint speed"),
+            # Per-joint OFFICIAL reBot B601-RS ranges (URDF). A symmetric +-2.6 proxy is NOT usable
+            # on this arm: joint2 and joint3 are [0, 3.14] and joint4/joint5 are +-1.57, so a
+            # negative command on joint2 is a hardware-invalid command the shield must reject.
+            # tests/badminton_brain/test_safety_shield.py asserts these arrays track
+            # src/simulation/rebot_b601_rs/joint_limits.py so the two cannot drift apart.
+            joint_position_min=_temp(
+                np.array([-2.80, 0.00, 0.00, -1.57, -1.57, -3.14]),
+                "reBot B601-RS official URDF limit lower (OFFICIAL_URDF, not a measured unit)"),
+            joint_position_max=_temp(
+                np.array([2.80, 3.14, 3.14, 1.57, 1.57, 3.14]),
+                "reBot B601-RS official URDF limit upper (OFFICIAL_URDF, not a measured unit)"),
+            joint_velocity_max=_temp(
+                np.array([2.0, 2.0, 2.0, 2.0, 2.0, 2.0]),
+                "engineering baseline 2.0 rad/s: the URDF 50/40 values are not verified motor "
+                "speeds (same rpm-as-rad/s signature as the B601-DM asset)"),
             base_twist_axis_max=_temp(np.array([0.60, 0.60, 1.00]),
                                       "Morph One-like vx/vy 0.6 m/s, wz 1.0 rad/s"),
             base_translation_speed_max=_temp(0.60, "Morph One-like 0.6 m/s combined translation"),

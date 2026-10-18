@@ -64,6 +64,31 @@ MORPH_PLACEHOLDER = dict(
     top_z=0.25,
 )
 
+REBOT_RS = dict(
+    # Formal arm since the 2026-10 migration. Mixing these numbers with the PiPER block below is a
+    # defect: the two arms have different joint ranges, link lengths and masses.
+    source="TEMP_PARAMETERIZED_PROXY",
+    usd="/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs"
+        "/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+    # mount relative to robot_base origin (robot_base at world (-1.6,0,0))
+    mount_rel=(0.0, 0.0, 0.30),
+    mount_world=(-1.60, 0.0, 0.30),
+    # Engineering baseline rest pose INSIDE the official URDF ranges. Note the PiPER rest pose
+    # (joint2=1.5, joint3=-1.5) is NOT reachable on this arm: joint2 and joint3 are [0, 3.14] here.
+    # Chosen from geometry (outputs/simulation/rebot_b601_rs/rest_pose_probe.json): no link below
+    # the base plane, link6 sits 0.497 m above the mount.
+    rest_joint_pos={"joint1": 0.0, "joint2": 0.3, "joint3": 1.0,
+                    "joint4": 0.0, "joint5": 0.0, "joint6": 0.0},
+    # The URDF converter's own drive values, kept because they are reproducible. KNOWN DEFECT: at
+    # these gains the rest pose does NOT hold - within 60 steps joint3 drifts to -0.067 rad, i.e.
+    # below its own lower limit of 0 (outputs/simulation/rebot_b601_rs/VERIFY_scene_load.json).
+    # Raising stiffness to 5000 changed the result by less than 3 mrad, so the drives themselves,
+    # not the gain choice, are the suspect. Tracked as open item F1 in
+    # management/rebot_b601_rs/ARM_MIGRATION_RECORD.md.
+    stiffness=100.0,
+    damping=1.0,
+)
+
 PIPER = dict(
     # mount relative to robot_base origin (robot_base at world (-1.6,0,0))
     mount_rel=(0.0, 0.0, 0.30),

@@ -115,6 +115,17 @@ class Transform:
         return self.compose(other)
 
 
+def _active_arm(cfg: BadmintonRobotCfg):
+    """Return (frame_prefix, arm_cfg) for the arm the configuration actually selects.
+
+    The formal arm since the 2026-10 migration is the reBot B601-RS. The PiPER frame names remain
+    resolvable as aliases so that pre-migration records keep meaning what they meant.
+    """
+    if str(getattr(cfg, "arm_model", "rebot_b601_rs")) == "rebot_b601_rs":
+        return "rebot", cfg.rebot_rs
+    return "piper", cfg.piper
+
+
 class FrameTree:
     """Named frames with parent links; transforms resolved by composition."""
 
@@ -153,7 +164,9 @@ class FrameTree:
         if frame in self._alias_target:
             return self.get_transform(self._alias_target[frame], base)
         if base in self._alias_target:
-            return self.get_transform(frame, self._alias_target[base]).inverse()
+            # An alias denotes the SAME frame on either side of the query: substituting the target
+            # must not change the transform (inverting here used to flip the sign of every axis).
+            return self.get_transform(frame, self._alias_target[base])
         chain = list(self.path_to_root(frame))
         if base not in chain:
             base_chain = list(self.path_to_root(base))
@@ -207,15 +220,21 @@ def make_robot_frame_tree(
 ) -> FrameTree:
     """Build the chain court -> robot_base -> piper_base -> link6 -> tcp -> contact (S7 / S41)."""
     tree = FrameTree()
+    prefix, arm = _active_arm(cfg)
     tree.add("court", None, Transform.identity())
     tree.add("robot_base", "court", Transform.from_xyz_quat(base_pose_xyz_quat))
-    tree.add("piper_base", "robot_base",
-             Transform(cfg.piper.mount_translation.value, cfg.piper.mount_quaternion.value))
-    tree.add("piper_link6", "piper_base", Transform.from_xyz_quat(link6_pose_in_piper_xyz_quat))
+    tree.add(prefix + "_base", "robot_base",
+             Transform(arm.mount_translation.value, arm.mount_quaternion.value))
+    tree.add(prefix + "_link6", prefix + "_base",
+             Transform.from_xyz_quat(link6_pose_in_piper_xyz_quat))
+    if prefix == "rebot":
+        # Legacy names resolve to the SAME frame: no second copy of the truth, no silent rename.
+        tree.add_alias("piper_base", "rebot_base")
+        tree.add_alias("piper_link6", "rebot_link6")
 
     t_link6_tcp = _resolve("racket.t_link6_tcp", t_link6_tcp_xyz_quat, cfg.racket.t_link6_tcp)
     t_tcp_contact = _resolve("racket.t_tcp_contact", t_tcp_contact_xyz_quat, cfg.racket.t_tcp_contact)
-    tree.add("racket_tcp", "piper_link6", Transform.from_xyz_quat(t_link6_tcp))
+    tree.add("racket_tcp", prefix + "_link6", Transform.from_xyz_quat(t_link6_tcp))
     tree.add("racket_contact", "racket_tcp", Transform.from_xyz_quat(t_tcp_contact))
     tree.add_alias("racket_contact_frame", "racket_contact")
 
@@ -245,8 +264,9 @@ def compose_racket_contact_court(
     t_tcp_contact_xyz_quat: Optional[Tuple[Sequence[float], Sequence[float]]] = None,
 ) -> Transform:
     """T_court_contact = T_court_base . T_base_piper . T_piper_link6 . T_link6_tcp . T_tcp_contact (S41)."""
+    _, arm = _active_arm(cfg)
     return (Transform.from_xyz_quat(base_pose_xyz_quat)
-            .compose(Transform(cfg.piper.mount_translation.value, cfg.piper.mount_quaternion.value))
+            .compose(Transform(arm.mount_translation.value, arm.mount_quaternion.value))
             .compose(Transform.from_xyz_quat(link6_pose_in_piper_xyz_quat))
             .compose(Transform.from_xyz_quat(
                 _resolve("racket.t_link6_tcp", t_link6_tcp_xyz_quat, cfg.racket.t_link6_tcp)))

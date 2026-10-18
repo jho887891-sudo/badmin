@@ -1,0 +1,228 @@
+# reBot B601-RS joint limits - the FORMAL arm of this project since the 2026-10 migration.
+#
+# GENERATED from src/simulation/rebot_b601_rs/joint_limits.py; do not hand-edit.
+#
+# Every value carries provenance. OFFICIAL_URDF means: real in the official model, NOT a
+# hardware measurement, so it may not back a capability claim. CONFIRMED_REAL means an
+# official Seeed product page states it and the URDF agrees.
+#
+# This table is NOT the B601-DM table and NOT the PiPER table: different motors, different
+# joint ranges, different masses. Cross-arm copying is a defect, not a shortcut.
+
+robot: ReBot_Arm_RS
+model: 'reBot B601-RS'
+identity: formal_arm
+gripper_fingers_hardware_coupled: true
+
+spec:
+  dof: 6
+  payload_kg: 2.5
+  reach_m: 0.754
+  weight_kg: 6.7
+  repeatability_mm: 0.2
+  supply_voltage_dc: 48.0
+
+asset:
+  repo: 'https://github.com/Seeed-Projects/reBot-DevArm'
+  commit: 'f01a1dc189ecb74b5435a336a68b287c146c1b60'
+  urdf: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf'
+  urdf_sha256: '3838ca8f9d586be22a89b33c7cbdd4abd43d4a92a2de377b294eef4c5bd7654d'
+  csv_sha256: '5b921c678f5c003869a9b410ad866fcc172f67435efc905fd32bd16e9434d959'
+  license: 'Seeed reBot-DevArm repository LICENSE'
+  remote_dir: '/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs'
+
+motors:
+  RS00:
+    model: 'RobStride RS00'
+    peak_torque_nm: 14.0
+    reduction_ratio: 10
+    provenance: CONFIRMED_REAL
+    source: 'https://www.seeedstudio.com/Robostride-00-Actuator-p-6664.html (14 N.m, 10:1)'
+  RS06:
+    model: 'RobStride RS06'
+    peak_torque_nm: 36.0
+    reduction_ratio: 9
+    provenance: CONFIRMED_REAL
+    source: 'https://www.seeedstudio.com/Robostride-06-Actuator-p-6668.html (36 N.m, 9:1, 621 g)'
+
+link_masses_kg:
+  base_link: 1.1774
+  link1: 0.4655
+  link2: 1.552
+  link3: 1.252
+  link4: 0.46
+  link5: 0.2012
+  link6: 0.1
+  gripper_end: 0.65
+  gripper_left: 0.0752
+  gripper_right: 0.0752
+
+joints:
+  joint1:
+    kind: revolute
+    motor: RS06
+    urdf_velocity: 50.0
+    urdf_effort: 36.0
+    angle:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>'
+      lower: -2.8
+      upper: 2.8
+    velocity:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit velocity>; rpm-vs-rad/s not resolved'
+      value: 50.0
+    torque:
+      provenance: CONFIRMED_REAL
+      usable_for_capability: true
+      source: 'https://www.seeedstudio.com/Robostride-06-Actuator-p-6668.html (36 N.m, 9:1, 621 g); URDF effort agrees'
+      value: 36.0
+  joint2:
+    kind: revolute
+    motor: RS06
+    urdf_velocity: 50.0
+    urdf_effort: 36.0
+    angle:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>'
+      lower: 0.0
+      upper: 3.14
+    velocity:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit velocity>; rpm-vs-rad/s not resolved'
+      value: 50.0
+    torque:
+      provenance: CONFIRMED_REAL
+      usable_for_capability: true
+      source: 'https://www.seeedstudio.com/Robostride-06-Actuator-p-6668.html (36 N.m, 9:1, 621 g); URDF effort agrees'
+      value: 36.0
+  joint3:
+    kind: revolute
+    motor: RS06
+    urdf_velocity: 50.0
+    urdf_effort: 36.0
+    angle:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>'
+      lower: 0.0
+      upper: 3.14
+    velocity:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit velocity>; rpm-vs-rad/s not resolved'
+      value: 50.0
+    torque:
+      provenance: CONFIRMED_REAL
+      usable_for_capability: true
+      source: 'https://www.seeedstudio.com/Robostride-06-Actuator-p-6668.html (36 N.m, 9:1, 621 g); URDF effort agrees'
+      value: 36.0
+  joint4:
+    kind: revolute
+    motor: RS00
+    urdf_velocity: 40.0
+    urdf_effort: 14.0
+    angle:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>'
+      lower: -1.57
+      upper: 1.57
+    velocity:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit velocity>; rpm-vs-rad/s not resolved'
+      value: 40.0
+    torque:
+      provenance: CONFIRMED_REAL
+      usable_for_capability: true
+      source: 'https://www.seeedstudio.com/Robostride-00-Actuator-p-6664.html (14 N.m, 10:1); URDF effort agrees'
+      value: 14.0
+  joint5:
+    kind: revolute
+    motor: RS00
+    urdf_velocity: 40.0
+    urdf_effort: 14.0
+    angle:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>'
+      lower: -1.57
+      upper: 1.57
+    velocity:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit velocity>; rpm-vs-rad/s not resolved'
+      value: 40.0
+    torque:
+      provenance: CONFIRMED_REAL
+      usable_for_capability: true
+      source: 'https://www.seeedstudio.com/Robostride-00-Actuator-p-6664.html (14 N.m, 10:1); URDF effort agrees'
+      value: 14.0
+  joint6:
+    kind: revolute
+    motor: RS00
+    urdf_velocity: 40.0
+    urdf_effort: 14.0
+    angle:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>'
+      lower: -3.14
+      upper: 3.14
+    velocity:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit velocity>; rpm-vs-rad/s not resolved'
+      value: 40.0
+    torque:
+      provenance: CONFIRMED_REAL
+      usable_for_capability: true
+      source: 'https://www.seeedstudio.com/Robostride-00-Actuator-p-6664.html (14 N.m, 10:1); URDF effort agrees'
+      value: 14.0
+  gripper_joint1:
+    kind: prismatic
+    motor: RS00
+    urdf_velocity: 10.0
+    urdf_effort: 500.0
+    angle:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>'
+      lower: 0.0
+      upper: 0.05
+    velocity:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>'
+      value: 10.0
+    torque:
+      provenance: UNKNOWN
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>; effort is newtons of finger force, no motor torque stated'
+      value: 500.0
+  gripper_joint2:
+    kind: prismatic
+    motor: COUPLED
+    urdf_velocity: 10.0
+    urdf_effort: 500.0
+    angle:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>'
+      lower: 0.0
+      upper: 0.0715
+    velocity:
+      provenance: OFFICIAL_URDF
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>'
+      value: 10.0
+    torque:
+      provenance: UNKNOWN
+      usable_for_capability: false
+      source: 'reBot-DevArm/Rebot_Arm_description/RS/urdf/ReBot_Arm_RS.urdf <limit lower/upper>; effort is newtons of finger force, no motor torque stated'
+      value: 500.0

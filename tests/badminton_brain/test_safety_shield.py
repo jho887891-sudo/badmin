@@ -618,7 +618,10 @@ class ScanTests(unittest.TestCase):
         dq = np.asarray(limits.joint_velocity_max.value, dtype=float)
         vmax = np.asarray(limits.base_twist_axis_max.value, dtype=float)
         v_speed = float(limits.base_translation_speed_max.value)
-        ref = 0.5 * (lo + hi) * rng.uniform(-0.5, 0.5, size=(N, 6))
+        # The state must be a LEGAL state. The old symmetric 0.5*(lo+hi)*u(-0.5,0.5) sampling put
+        # joints outside the limits on the B601-RS arm, whose joint2/joint3 are [0, 3.14]: the shield
+        # then had to clamp AND stay inside the velocity budget at once, which is impossible.
+        ref = lo + (hi - lo) * rng.uniform(0.25, 0.75, size=(N, 6))
         pose = pose_in_box(limits)
         for step in range(200):
             joints = rng.uniform(-20.0, 20.0, size=(N, 6))
