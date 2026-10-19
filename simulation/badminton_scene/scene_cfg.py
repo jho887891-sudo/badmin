@@ -19,6 +19,7 @@ from .scene_layout import (CAMERA, PIPER, MORPH_PLACEHOLDER,
 from .robot_cfg import (ARM_MODEL, MORPH, ROBOT_ARTICULATION_CFG,
                         spawn_rebot_rs_directly)
 from .assembly_route import resolve_scene_arm_route
+from .rs_physics import rebot_rs_simulation_cfg
 from .shuttle_cfg import SHUTTLE_CFG
 
 SIM_DT = SIMULATION["physics_dt"]
@@ -129,7 +130,10 @@ def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_ax
     # Isaac Sim: see tests/simulation/rebot_b601_rs/test_scene_arm_route.py.
     _direct_arm = resolve_scene_arm_route(
         include_robot=include_robot, arm_model=ARM_MODEL, num_envs=num_envs) == "direct"
-    sim = sim_utils.SimulationContext(sim_utils.SimulationCfg(dt=SIM_DT, device="cuda:0"))
+    # Only the formal B601-RS path opts into the TGS velocity-consistency fix.
+    _sim_cfg = (rebot_rs_simulation_cfg(dt=SIM_DT) if _direct_arm
+                else sim_utils.SimulationCfg(dt=SIM_DT, device="cuda:0"))
+    sim = sim_utils.SimulationContext(_sim_cfg)
     if _direct_arm:
         _mount = REBOT_RS["mount_world"]
         _origin0 = SIMULATION["env_spacing"] * 0.0  # env_0 origin x offset is 0; see env_origin helper
