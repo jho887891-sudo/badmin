@@ -14,6 +14,7 @@ WHAT THIS MODULE IS, AND IS NOT
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Dict, Tuple
 
 #: Wheel module vocabulary, in the order the project already uses (FL, FR, RL, RR).
@@ -52,10 +53,20 @@ class ChassisParameter:
         }
         if self.status not in allowed:
             raise ValueError("unknown status for " + self.name + ": " + str(self.status))
-        if self.status == ChassisParameterStatus.REQUIRES_MEASUREMENT and self.value is not None:
-            raise ValueError(self.name + " carries a value but is REQUIRES_MEASUREMENT")
-        if self.status == ChassisParameterStatus.VERIFIED_MEASURED and not self.source:
-            raise ValueError(self.name + " claims VERIFIED_MEASURED without a source")
+        if self.status == ChassisParameterStatus.REQUIRES_MEASUREMENT:
+            if self.value is not None:
+                raise ValueError(self.name + " carries a value but is REQUIRES_MEASUREMENT")
+        else:
+            # A `VERIFIED_MEASURED` claim without a number is self-contradictory.
+            # TEMP proxies likewise must contain the actual number being used.
+            if self.value is None:
+                raise ValueError(self.name + " claims " + self.status + " without a value")
+            if not isinstance(self.value, (float, int)) or not math.isfinite(float(self.value)):
+                raise ValueError(self.name + " must be a finite numeric value")
+            if (self.name.endswith("_m") or self.name.endswith("_kg")) and self.value <= 0:
+                raise ValueError(self.name + " physical dimension/mass must be > 0")
+        if not str(self.unit).strip():
+            raise ValueError(self.name + " requires a physical unit")
         if not str(self.source).strip():
             raise ValueError(self.name + " needs a source string")
 

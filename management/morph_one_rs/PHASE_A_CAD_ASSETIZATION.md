@@ -1,6 +1,6 @@
 # Phase A - Morph One CAD assetization (facts, classification policy, blockers)
 
-Status: **文件与结构已核实；几何导出与零件分类阻塞**（本机无 CAD 内核，Isaac Sim 的 CAD 转换器无脚本 API）。
+Status: **文件与结构已核实；几何导出与零件分类尚未完成**（当前环境未找到 CAD 内核/CLI，CAD Converter 的 headless/service 路径尚未实测）。
 因此本阶段**没有**产出 USD 几何、**没有**任何零件被标记为官方确认，四个转向/车轮模块**未识别**。
 
 ## 1. 文件核验（实际执行）
@@ -63,9 +63,9 @@ Status: **文件与结构已核实；几何导出与零件分类阻塞**（本�
 
 判定规则（本轮自定义，写入脚本可复现）：某坐标超出 `p0.1%` / `p99.9%` 区间再各放宽 50% 跨度，即视为异常。
 
-* 命中 **469 个点**（占 0.065%），其坐标量级在 **±250 m ~ ±500 m**（例：(-353753.64, 305969.28, 177089.32)）。
-* 这些点属于明显非机械几何（CAD 导出残渣/构造几何），**必须从任何 PhysX 导入中排除**；
-  因为无法逐实体归因（无内核、无名称），本轮只能给出**点级**排除清单，不能给出实体级排除清单。
+* 百分位扩张规则标记 **469 个候选离群点**（占 0.065%），但不是全部位于数百米之外：原始样本中含 y=243.76 mm 的点。该规则只是统计筛选，**不可直接当作无效几何的判据**。
+* 同时确实存在数十至数百米量级的极端坐标（例如 (-353753.64, 305969.28, 177089.32) mm）。在载入前须定位这些点关联的 BREP、边/面和用途；只有核实为无效几何才排除对应实体。不得直接删除点或裁剪 STEP 拓扑，以免损坏 BREP 闭合性。
+* 当前缺少实体级归因，仅有点级统计和样本，**尚无安全的实体剔除清单**。
 * 中央 99.8% 盒体 575.1 × 351.0 × 784.1 mm：Z 向 784 mm 明显高于“底盘”量级，提示该文件可能含
   桅杆/立柱或非底盘零件 —— 这也正是**不能按外形猜分类**的理由。
 
@@ -90,17 +90,18 @@ Status: **文件与结构已核实；几何导出与零件分类阻塞**（本�
 | 本机 Python CAD 内核（OCP / OCC / cadquery / FreeCAD / gmsh） | 全部缺失（importlib 检查） |
 | CLI 工具（FreeCADCmd / gmsh / assimp / meshlabserver / openscad） | 全部缺失 |
 | trimesh | 已安装，但**不能读 STEP** |
-| Isaac Sim `omni.kit.converter.cad-209.4.0` | 扩展存在且声明支持 Step/Iges，但 `find -name '*.py'` 为空 → 纯编译二进制、无脚本 API，只能走 UI，本轮无法在预算内脚本化 |
+| Isaac Sim `omni.kit.converter.cad-209.4.0` | 扩展存在且支持 CAD 导入；搜索 `.py` 未发现脚本，但**不能据此证明无 API**。NVIDIA 文档提供 `omni.services.convert.cad` 的 Kit CLI 批处理方式，当前主机是否安装 service/core 扩展、支持该 STEP 以及是否存在运行许可证/内存约束，均未实测。 |
 
 因此**连“静态 Visual CAD”也无法交付**：静态可视化同样需要三角化。按任务规则，这一条属于
 “不可证明即停止”的范畴，所以我停在这里，没有伪造任何几何或关节。
 
 ## 6. 解除阻塞的最小条件（下一步）
 
-1. 在 GPU 主机安装 `pythonocc-core`（OCP）或 FreeCAD CLI（任一即可）；或
-2. 用 Isaac Sim 的 CAD Converter UI 人工导入一次并保存 USD（需人在场，本轮不可行）。
+1. **优先排查已安装的 NVIDIA CAD Converter headless 路径**：检查 `omni.services.convert.cad`、`omni.kit.converter.hoops_core` 和 Kit CLI 是否可用，阅读当前版本 extension.toml，使用小型非敏感 STEP 输入作 smoke test，再尝试本文件；不能因 GUI 扩展目录缺少 .py 就否定服务接口。官方说明：https://docs.omniverse.nvidia.com/kit/docs/omni.services.convert.cad/latest/Usage.html
+2. 如果服务扩展缺失或 STEP 转换确实失败，再评估经许可的 FreeCAD CLI / OCP 安装路径，或人工从 CAD Converter UI 导出一次 USD。
+3. 成功转换后保存逐实体网格、拓扑/轴向/单位/包围盒的可复核记录，然后人工复核轮、转向轴及安装支架分类。
 
 拿到逐实体网格后，分类算法（可复现）：按 entity → 网格包围盒 + 惯性主轴 + 圆柱面半径聚类；
 四轮模块判据 = 存在两条以上同半径圆柱面且轴线近似平行于底盘 Y 轴、包围盒近似圆柱；
-再把 469 个离群点所在实体整体剔除（届时可做实体级排除）。**在这些证据出现之前，Phase B/C 的
+再针对确证为无效的极端几何进行**实体级**隔离，保留候选列表、原因和原始 STEP 不变；469 个统计候选不应机械地全部删除。**在这些证据出现之前，Phase B/C 的
 “基于已识别几何建立关节”无法成立**，详见 PHASE_BCD_BLOCKERS_AND_DESIGN.md。

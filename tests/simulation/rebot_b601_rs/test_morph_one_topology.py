@@ -81,3 +81,23 @@ def test_required_frames_are_declared_so_transforms_cannot_be_invented():
     for frame in ("chassis_base", "fl_wheel_center", "rr_wheel_center", "arm_mount"):
         assert frame in mc.REQUIRED_FRAMES
     assert len(mc.REQUIRED_FRAMES) == len(set(mc.REQUIRED_FRAMES))
+
+
+@pytest.mark.parametrize("status,value", [
+    (mc.ChassisParameterStatus.VERIFIED_MEASURED, None),
+    (mc.ChassisParameterStatus.TEMP_PARAMETERIZED_PROXY, None),
+    (mc.ChassisParameterStatus.TEMP_PARAMETERIZED_PROXY, float("nan")),
+    (mc.ChassisParameterStatus.VERIFIED_MEASURED, float("inf")),
+    (mc.ChassisParameterStatus.VERIFIED_MEASURED, -0.1),
+    (mc.ChassisParameterStatus.TEMP_PARAMETERIZED_PROXY, 0.0),
+])
+def test_parameter_cannot_claim_numeric_fidelity_without_finite_positive_measurement(status, value):
+    with pytest.raises(ValueError):
+        mc.ChassisParameter("wheel_radius_m", value, "m", status, "explicit source")
+
+
+def test_parameter_must_have_unit_and_source():
+    with pytest.raises(ValueError):
+        mc.ChassisParameter("wheel_radius_m", 0.1, "", mc.ChassisParameterStatus.VERIFIED_MEASURED, "test")
+    with pytest.raises(ValueError):
+        mc.ChassisParameter("wheel_radius_m", 0.1, "m", mc.ChassisParameterStatus.VERIFIED_MEASURED, "")
