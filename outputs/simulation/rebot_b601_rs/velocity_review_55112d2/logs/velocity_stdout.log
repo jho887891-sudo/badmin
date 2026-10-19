@@ -1,0 +1,36 @@
+=== context ===
+host: jxxy  date: 2026-10-19T09:27:03+00:00
+target_commit: 55112d26e1e3e830254702a77b5972eae8a920b1
+target_tree:   ea9a25547284c313f3ed91ac467e973dd3a9ab1d
+python: 3.12.13
+NVIDIA RTX A6000, 580.178.04, 49140 MiB, 24837 MiB
+isaaclab_physx: /home/T7/ojh/robot_sim/IsaacLab/source/isaaclab_physx
+=== module provenance ===
+badminton_scene: /home/T7/dgut/runs/review-55112d2/simulation/badminton_scene/__init__.py
+multienv_arm   : /home/T7/dgut/runs/review-55112d2/simulation/badminton_scene/multienv_arm.py
+scene_layout   : /home/T7/dgut/runs/review-55112d2/simulation/badminton_scene/scene_layout.py
+gains          : 300.0 20.0
+### A_tgs_extoff_240
+exit=0 seconds=181 log=/home/T7/dgut/runs/review-55112d2_runlogs/A_tgs_extoff_240.log
+### B_tgs_exton_240
+exit=0 seconds=51 log=/home/T7/dgut/runs/review-55112d2_runlogs/B_tgs_exton_240.log
+### C_tgs_exton_mv2_240
+exit=0 seconds=37 log=/home/T7/dgut/runs/review-55112d2_runlogs/C_tgs_exton_mv2_240.log
+### D_pgs_240
+exit=0 seconds=48 log=/home/T7/dgut/runs/review-55112d2_runlogs/D_pgs_240.log
+### E_tgs_extoff_zerog_240
+exit=0 seconds=35 log=/home/T7/dgut/runs/review-55112d2_runlogs/E_tgs_extoff_zerog_240.log
+### A2_tgs_extoff_480
+exit=0 seconds=45 log=/home/T7/dgut/runs/review-55112d2_runlogs/A2_tgs_extoff_480.log
+### B2_tgs_exton_480
+exit=0 seconds=44 log=/home/T7/dgut/runs/review-55112d2_runlogs/B2_tgs_exton_480.log
+=== summary table ===
+run                        solver  ext    minvel          mean_v     integral  measured_dq  integral-dq
+A_tgs_extoff_240           tgs     off    None          0.067574     0.134867     0.000000     0.134867
+A_tgs_extoff_480           tgs     off    None          0.036709     0.073341     0.000000     0.073341
+B_tgs_exton_240            tgs     on     None         -0.000072    -0.000143     0.000000    -0.000143
+B_tgs_exton_480            tgs     on     None         -0.000156    -0.000311     0.000000    -0.000311
+C_tgs_exton_mv2_240        tgs     on     2            -0.000072    -0.000143     0.000000    -0.000143
+D_pgs_240                  pgs     default None         -0.000002    -0.000004     0.000000    -0.000004
+E_tgs_extoff_zerog_240     tgs     off    None          0.000000     0.000000     0.000000     0.000000
+=== END ===

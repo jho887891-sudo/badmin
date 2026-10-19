@@ -1,0 +1,15 @@
+### G3_step_A_tgs_extoff_240
+exit=0 seconds=43 log=/home/T7/dgut/runs/review-55112d2_runlogs/G3_step_A_tgs_extoff_240.log
+### G3_step_B_tgs_exton_240
+exit=0 seconds=41 log=/home/T7/dgut/runs/review-55112d2_runlogs/G3_step_B_tgs_exton_240.log
+### G3_step_C_tgs_exton_mv2_240
+exit=0 seconds=43 log=/home/T7/dgut/runs/review-55112d2_runlogs/G3_step_C_tgs_exton_mv2_240.log
+### G3_step_B_tgs_exton_480
+exit=0 seconds=53 log=/home/T7/dgut/runs/review-55112d2_runlogs/G3_step_B_tgs_exton_480.log
+=== group 3 summary ===
+run                            mode  ext   minvel           dt     mean_v     integral  measured_dq  integral-dq
+G3_step_A_tgs_extoff_240       step  off   None       0.004167    0.06535   0.128416    -0.001151     0.129567
+G3_step_B_tgs_exton_240        step  on    None       0.004167   -0.00010  -0.002203    -0.001151    -0.001052
+G3_step_B_tgs_exton_480        step  on    None       0.002083   -0.00005  -0.000694    -0.000323    -0.000371
+G3_step_C_tgs_exton_mv2_240    step  on    2          0.004167   -0.00010  -0.002203    -0.001151    -0.001052
+=== END G3 ===

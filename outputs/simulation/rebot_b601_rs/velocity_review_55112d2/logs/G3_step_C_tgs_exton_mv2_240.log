@@ -1,0 +1,37 @@
+The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792402710.842139  225070 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792402710.842828  225070 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+[ISAACLAB] AppLauncher initialization complete
+[INFO]: Registered backend 'physx' for factory Articulation.
+[INFO]: Simulation parameters for joints in /World/envs/env_0/Robot/RebotB601RS:
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                            Simulation Joint Information (Prim path: /World/envs/env_0/Robot/RebotB601RS)                                            |
++-------+----------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+| Index | Name           | Stiffness | Damping | Armature | Static Friction | Dynamic Friction | Viscous Friction | Position Limits | Velocity Limits | Effort Limits |
++-------+----------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+|   0   | joint1         |  300.000  |  20.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-2.800, 2.800] |      50.000     |     36.000    |
+|   1   | joint2         |  300.000  |  20.000 |  0.000   |      0.000      |      0.000       |      0.000       |  [0.000, 3.140] |      50.000     |     36.000    |
+|   2   | joint3         |  300.000  |  20.000 |  0.000   |      0.000      |      0.000       |      0.000       |  [0.000, 3.140] |      50.000     |     36.000    |
+|   3   | joint4         |  300.000  |  20.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-1.570, 1.570] |      40.000     |     14.000    |
+|   4   | joint5         |  300.000  |  20.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-1.570, 1.570] |      40.000     |     14.000    |
+|   5   | joint6         |  300.000  |  20.000 |  0.000   |      0.000      |      0.000       |      0.000       | [-3.140, 3.140] |      40.000     |     14.000    |
+|   6   | gripper_joint1 |  300.000  |  20.000 |  0.000   |      0.000      |      0.000       |      0.000       |  [0.000, 0.050] |     572.958     |    500.000    |
+|   7   | gripper_joint2 |  300.000  |  20.000 |  0.000   |      0.000      |      0.000       |      0.000       |  [0.000, 0.072] |     572.958     |    500.000    |
++-------+----------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
+/home/T7/dgut/runs/review-55112d2/scripts/simulation/probe_rs_velocity_channels.py:122: DeprecationWarning: The function 'write_joint_state_to_sim' will be deprecated in a future release. Please use 'write_joint_position_to_sim_index' and 'write_joint_velocity_to_sim_index' instead.
+  robot.write_joint_state_to_sim(rest, torch.zeros_like(rest))
+/home/T7/dgut/runs/review-55112d2/scripts/simulation/probe_rs_velocity_channels.py:123: DeprecationWarning: The function 'set_joint_position_target' will be deprecated in a future release. Please use 'set_joint_position_target_index' instead.
+  robot.set_joint_position_target(rest)
+/home/T7/dgut/runs/review-55112d2/scripts/simulation/probe_rs_velocity_channels.py:162: DeprecationWarning: The function 'set_joint_position_target' will be deprecated in a future release. Please use 'set_joint_position_target_index' instead.
+  robot.set_joint_position_target(active)
+/home/T7/dgut/runs/review-55112d2/scripts/simulation/probe_rs_velocity_channels.py:134: DeprecationWarning: The `root_physx_view` property will be deprecated in a future release. Please use `root_view` instead.
+  view = robot.root_physx_view
+/home/T7/dgut/runs/review-55112d2/scripts/simulation/probe_rs_velocity_channels.py:165: DeprecationWarning: The function 'set_joint_position_target' will be deprecated in a future release. Please use 'set_joint_position_target_index' instead.
+  robot.set_joint_position_target(active)
+REVIEW_VELOCITY_PROBE {"out": "/home/T7/dgut/runs/review-55112d2/outputs/simulation/rebot_b601_rs/velocity_55112d2/G3_step_C_tgs_exton_mv2_240.json", "mode": "step", "gravity_off": false, "dt": 0.004166666666666667, "solver_config": {"solver": "tgs", "external_forces_every_iteration": "on", "min_velocity_iterations": 2, "physics_kwargs": {"solver_type": 1, "enable_external_forces_every_iteration": true, "min_velocity_iteration_count": 2, "max_velocity_iteration_count": 4}}, "summary": {"joint": "joint2", "q_start": 0.2874269485473633, "q_end": 0.2862755060195923, "measured_delta": -0.001151442527770996, "integrated_physx_velocity": -0.0022032008337343235, "integral_minus_position": -0.0010517583059633275, "mean_physx_velocity": -9.794996516726921e-05, "min_physx_velocity": -1.005651593208313, "max_physx_velocity": 1.0002106428146362, "max_abs_position_step": 0.004180282354354858, "max_abs_lab_physx_q_difference": 0.0, "max_abs_lab_physx_qd_difference": 0.0}}
+Loading user config located at: '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-19T09:38:23Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/T7/ojh/robot_sim/IsaacLab/source/isaaclab_visualizers' or '/home/T7/ojh/robot_sim/IsaacLab/source/isaaclab_visualizers/config'
+2026-10-19T09:38:32Z [8,832ms] [Warning] [omni.platforminfo.plugin] failed to open the default display.  Can't verify X Server version.
+2026-10-19T09:38:33Z [9,787ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+2026-10-19T09:38:49Z [26,472ms] [Warning] [usdrt.population.plugin] Last global time was not created. Did you call setEnableUsdNoticeHandling?
