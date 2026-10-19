@@ -48,14 +48,18 @@ The arm asset's base is world-fixed by construction. From the converted USD
         physics:body1 = </ReBot_Arm_RS/Geometry/base_link> # the arm base body
         localPos/Rot 0, identity
 
-So `base_link` is pinned to the arm's own root prim (the standard `--fix-base` output), which is why
-the earlier F1 work recorded that writing the root pose after the fact detaches the fixed base and the
-robot falls through the floor. Consequences, stated plainly:
+The USD contains a fixed-root joint made during `--fix-base` conversion.
+This is evidence that the **existing fixed-base asset is unsuitable for an
+untested moving-chassis assembly**. The previous F1 root-pose failure is
+consistent with the problem but is not, by itself, a solver-level proof
+that all external fixed-constraint approaches are impossible.
+Consequences for this project:
 
 * Placing the arm on the chassis purely visually, or re-writing its root pose at runtime, **is not a
   physical mount**. Both are excluded.
-* With the current asset there is no correct way to make the arm ride a moving chassis, because a
-  PhysX articulation cannot be jointed to a body of another articulation.
+* The current static fixture was never shown to follow a moving chassis. A combined articulation is the
+  **preferred design to verify**, but alternative supported constraint assemblies should only be
+  ruled out after testing against this Isaac Sim/PhysX version.
 
 Required design (not yet built, needs a re-converted asset):
 
