@@ -42,6 +42,12 @@ report: dict = {
     "name": args.mode + "_hold_rest",
     "mode": args.mode,
     "physics_dt": DT,
+    "physics_configuration": {
+        "solver_type": 1,
+        "enable_external_forces_every_iteration": True,
+        "configured_by": "badminton_scene.rs_physics.rebot_rs_simulation_cfg",
+        "verification": "configured in code; not an independent runtime PhysX solver readback",
+    },
     "steps_total": STEPS,
     "rest_pose": REST,
     "mount_world": list(MOUNT),
