@@ -17,18 +17,16 @@ doc = {
     "assembly": "direct Articulation per env (simulation/badminton_scene/multienv_arm.py)",
     "acceptance": {"hold_seconds": 2.0, "max_hold_error_rad": 0.05,
                    "climb_order": [2, 4, 16, 32, 64, 128]},
-    "known_issues": {
-        "velocity_position_mismatch": {
-            "summary": ("PhysX reports a steady non-zero DOF velocity while the same DOF's position "
-                        "is constant; the reported value scales with the physics step, so the joint "
-                        "velocity channel cannot be used as dq/dt in this scene."),
-            "measured": ("joint2 at 240 Hz: data.joint_vel == physx dof velocity == 0.0676 rad/s, "
-                         "numeric dq/dt == 0.0, position delta over 40 steps == 0.0"),
-            "dt_scaling": "outputs/simulation/rebot_b601_rs/STATE_SYNC_dt_scaling.json",
-            "impact": ("control/limits use positions here; anything that differentiates or "
-                       "thresholds joint velocity must not trust this channel yet"),
-            "analysis": "management/rebot_b601_rs/MULTIENV_ASSEMBLY.md section 5",
-        }
+    # Prior run used the old TGS setting and is retained on its evidence branch.
+    # This is a positive, rerun-required gate: the current validation MUST
+    # demonstrate consistency rather than requiring the old defect to persist.
+    "physics_configuration": {
+        "arm": "B601-RS",
+        "solver_type": 1,
+        "enable_external_forces_every_iteration": True,
+        "source": "simulation/badminton_scene/rs_physics.py",
+        "evidence": "management/rebot_b601_rs/REVIEW_RUN_55112d2_VELOCITY.md",
+        "scope": "static hold only; motion not certified",
     },
     "runs": runs,
 }
