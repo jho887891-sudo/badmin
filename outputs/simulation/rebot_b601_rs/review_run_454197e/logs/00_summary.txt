@@ -1,0 +1,62 @@
+=== run context ===
+host: jxxy  date: 2026-10-19T05:05:53+00:00
+checkout: /home/T7/dgut/runs/review-454197e
+expected_commit: 454197ebb5615df2f3b5fe58567a6c813b9daf7b
+expected_tree:   ab9daae5af4893051c07095c59357b34dd9df9ca
+python: 3.12.13
+pytest: pytest 9.1.1
+NVIDIA RTX A6000, 580.178.04, 49140 MiB, 42940 MiB
+git: git version 2.34.1
+=== module provenance ===
+badminton_scene : /home/T7/dgut/runs/review-454197e/simulation/badminton_scene/__init__.py
+multienv_arm    : /home/T7/dgut/runs/review-454197e/simulation/badminton_scene/multienv_arm.py
+assembly_route  : /home/T7/dgut/runs/review-454197e/simulation/badminton_scene/assembly_route.py
+scene_layout    : /home/T7/dgut/runs/review-454197e/simulation/badminton_scene/scene_layout.py
+gains           : 300.0 20.0
+### 10_climb_2
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/check_multienv_hold.py --num-envs 2 --hold-seconds 2.0 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_run_2.json --curve /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_curve_2.csv --headless
+exit=0 seconds=62 log=/home/T7/dgut/runs/review-454197e_runlogs/10_climb_2.log
+### 10_climb_4
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/check_multienv_hold.py --num-envs 4 --hold-seconds 2.0 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_run_4.json --curve /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_curve_4.csv --headless
+exit=0 seconds=83 log=/home/T7/dgut/runs/review-454197e_runlogs/10_climb_4.log
+### 10_climb_16
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/check_multienv_hold.py --num-envs 16 --hold-seconds 2.0 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_run_16.json --curve /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_curve_16.csv --headless
+exit=0 seconds=79 log=/home/T7/dgut/runs/review-454197e_runlogs/10_climb_16.log
+### 10_climb_32
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/check_multienv_hold.py --num-envs 32 --hold-seconds 2.0 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_run_32.json --curve /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_curve_32.csv --headless
+exit=0 seconds=152 log=/home/T7/dgut/runs/review-454197e_runlogs/10_climb_32.log
+### 10_climb_64
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/check_multienv_hold.py --num-envs 64 --hold-seconds 2.0 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_run_64.json --curve /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_curve_64.csv --headless
+exit=0 seconds=245 log=/home/T7/dgut/runs/review-454197e_runlogs/10_climb_64.log
+### 10_climb_128
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/check_multienv_hold.py --num-envs 128 --hold-seconds 2.0 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_run_128.json --curve /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/MULTIENV_curve_128.csv --headless
+exit=0 seconds=462 log=/home/T7/dgut/runs/review-454197e_runlogs/10_climb_128.log
+CLIMB_OK=1
+### 20_probe_hold_240
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/probe_rs_velocity_channels.py --mode hold --dt 0.004166666666666667 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/review_probe_hold_240.json --headless
+exit=0 seconds=58 log=/home/T7/dgut/runs/review-454197e_runlogs/20_probe_hold_240.log
+### 21_probe_step_240
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/probe_rs_velocity_channels.py --mode step --dt 0.004166666666666667 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/review_probe_step_240.json --headless
+exit=0 seconds=54 log=/home/T7/dgut/runs/review-454197e_runlogs/21_probe_step_240.log
+### 22_probe_hold_240_zerog
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/probe_rs_velocity_channels.py --mode hold --gravity-off --dt 0.004166666666666667 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/review_probe_hold_zero_g_240.json --headless
+exit=0 seconds=51 log=/home/T7/dgut/runs/review-454197e_runlogs/22_probe_hold_240_zerog.log
+### 23_probe_step_240_zerog
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/probe_rs_velocity_channels.py --mode step --gravity-off --dt 0.004166666666666667 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/review_probe_step_zero_g_240.json --headless
+exit=0 seconds=57 log=/home/T7/dgut/runs/review-454197e_runlogs/23_probe_step_240_zerog.log
+### 30_probe_step_120
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/probe_rs_velocity_channels.py --mode step --dt 0.008333333333333333 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/review_probe_step_120.json --headless
+exit=0 seconds=50 log=/home/T7/dgut/runs/review-454197e_runlogs/30_probe_step_120.log
+### 31_probe_step_480
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/probe_rs_velocity_channels.py --mode step --dt 0.002083333333333333 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/review_probe_step_480.json --headless
+exit=0 seconds=53 log=/home/T7/dgut/runs/review-454197e_runlogs/31_probe_step_480.log
+### 32_probe_hold_480
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/probe_rs_velocity_channels.py --mode hold --dt 0.002083333333333333 --out /home/T7/dgut/runs/review-454197e/outputs/simulation/rebot_b601_rs/review_probe_hold_480.json --headless
+exit=0 seconds=48 log=/home/T7/dgut/runs/review-454197e_runlogs/32_probe_hold_480.log
+### 40_merge
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python tools/merge_multienv_evidence.py
+exit=0 seconds=1 log=/home/T7/dgut/runs/review-454197e_runlogs/40_merge.log
+### 50_pytest_rs
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python -m pytest tests/simulation/rebot_b601_rs -q
+exit=0 seconds=15 log=/home/T7/dgut/runs/review-454197e_runlogs/50_pytest_rs.log
+=== END ===

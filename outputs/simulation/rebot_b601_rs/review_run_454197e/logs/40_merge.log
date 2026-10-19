@@ -1,0 +1,7 @@
+merged 6 runs
+2 hold True worst_window 0.017627 limits True reset True throughput 31.4 steps/s
+4 hold True worst_window 0.018787 limits True reset True throughput 44.8 steps/s
+16 hold True worst_window 0.018787 limits True reset True throughput 30.1 steps/s
+32 hold True worst_window 0.018788 limits True reset True throughput 6.1 steps/s
+64 hold True worst_window 0.01879 limits True reset True throughput 3.4 steps/s
+128 hold True worst_window 0.01879 limits True reset True throughput 1.7 steps/s

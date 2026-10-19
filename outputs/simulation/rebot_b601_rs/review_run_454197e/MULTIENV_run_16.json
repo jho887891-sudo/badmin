@@ -1,0 +1,849 @@
+{
+  "num_envs": 16,
+  "hold_seconds": 2.0,
+  "hold_seconds_requested": 2.0,
+  "steps_measured": 480,
+  "physics_dt": 0.004166666666666667,
+  "assembly": "direct Articulation per env (MultiEnvArm)",
+  "gains": {
+    "stiffness": 300.0,
+    "damping": 20.0
+  },
+  "joint_names": [
+    "joint1",
+    "joint2",
+    "joint3",
+    "joint4",
+    "joint5",
+    "joint6",
+    "gripper_joint1",
+    "gripper_joint2"
+  ],
+  "joint_limits": {
+    "joint1": [
+      -2.799999952316284,
+      2.799999952316284
+    ],
+    "joint2": [
+      0.0,
+      3.140000104904175
+    ],
+    "joint3": [
+      0.0,
+      3.140000104904175
+    ],
+    "joint4": [
+      -1.5700000524520874,
+      1.5700000524520874
+    ],
+    "joint5": [
+      -1.5700000524520874,
+      1.5700000524520874
+    ],
+    "joint6": [
+      -3.140000104904175,
+      3.140000104904175
+    ],
+    "gripper_joint1": [
+      0.0,
+      0.05000000074505806
+    ],
+    "gripper_joint2": [
+      0.0,
+      0.07150000333786011
+    ]
+  },
+  "envs": [
+    {
+      "env_id": 0,
+      "target": [
+        -0.1,
+        0.3,
+        0.775,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.1,
+        0.290684,
+        0.757373,
+        -0.005645,
+        1e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.7e-05,
+        0.064931,
+        0.074246,
+        0.015787,
+        1e-06,
+        -6e-06,
+        0.0,
+        -6e-06
+      ],
+      "hold_error_rad": 0.017627,
+      "worst_window_hold_error_rad": 0.017627,
+      "ee_world_z": 0.735134,
+      "ee_above_mount": 0.435134
+    },
+    {
+      "env_id": 1,
+      "target": [
+        0.0,
+        0.3,
+        0.925,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.0,
+        0.287873,
+        0.910199,
+        -0.005011,
+        2e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.9e-05,
+        0.066733,
+        0.074437,
+        0.01745,
+        -0.0,
+        -7e-06,
+        -0.0,
+        -5e-06
+      ],
+      "hold_error_rad": 0.014801,
+      "worst_window_hold_error_rad": 0.014801,
+      "ee_world_z": 0.775506,
+      "ee_above_mount": 0.475506
+    },
+    {
+      "env_id": 2,
+      "target": [
+        0.1,
+        0.3,
+        1.075,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        0.1,
+        0.284691,
+        1.063399,
+        -0.004251,
+        2e-06,
+        2e-06,
+        -0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.9e-05,
+        0.068404,
+        0.074471,
+        0.019043,
+        1e-06,
+        -8e-06,
+        -0.0,
+        -3e-06
+      ],
+      "hold_error_rad": 0.015309,
+      "worst_window_hold_error_rad": 0.015309,
+      "ee_world_z": 0.809571,
+      "ee_above_mount": 0.509571
+    },
+    {
+      "env_id": 3,
+      "target": [
+        -0.1,
+        0.3,
+        1.225,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.1,
+        0.281216,
+        1.216911,
+        -0.003381,
+        2e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.8e-05,
+        0.069816,
+        0.074137,
+        0.020576,
+        2e-06,
+        -9e-06,
+        -1e-06,
+        -0.0
+      ],
+      "hold_error_rad": 0.018784,
+      "worst_window_hold_error_rad": 0.018787,
+      "ee_world_z": 0.836366,
+      "ee_above_mount": 0.536366
+    },
+    {
+      "env_id": 4,
+      "target": [
+        0.0,
+        0.3,
+        0.775,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.0,
+        0.290684,
+        0.757374,
+        -0.005645,
+        1e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.7e-05,
+        0.064932,
+        0.074246,
+        0.015786,
+        1e-06,
+        -6e-06,
+        0.0,
+        -6e-06
+      ],
+      "hold_error_rad": 0.017626,
+      "worst_window_hold_error_rad": 0.017626,
+      "ee_world_z": 0.735134,
+      "ee_above_mount": 0.435134
+    },
+    {
+      "env_id": 5,
+      "target": [
+        0.1,
+        0.3,
+        0.925,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        0.1,
+        0.287873,
+        0.910199,
+        -0.005011,
+        2e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.8e-05,
+        0.066733,
+        0.074438,
+        0.01745,
+        -0.0,
+        -7e-06,
+        -0.0,
+        -5e-06
+      ],
+      "hold_error_rad": 0.014801,
+      "worst_window_hold_error_rad": 0.014801,
+      "ee_world_z": 0.775506,
+      "ee_above_mount": 0.475506
+    },
+    {
+      "env_id": 6,
+      "target": [
+        -0.1,
+        0.3,
+        1.075,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.1,
+        0.284691,
+        1.063399,
+        -0.004251,
+        2e-06,
+        2e-06,
+        -0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.9e-05,
+        0.068403,
+        0.07447,
+        0.019043,
+        1e-06,
+        -8e-06,
+        -0.0,
+        -3e-06
+      ],
+      "hold_error_rad": 0.015309,
+      "worst_window_hold_error_rad": 0.015309,
+      "ee_world_z": 0.809571,
+      "ee_above_mount": 0.509571
+    },
+    {
+      "env_id": 7,
+      "target": [
+        0.0,
+        0.3,
+        1.225,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.0,
+        0.281216,
+        1.216911,
+        -0.003381,
+        2e-06,
+        2e-06,
+        -0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.7e-05,
+        0.069816,
+        0.074137,
+        0.020576,
+        4e-06,
+        -9e-06,
+        -0.0,
+        -0.0
+      ],
+      "hold_error_rad": 0.018784,
+      "worst_window_hold_error_rad": 0.018787,
+      "ee_world_z": 0.836366,
+      "ee_above_mount": 0.536366
+    },
+    {
+      "env_id": 8,
+      "target": [
+        0.1,
+        0.3,
+        0.775,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        0.1,
+        0.290683,
+        0.757373,
+        -0.005645,
+        1e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.5e-05,
+        0.064932,
+        0.074246,
+        0.015786,
+        1e-06,
+        -6e-06,
+        0.0,
+        -6e-06
+      ],
+      "hold_error_rad": 0.017627,
+      "worst_window_hold_error_rad": 0.017627,
+      "ee_world_z": 0.735134,
+      "ee_above_mount": 0.435134
+    },
+    {
+      "env_id": 9,
+      "target": [
+        -0.1,
+        0.3,
+        0.925,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.1,
+        0.287873,
+        0.910199,
+        -0.005012,
+        2e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.8e-05,
+        0.066732,
+        0.074436,
+        0.01745,
+        -0.0,
+        -7e-06,
+        -0.0,
+        -5e-06
+      ],
+      "hold_error_rad": 0.014801,
+      "worst_window_hold_error_rad": 0.014801,
+      "ee_world_z": 0.775506,
+      "ee_above_mount": 0.475506
+    },
+    {
+      "env_id": 10,
+      "target": [
+        0.0,
+        0.3,
+        1.075,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.0,
+        0.284691,
+        1.0634,
+        -0.004251,
+        2e-06,
+        2e-06,
+        -0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -5e-05,
+        0.068403,
+        0.074467,
+        0.019042,
+        1e-06,
+        -8e-06,
+        -0.0,
+        -3e-06
+      ],
+      "hold_error_rad": 0.015309,
+      "worst_window_hold_error_rad": 0.015309,
+      "ee_world_z": 0.809571,
+      "ee_above_mount": 0.509571
+    },
+    {
+      "env_id": 11,
+      "target": [
+        0.1,
+        0.3,
+        1.225,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        0.1,
+        0.281215,
+        1.216911,
+        -0.003381,
+        2e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.7e-05,
+        0.069817,
+        0.074136,
+        0.020577,
+        2e-06,
+        -9e-06,
+        -1e-06,
+        -0.0
+      ],
+      "hold_error_rad": 0.018785,
+      "worst_window_hold_error_rad": 0.018787,
+      "ee_world_z": 0.836366,
+      "ee_above_mount": 0.536366
+    },
+    {
+      "env_id": 12,
+      "target": [
+        -0.1,
+        0.3,
+        0.775,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.1,
+        0.290683,
+        0.757374,
+        -0.005645,
+        1e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.7e-05,
+        0.064932,
+        0.074246,
+        0.015786,
+        1e-06,
+        -6e-06,
+        0.0,
+        -6e-06
+      ],
+      "hold_error_rad": 0.017626,
+      "worst_window_hold_error_rad": 0.017626,
+      "ee_world_z": 0.735134,
+      "ee_above_mount": 0.435134
+    },
+    {
+      "env_id": 13,
+      "target": [
+        0.0,
+        0.3,
+        0.925,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.0,
+        0.287873,
+        0.910198,
+        -0.005011,
+        2e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.9e-05,
+        0.066732,
+        0.074438,
+        0.017449,
+        -0.0,
+        -7e-06,
+        -0.0,
+        -4e-06
+      ],
+      "hold_error_rad": 0.014802,
+      "worst_window_hold_error_rad": 0.014802,
+      "ee_world_z": 0.775506,
+      "ee_above_mount": 0.475506
+    },
+    {
+      "env_id": 14,
+      "target": [
+        0.1,
+        0.3,
+        1.075,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        0.1,
+        0.284691,
+        1.063399,
+        -0.004251,
+        2e-06,
+        2e-06,
+        -0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.9e-05,
+        0.068403,
+        0.074469,
+        0.019042,
+        1e-06,
+        -8e-06,
+        -0.0,
+        -3e-06
+      ],
+      "hold_error_rad": 0.015309,
+      "worst_window_hold_error_rad": 0.015309,
+      "ee_world_z": 0.809571,
+      "ee_above_mount": 0.509571
+    },
+    {
+      "env_id": 15,
+      "target": [
+        -0.1,
+        0.3,
+        1.225,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.1,
+        0.281216,
+        1.216911,
+        -0.003381,
+        2e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -4.8e-05,
+        0.069816,
+        0.074141,
+        0.020576,
+        2e-06,
+        -9e-06,
+        -1e-06,
+        -0.0
+      ],
+      "hold_error_rad": 0.018784,
+      "worst_window_hold_error_rad": 0.018787,
+      "ee_world_z": 0.836366,
+      "ee_above_mount": 0.536366
+    }
+  ],
+  "limit_trace": {
+    "joint1": {
+      "limit": [
+        -2.799999952316284,
+        2.799999952316284
+      ],
+      "observed_min": -0.1,
+      "observed_max": 0.1,
+      "inside": true
+    },
+    "joint2": {
+      "limit": [
+        0.0,
+        3.140000104904175
+      ],
+      "observed_min": 0.281213,
+      "observed_max": 0.290719,
+      "inside": true
+    },
+    "joint3": {
+      "limit": [
+        0.0,
+        3.140000104904175
+      ],
+      "observed_min": 0.757373,
+      "observed_max": 1.216911,
+      "inside": true
+    },
+    "joint4": {
+      "limit": [
+        -1.5700000524520874,
+        1.5700000524520874
+      ],
+      "observed_min": -0.005669,
+      "observed_max": -0.003366,
+      "inside": true
+    },
+    "joint5": {
+      "limit": [
+        -1.5700000524520874,
+        1.5700000524520874
+      ],
+      "observed_min": -1e-06,
+      "observed_max": 4e-06,
+      "inside": true
+    },
+    "joint6": {
+      "limit": [
+        -3.140000104904175,
+        3.140000104904175
+      ],
+      "observed_min": 2e-06,
+      "observed_max": 2e-06,
+      "inside": true
+    },
+    "gripper_joint1": {
+      "limit": [
+        0.0,
+        0.05000000074505806
+      ],
+      "observed_min": -0.0,
+      "observed_max": 3e-06,
+      "inside": true
+    },
+    "gripper_joint2": {
+      "limit": [
+        0.0,
+        0.07150000333786011
+      ],
+      "observed_min": -0.0,
+      "observed_max": 3e-06,
+      "inside": true
+    }
+  },
+  "first_limit_violation": {},
+  "probe_env": 0,
+  "probe_series_rows": 480,
+  "velocity_position_consistency": {
+    "joint1": {
+      "measured_delta_rad": -3.8e-05,
+      "integrated_vel_delta_rad": -0.00013,
+      "mismatch_rad": -9.3e-05,
+      "max_abs_vel_rad_s": 0.000608,
+      "start": -0.099963,
+      "end": -0.1
+    },
+    "joint2": {
+      "measured_delta_rad": -3.8e-05,
+      "integrated_vel_delta_rad": 0.129828,
+      "mismatch_rad": 0.129866,
+      "max_abs_vel_rad_s": 0.064932,
+      "start": 0.290721,
+      "end": 0.290684
+    },
+    "joint3": {
+      "measured_delta_rad": -5e-05,
+      "integrated_vel_delta_rad": 0.148445,
+      "mismatch_rad": 0.148496,
+      "max_abs_vel_rad_s": 0.074246,
+      "start": 0.757424,
+      "end": 0.757373
+    },
+    "joint4": {
+      "measured_delta_rad": 2.5e-05,
+      "integrated_vel_delta_rad": 0.031598,
+      "mismatch_rad": 0.031573,
+      "max_abs_vel_rad_s": 0.016137,
+      "start": -0.005671,
+      "end": -0.005645
+    },
+    "joint5": {
+      "measured_delta_rad": -3e-06,
+      "integrated_vel_delta_rad": -1e-06,
+      "mismatch_rad": 2e-06,
+      "max_abs_vel_rad_s": 3.2e-05,
+      "start": 4e-06,
+      "end": 1e-06
+    },
+    "joint6": {
+      "measured_delta_rad": 0.0,
+      "integrated_vel_delta_rad": -1.2e-05,
+      "mismatch_rad": -1.2e-05,
+      "max_abs_vel_rad_s": 7e-06,
+      "start": 2e-06,
+      "end": 2e-06
+    },
+    "gripper_joint1": {
+      "measured_delta_rad": 0.0,
+      "integrated_vel_delta_rad": 0.0,
+      "mismatch_rad": -0.0,
+      "max_abs_vel_rad_s": 0.0,
+      "start": 0.0,
+      "end": 0.0
+    },
+    "gripper_joint2": {
+      "measured_delta_rad": -3e-06,
+      "integrated_vel_delta_rad": -1.5e-05,
+      "mismatch_rad": -1.2e-05,
+      "max_abs_vel_rad_s": 4.1e-05,
+      "start": 3e-06,
+      "end": 0.0
+    }
+  },
+  "independent_reset": {
+    "reset_env": 0,
+    "env_immediate_error_vs_rest_rad": 0.0,
+    "env_after_60_steps_error_vs_rest_rad": 0.013452,
+    "env_target_after_reset": [
+      0.0,
+      0.3,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "env_target_matches_rest": true,
+    "env_target_after_60_steps_matches_rest": true,
+    "others_target_unchanged": true,
+    "others_target_unchanged_after_steps": true,
+    "other_env_drift_rad": {
+      "1": 0.0,
+      "2": 0.0,
+      "3": 0.0,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0,
+      "9": 0.0,
+      "10": 0.0,
+      "11": 0.0,
+      "12": 0.0,
+      "13": 0.0,
+      "14": 0.0,
+      "15": 0.0
+    }
+  },
+  "performance": {
+    "wall_seconds": 15.922,
+    "steps_per_second": 30.1,
+    "sim_seconds_per_wall_second": 0.13,
+    "gpu_memory_before_mib": 40188,
+    "gpu_memory_after_mib": 42336,
+    "gpu_memory_delta_mib": 2148,
+    "num_envs": 16
+  },
+  "verdict": {
+    "all_envs_hold": true,
+    "all_envs_finite": true,
+    "worst_hold_error_rad": 0.018785,
+    "max_window_hold_error_rad": 0.018787,
+    "all_dofs_within_limits": true,
+    "max_final_vel_rad_s": 0.074471,
+    "min_ee_above_mount": 0.435134,
+    "independent_reset_ok": true,
+    "velocity_position_consistent": false
+  }
+}
