@@ -18,6 +18,7 @@ from __future__ import annotations
 
 from typing import Iterable, Sequence
 from .assembly_route import resolve_scene_arm_route  # noqa: F401  (re-exported for callers)
+from .rs_physics import rebot_rs_simulation_cfg
 
 
 def _torch():
@@ -75,8 +76,9 @@ class MultiEnvArm:
         actuators = {"all": ImplicitActuatorCfg(
             joint_names_expr=[".*"], stiffness=self.stiffness, damping=self.damping)}
 
+        # Matches the verified single-arm TGS fix. Do not silently use Isaac Sim defaults.
         self.sim = sim_utils.SimulationContext(
-            sim_utils.SimulationCfg(dt=self.physics_dt, device="cuda:0"))
+            rebot_rs_simulation_cfg(dt=self.physics_dt))
         ground = sim_utils.GroundPlaneCfg()
         ground.func("/World/ground", ground)
         light = sim_utils.DistantLightCfg(intensity=700.0, color=(0.8, 0.8, 0.8))

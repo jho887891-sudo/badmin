@@ -30,6 +30,7 @@ import numpy as np
 import torch
 from badminton_scene.robot_cfg import REBOT_RS_PRIM_PATH, rebot_rs_spawn_cfg, rebot_rs_actuators
 from badminton_scene.scene_layout import REBOT_RS
+from badminton_scene.rs_physics import rebot_rs_simulation_cfg
 
 DT = 1.0 / 240.0
 STEPS = 1200          # 5 s at 240 Hz
@@ -59,7 +60,7 @@ else:
     import isaaclab.sim as sim_utils
     from isaaclab.assets import Articulation, ArticulationCfg
 
-    sim = sim_utils.SimulationContext(sim_utils.SimulationCfg(dt=DT, device="cuda:0"))
+    sim = sim_utils.SimulationContext(rebot_rs_simulation_cfg(dt=DT))
     ground = sim_utils.GroundPlaneCfg()
     ground.func("/World/ground", ground)
     spawn = rebot_rs_spawn_cfg()

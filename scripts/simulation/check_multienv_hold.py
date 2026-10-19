@@ -214,6 +214,11 @@ report = {
     "steps_measured": STEPS,
     "physics_dt": DT,
     "assembly": "direct Articulation per env (MultiEnvArm)",
+    "physics_configuration": {
+        "solver_type": 1,
+        "enable_external_forces_every_iteration": True,
+        "source": "rebot_rs_simulation_cfg",
+    },
     "gains": {"stiffness": arm.stiffness, "damping": arm.damping},
     "joint_names": names,
     "joint_limits": {nm: limits[i] for i, nm in enumerate(names)},
@@ -252,8 +257,11 @@ report = {
             and reset_info["others_target_unchanged_after_steps"]
             and all(v <= 1e-3 for v in reset_info["other_env_drift_rad"].values())
         ),
+        # Position/velocity integration residual is in radians for revolute DOFs.
+        # This is a STATIC HOLD gate only; moving-arm accuracy is a separate gate.
+        # Engineering tolerance: 0.002 rad over the measured 2 s window.
         "velocity_position_consistent": all(
-            abs(c["mismatch_rad"]) <= 0.02 for c in consistency.values()),
+            abs(consistency[nm]["mismatch_rad"]) <= 0.002 for nm in ARM),
     },
 }
 

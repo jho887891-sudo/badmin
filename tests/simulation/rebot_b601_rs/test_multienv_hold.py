@@ -30,7 +30,7 @@ EVIDENCE = ROOT / "outputs" / "simulation" / "rebot_b601_rs" / "MULTIENV_hold.js
 REQUIRED_COUNTS = [2, 4, 16, 32, 64, 128]
 MIN_HOLD_SECONDS = 2.0
 MAX_HOLD_ERROR_RAD = 0.05
-MAX_VEL_POS_MISMATCH_RAD = 0.02
+MAX_VEL_POS_MISMATCH_RAD = 0.002  # 2-second static hold, arm joints only
 LIMIT_TOL = 1e-6
 
 
@@ -45,6 +45,17 @@ def test_all_required_env_counts_are_present(ev):
     """No skipping: a climb that stops early leaves counts missing and the gate fails."""
     counts = [run["num_envs"] for run in ev["runs"]]
     assert counts == REQUIRED_COUNTS, counts
+
+
+def test_verified_physx_configuration_is_used(ev):
+    expected = ev["physics_configuration"]
+    assert expected["solver_type"] == 1
+    assert expected["enable_external_forces_every_iteration"] is True
+    assert expected["scope"].startswith("static hold")
+    for run in ev["runs"]:
+        actual = run["physics_configuration"]
+        assert actual["solver_type"] == 1
+        assert actual["enable_external_forces_every_iteration"] is True
 
 
 def test_no_run_reports_a_failed_hold(ev):
@@ -102,27 +113,20 @@ def test_recorded_positions_are_internally_consistent(ev):
                 run["num_envs"], name, rec)
 
 
-def test_velocity_channel_defect_is_recorded_and_has_not_quietly_changed(ev):
-    """KNOWN DEFECT CANARY - this asserts the defect is still faithfully recorded, not that it is fine.
+def test_arm_velocity_integral_matches_position_during_static_hold(ev):
+    """TGS external-forces-per-iteration must make measured qdot usable at REST.
 
-    PhysX reports a steady non-zero DOF velocity (about 0.068 rad/s on joint2 at 240 Hz) while the
-    same DOF's position is constant to 1e-8. Measured across step sizes the reported value scales
-    with dt (0.0367 at 480 Hz, 0.0676 at 240 Hz, 0.115 at 120 Hz, 0.167 at 60 Hz), so it behaves like
-    a per-step residual, not a rate. The joint velocity therefore cannot be used as dq/dt here.
-
-    If a future Isaac Sim version fixes this, this test fails on purpose: update
-    management/rebot_b601_rs/MULTIENV_ASSEMBLY.md and the known_issues block, then re-run.
+    This is deliberately NOT a dynamic control certification. For moving-arm
+    trajectories use the separate step probe and its segment-wise gate.
     """
-    issue = ev.get("known_issues", {}).get("velocity_position_mismatch")
-    assert issue is not None, "the known-issue record disappeared from the merged evidence"
-    assert issue["dt_scaling"], "the dt-scaling evidence reference is missing"
     for run in ev["runs"]:
-        worst = max(abs(rec["mismatch_rad"])
-                    for rec in run["velocity_position_consistency"].values())
-        assert worst > MAX_VEL_POS_MISMATCH_RAD, (
-            run["num_envs"],
-            "the mismatch fell below the documented threshold - revisit the known issue", worst)
-        assert run["verdict"]["velocity_position_consistent"] is False, run["num_envs"]
+        assert run["verdict"]["velocity_position_consistent"] is True, run["num_envs"]
+        assert run["hold_seconds"] >= MIN_HOLD_SECONDS
+        for name in ("joint1", "joint2", "joint3", "joint4", "joint5", "joint6"):
+            mismatch = run["velocity_position_consistency"][name]["mismatch_rad"]
+            assert abs(mismatch) <= MAX_VEL_POS_MISMATCH_RAD, (
+                run["num_envs"], name, mismatch)
+
 
 
 def test_independent_reset_restores_rest_and_leaves_others_alone(ev):
