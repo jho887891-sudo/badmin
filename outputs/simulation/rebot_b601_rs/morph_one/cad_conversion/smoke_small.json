@@ -1,0 +1,52 @@
+{
+  "input": "/home/T7/dgut/runs/cad/census/smoke_small.step",
+  "output": "/home/T7/dgut/runs/cad/usd/smoke_small.usda",
+  "isaac_sim_version": "unknown",
+  "input_sha256": "8f6411938d20920c590999a96dacb7f822850fa3e1a7e3cc0dccc9707543f000",
+  "input_bytes": 5466,
+  "extensions": {
+    "omni.kit.converter.cad": true,
+    "omni.kit.converter.hoops": true,
+    "omni.kit.converter.hoops_core": true
+  },
+  "options": {
+    "tessLOD": 2,
+    "useMaterials": true,
+    "useNormals": true,
+    "dedup": true,
+    "instancing": true
+  },
+  "file_format_args": {
+    "tessLOD": "2",
+    "useMaterials": "true",
+    "useNormals": "true",
+    "dedup": "true",
+    "instancing": "true"
+  },
+  "conversion": {
+    "completed": true,
+    "error": null,
+    "elapsed_seconds": 35.83,
+    "output_url": "/home/T7/dgut/runs/cad/usd/smoke_small.usda",
+    "status_error_code": 0,
+    "status_error_msg": ""
+  },
+  "output_bytes": 556,
+  "output_sha256": "c73794e068e383bc5e17445a3c197bdc0aa228a5e1497466ae61b0add18a5f0d",
+  "usd": {
+    "opened": true,
+    "default_prim": "/smoke_small",
+    "meters_per_unit": 0.001,
+    "up_axis": "Z",
+    "prim_count": 2,
+    "mesh_count": 0,
+    "total_mesh_points": 0,
+    "total_mesh_faces": 0,
+    "prim_type_counts": {
+      "Xform": 2
+    },
+    "world_bbox": null
+  },
+  "verdict": "output exists but contains no meshes",
+  "exit_code": 3
+}

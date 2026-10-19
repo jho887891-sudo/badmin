@@ -1,0 +1,76 @@
+{
+  "input": "/home/T7/dgut/runs/cad/census/smoke_medium.step",
+  "output": "/home/T7/dgut/runs/cad/usd/smoke_medium.usda",
+  "isaac_sim_version": "unknown",
+  "input_sha256": "afe2555f858eae97f734b012d25006c8bbbe4436aa61bae7a876b2fc8fab6ef4",
+  "input_bytes": 5191849,
+  "extensions": {
+    "omni.kit.converter.cad": true,
+    "omni.kit.converter.hoops": true,
+    "omni.kit.converter.hoops_core": true
+  },
+  "options": {
+    "tessLOD": 2,
+    "useMaterials": true,
+    "useNormals": true,
+    "dedup": true,
+    "instancing": true
+  },
+  "file_format_args": {
+    "tessLOD": "2",
+    "useMaterials": "true",
+    "useNormals": "true",
+    "dedup": "true",
+    "instancing": "true"
+  },
+  "conversion": {
+    "completed": true,
+    "error": null,
+    "elapsed_seconds": 3.12,
+    "output_url": "/home/T7/dgut/runs/cad/usd/smoke_medium.usda",
+    "status_error_code": 0,
+    "status_error_msg": ""
+  },
+  "output_bytes": 3858470,
+  "output_sha256": "2406918112bd6d258fc3f36b08b02534c4528b1db0b53b62020707896dad99ce",
+  "usd": {
+    "opened": true,
+    "default_prim": "/smoke_medium",
+    "meters_per_unit": 0.001,
+    "up_axis": "Z",
+    "prim_count": 20,
+    "abstract_prim_count": 15,
+    "instanceable_prim_count": 1,
+    "mesh_count": 5,
+    "total_mesh_points": 26092,
+    "total_mesh_faces": 32260,
+    "rendered_mesh_instances": 5,
+    "rendered_mesh_points": 26092,
+    "prim_type_counts": {
+      "Xform": 8,
+      "Mesh": 5,
+      "Scope": 3,
+      "Material": 2,
+      "Shader": 2
+    },
+    "world_bbox": {
+      "min": [
+        -274.3974914550781,
+        -346.9956970214844,
+        -399.9956970214844
+      ],
+      "max": [
+        274.3974914550781,
+        -141.00428771972656,
+        399.9956970214844
+      ],
+      "size": [
+        548.7949829101562,
+        205.9914093017578,
+        799.9913940429688
+      ]
+    }
+  },
+  "verdict": "converted and verified: 5 prototype meshes / 26092 points, 5 rendered mesh instances, bbox size [548.79, 205.99, 799.99]",
+  "exit_code": 0
+}
