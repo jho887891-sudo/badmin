@@ -47,6 +47,17 @@ def test_all_required_env_counts_are_present(ev):
     assert counts == REQUIRED_COUNTS, counts
 
 
+def test_verified_physx_configuration_is_used(ev):
+    expected = ev["physics_configuration"]
+    assert expected["solver_type"] == 1
+    assert expected["enable_external_forces_every_iteration"] is True
+    assert expected["scope"].startswith("static hold")
+    for run in ev["runs"]:
+        actual = run["physics_configuration"]
+        assert actual["solver_type"] == 1
+        assert actual["enable_external_forces_every_iteration"] is True
+
+
 def test_no_run_reports_a_failed_hold(ev):
     """Explicit and unconditional: one bad run fails the suite instead of being skipped."""
     failed = [run["num_envs"] for run in ev["runs"] if not run["verdict"]["all_envs_hold"]]
