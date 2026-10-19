@@ -214,6 +214,11 @@ report = {
     "steps_measured": STEPS,
     "physics_dt": DT,
     "assembly": "direct Articulation per env (MultiEnvArm)",
+    "physics_configuration": {
+        "solver_type": 1,
+        "enable_external_forces_every_iteration": True,
+        "source": "rebot_rs_simulation_cfg",
+    },
     "gains": {"stiffness": arm.stiffness, "damping": arm.damping},
     "joint_names": names,
     "joint_limits": {nm: limits[i] for i, nm in enumerate(names)},
