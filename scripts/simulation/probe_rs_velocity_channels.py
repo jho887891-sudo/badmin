@@ -32,6 +32,13 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--mode", choices=("hold", "step"), default="hold")
 parser.add_argument("--dt", type=float, default=1.0 / 240.0)
 parser.add_argument("--gravity-off", action="store_true")
+parser.add_argument("--solver", choices=("default", "tgs", "pgs"), default="default",
+                    help="PhysX solver; default preserves the old script's configuration")
+parser.add_argument("--external-forces-every-iteration", choices=("default", "on", "off"),
+                    default="default",
+                    help="TGS force application per position iteration; test on vs off at fixed dt")
+parser.add_argument("--min-velocity-iterations", type=int, choices=(0, 1, 2, 4),
+                    default=None, help="Optional PhysX minimum velocity iterations")
 parser.add_argument("--settle-steps", type=int, default=240)
 parser.add_argument("--sample-steps", type=int, default=480)
 parser.add_argument("--step-amplitude", type=float, default=0.1)
@@ -44,6 +51,8 @@ if args.sample_steps < 4 or args.settle_steps < 0:
     parser.error("sample-steps >= 4 and settle-steps >= 0 are required")
 if args.step_amplitude <= 0 or args.step_amplitude > 0.5:
     parser.error("step amplitude must be within (0, 0.5] rad")
+if args.solver == "pgs" and args.external_forces_every_iteration != "default":
+    parser.error("external-forces flag is ignored for PGS; use default when testing PGS")
 
 launcher = AppLauncher(args)
 simulation_app = launcher.app
@@ -71,6 +80,32 @@ if not asset.is_file():
 kwargs = {"dt": args.dt, "device": "cuda:0"}
 if args.gravity_off:
     kwargs["gravity"] = (0.0, 0.0, 0.0)
+
+# Isaac Lab 3.x: scene-level PhysX configuration lives in isaaclab_physx.physics.
+# Override only the requested attributes. The `default` case preserves the
+# original code path for a byte-for-byte baseline comparison.
+solver_config = {
+    "solver": args.solver,
+    "external_forces_every_iteration": args.external_forces_every_iteration,
+    "min_velocity_iterations": args.min_velocity_iterations,
+}
+if (args.solver != "default" or args.external_forces_every_iteration != "default"
+        or args.min_velocity_iterations is not None):
+    from isaaclab_physx.physics import PhysxCfg
+    physics_kwargs = {}
+    if args.solver != "default":
+        physics_kwargs["solver_type"] = 1 if args.solver == "tgs" else 0
+    if args.external_forces_every_iteration != "default":
+        physics_kwargs["enable_external_forces_every_iteration"] = (
+            args.external_forces_every_iteration == "on")
+    if args.min_velocity_iterations is not None:
+        physics_kwargs["min_velocity_iteration_count"] = args.min_velocity_iterations
+        physics_kwargs["max_velocity_iteration_count"] = max(4, args.min_velocity_iterations)
+    kwargs["physics"] = PhysxCfg(**physics_kwargs)
+    solver_config["physics_kwargs"] = physics_kwargs
+else:
+    solver_config["physics_kwargs"] = None
+
 sim = sim_utils.SimulationContext(sim_utils.SimulationCfg(**kwargs))
 ground = sim_utils.GroundPlaneCfg()
 ground.func("/World/ground", ground)
@@ -158,6 +193,7 @@ report = {
     "mode": args.mode,
     "gravity_off": args.gravity_off,
     "dt": args.dt,
+    "solver_config": solver_config,
     "settle_steps": args.settle_steps,
     "sample_steps": args.sample_steps,
     "joint_names": names,
@@ -170,6 +206,6 @@ out.parent.mkdir(parents=True, exist_ok=True)
 out.write_text(json.dumps(report, indent=2, allow_nan=False), encoding="utf-8")
 print("REVIEW_VELOCITY_PROBE " + json.dumps({
     "out": str(out), "mode": args.mode, "gravity_off": args.gravity_off,
-    "dt": args.dt, "summary": summary,
+    "dt": args.dt, "solver_config": solver_config, "summary": summary,
 }, allow_nan=False))
 simulation_app.close()
