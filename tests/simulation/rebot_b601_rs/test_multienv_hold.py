@@ -21,7 +21,9 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "simulation"))
 
+from badminton_scene.scene_layout import REBOT_RS
 from src.simulation.rebot_b601_rs.joint_limits import JOINT_LIMITS  # noqa: E402
 
 EVIDENCE = ROOT / "outputs" / "simulation" / "rebot_b601_rs" / "MULTIENV_hold.json"
@@ -54,14 +56,18 @@ def test_no_run_reports_a_failed_hold(ev):
 def test_the_hold_window_is_at_least_two_seconds(ev):
     for run in ev["runs"]:
         assert run["hold_seconds"] >= MIN_HOLD_SECONDS, run["num_envs"]
+        assert run["steps_measured"] * run["physics_dt"] >= MIN_HOLD_SECONDS, run["num_envs"]
 
 
 def test_every_env_holds_its_own_target(ev):
     for run in ev["runs"]:
         assert len(run["envs"]) == run["num_envs"], run["num_envs"]
+        assert run["verdict"]["all_envs_finite"] is True, run["num_envs"]
         for env in run["envs"]:
-            assert env["hold_error_rad"] <= MAX_HOLD_ERROR_RAD, (
-                run["num_envs"], env["env_id"], env["hold_error_rad"])
+            assert env["worst_window_hold_error_rad"] <= MAX_HOLD_ERROR_RAD, (
+                run["num_envs"], env["env_id"], env["worst_window_hold_error_rad"])
+            assert env["hold_error_rad"] <= env["worst_window_hold_error_rad"] + 2e-6
+        assert run["verdict"]["max_window_hold_error_rad"] <= MAX_HOLD_ERROR_RAD
 
 
 def test_targets_actually_differ_between_environments(ev):
@@ -128,14 +134,21 @@ def test_independent_reset_restores_rest_and_leaves_others_alone(ev):
         assert info["env_after_60_steps_error_vs_rest_rad"] <= MAX_HOLD_ERROR_RAD, (
             run["num_envs"], info)
         # 2. ... and its drive target is the rest pose, not the old target
-        rest = run["envs"][0]["target"]
-        assert len(info["env_target_after_reset"]) == len(rest)
+        expected = [REBOT_RS["rest_joint_pos"].get(name, 0.0)
+                    for name in run["joint_names"]]
+        actual = info["env_target_after_reset"]
+        assert len(actual) == len(expected)
+        assert all(abs(a - b) <= 1e-8 for a, b in zip(actual, expected)), (
+            run["num_envs"], actual, expected)
+        assert info["env_target_matches_rest"] is True, run["num_envs"]
+        assert info["env_target_after_60_steps_matches_rest"] is True, run["num_envs"]
         # 3. the other envs keep their targets ...
         assert info["others_target_unchanged"] is True, run["num_envs"]
         assert info["others_target_unchanged_after_steps"] is True, run["num_envs"]
         # 4. ... and their states do not move
         for env_id, drift in info["other_env_drift_rad"].items():
             assert drift <= 1e-3, (run["num_envs"], env_id, drift)
+        assert run["verdict"]["independent_reset_ok"] is True, run["num_envs"]
 
 
 def test_performance_is_recorded_for_every_run(ev):
