@@ -172,14 +172,19 @@ for step in range(1, args.sample_steps + 1):
 j = joint2
 q = [r["physx_q"][j] for r in samples]
 v = [r["physx_qd"][j] for r in samples]
-dq = [q[i] - q[i - 1] for i in range(1, len(q))]
-int_v = sum(v[1:]) * args.dt
-measured = q[-1] - q[0]
+# samples contain steps 1..N; baseline is the state at step 0.
+# Integrate velocities for steps 1..N and measure position from q(0) to q(N).
+# Starting at q(1) and summing v(2..N) gives a different, biased window,
+# especially when the first commanded step has non-zero velocity.
+q0 = baseline["physx_q"][j]
+dq = [q[0] - q0] + [q[i] - q[i - 1] for i in range(1, len(q))]
+int_v = sum(v) * args.dt
+measured = q[-1] - q0
 lab_physx_q_err = max(abs(r["lab_q"][j] - r["physx_q"][j]) for r in samples)
 lab_physx_v_err = max(abs(r["lab_qd"][j] - r["physx_qd"][j]) for r in samples)
 summary = {
     "joint": "joint2",
-    "q_start": q[0],
+    "q_start": q0,
     "q_end": q[-1],
     "measured_delta": measured,
     "integrated_physx_velocity": int_v,
@@ -220,6 +225,21 @@ for name, start_step, stop_step in boundaries:
         "peak_abs_position_change_per_step_rad": peak_step_dq,
     })
 summary["segments"] = segments
+# The two summaries MUST be on exactly the same steps and boundaries.
+# Fail rather than generating a plausible-looking but inconsistent report.
+seg_integrated = sum(z["integrated_physx_velocity_rad"] for z in segments)
+seg_measured = sum(z["actual_delta_rad"] for z in segments)
+if not math.isclose(seg_integrated, int_v, rel_tol=1e-9, abs_tol=1e-10):
+    raise AssertionError("segment integrals do not add up to full-window integral")
+if not math.isclose(seg_measured, measured, rel_tol=1e-9, abs_tol=1e-10):
+    raise AssertionError("segment displacements do not add up to full-window displacement")
+summary["accounting"] = {
+    "window": "samples step=1..N vs initial_sample step=0",
+    "integration_rule": "sum(physx_qd[step=1..N]) * dt",
+    "step_count": len(samples),
+    "net_matches_segment_sum": True,
+    "integral_matches_segment_sum": True,
+}
 
 report = {
     "script": "scripts/simulation/probe_rs_velocity_channels.py",
