@@ -1,0 +1,1694 @@
+[
+ {
+  "closure": 47,
+  "points": 14,
+  "eid": 480214,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 47,
+  "points": 14,
+  "eid": 903784,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 150,
+  "points": 26,
+  "eid": 423294,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 150,
+  "points": 26,
+  "eid": 465933,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 150,
+  "points": 26,
+  "eid": 474899,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 150,
+  "points": 26,
+  "eid": 771905,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 162,
+  "points": 26,
+  "eid": 158128,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 162,
+  "points": 26,
+  "eid": 368255,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 162,
+  "points": 26,
+  "eid": 455263,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 162,
+  "points": 26,
+  "eid": 508535,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 162,
+  "points": 26,
+  "eid": 510288,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 162,
+  "points": 26,
+  "eid": 512114,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 162,
+  "points": 26,
+  "eid": 738292,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 162,
+  "points": 26,
+  "eid": 900250,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 174,
+  "points": 49,
+  "eid": 67626,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 174,
+  "points": 49,
+  "eid": 188694,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 174,
+  "points": 49,
+  "eid": 565876,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 174,
+  "points": 49,
+  "eid": 727613,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 218,
+  "points": 35,
+  "eid": 412697,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 218,
+  "points": 35,
+  "eid": 448150,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 220,
+  "points": 38,
+  "eid": 835803,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 220,
+  "points": 38,
+  "eid": 923303,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 262,
+  "points": 42,
+  "eid": 49830,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 262,
+  "points": 42,
+  "eid": 78278,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 262,
+  "points": 42,
+  "eid": 120735,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 262,
+  "points": 42,
+  "eid": 811050,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 280,
+  "points": 46,
+  "eid": 88871,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 280,
+  "points": 46,
+  "eid": 129691,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 280,
+  "points": 46,
+  "eid": 211797,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 280,
+  "points": 46,
+  "eid": 441032,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 292,
+  "points": 47,
+  "eid": 35643,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 292,
+  "points": 47,
+  "eid": 60497,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 292,
+  "points": 47,
+  "eid": 136770,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 292,
+  "points": 47,
+  "eid": 143910,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 292,
+  "points": 47,
+  "eid": 204666,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 292,
+  "points": 47,
+  "eid": 457027,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 292,
+  "points": 47,
+  "eid": 503207,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 292,
+  "points": 47,
+  "eid": 851742,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 348,
+  "points": 56,
+  "eid": 131441,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 348,
+  "points": 56,
+  "eid": 421545,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 348,
+  "points": 56,
+  "eid": 504981,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 348,
+  "points": 56,
+  "eid": 571185,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 456,
+  "points": 77,
+  "eid": 453492,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 456,
+  "points": 77,
+  "eid": 462370,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 456,
+  "points": 77,
+  "eid": 540969,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 456,
+  "points": 77,
+  "eid": 917957,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 108324,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 110130,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 118984,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 138570,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 176263,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 192201,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 378925,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 407396,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 426859,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 439244,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 442808,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 451676,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 460603,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 469525,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 481986,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 494387,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 513843,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 532016,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 553443,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 732969,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 750643,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 520,
+  "points": 87,
+  "eid": 796823,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 17849,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 28478,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 33785,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 40976,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 53423,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 55171,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 57009,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 58786,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 64098,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 71149,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 72959,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 76464,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 80020,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 81755,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 83572,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 99490,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 103015,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 111928,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 115431,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 117269,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 126077,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 140329,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 145665,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 150998,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 152787,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 154563,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 156340,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 181596,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 193993,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 197545,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 202871,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 210025,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 370006,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 384271,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 389648,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 398461,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 402072,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 416204,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 417968,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 425072,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 428623,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 430368,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 446353,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 449902,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 464169,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 467735,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 471304,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 483747,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 487320,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 489078,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 492620,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 497892,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 499677,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 501457,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 506798,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 530216,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 533813,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 535570,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 542735,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 544518,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 546321,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 549868,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 558802,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 567656,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 729369,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 734700,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 745341,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 747091,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 748875,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 757710,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 764823,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 766577,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 768318,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 770133,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 775452,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 778998,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 784369,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 786155,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 791500,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 793249,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 798599,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 800380,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 803937,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 812846,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 816359,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 818195,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 819913,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 823518,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 825231,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 828796,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 830523,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 834070,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 837600,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 839388,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 842902,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 846399,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 848184,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 850012,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 853535,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 857060,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 862398,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 864194,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 865996,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 867749,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 902039,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 530,
+  "points": 88,
+  "eid": 910857,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 586,
+  "points": 98,
+  "eid": 39158,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 611,
+  "points": 105,
+  "eid": 142106,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 720,
+  "points": 120,
+  "eid": 95978,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 720,
+  "points": 120,
+  "eid": 195792,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 720,
+  "points": 120,
+  "eid": 208204,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 720,
+  "points": 120,
+  "eid": 391388,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 720,
+  "points": 120,
+  "eid": 548086,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 720,
+  "points": 120,
+  "eid": 802172,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 720,
+  "points": 120,
+  "eid": 814564,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 720,
+  "points": 120,
+  "eid": 821686,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 819,
+  "points": 142,
+  "eid": 560558,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 888,
+  "points": 151,
+  "eid": 213564,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 888,
+  "points": 151,
+  "eid": 437468,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 888,
+  "points": 151,
+  "eid": 777230,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 888,
+  "points": 151,
+  "eid": 916161,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 974,
+  "points": 162,
+  "eid": 87049,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 974,
+  "points": 162,
+  "eid": 133242,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 974,
+  "points": 162,
+  "eid": 183401,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 974,
+  "points": 162,
+  "eid": 414437,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 974,
+  "points": 162,
+  "eid": 556994,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 974,
+  "points": 162,
+  "eid": 780784,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 974,
+  "points": 162,
+  "eid": 896721,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 974,
+  "points": 162,
+  "eid": 926806,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1028,
+  "points": 177,
+  "eid": 101290,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1077,
+  "points": 177,
+  "eid": 85340,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1077,
+  "points": 177,
+  "eid": 127906,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1077,
+  "points": 177,
+  "eid": 371795,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1077,
+  "points": 177,
+  "eid": 789717,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1108,
+  "points": 251,
+  "eid": 90666,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1108,
+  "points": 251,
+  "eid": 149241,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1108,
+  "points": 251,
+  "eid": 186900,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1108,
+  "points": 251,
+  "eid": 409139,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1108,
+  "points": 251,
+  "eid": 490850,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1108,
+  "points": 251,
+  "eid": 539165,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1171,
+  "points": 461,
+  "eid": 92396,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1171,
+  "points": 461,
+  "eid": 122573,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1171,
+  "points": 461,
+  "eid": 124335,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1171,
+  "points": 461,
+  "eid": 444558,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1207,
+  "points": 451,
+  "eid": 74734,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1207,
+  "points": 451,
+  "eid": 104794,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1207,
+  "points": 451,
+  "eid": 433931,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1207,
+  "points": 451,
+  "eid": 809242,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1464,
+  "points": 249,
+  "eid": 754186,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1507,
+  "points": 269,
+  "eid": 97719,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1507,
+  "points": 269,
+  "eid": 496149,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1662,
+  "points": 442,
+  "eid": 410897,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1662,
+  "points": 442,
+  "eid": 795031,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1877,
+  "points": 314,
+  "eid": 94196,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1877,
+  "points": 314,
+  "eid": 147445,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1877,
+  "points": 314,
+  "eid": 562334,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 1877,
+  "points": 314,
+  "eid": 807507,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2005,
+  "points": 398,
+  "eid": 763019,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2005,
+  "points": 398,
+  "eid": 869570,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2092,
+  "points": 530,
+  "eid": 32083,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2092,
+  "points": 530,
+  "eid": 377126,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2092,
+  "points": 530,
+  "eid": 555203,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2092,
+  "points": 530,
+  "eid": 907342,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2105,
+  "points": 1066,
+  "eid": 432139,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2105,
+  "points": 1066,
+  "eid": 478417,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2105,
+  "points": 1066,
+  "eid": 782571,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2105,
+  "points": 1066,
+  "eid": 826997,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2149,
+  "points": 399,
+  "eid": 21420,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2149,
+  "points": 399,
+  "eid": 405619,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2149,
+  "points": 399,
+  "eid": 832294,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2149,
+  "points": 399,
+  "eid": 928612,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2412,
+  "points": 402,
+  "eid": 69406,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2412,
+  "points": 402,
+  "eid": 419756,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2412,
+  "points": 402,
+  "eid": 752405,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2412,
+  "points": 402,
+  "eid": 889595,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 16123,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 37429,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 42759,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 51654,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 65817,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 174519,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 393162,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 394982,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 473101,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 476646,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 485529,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 805732,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 841104,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 844704,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 855313,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 860648,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 905572,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2467,
+  "points": 418,
+  "eid": 909067,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2626,
+  "points": 928,
+  "eid": 62326,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2626,
+  "points": 928,
+  "eid": 106592,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2626,
+  "points": 928,
+  "eid": 185156,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 2626,
+  "points": 928,
+  "eid": 898440,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 3500,
+  "points": 900,
+  "eid": 190464,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 3500,
+  "points": 900,
+  "eid": 396729,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 3500,
+  "points": 900,
+  "eid": 787910,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 3500,
+  "points": 900,
+  "eid": 925020,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 4426,
+  "points": 1406,
+  "eid": 458838,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 4426,
+  "points": 1406,
+  "eid": 551665,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 4426,
+  "points": 1406,
+  "eid": 858857,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 4426,
+  "points": 1406,
+  "eid": 912621,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 5021,
+  "points": 4940,
+  "eid": 23184,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 5021,
+  "points": 4940,
+  "eid": 113643,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 5021,
+  "points": 4940,
+  "eid": 135002,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 5021,
+  "points": 4940,
+  "eid": 887782,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 11633,
+  "points": 7763,
+  "eid": 435700,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 11633,
+  "points": 7763,
+  "eid": 759491,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 11633,
+  "points": 7763,
+  "eid": 773650,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 11633,
+  "points": 7763,
+  "eid": 871375,
+  "type": "MANIFOLD_SOLID_BREP"
+ },
+ {
+  "closure": 743477,
+  "points": 613330,
+  "eid": 894929,
+  "type": "BREP_WITH_VOIDS"
+ }
+]
