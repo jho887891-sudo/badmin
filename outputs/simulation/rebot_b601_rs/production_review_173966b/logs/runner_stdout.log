@@ -1,0 +1,49 @@
+=== context ===
+host: jxxy  date: 2026-10-19T11:16:52+00:00
+target_commit: 173966bf7c12c0e4c2da4d82719fbad80eda063c
+target_tree:   157be05f945b92e481f0a8eab684c423dd752ec5
+python: 3.12.13
+pytest: pytest 9.1.1
+NVIDIA RTX A6000, 580.178.04, 49140 MiB, 43284 MiB
+=== module provenance ===
+badminton_scene: /home/T7/dgut/runs/review-173966b/simulation/badminton_scene/__init__.py
+rs_physics     : /home/T7/dgut/runs/review-173966b/simulation/badminton_scene/rs_physics.py
+scene_layout   : /home/T7/dgut/runs/review-173966b/simulation/badminton_scene/scene_layout.py
+gains          : 300.0 20.0
+########## PHASE 1 ##########
+### P1a_pytest_physx_config
+exit=0 seconds=9 log=/home/T7/dgut/runs/review-173966b_runlogs/P1a_pytest_physx_config.log
+### P1b_rest_standalone
+exit=0 seconds=93 log=/home/T7/dgut/runs/review-173966b_runlogs/P1b_rest_standalone.log
+### P1c_rest_scene
+exit=0 seconds=78 log=/home/T7/dgut/runs/review-173966b_runlogs/P1c_rest_scene.log
+########## PHASE 2 ##########
+### P2_climb_2
+exit=0 seconds=58 log=/home/T7/dgut/runs/review-173966b_runlogs/P2_climb_2.log
+gate_2=1
+### P2_climb_4
+exit=0 seconds=57 log=/home/T7/dgut/runs/review-173966b_runlogs/P2_climb_4.log
+gate_4=1
+### P2_climb_16
+exit=0 seconds=99 log=/home/T7/dgut/runs/review-173966b_runlogs/P2_climb_16.log
+gate_16=1
+### P2_climb_32
+exit=0 seconds=144 log=/home/T7/dgut/runs/review-173966b_runlogs/P2_climb_32.log
+gate_32=1
+### P2_climb_64
+exit=0 seconds=296 log=/home/T7/dgut/runs/review-173966b_runlogs/P2_climb_64.log
+gate_64=1
+### P2_climb_128
+exit=0 seconds=441 log=/home/T7/dgut/runs/review-173966b_runlogs/P2_climb_128.log
+gate_128=1
+CLIMB_ALL_OK=1
+### P2_merge
+exit=0 seconds=0 log=/home/T7/dgut/runs/review-173966b_runlogs/P2_merge.log
+### P2_pytest_rs
+exit=0 seconds=4 log=/home/T7/dgut/runs/review-173966b_runlogs/P2_pytest_rs.log
+########## PHASE 3 ##########
+### P3_step_tgs_exton_240
+exit=0 seconds=44 log=/home/T7/dgut/runs/review-173966b_runlogs/P3_step_tgs_exton_240.log
+### P3_step_tgs_exton_480
+exit=0 seconds=62 log=/home/T7/dgut/runs/review-173966b_runlogs/P3_step_tgs_exton_480.log
+=== END ===

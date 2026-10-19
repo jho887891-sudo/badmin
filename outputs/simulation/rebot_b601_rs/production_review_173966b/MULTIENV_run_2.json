@@ -1,0 +1,322 @@
+{
+  "num_envs": 2,
+  "hold_seconds": 2.0,
+  "hold_seconds_requested": 2.0,
+  "steps_measured": 480,
+  "physics_dt": 0.004166666666666667,
+  "assembly": "direct Articulation per env (MultiEnvArm)",
+  "physics_configuration": {
+    "solver_type": 1,
+    "enable_external_forces_every_iteration": true,
+    "source": "rebot_rs_simulation_cfg"
+  },
+  "gains": {
+    "stiffness": 300.0,
+    "damping": 20.0
+  },
+  "joint_names": [
+    "joint1",
+    "joint2",
+    "joint3",
+    "joint4",
+    "joint5",
+    "joint6",
+    "gripper_joint1",
+    "gripper_joint2"
+  ],
+  "joint_limits": {
+    "joint1": [
+      -2.799999952316284,
+      2.799999952316284
+    ],
+    "joint2": [
+      0.0,
+      3.140000104904175
+    ],
+    "joint3": [
+      0.0,
+      3.140000104904175
+    ],
+    "joint4": [
+      -1.5700000524520874,
+      1.5700000524520874
+    ],
+    "joint5": [
+      -1.5700000524520874,
+      1.5700000524520874
+    ],
+    "joint6": [
+      -3.140000104904175,
+      3.140000104904175
+    ],
+    "gripper_joint1": [
+      0.0,
+      0.05000000074505806
+    ],
+    "gripper_joint2": [
+      0.0,
+      0.07150000333786011
+    ]
+  },
+  "envs": [
+    {
+      "env_id": 0,
+      "target": [
+        -0.1,
+        0.3,
+        0.775,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.099998,
+        0.290637,
+        0.757319,
+        -0.005648,
+        1e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        -2.4e-05,
+        -8.5e-05,
+        -0.000175,
+        -0.0,
+        0.0,
+        -0.0,
+        -0.0,
+        0.0
+      ],
+      "hold_error_rad": 0.017681,
+      "worst_window_hold_error_rad": 0.017681,
+      "ee_world_z": 0.735121,
+      "ee_above_mount": 0.435121
+    },
+    {
+      "env_id": 1,
+      "target": [
+        0.0,
+        0.3,
+        0.925,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "final_joint_pos": [
+        -0.0,
+        0.287827,
+        0.910142,
+        -0.005016,
+        2e-06,
+        2e-06,
+        0.0,
+        0.0
+      ],
+      "final_joint_vel": [
+        0.0,
+        -0.000101,
+        -0.000178,
+        -1e-06,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hold_error_rad": 0.014858,
+      "worst_window_hold_error_rad": 0.014858,
+      "ee_world_z": 0.775493,
+      "ee_above_mount": 0.475493
+    }
+  ],
+  "limit_trace": {
+    "joint1": {
+      "limit": [
+        -2.799999952316284,
+        2.799999952316284
+      ],
+      "observed_min": -0.099998,
+      "observed_max": -0.0,
+      "inside": true
+    },
+    "joint2": {
+      "limit": [
+        0.0,
+        3.140000104904175
+      ],
+      "observed_min": 0.287827,
+      "observed_max": 0.290667,
+      "inside": true
+    },
+    "joint3": {
+      "limit": [
+        0.0,
+        3.140000104904175
+      ],
+      "observed_min": 0.757319,
+      "observed_max": 0.910152,
+      "inside": true
+    },
+    "joint4": {
+      "limit": [
+        -1.5700000524520874,
+        1.5700000524520874
+      ],
+      "observed_min": -0.005672,
+      "observed_max": -0.005016,
+      "inside": true
+    },
+    "joint5": {
+      "limit": [
+        -1.5700000524520874,
+        1.5700000524520874
+      ],
+      "observed_min": 1e-06,
+      "observed_max": 4e-06,
+      "inside": true
+    },
+    "joint6": {
+      "limit": [
+        -3.140000104904175,
+        3.140000104904175
+      ],
+      "observed_min": 2e-06,
+      "observed_max": 2e-06,
+      "inside": true
+    },
+    "gripper_joint1": {
+      "limit": [
+        0.0,
+        0.05000000074505806
+      ],
+      "observed_min": 0.0,
+      "observed_max": 0.0,
+      "inside": true
+    },
+    "gripper_joint2": {
+      "limit": [
+        0.0,
+        0.07150000333786011
+      ],
+      "observed_min": 0.0,
+      "observed_max": 3e-06,
+      "inside": true
+    }
+  },
+  "first_limit_violation": {},
+  "probe_env": 0,
+  "probe_series_rows": 480,
+  "velocity_position_consistency": {
+    "joint1": {
+      "measured_delta_rad": -3.6e-05,
+      "integrated_vel_delta_rad": -7.8e-05,
+      "mismatch_rad": -4.2e-05,
+      "max_abs_vel_rad_s": 0.000561,
+      "start": -0.099962,
+      "end": -0.099998
+    },
+    "joint2": {
+      "measured_delta_rad": -3.3e-05,
+      "integrated_vel_delta_rad": -0.000192,
+      "mismatch_rad": -0.000159,
+      "max_abs_vel_rad_s": 0.000619,
+      "start": 0.29067,
+      "end": 0.290637
+    },
+    "joint3": {
+      "measured_delta_rad": -3.9e-05,
+      "integrated_vel_delta_rad": -0.000371,
+      "mismatch_rad": -0.000332,
+      "max_abs_vel_rad_s": 0.000736,
+      "start": 0.757358,
+      "end": 0.757319
+    },
+    "joint4": {
+      "measured_delta_rad": 2.5e-05,
+      "integrated_vel_delta_rad": 2.4e-05,
+      "mismatch_rad": -1e-06,
+      "max_abs_vel_rad_s": 0.000348,
+      "start": -0.005673,
+      "end": -0.005648
+    },
+    "joint5": {
+      "measured_delta_rad": -3e-06,
+      "integrated_vel_delta_rad": -3e-06,
+      "mismatch_rad": 0.0,
+      "max_abs_vel_rad_s": 3.3e-05,
+      "start": 4e-06,
+      "end": 1e-06
+    },
+    "joint6": {
+      "measured_delta_rad": 0.0,
+      "integrated_vel_delta_rad": 0.0,
+      "mismatch_rad": -0.0,
+      "max_abs_vel_rad_s": 0.0,
+      "start": 2e-06,
+      "end": 2e-06
+    },
+    "gripper_joint1": {
+      "measured_delta_rad": 0.0,
+      "integrated_vel_delta_rad": 0.0,
+      "mismatch_rad": -0.0,
+      "max_abs_vel_rad_s": 0.0,
+      "start": 0.0,
+      "end": 0.0
+    },
+    "gripper_joint2": {
+      "measured_delta_rad": -3e-06,
+      "integrated_vel_delta_rad": -3e-06,
+      "mismatch_rad": 0.0,
+      "max_abs_vel_rad_s": 3.4e-05,
+      "start": 3e-06,
+      "end": 0.0
+    }
+  },
+  "independent_reset": {
+    "reset_env": 0,
+    "env_immediate_error_vs_rest_rad": 0.0,
+    "env_after_60_steps_error_vs_rest_rad": 0.013498,
+    "env_target_after_reset": [
+      0.0,
+      0.3,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "env_target_matches_rest": true,
+    "env_target_after_60_steps_matches_rest": true,
+    "others_target_unchanged": true,
+    "others_target_unchanged_after_steps": true,
+    "other_env_drift_rad": {
+      "1": 0.0
+    }
+  },
+  "performance": {
+    "wall_seconds": 12.435,
+    "steps_per_second": 38.6,
+    "sim_seconds_per_wall_second": 0.16,
+    "gpu_memory_before_mib": 43578,
+    "gpu_memory_after_mib": 45686,
+    "gpu_memory_delta_mib": 2108,
+    "num_envs": 2
+  },
+  "verdict": {
+    "all_envs_hold": true,
+    "all_envs_finite": true,
+    "worst_hold_error_rad": 0.017681,
+    "max_window_hold_error_rad": 0.017681,
+    "all_dofs_within_limits": true,
+    "max_final_vel_rad_s": 0.000178,
+    "min_ee_above_mount": 0.435121,
+    "independent_reset_ok": true,
+    "velocity_position_consistent": true
+  }
+}

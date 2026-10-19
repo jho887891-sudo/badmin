@@ -1,0 +1,696 @@
+{
+  "name": "scene_hold_rest",
+  "mode": "scene",
+  "physics_dt": 0.004166666666666667,
+  "steps_total": 1200,
+  "rest_pose": {
+    "joint1": 0.0,
+    "joint2": 0.3,
+    "joint3": 1.0,
+    "joint4": 0.0,
+    "joint5": 0.0,
+    "joint6": 0.0
+  },
+  "mount_world": [
+    -1.6,
+    0.0,
+    0.3
+  ],
+  "usd_path": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+  "unsupported_api": {
+    "applied_joint_efforts": "AttributeError: 'ArticulationView' object has no attribute 'get_applied_joint_efforts'"
+  },
+  "prim_path": "/World/envs/env_0/Robot/RebotB601RS",
+  "direct_spawn": true,
+  "joint_names": [
+    "joint1",
+    "joint2",
+    "joint3",
+    "joint4",
+    "joint5",
+    "joint6",
+    "gripper_joint1",
+    "gripper_joint2"
+  ],
+  "joint_indices": {
+    "joint1": 0,
+    "joint2": 1,
+    "joint3": 2,
+    "joint4": 3,
+    "joint5": 4,
+    "joint6": 5,
+    "gripper_joint1": 6,
+    "gripper_joint2": 7
+  },
+  "default_joint_pos": {
+    "joint1": 0.0,
+    "joint2": 0.0,
+    "joint3": 0.0,
+    "joint4": 0.0,
+    "joint5": 0.0,
+    "joint6": 0.0,
+    "gripper_joint1": 0.0,
+    "gripper_joint2": 0.0
+  },
+  "joint_limits": {
+    "joint1": [
+      -2.8,
+      2.8
+    ],
+    "joint2": [
+      0.0,
+      3.14
+    ],
+    "joint3": [
+      0.0,
+      3.14
+    ],
+    "joint4": [
+      -1.57,
+      1.57
+    ],
+    "joint5": [
+      -1.57,
+      1.57
+    ],
+    "joint6": [
+      -3.14,
+      3.14
+    ],
+    "gripper_joint1": [
+      0.0,
+      0.05
+    ],
+    "gripper_joint2": [
+      0.0,
+      0.0715
+    ]
+  },
+  "physx_dof_stiffnesses": [
+    300.0,
+    300.0,
+    300.0,
+    300.0,
+    300.0,
+    300.0,
+    300.0,
+    300.0
+  ],
+  "physx_dof_dampings": [
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0,
+    20.0
+  ],
+  "physx_dof_max_forces": [
+    36.0,
+    36.0,
+    36.0,
+    14.0,
+    14.0,
+    14.0,
+    500.0,
+    500.0
+  ],
+  "physx_dof_positions": [
+    0.0,
+    0.3,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "physx_dof_position_targets": [
+    0.0,
+    0.3,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "actuators": [
+    {
+      "type": "ImplicitActuator",
+      "joint_names": [
+        "joint1",
+        "joint2",
+        "joint3",
+        "joint4",
+        "joint5",
+        "joint6",
+        "gripper_joint1",
+        "gripper_joint2"
+      ],
+      "stiffness": "tensor([[300., 300., 300., 300., 300., 300., 300., 300.]], device='cuda:0')",
+      "damping": "tensor([[20., 20., 20., 20., 20., 20., 20., 20.]], device='cuda:0')",
+      "effort_limit_sim": "tensor([[ 36.,  36.,  36.,  14.,  14.,  14., 500., 500.]], device='cuda:0')",
+      "velocity_limit_sim": "tensor([[ 50.0000,  50.0000,  50.0000,  40.0000,  40.0000,  40.0000, 572.9578,\n         572.9578]], device='cuda:0')"
+    }
+  ],
+  "samples": [
+    {
+      "step": 0,
+      "time_s": 0.0,
+      "joint_pos": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "joint_vel": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "joint_pos_target": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hold_error_rad": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ee_world": [
+        -1.583481,
+        1e-06,
+        0.796825
+      ],
+      "ee_rel_mount": [
+        -1.583481,
+        1e-06,
+        0.496825
+      ],
+      "min_body_z": 0.3,
+      "applied_joint_efforts": "UNAVAILABLE:AttributeError",
+      "physx_dof_position_targets": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "step": 1,
+      "time_s": 0.0042,
+      "joint_pos": [
+        0.0,
+        0.299737,
+        0.999708,
+        -7.1e-05,
+        0.0,
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "joint_vel": [
+        6.1e-05,
+        -0.107745,
+        -0.116951,
+        -0.035713,
+        7e-06,
+        1.6e-05,
+        0.0,
+        2e-06
+      ],
+      "joint_pos_target": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hold_error_rad": [
+        -0.0,
+        0.000263,
+        0.000292,
+        7.1e-05,
+        -0.0,
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "ee_world": [
+        -1.583486,
+        1e-06,
+        0.796752
+      ],
+      "ee_rel_mount": [
+        -1.583486,
+        1e-06,
+        0.496752
+      ],
+      "min_body_z": 0.3,
+      "applied_joint_efforts": "UNAVAILABLE:AttributeError",
+      "physx_dof_position_targets": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "step": 5,
+      "time_s": 0.0208,
+      "joint_pos": [
+        1e-06,
+        0.297107,
+        0.996955,
+        -0.00102,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "joint_vel": [
+        -2e-06,
+        -0.164263,
+        -0.167507,
+        -0.059298,
+        2.3e-05,
+        2.7e-05,
+        1e-06,
+        0.0
+      ],
+      "joint_pos_target": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hold_error_rad": [
+        -1e-06,
+        0.002893,
+        0.003045,
+        0.00102,
+        -0.0,
+        -0.0,
+        -0.0,
+        -0.0
+      ],
+      "ee_world": [
+        -1.583558,
+        1e-06,
+        0.796042
+      ],
+      "ee_rel_mount": [
+        -1.583558,
+        1e-06,
+        0.496042
+      ],
+      "min_body_z": 0.3,
+      "applied_joint_efforts": "UNAVAILABLE:AttributeError",
+      "physx_dof_position_targets": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "step": 30,
+      "time_s": 0.125,
+      "joint_pos": [
+        -0.0,
+        0.288225,
+        0.988626,
+        -0.003979,
+        2e-06,
+        2e-06,
+        -0.0,
+        0.0
+      ],
+      "joint_vel": [
+        -2e-06,
+        -0.033491,
+        -0.030052,
+        -0.010597,
+        4e-06,
+        5e-06,
+        -0.0,
+        -0.0
+      ],
+      "joint_pos_target": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hold_error_rad": [
+        0.0,
+        0.011775,
+        0.011374,
+        0.003979,
+        -2e-06,
+        -2e-06,
+        0.0,
+        -0.0
+      ],
+      "ee_world": [
+        -1.584084,
+        1e-06,
+        0.793878
+      ],
+      "ee_rel_mount": [
+        -1.584084,
+        1e-06,
+        0.493878
+      ],
+      "min_body_z": 0.3,
+      "applied_joint_efforts": "UNAVAILABLE:AttributeError",
+      "physx_dof_position_targets": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "step": 60,
+      "time_s": 0.25,
+      "joint_pos": [
+        -0.0,
+        0.286502,
+        0.986964,
+        -0.004559,
+        2e-06,
+        2e-06,
+        -0.0,
+        0.0
+      ],
+      "joint_vel": [
+        1e-06,
+        -0.003849,
+        -0.004408,
+        -0.001503,
+        0.0,
+        1e-06,
+        -0.0,
+        -0.0
+      ],
+      "joint_pos_target": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hold_error_rad": [
+        0.0,
+        0.013498,
+        0.013036,
+        0.004559,
+        -2e-06,
+        -2e-06,
+        0.0,
+        -0.0
+      ],
+      "ee_world": [
+        -1.584171,
+        1e-06,
+        0.793446
+      ],
+      "ee_rel_mount": [
+        -1.584171,
+        1e-06,
+        0.493446
+      ],
+      "min_body_z": 0.3,
+      "applied_joint_efforts": "UNAVAILABLE:AttributeError",
+      "physx_dof_position_targets": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "step": 240,
+      "time_s": 1.0,
+      "joint_pos": [
+        -0.0,
+        0.286276,
+        0.9867,
+        -0.004651,
+        2e-06,
+        2e-06,
+        -0.0,
+        0.0
+      ],
+      "joint_vel": [
+        0.0,
+        -7.2e-05,
+        -0.000167,
+        -2e-06,
+        0.0,
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "joint_pos_target": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hold_error_rad": [
+        0.0,
+        0.013724,
+        0.0133,
+        0.004651,
+        -2e-06,
+        -2e-06,
+        0.0,
+        -0.0
+      ],
+      "ee_world": [
+        -1.584168,
+        1e-06,
+        0.793378
+      ],
+      "ee_rel_mount": [
+        -1.584168,
+        1e-06,
+        0.493378
+      ],
+      "min_body_z": 0.3,
+      "applied_joint_efforts": "UNAVAILABLE:AttributeError",
+      "physx_dof_position_targets": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "step": 600,
+      "time_s": 2.5,
+      "joint_pos": [
+        -0.0,
+        0.286276,
+        0.9867,
+        -0.004651,
+        2e-06,
+        2e-06,
+        -0.0,
+        0.0
+      ],
+      "joint_vel": [
+        0.0,
+        -7.2e-05,
+        -0.000167,
+        -2e-06,
+        0.0,
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "joint_pos_target": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hold_error_rad": [
+        0.0,
+        0.013724,
+        0.0133,
+        0.004651,
+        -2e-06,
+        -2e-06,
+        0.0,
+        -0.0
+      ],
+      "ee_world": [
+        -1.584168,
+        1e-06,
+        0.793378
+      ],
+      "ee_rel_mount": [
+        -1.584168,
+        1e-06,
+        0.493378
+      ],
+      "min_body_z": 0.3,
+      "applied_joint_efforts": "UNAVAILABLE:AttributeError",
+      "physx_dof_position_targets": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "step": 1200,
+      "time_s": 5.0,
+      "joint_pos": [
+        -0.0,
+        0.286276,
+        0.9867,
+        -0.004651,
+        2e-06,
+        2e-06,
+        -0.0,
+        0.0
+      ],
+      "joint_vel": [
+        0.0,
+        -7.2e-05,
+        -0.000167,
+        -2e-06,
+        0.0,
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "joint_pos_target": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hold_error_rad": [
+        0.0,
+        0.013724,
+        0.0133,
+        0.004651,
+        -2e-06,
+        -2e-06,
+        0.0,
+        -0.0
+      ],
+      "ee_world": [
+        -1.584168,
+        1e-06,
+        0.793378
+      ],
+      "ee_rel_mount": [
+        -1.584168,
+        1e-06,
+        0.493378
+      ],
+      "min_body_z": 0.3,
+      "applied_joint_efforts": "UNAVAILABLE:AttributeError",
+      "physx_dof_position_targets": [
+        0.0,
+        0.3,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "verdict": {
+    "held_5s": true,
+    "worst_hold_error_rad": 0.013724,
+    "joint2_joint3_inside_limits": true,
+    "ee_final_rel_mount_z": 0.493378,
+    "ee_drop_m": 0.003447,
+    "worst_body_below_ground": 0.3
+  }
+}
