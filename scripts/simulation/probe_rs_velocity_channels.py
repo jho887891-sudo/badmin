@@ -151,6 +151,9 @@ def capture(step: int, target: torch.Tensor) -> dict:
 for _ in range(args.settle_steps):
     step_once()
 
+# Capture before applying the step; otherwise q[1]-q[0] is omitted from
+# the integral comparison, biasing the moving-arm acceptance metric.
+baseline = capture(0, rest)
 samples = []
 active = rest.clone()
 for step in range(1, args.sample_steps + 1):
@@ -188,6 +191,36 @@ summary = {
     "max_abs_lab_physx_q_difference": lab_physx_q_err,
     "max_abs_lab_physx_qd_difference": lab_physx_v_err,
 }
+# Step commands go out and come back, so the net 2-second displacement
+# can be near zero despite substantial movement. Integrate each segment
+# independently, with an actual q0 sample before the first applied command.
+cut = args.sample_steps // 2
+boundaries = ([("outbound", 0, cut - 1),
+               ("return", cut - 1, args.sample_steps)]
+              if args.mode == "step" else [("hold", 0, args.sample_steps)])
+segments = []
+for name, start_step, stop_step in boundaries:
+    ref = baseline if start_step == 0 else samples[start_step - 1]
+    end = samples[stop_step - 1]
+    part = samples[start_step:stop_step]
+    if not part:
+        continue
+    actual_dq = end["physx_q"][j] - ref["physx_q"][j]
+    integrated_qd = sum(r["physx_qd"][j] for r in part) * args.dt
+    peak_step_dq = max(abs(part[i]["physx_q"][j] -
+                           (ref if i == 0 else part[i - 1])["physx_q"][j])
+                       for i in range(len(part)))
+    segments.append({
+        "phase": name,
+        "start_step": start_step,
+        "end_step": stop_step,
+        "actual_delta_rad": actual_dq,
+        "integrated_physx_velocity_rad": integrated_qd,
+        "integral_minus_position_rad": integrated_qd - actual_dq,
+        "peak_abs_position_change_per_step_rad": peak_step_dq,
+    })
+summary["segments"] = segments
+
 report = {
     "script": "scripts/simulation/probe_rs_velocity_channels.py",
     "mode": args.mode,
@@ -199,6 +232,7 @@ report = {
     "joint_names": names,
     "asset": str(asset),
     "summary": summary,
+    "initial_sample": baseline,
     "samples": samples,
 }
 out = Path(args.out)
