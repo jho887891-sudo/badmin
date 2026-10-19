@@ -1,0 +1,208 @@
+{
+ "opened": true,
+ "usd_path": "/home/T7/dgut/runs/cad/usd/M1-4WD4S_model2601.usda",
+ "stage": {
+  "meters_per_unit": 0.001,
+  "up_axis": "Z",
+  "kilograms_per_unit": 1.0
+ },
+ "prims": 574,
+ "meshes": 282,
+ "rendered_mesh_instances": 282,
+ "instanceable_prims": 1,
+ "abstract_prims": 569,
+ "total_mesh_points": 455255,
+ "mesh_local_extent_max": [
+  580.0,
+  158.0,
+  800.0
+ ],
+ "mesh_local_extent_min": [
+  0.222,
+  0.004,
+  0.104
+ ],
+ "max_abs_local_coordinate": 400.0,
+ "meshes_with_local_extent_over_1000": 0,
+ "physx_apis": {
+  "CollisionAPI": 0,
+  "RigidBodyAPI": 0,
+  "MassAPI": 0,
+  "ArticulationRootAPI": 0
+ },
+ "stage_world_bbox": {
+  "min": [
+   -290.0,
+   -346.996,
+   -400.0
+  ],
+  "max": [
+   290.0,
+   26.0,
+   402.852
+  ],
+  "size": [
+   580.0,
+   372.996,
+   802.852
+  ]
+ },
+ "largest_meshes": [
+  {
+   "path": "/tn__M14WD4S_model2601_bP/Prototypes/tn__M1100V3_qAD/NONE_34/Mesh",
+   "points": 72765,
+   "local_extent": [
+    580.0,
+    158.0,
+    800.0
+   ],
+   "world_extent": [
+    580.0,
+    158.0,
+    800.0
+   ]
+  },
+  {
+   "path": "/tn__M14WD4S_model2601_bP/Prototypes/tn__M1100V3_qAD/tn__M1100V31M1105V33solid1_zMGn99EKMW0Ei0uy2yCy0Z2h3V1qAt5m2b1d6lDaLa0n5WLZ0r9/Mesh",
+   "points": 584,
+   "local_extent": [
+    286.0,
+    40.837,
+    24.732
+   ],
+   "world_extent": [
+    286.0,
+    40.837,
+    24.732
+   ]
+  },
+  {
+   "path": "/tn__M14WD4S_model2601_bP/Prototypes/tn__M1100V3_qAD/tn__M1100V31M1105V34solid1_zMGn99EKMW0Ei0uy2yCy0Z2h3V1qAt5m2b1d6lDaLa0n5WLZ0r9/Mesh",
+   "points": 584,
+   "local_extent": [
+    286.0,
+    40.837,
+    24.732
+   ],
+   "world_extent": [
+    286.0,
+    40.837,
+    24.732
+   ]
+  },
+  {
+   "path": "/tn__M14WD4S_model2601_bP/Prototypes/tn__M1100V3_qAD/tn__M1100V31A11041solid1_xKEs89EIKUEg0fr2bFx2OpAPe5g2w6nBp0W0d1dJf5ZK/Mesh",
+   "points": 24,
+   "local_extent": [
+    210.0,
+    9.899,
+    9.9
+   ],
+   "world_extent": [
+    210.0,
+    9.899,
+    9.9
+   ]
+  },
+  {
+   "path": "/tn__M14WD4S_model2601_bP/Prototypes/tn__M1100V3_qAD/tn__M1100V31A11042solid1_xKEs89EIKUEg0fr2bFx2OpAPe5g2w6nBp0W0d1dJf5ZK/Mesh",
+   "points": 24,
+   "local_extent": [
+    210.0,
+    12.0,
+    2.0
+   ],
+   "world_extent": [
+    210.0,
+    12.0,
+    2.0
+   ]
+  },
+  {
+   "path": "/tn__M14WD4S_model2601_bP/Prototypes/tn__M1100V3_qAD/tn__M1100V31A11043solid1_xKEs89EIKUEg0fr2bFx2OpAPe5g2w6nBp0W0d1dJf5ZK/Mesh",
+   "points": 24,
+   "local_extent": [
+    9.9,
+    9.899,
+    210.0
+   ],
+   "world_extent": [
+    9.9,
+    9.899,
+    210.0
+   ]
+  },
+  {
+   "path": "/tn__M14WD4S_model2601_bP/Prototypes/tn__M1100V3_qAD/tn__M1100V31A11044solid1_xKEs89EIKUEg0fr2bFx2OpAPe5g2w6nBp0W0d1dJf5ZK/Mesh",
+   "points": 24,
+   "local_extent": [
+    9.9,
+    9.899,
+    210.0
+   ],
+   "world_extent": [
+    9.9,
+    9.899,
+    210.0
+   ]
+  },
+  {
+   "path": "/tn__M14WD4S_model2601_bP/Prototypes/tn__M1100V3_qAD/NONE_7/Mesh",
+   "points": 6354,
+   "local_extent": [
+    48.791,
+    205.991,
+    205.991
+   ],
+   "world_extent": [
+    48.791,
+    205.991,
+    205.991
+   ]
+  }
+ ],
+ "smallest_meshes": [
+  {
+   "path": "/tn__M14WD4S_model2601_bP/Prototypes/tn__M1100V3_qAD/tn__M1100V31M3X62solid1_wJx79FHRc0gc2g0u8f4l2m0w7s1s0p1q6t1y0yAKV1b8sAf5ZK/Mesh",
+   "points": 1123,
+   "local_extent": [
+    6.0,
+    6.0,
+    6.0
+   ],
+   "world_extent": [
+    6.0,
+    6.0,
+    6.0
+   ]
+  },
+  {
+   "path": "/tn__M14WD4S_model2601_bP/Prototypes/tn__M1100V3_qAD/NONE/Mesh",
+   "points": 6,
+   "local_extent": [
+    0.004,
+    0.222,
+    0.104
+   ],
+   "world_extent": [
+    0.004,
+    0.222,
+    0.104
+   ]
+  },
+  {
+   "path": "/tn__M14WD4S_model2601_bP/Prototypes/tn__M1100V3_qAD/NONE_1/Mesh",
+   "points": 6,
+   "local_extent": [
+    0.222,
+    0.004,
+    0.104
+   ],
+   "world_extent": [
+    0.222,
+    0.004,
+    0.104
+   ]
+  }
+ ]
+}
