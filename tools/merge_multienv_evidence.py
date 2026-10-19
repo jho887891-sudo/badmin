@@ -9,6 +9,8 @@ for n in (2, 4, 16, 32, 64, 128):
     p = ROOT / ("MULTIENV_run_%d.json" % n)
     if p.is_file():
         runs.append(json.loads(p.read_text(encoding="utf-8")))
+if len(runs) != 6:
+    raise RuntimeError("Expected fresh evidence for all six environment counts (2/4/16/32/64/128)")
 doc = {
     "generated_by": "scripts/simulation/check_multienv_hold.py",
     "host": "dgut@172.31.68.251 (Isaac Sim 6.0.1 + Isaac Lab 3.0.0-beta2)",
@@ -34,6 +36,6 @@ doc = {
 print("merged", len(runs), "runs")
 for r in runs:
     v = r["verdict"]
-    print(r["num_envs"], "hold", v["all_envs_hold"], "worst", v["worst_hold_error_rad"],
-          "limits", v["all_within_limits"], "reset", v["independent_reset_ok"],
+    print(r["num_envs"], "hold", v["all_envs_hold"], "worst_window", v["max_window_hold_error_rad"],
+          "limits", v["all_dofs_within_limits"], "reset", v["independent_reset_ok"],
           "throughput", r["performance"]["steps_per_second"], "steps/s")
