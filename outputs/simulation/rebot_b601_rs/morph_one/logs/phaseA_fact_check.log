@@ -1,0 +1,95 @@
+=== file ===
+-rwxr-xr-x 1 dgut dgut 115496178 10月  9 08:57 /home/T7/dgut/robot_sim/assets/robots/badminton_robot/morph_one/cad/M1-4WD4S_model2601.step
+=== sha256 (recomputed) ===
+388cb3653a864066a35a54065f71938635c7e9a221cb4b897b31fbd44ff266c5  /home/T7/dgut/robot_sim/assets/robots/badminton_robot/morph_one/cad/M1-4WD4S_model2601.step
+=== header (first 30 lines) ===
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION (( 'STEP AP203' ),
+    '1' );
+FILE_NAME ('M1-1.00V3.STEP',
+    '2026-03-06T09:12:09',
+    ( '' ),
+    ( '' ),
+    'SwSTEP 2.0',
+    'SolidWorks 2022',
+    '' );
+FILE_SCHEMA (( 'CONFIG_CONTROL_DESIGN' ));
+ENDSEC;
+
+DATA;
+#1 = LINE ( 'NONE', #172879, #743973 ) ;
+#3 = CARTESIAN_POINT ( 'NONE',  ( 175.3783603951356724, -8.517311447846820371, 43.55747390131377728 ) ) ;
+#2 = LINE ( 'NONE', #659745, #1049624 ) ;
+#4 = CARTESIAN_POINT ( 'NONE',  ( 182.6399691015548399, -14.77205815080669815, 58.45160820503958377 ) ) ;
+#6 = CARTESIAN_POINT ( 'NONE',  ( 165.6479166666666742, -12.96069856352180416, 138.3744294445130549 ) ) ;
+#5 = CARTESIAN_POINT ( 'NONE',  ( 50.49408150809106388, -30.92154088050613225, 354.4253169842232296 ) ) ;
+#9 = CARTESIAN_POINT ( 'NONE',  ( 60.94461280348762244, -28.12715463614712874, 351.9682930044460818 ) ) ;
+#8 = CARTESIAN_POINT ( 'NONE',  ( 66.09736729578094128, -20.39214751094672806, 368.6755375569146622 ) ) ;
+#7 = CARTESIAN_POINT ( 'NONE',  ( 173.6347456872119039, -12.00785445205382906, 39.16923570923973585 ) ) ;
+#10 = EDGE_CURVE ( 'NONE', #845709, #438476, #234672, .T. ) ;
+#12 = CARTESIAN_POINT ( 'NONE',  ( 180.7676795330785069, -17.12742036480498697, 58.16761667615313769 ) ) ;
+#11 = AXIS2_PLACEMENT_3D ( 'NONE', #398815, #317705, #977473 ) ;
+#15 = CARTESIAN_POINT ( 'NONE',  ( 57.90865657063952199, -26.70553239883283325, 372.7011989540699233 ) ) ;
+#14 = CARTESIAN_POINT ( 'NONE',  ( 181.2720962202736814, -57.20318567658156184, 2.038429444513096378 ) ) ;
+#13 = CARTESIAN_POINT ( 'NONE',  ( 175.3425455760746559, -19.80496091180983953, 58.06501818877483601 ) ) ;
+=== entity/statement counts ===
+MANIFOLD_SOLID_BREP                    281
+BREP_WITH_VOIDS                        1
+SHELL_BASED_SURFACE_MODEL              0
+0
+CLOSED_SHELL                           398
+OPEN_SHELL                             0
+0
+ADVANCED_FACE                          14714
+CARTESIAN_POINT                        720342
+NEXT_ASSEMBLY_USAGE_OCCURRENCE         0
+0
+PRODUCT(                               0
+0
+PRODUCT_DEFINITION(                    0
+0
+MANIFOLD_SURFACE_SHAPE_REPRESENTATION  0
+0
+SHAPE_REPRESENTATION                   1
+SI_UNIT                                3
+CONVERSION_BASED_UNIT                  0
+0
+LENGTH_UNIT                            1
+=== unit declarations ===
+124426:#120813 =( LENGTH_UNIT ( ) NAMED_UNIT ( * ) SI_UNIT ( .MILLI., .METRE. ) );
+140870:#136850 =( NAMED_UNIT ( * ) PLANE_ANGLE_UNIT ( ) SI_UNIT ( $, .RADIAN. ) );
+720129:#699449 =( NAMED_UNIT ( * ) SI_UNIT ( $, .STERADIAN. ) SOLID_ANGLE_UNIT ( ) );
+=== python CAD kernels available? ===
+  OCP        -
+  OCC        -
+  cadquery   -
+  FreeCAD    -
+  trimesh    present
+  gmsh       -
+  steputils  -
+  Part       -
+=== CLI CAD tools ===
+  FreeCADCmd   -
+  freecadcmd   -
+  freecad      -
+  gmsh         -
+  assimp       -
+  meshlabserver -
+  openscad     -
+=== isaac cad converter extensions installed? ===
+/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/extscache/omni.kit.converter.cad-209.4.0+110.1.2.lx64.r.cp312.u7f4
+/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/extscache/omni.kit.converter.common-510.1.3+110.1.2.lx64.r.cp312.u7f4
+/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/extscache/omni.kit.converter.dgn-510.1.5+110.1.2.lx64.r.cp312.u7f4
+/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/extscache/omni.kit.converter.dgn_core-512.3.3+110.1.2.lx64.r.cp312.u7f4
+/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/extscache/omni.kit.converter.gsplat-0.1.14+110.1.0.lx64.r.cp312.u7f4
+omni.kit.asset_converter-6.0.1+110.1.1.lx64.r.cp312.u7f4
+omni.kit.converter.cad-209.4.0+110.1.2.lx64.r.cp312.u7f4
+omni.kit.converter.common-510.1.3+110.1.2.lx64.r.cp312.u7f4
+omni.kit.converter.dgn-510.1.5+110.1.2.lx64.r.cp312.u7f4
+omni.kit.converter.dgn_core-512.3.3+110.1.2.lx64.r.cp312.u7f4
+omni.kit.converter.gsplat-0.1.14+110.1.0.lx64.r.cp312.u7f4
+omni.kit.converter.hoops-510.3.0+110.1.2.lx64.r.cp312.u7f4
+omni.kit.converter.hoops_core-511.3.2+110.1.2.lx64.r.cp312.u7f4
+omni.kit.converter.jt-509.1.2+110.1.2.lx64.r.cp312.u7f4
+omni.kit.converter.jt_core-510.1.1+110.1.2.lx64.r.cp312.u7f4

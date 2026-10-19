@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -uo pipefail
+F=/home/T7/dgut/robot_sim/assets/robots/badminton_robot/morph_one/cad/M1-4WD4S_model2601.step
+echo "=== file ==="
+ls -l "$F" 2>&1
+echo "=== sha256 (recomputed) ==="
+sha256sum "$F" 2>&1
+echo "=== header (first 30 lines) ==="
+head -30 "$F"
+echo "=== entity/statement counts ==="
+for k in MANIFOLD_SOLID_BREP BREP_WITH_VOIDS SHELL_BASED_SURFACE_MODEL CLOSED_SHELL OPEN_SHELL ADVANCED_FACE CARTESIAN_POINT NEXT_ASSEMBLY_USAGE_OCCURRENCE PRODUCT'(' PRODUCT_DEFINITION'(' MANIFOLD_SURFACE_SHAPE_REPRESENTATION SHAPE_REPRESENTATION SI_UNIT CONVERSION_BASED_UNIT LENGTH_UNIT; do
+  printf '%-38s %s\n' "$k" "$(grep -c "$k" "$F" 2>/dev/null || echo 0)"
+done
+echo "=== unit declarations ==="
+grep -n -m 8 -E "SI_UNIT|CONVERSION_BASED_UNIT|LENGTH_UNIT|PLANE_ANGLE_UNIT" "$F" | head -8
+echo "=== python CAD kernels available? ==="
+PY=/home/T7/ojh/robot_sim/env_isaaclab/bin/python
+$PY - <<'PY'
+mods = ["OCP", "OCC", "cadquery", "FreeCAD", "trimesh", "gmsh", "steputils", "Part"]
+import importlib.util
+for m in mods:
+    print("  %-10s %s" % (m, "present" if importlib.util.find_spec(m) else "-"))
+PY
+echo "=== CLI CAD tools ==="
+for b in FreeCADCmd freecadcmd freecad gmsh assimp meshlabserver openscad; do
+  printf '  %-12s %s\n' "$b" "$(command -v $b || echo -)"
+done
+echo "=== isaac cad converter extensions installed? ==="
+ls -d /home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/exts*/omni.kit.converter* 2>/dev/null | head -5 || echo "  none"
+ls /home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/extscache 2>/dev/null | grep -i -E "cad|converter|step|dgn|jt" | head -10 || echo "  no cad/converter ext in extscache"
