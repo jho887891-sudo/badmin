@@ -20,7 +20,9 @@ import pytest
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 
+sys.path.insert(0, str(ROOT / "simulation"))
 from src.simulation.rebot_b601_rs.joint_limits import JOINT_LIMITS  # noqa: E402
+from badminton_scene.scene_layout import REBOT_RS  # noqa: E402
 
 EVIDENCE = ROOT / "outputs" / "simulation" / "rebot_b601_rs" / "HOLD_rest_pose.json"
 
@@ -111,10 +113,12 @@ def test_drive_parameters_are_the_ones_the_project_intends(ev):
     The physx_dof_* read-back is authoritative here; the actuator objects stringify their tensors
     in the JSON, so they are only checked for presence.
     """
+    expected_k = float(REBOT_RS["stiffness"])
+    expected_c = float(REBOT_RS["damping"])
     for run in ev["runs"]:
         assert run.get("actuators"), run["name"]
-        assert run["physx_dof_stiffnesses"] == [100.0] * 8, run["name"]
-        assert run["physx_dof_dampings"] == [1.0] * 8, run["name"]
+        assert run["physx_dof_stiffnesses"] == [expected_k] * 8, run["name"]
+        assert run["physx_dof_dampings"] == [expected_c] * 8, run["name"]
         forces = run["physx_dof_max_forces"]
         assert forces[:3] == [36.0, 36.0, 36.0], run["name"]
         assert forces[3:6] == [14.0, 14.0, 14.0], run["name"]

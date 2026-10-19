@@ -9,6 +9,10 @@ Every file here was produced by a real run on the GPU host; none of it is transc
 | rest_pose_probe.json | remote rest_pose_probe.py | 8 candidate rest poses measured from link geometry; the chosen pose keeps every link above the base plane |
 | conversion_config.yaml | Isaac Lab convert_urdf.py | the exact importer settings behind the USD |
 
+| MULTIENV_hold.json | remote check_multienv_hold.py via run_multienv.sh | merged climb 2/4/16/32/64/128 envs: every env holds its own target (worst 0.0188 rad), limits respected, independent reset verified, throughput per count |
+| MULTIENV_run_<N>.json | same harness, per count | per-env target, final joint positions/velocities, hold error, limit status, wrist height, independent-reset drift, performance |
+| MULTIENV_curve_<N>.csv | same harness --curve (2, 16, 128) | joint angles over time for every env |
+| MULTIENV_log_<N>.txt | same runs, full stdout | complete run logs for each env count |
 | HOLD_rest_pose.json | remote check_arm_rest_pose_hold.py (bare arm + full scene) | the B601-RS holds its rest pose for 5 s in both assemblies: worst error 0.0423 rad, joint2/joint3 inside their official ranges, wrist 0.487 m above the mount, no body below the mount plane |
 | HOLD_run_standalone.json / HOLD_run_scene.json | same harness, per-mode output | the raw per-mode runs that HOLD_rest_pose.json merges (joint names/indices, default_joint_pos, targets, velocities, limits, drive gains, checkpoints) |
 | HOLD_curve_standalone.csv / HOLD_curve_scene.csv | same harness --curve | 60 Hz joint-angle curve over the full 5 s (301 rows) |

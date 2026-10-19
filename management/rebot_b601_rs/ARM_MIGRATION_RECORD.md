@@ -210,3 +210,17 @@ Worked on feature/shuttle-detection on top of 98487bf. Only this migration's fil
 another session's in-flight files (deliverables/rebot_b601dm/*, management/rebot_b601dm/DELIVERABLES.md,
 scripts/simulation/render_shuttle_3d_probe.py, outputs/three_d_render_probe/,
 outputs/yolo26s_speed_opt/render_manifest.json) are left untouched. Nothing is pushed.
+
+---
+
+## H. 多环境后续（2026-10，下一轮）
+
+* InteractiveScene 驱动失效的**性质**已用逐项对照固定下来（staging buffer 正确、articulation 根唯一、
+  spawn 属性/复制开关/reset/拍平资产/写入顺序/重力/自碰撞/增益全部被排除），但**仍未定位到上游机制**。
+  完整对照表见 management/rebot_b601_rs/MULTIENV_ASSEMBLY.md 第 1 节。
+* 驱动增益改为**推导值**：三次实测稳态误差（k=100/300/1000 → 0.0532/0.0176/0.0057 rad）一致反推
+  负载 ~5.3 N m，按 0.02 rad 误差预算取 k=300、阻尼 20（scene_layout.py 有推导注释）。F1 证据已按新
+  增益重测：保持误差 0.0137 rad（原 0.0423），两项 F1 门仍通过。
+* 多环境采用**直接 Articulation 装配**（simulation/badminton_scene/multienv_arm.py），2→128 环境全部
+  通过：最差保持误差 0.0188 rad、限位合规、独立 reset 不影响他人。吞吐随 env 数近似 1/N 下降
+  （Python 每环境三次调用，CPU 受限），这是推荐路线前的已知限制。

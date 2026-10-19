@@ -79,14 +79,18 @@ REBOT_RS = dict(
     # the base plane, link6 sits 0.497 m above the mount.
     rest_joint_pos={"joint1": 0.0, "joint2": 0.3, "joint3": 1.0,
                     "joint4": 0.0, "joint5": 0.0, "joint6": 0.0},
-    # The URDF converter's own drive values, kept because they are reproducible. KNOWN DEFECT: at
-    # these gains the rest pose does NOT hold - within 60 steps joint3 drifts to -0.067 rad, i.e.
-    # below its own lower limit of 0 (outputs/simulation/rebot_b601_rs/VERIFY_scene_load.json).
-    # Raising stiffness to 5000 changed the result by less than 3 mrad, so the drives themselves,
-    # not the gain choice, are the suspect. Tracked as open item F1 in
-    # management/rebot_b601_rs/ARM_MIGRATION_RECORD.md.
-    stiffness=100.0,
-    damping=1.0,
+    # Drive gains, DERIVED rather than guessed (F1 follow-up, multi-env round):
+    #   * the position drive is a P controller, so a gravity-loaded joint settles at tau_g / k;
+    #   * three measured steady-state errors at the same target (k=100: 0.053228 rad,
+    #     k=300: 0.017627 rad, k=1000: 0.005675 rad) all imply tau_g = 5.3 N m at the rest pose, and
+    #     the error scales exactly as 1/k - evidence that it is lag, not a broken drive;
+    #   * with a 0.02 rad steady-state error budget: k >= 5.3 / 0.02 = 265, so k = 300 is chosen;
+    #   * damping 20 keeps the response settled (at k=100 / c=1 the joints were still moving at
+    #     0.17 rad/s after 2.5 s; at 300 / 20 the residual is below 0.02 rad/s).
+    # Raising the gain further would shrink the error, but this value is the one the error budget
+    # justifies; nothing here relaxes a joint limit or a safety value.
+    stiffness=300.0,
+    damping=20.0,
 )
 
 PIPER = dict(
