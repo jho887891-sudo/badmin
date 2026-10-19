@@ -17,7 +17,7 @@ import sys
 import time
 from pathlib import Path
 
-REPO = Path("/home/T7/dgut/robot_sim/migration_check")
+REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "simulation"))
 
 from isaaclab.app import AppLauncher
@@ -91,6 +91,10 @@ for _ in range(120):        # settle before the measured window
 # ---- measured window: every step, every env, all 8 DOFs
 lo_trace = {nm: float("inf") for nm in names}
 hi_trace = {nm: float("-inf") for nm in names}
+# Evaluate the complete hold window, not only the last position sample.
+targets_cpu = targets.detach().cpu()
+arm_indices = [names.index(nm) for nm in ARM]
+worst_window_error = torch.zeros(N, dtype=torch.float64)
 first_violation = {}
 q_start = arm.joint_pos().cpu().clone()
 series = {"step": [], "time_s": [], "q": [], "qd": []}
@@ -101,6 +105,11 @@ for step in range(1, STEPS + 1):
     arm.step()
     q = arm.joint_pos().cpu()
     qd = arm.joint_vel().cpu()
+    # NaN comparisons can silently pass a limit check; fail at the source instead.
+    if not torch.isfinite(q).all() or not torch.isfinite(qd).all():
+        raise RuntimeError("non-finite joint position/velocity at measured step %d" % step)
+    sample_error = (targets_cpu[:, arm_indices] - q[:, arm_indices]).abs().amax(dim=1)
+    worst_window_error = torch.maximum(worst_window_error, sample_error.to(torch.float64))
     for j, nm in enumerate(names):
         col = q[:, j]
         lo_trace[nm] = min(lo_trace[nm], float(col.min()))
@@ -135,6 +144,7 @@ for env_id in range(N):
         "final_joint_pos": [round(float(v), 6) for v in q_end[env_id].tolist()],
         "final_joint_vel": [round(float(v), 6) for v in qd_end[env_id].tolist()],
         "hold_error_rad": round(max(float(err[names.index(nm)]) for nm in ARM), 6),
+        "worst_window_hold_error_rad": round(float(worst_window_error[env_id]), 6),
         "ee_world_z": round(ee_z[env_id], 6),
         "ee_above_mount": round(ee_z[env_id] - REBOT_RS["mount_world"][2], 6),
     })
@@ -185,17 +195,22 @@ reset_info = {
     "env_after_60_steps_error_vs_rest_rad": round(
         float((after_pos[PROBE].cpu() - rest_ref[0]).abs().max()), 6),
     "env_target_after_reset": [round(float(v), 6) for v in immediate_targets[PROBE].tolist()],
+    "env_target_matches_rest": bool(torch.allclose(
+        immediate_targets[PROBE], rest_ref[0], rtol=0, atol=1e-9)),
+    "env_target_after_60_steps_matches_rest": bool(torch.allclose(
+        after_targets[PROBE], rest_ref[0], rtol=0, atol=1e-9)),
     "others_target_unchanged": bool(torch.allclose(
-        immediate_targets[others], before_targets[others], atol=1e-9)) if others else True,
+        immediate_targets[others], before_targets[others], rtol=0, atol=1e-9)) if others else True,
     "others_target_unchanged_after_steps": bool(torch.allclose(
-        after_targets[others], before_targets[others], atol=1e-9)) if others else True,
+        after_targets[others], before_targets[others], rtol=0, atol=1e-9)) if others else True,
     "other_env_drift_rad": {
         str(e): round(float((after_pos[e] - before_pos[e]).abs().max()), 6) for e in others},
 }
 
 report = {
     "num_envs": N,
-    "hold_seconds": args.hold_seconds,
+    "hold_seconds": STEPS * DT,
+    "hold_seconds_requested": args.hold_seconds,
     "steps_measured": STEPS,
     "physics_dt": DT,
     "assembly": "direct Articulation per env (MultiEnvArm)",
@@ -220,8 +235,10 @@ report = {
         "num_envs": N,
     },
     "verdict": {
-        "all_envs_hold": all(e["hold_error_rad"] <= 0.05 for e in envs),
+        "all_envs_hold": all(e["worst_window_hold_error_rad"] <= 0.05 for e in envs),
+        "all_envs_finite": True,  # loop raises immediately upon a non-finite state
         "worst_hold_error_rad": max(e["hold_error_rad"] for e in envs),
+        "max_window_hold_error_rad": max(e["worst_window_hold_error_rad"] for e in envs),
         "all_dofs_within_limits": all(v["inside"] for v in limit_trace.values()),
         "max_final_vel_rad_s": round(max(
             max(abs(v) for v in e["final_joint_vel"][:6]) for e in envs), 6),
@@ -229,6 +246,8 @@ report = {
         "independent_reset_ok": (
             reset_info["env_immediate_error_vs_rest_rad"] <= 1e-4
             and reset_info["env_after_60_steps_error_vs_rest_rad"] <= 0.05
+            and reset_info["env_target_matches_rest"]
+            and reset_info["env_target_after_60_steps_matches_rest"]
             and reset_info["others_target_unchanged"]
             and reset_info["others_target_unchanged_after_steps"]
             and all(v <= 1e-3 for v in reset_info["other_env_drift_rad"].values())

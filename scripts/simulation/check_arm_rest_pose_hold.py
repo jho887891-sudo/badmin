@@ -12,7 +12,7 @@ import json
 import sys
 from pathlib import Path
 
-REPO = Path("/home/T7/dgut/robot_sim/migration_check")
+REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "simulation"))
 
 from isaaclab.app import AppLauncher
