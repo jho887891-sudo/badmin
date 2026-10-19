@@ -1,0 +1,46 @@
+=== context ===
+host: jxxy  date: 2026-10-19T16:00:01+00:00
+target_commit: 83ea89c05af57e31dcc67b50f9ff14aa9fa66033
+target_tree:   3534b4217d62fcc6abbe14bb51739815c5c5fb0d
+python: 3.12.13
+pytest: pytest 9.1.1
+NVIDIA RTX A6000, 580.178.04, 49140 MiB, 24827 MiB
+=== module provenance ===
+badminton_scene   : /home/T7/dgut/runs/review-83ea89c/simulation/badminton_scene/__init__.py
+velocity_accounting: /home/T7/dgut/runs/review-83ea89c/simulation/badminton_scene/velocity_accounting.py
+rs_physics        : /home/T7/dgut/runs/review-83ea89c/simulation/badminton_scene/rs_physics.py
+scene_layout      : /home/T7/dgut/runs/review-83ea89c/simulation/badminton_scene/scene_layout.py
+gains             : 300.0 20.0
+### T1_pytest_accounting
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python -m pytest tests/simulation/rebot_b601_rs/test_velocity_accounting.py -q
+exit=0 seconds=8 log=/home/T7/dgut/runs/review-83ea89c_runlogs/T1_pytest_accounting.log
+### T2_probe_step_240
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/probe_rs_velocity_channels.py --mode step --dt 0.004166666666666667 --settle-steps 240 --sample-steps 480 --solver tgs --external-forces-every-iteration on --out /home/T7/dgut/runs/review-83ea89c/outputs/simulation/rebot_b601_rs/accounting_83ea89c/T2_step_tgs_exton_240.json --headless
+exit=0 seconds=84 log=/home/T7/dgut/runs/review-83ea89c_runlogs/T2_probe_step_240.log
+### T3_probe_step_480
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/probe_rs_velocity_channels.py --mode step --dt 0.002083333333333333 --settle-steps 480 --sample-steps 960 --solver tgs --external-forces-every-iteration on --out /home/T7/dgut/runs/review-83ea89c/outputs/simulation/rebot_b601_rs/accounting_83ea89c/T3_step_tgs_exton_480.json --headless
+exit=0 seconds=35 log=/home/T7/dgut/runs/review-83ea89c_runlogs/T3_probe_step_480.log
+### T4_scene_rest_5s
+cmd: /home/T7/ojh/robot_sim/env_isaaclab/bin/python scripts/simulation/check_arm_rest_pose_hold.py --mode scene --out /home/T7/dgut/runs/review-83ea89c/outputs/simulation/rebot_b601_rs/accounting_83ea89c/T4_rest_scene_5s.json --curve /home/T7/dgut/runs/review-83ea89c/outputs/simulation/rebot_b601_rs/accounting_83ea89c/T4_curve_scene.csv --headless
+exit=0 seconds=54 log=/home/T7/dgut/runs/review-83ea89c_runlogs/T4_scene_rest_5s.log
+########## accounting verification ##########
+--- T2_step_tgs_exton_240.json dt=0.004167 solver= tgs ext= on
+  whole window: q0=0.286276460 qN=0.286275506 measured=-0.000000954 integrated=-0.000195928 diff=-0.000194974
+  sum(seg actual_delta)  = -0.000000954   whole measured = -0.000000954   delta_err = 0.000e+00
+  sum(seg integrated)    = -0.000195928   whole integral = -0.000195928   int_err   = 0.000e+00
+  accounting flags: {"window": "samples step=1..N vs initial_sample step=0", "integration_rule": "sum(physx_qd[step=1..N]) * dt", "step_count": 480, "net_matches_segment_sum": true, "integral_matches_segment_sum": true}
+   outbound steps    0- 239 actual=+0.103009403 int_v=+0.102700553 diff=-0.000308849 peak=0.004165828
+   return   steps  239- 480 actual=-0.103010356 int_v=-0.102896481 diff=+0.000113875 peak=0.004180282
+  samples kept: 480  initial_sample step: 0
+--- T3_step_tgs_exton_480.json dt=0.002083 solver= tgs ext= on
+  whole window: q0=0.286199510 qN=0.286199510 measured=+0.000000000 integrated=-0.000104100 diff=-0.000104100
+  sum(seg actual_delta)  = +0.000000000   whole measured = +0.000000000   delta_err = 0.000e+00
+  sum(seg integrated)    = -0.000104100   whole integral = -0.000104100   int_err   = 6.451e-18
+  accounting flags: {"window": "samples step=1..N vs initial_sample step=0", "integration_rule": "sum(physx_qd[step=1..N]) * dt", "step_count": 960, "net_matches_segment_sum": true, "integral_matches_segment_sum": true}
+   outbound steps    0- 479 actual=+0.102982610 int_v=+0.102942184 diff=-0.000040426 peak=0.002088577
+   return   steps  479- 960 actual=-0.102982610 int_v=-0.103046284 diff=-0.000063673 peak=0.002096027
+  samples kept: 960  initial_sample step: 0
+=== T4 rest scene: physics_configuration recorded? ===
+physics_configuration: {"solver_type": 1, "enable_external_forces_every_iteration": true, "configured_by": "badminton_scene.rs_physics.rebot_rs_simulation_cfg", "verification": "configured in code; not an independent runtime PhysX solver readback"}
+verdict: {"held_5s": true, "worst_hold_error_rad": 0.013724, "joint2_joint3_inside_limits": true, "ee_final_rel_mount_z": 0.493378, "ee_drop_m": 0.003447, "worst_body_below_ground": 0.3}
+=== END ===
