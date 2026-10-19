@@ -108,3 +108,60 @@ order worth trying:
    upstream and hand it over; do not patch the installed library in place.
 
 Until one of those lands, do not let a scene-registered arm carry any capability claim.
+---
+
+## 5. Joint velocity channel is NOT usable yet (found by the 70843e7 review)
+
+The review asked whether the logged joint velocities agree with the almost-flat position curves. They
+do not, and the reason is not a stale buffer:
+
+| Measurement (2 envs, gains 300 / 20, rest target, after 240 settle steps) | Value |
+| --- | --- |
+| IsaacLab data.joint_vel, joint2 | 0.06757433 rad/s |
+| PhysX root_view.get_dof_velocities, joint2 | 0.06757433 rad/s (identical - buffer is live) |
+| Numeric dq/dt from the position series, joint2 | 0.0 |
+| Position change over 40 steps (1/240 s), joint2 | 0.0 rad |
+
+So PhysX itself reports a steady velocity for a DOF whose position does not change at all. Measured
+across step sizes the reported value scales with the step:
+
+| physics rate | reported joint2 velocity | numeric dq/dt | position delta |
+| --- | --- | --- | --- |
+| 480 Hz | 0.03670 rad/s | -0.000029 | -0.000003 rad |
+| 240 Hz | 0.06757 rad/s | 0.0 | 0.0 rad |
+| 120 Hz | 0.11512 rad/s | 0.0 | 0.0 rad |
+| 60 Hz | 0.16724 rad/s | 0.0 | 0.0 rad |
+
+A rate would not scale with dt; a per-step residual does. Concrete consequences for the project:
+
+* positions are authoritative and every gate here uses positions (hold, limits, reset, wrists);
+* **nothing may differentiate, integrate or threshold joint velocity until this is resolved** - the
+  safety shield's velocity proxy and any damping term based on measured velocity would see phantom
+  motion of ~0.07 rad/s at steady state;
+* the evidence carries this as a known issue and the test suite has a canary that FAILS if the defect
+  quietly disappears (so the record has to be updated deliberately, not silently).
+
+Evidence: outputs/simulation/rebot_b601_rs/STATE_SYNC_dt_scaling.json (four step sizes, 2 envs each)
+plus MULTIENV_curve_2_probe_240hz.csv (480 rows of raw 240 Hz position AND velocity).
+
+Not yet explained: whether this is a PhysX TGS artifact (the run log warns about
+enable_external_forces_every_iteration=False), a drive-type interaction, or the reported velocity being
+the pre-constraint value. That needs a solver-level probe and is out of scope for this round.
+
+---
+
+## 6. What the formal scene does and does not support (70843e7 review item 7)
+
+| Path | envs | status |
+| --- | --- | --- |
+| create_scene(include_robot=True), B601-RS | **1 only** | verified; any other count raises NotImplementedError |
+| create_scene(include_robot=True), PiPER legacy | unchanged | register-through-InteractiveScene, as before |
+| create_scene(include_robot=False) | any | court/statics only, no arm |
+| MultiEnvArm (this document) | 2..128 verified | separate research assembly, NOT part of create_scene |
+
+The rule lives in simulation/badminton_scene/assembly_route.py as a pure function so it can be unit
+tested without Isaac Sim (tests/simulation/rebot_b601_rs/test_scene_arm_route.py), and create_scene
+calls it - the test fails if an inline copy of the rule reappears.
+
+Running 128 environments in a test script therefore does NOT mean the formal robot scene supports 128
+environments. It does not.

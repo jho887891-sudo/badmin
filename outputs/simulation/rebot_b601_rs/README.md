@@ -9,6 +9,9 @@ Every file here was produced by a real run on the GPU host; none of it is transc
 | rest_pose_probe.json | remote rest_pose_probe.py | 8 candidate rest poses measured from link geometry; the chosen pose keeps every link above the base plane |
 | conversion_config.yaml | Isaac Lab convert_urdf.py | the exact importer settings behind the USD |
 
+| STATE_SYNC_dt_scaling.json | tools/merge_state_sync_evidence.py from 4 remote runs | KNOWN ISSUE: the reported joint velocity is not dq/dt - it equals the PhysX DOF velocity but the position does not change, and the value scales with the physics step (0.0367 / 0.0676 / 0.115 / 0.167 rad/s at 480 / 240 / 120 / 60 Hz) |
+| STATE_SYNC_dt_1_<N>.json | remote state_sync.py | raw per-step-size probe behind the table above |
+| MULTIENV_curve_<N>_probe_240hz.csv | check_multienv_hold.py --curve | 480 rows of raw 240 Hz joint POSITION and VELOCITY for the probe env |
 | MULTIENV_hold.json | remote check_multienv_hold.py via run_multienv.sh | merged climb 2/4/16/32/64/128 envs: every env holds its own target (worst 0.0188 rad), limits respected, independent reset verified, throughput per count |
 | MULTIENV_run_<N>.json | same harness, per count | per-env target, final joint positions/velocities, hold error, limit status, wrist height, independent-reset drift, performance |
 | MULTIENV_curve_<N>.csv | same harness --curve (2, 16, 128) | joint angles over time for every env |

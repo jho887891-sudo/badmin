@@ -1,0 +1,102 @@
+{
+  "question": "is the joint velocity channel consistent with the joint position channel?",
+  "answer": "no",
+  "method": "MultiEnvArm, 2 envs, gains 300/20, rest target, 240 settle steps then 40 measured steps",
+  "finding": [
+    "IsaacLab data.joint_vel equals the PhysX DOF velocity, so the buffer is not stale.",
+    "The numeric derivative of the same DOF position is exactly 0 while the reported velocity is not.",
+    "The reported velocity grows with the physics step (see rows), i.e. it behaves like a per-step residual rather than a rate; it is therefore not dq/dt."
+  ],
+  "rows": [
+    {
+      "physics_hz": 480,
+      "physics_dt": 0.0020833333333333333,
+      "reported_vel_joint2_rad_s": 0.03669871,
+      "reported_vel_joint3_rad_s": 0.04214242,
+      "numeric_dqdt_joint2_rad_s": -2.9e-05,
+      "numeric_dqdt_joint3_rad_s": 0.0,
+      "position_delta_joint2_rad": -2.98e-06,
+      "position_delta_joint3_rad": -2.09e-06,
+      "data_equals_physx": true
+    },
+    {
+      "physics_hz": 240,
+      "physics_dt": 0.004166666666666667,
+      "reported_vel_joint2_rad_s": 0.06757433,
+      "reported_vel_joint3_rad_s": 0.07446295,
+      "numeric_dqdt_joint2_rad_s": 0.0,
+      "numeric_dqdt_joint3_rad_s": 0.0,
+      "position_delta_joint2_rad": 0.0,
+      "position_delta_joint3_rad": 0.0,
+      "data_equals_physx": true
+    },
+    {
+      "physics_hz": 120,
+      "physics_dt": 0.008333333333333333,
+      "reported_vel_joint2_rad_s": 0.11511795,
+      "reported_vel_joint3_rad_s": 0.12475244,
+      "numeric_dqdt_joint2_rad_s": 0.0,
+      "numeric_dqdt_joint3_rad_s": 0.0,
+      "position_delta_joint2_rad": 0.0,
+      "position_delta_joint3_rad": 0.0,
+      "data_equals_physx": true
+    },
+    {
+      "physics_hz": 60,
+      "physics_dt": 0.016666666666666666,
+      "reported_vel_joint2_rad_s": 0.16723871,
+      "reported_vel_joint3_rad_s": 0.18336956,
+      "numeric_dqdt_joint2_rad_s": 0.0,
+      "numeric_dqdt_joint3_rad_s": 0.0,
+      "position_delta_joint2_rad": 0.0,
+      "position_delta_joint3_rad": 0.0,
+      "data_equals_physx": true
+    }
+  ],
+  "rows_sorted_by_hz": [
+    {
+      "physics_hz": 60,
+      "physics_dt": 0.016666666666666666,
+      "reported_vel_joint2_rad_s": 0.16723871,
+      "reported_vel_joint3_rad_s": 0.18336956,
+      "numeric_dqdt_joint2_rad_s": 0.0,
+      "numeric_dqdt_joint3_rad_s": 0.0,
+      "position_delta_joint2_rad": 0.0,
+      "position_delta_joint3_rad": 0.0,
+      "data_equals_physx": true
+    },
+    {
+      "physics_hz": 120,
+      "physics_dt": 0.008333333333333333,
+      "reported_vel_joint2_rad_s": 0.11511795,
+      "reported_vel_joint3_rad_s": 0.12475244,
+      "numeric_dqdt_joint2_rad_s": 0.0,
+      "numeric_dqdt_joint3_rad_s": 0.0,
+      "position_delta_joint2_rad": 0.0,
+      "position_delta_joint3_rad": 0.0,
+      "data_equals_physx": true
+    },
+    {
+      "physics_hz": 240,
+      "physics_dt": 0.004166666666666667,
+      "reported_vel_joint2_rad_s": 0.06757433,
+      "reported_vel_joint3_rad_s": 0.07446295,
+      "numeric_dqdt_joint2_rad_s": 0.0,
+      "numeric_dqdt_joint3_rad_s": 0.0,
+      "position_delta_joint2_rad": 0.0,
+      "position_delta_joint3_rad": 0.0,
+      "data_equals_physx": true
+    },
+    {
+      "physics_hz": 480,
+      "physics_dt": 0.0020833333333333333,
+      "reported_vel_joint2_rad_s": 0.03669871,
+      "reported_vel_joint3_rad_s": 0.04214242,
+      "numeric_dqdt_joint2_rad_s": -2.9e-05,
+      "numeric_dqdt_joint3_rad_s": 0.0,
+      "position_delta_joint2_rad": -2.98e-06,
+      "position_delta_joint3_rad": -2.09e-06,
+      "data_equals_physx": true
+    }
+  ]
+}

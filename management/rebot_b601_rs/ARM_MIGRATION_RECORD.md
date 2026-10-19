@@ -224,3 +224,26 @@ outputs/yolo26s_speed_opt/render_manifest.json) are left untouched. Nothing is p
 * 多环境采用**直接 Articulation 装配**（simulation/badminton_scene/multienv_arm.py），2→128 环境全部
   通过：最差保持误差 0.0188 rad、限位合规、独立 reset 不影响他人。吞吐随 env 数近似 1/N 下降
   （Python 每环境三次调用，CPU 受限），这是推荐路线前的已知限制。
+
+## I. 70843e7 评审修复（2026-10-19）
+
+评审指出的验收代码缺陷已逐条修复，并新增两条真实发现：
+
+1. `test_multienv_hold.py`：删除恒真的时长断言（原 `hold_seconds >= min(2.0, hold_seconds)`），改为
+   硬性 `>= 2.0`；删除"跳过失败环境"的 `continue`，任何 run 的 `all_envs_hold` 为假即整体失败；
+   六个环境数量必须齐全，缺一个就失败。
+2. 限位验证扩展到**全部 8 个 DOF**，且用**整段运行**的逐关节极值（harness 每步对每个环境累计 min/max），
+   不再只看末态 joint2/joint3；并核对限位值与本仓库官方限位表一致、`first_limit_violation` 必须为空。
+3. independent reset 现在验证四件事：被重置环境**回到 rest pose**（立即 ≤1e-4，60 步后 ≤0.05）、
+   其驱动目标变为 rest、其他环境**目标未被改**（1e-9 级）、其他环境状态漂移 ≤1e-3。
+4. **新发现（真实缺陷）**：PhysX 报告的关节速度与关节位置不自洽——`data.joint_vel` 与 PhysX
+   `get_dof_velocities` 完全一致（不是缓冲陈旧），但同一 DOF 的位置 1e-8 级不变，数值导数为 0；
+   且报告值随仿真步长线性放大（480/240/120/60 Hz → 0.0367/0.0676/0.115/0.167 rad/s）。结论：
+   该速度通道现在是**每步残差**而非 dq/dt，**不得用于微分/积分/阈值判断**。已作为 known issue 入库，
+   并加"金丝雀"测试：若缺陷消失测试会失败，迫使记录被显式更新，而不是静默通过。
+5. `robot_cfg.py` 的 `p` / `_p` 变量错误已修（历史 PiPER 分支一被选中即 NameError）；新增
+   `tests/simulation/rebot_b601_rs/test_robot_cfg_historical.py`（stub 掉 isaaclab，端到端跑历史分支），
+   并把臂选择器的校验抽成 `resolve_arm_model()` 单测覆盖。
+6. 场景与多环境接口分离：`assembly_route.resolve_scene_arm_route()` 是纯函数，`create_scene` 调用它，
+   `num_envs != 1` 的 B601-RS 直接抛 `NotImplementedError`；新增 `test_scene_arm_route.py`（含反漂移断言），
+   明确"测试脚本能跑 128 环境"不等于"正式场景支持 128 环境"。

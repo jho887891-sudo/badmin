@@ -1,11 +1,7 @@
 The '--headless' CLI argument is deprecated. Omit '--viz' for default headless. If config visualizers are enabled and you want to force headless, use '--viz none'.
 WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
-E0000 00:00:1792378301.947365 4061382 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
-W0000 00:00:1792378301.948008 4061382 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
-Loading user config located at: '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
-2026-10-19T02:51:35Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/T7/ojh/robot_sim/IsaacLab/source/isaaclab_visualizers' or '/home/T7/ojh/robot_sim/IsaacLab/source/isaaclab_visualizers/config'
-2026-10-19T02:51:43Z [7,877ms] [Error] [omni.core.ITypeFactory] Circular dependency detected! Interface: omni::platforminfo::ICpuInfo requested. But plugin with an interface: /home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/kernel/plugins/libomni.platforminfo.plugin.so is already in resolving state.
-2026-10-19T02:51:43Z [7,877ms] [Error] [carb] [Plugin: gpu.foundation.plugin] Dependency: [omni::platforminfo::ICpuInfo v1.0] failed to be resolved.
+E0000 00:00:1792383349.145204 4128147 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792383349.146005 4128147 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
 [ISAACLAB] AppLauncher initialization complete
 [INFO]: Registered backend 'physx' for factory Articulation.
 [INFO]: Simulation parameters for joints in /World/envs/env_0/Robot/RebotB601RS:
@@ -969,9 +965,11 @@ Loading user config located at: '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3
 |   7   | gripper_joint2 |  300.000  |  20.000 |  0.000   |      0.000      |      0.000       |      0.000       |  [0.000, 0.072] |     572.958     |    500.000    |
 +-------+----------------+-----------+---------+----------+-----------------+------------------+------------------+-----------------+-----------------+---------------+
 MULTIENV_JSON_START
-{"num_envs": 64, "verdict": {"all_envs_hold": true, "max_final_vel_rad_s": 0.074476, "worst_hold_error_rad": 0.018787, "all_within_limits": true, "min_ee_above_mount": 0.435133, "independent_reset_ok": true}, "performance": {"wall_seconds": 143.369, "steps_per_second": 3.3, "sim_seconds_per_wall_second": 0.01, "gpu_memory_before_mib": 43052, "gpu_memory_after_mib": 45164, "gpu_memory_delta_mib": 2112, "gpu_memory_used_mib": 45164, "num_envs": 64}}
+{"num_envs": 64, "verdict": {"all_envs_hold": true, "worst_hold_error_rad": 0.018787, "all_dofs_within_limits": true, "max_final_vel_rad_s": 0.074476, "min_ee_above_mount": 0.435133, "independent_reset_ok": true, "velocity_position_consistent": false}, "performance": {"wall_seconds": 71.066, "steps_per_second": 6.8, "sim_seconds_per_wall_second": 0.03, "gpu_memory_before_mib": 25130, "gpu_memory_after_mib": 27238, "gpu_memory_delta_mib": 2108, "num_envs": 64}}
 MULTIENV_JSON_END
-2026-10-19T02:51:43Z [8,010ms] [Warning] [omni.platforminfo.plugin] failed to open the default display.  Can't verify X Server version.
-2026-10-19T02:51:44Z [8,351ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
-2026-10-19T02:52:08Z [33,050ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
-2026-10-19T02:52:17Z [42,162ms] [Warning] [usdrt.population.plugin] Last global time was not created. Did you call setEnableUsdNoticeHandling?
+Loading user config located at: '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/user.config.json'
+2026-10-19T04:15:44Z [0ms] [Warning] [omni.ext.plugin] [ext: isaaclab_visualizers] Extensions config 'extension.toml' doesn't exist '/home/T7/ojh/robot_sim/IsaacLab/source/isaaclab_visualizers' or '/home/T7/ojh/robot_sim/IsaacLab/source/isaaclab_visualizers/config'
+2026-10-19T04:15:50Z [5,713ms] [Warning] [omni.platforminfo.plugin] failed to open the default display.  Can't verify X Server version.
+2026-10-19T04:15:50Z [5,991ms] [Warning] [omni.usd_config.extension] Enable omni.materialx.libs extension to use MaterialX
+2026-10-19T04:16:24Z [39,588ms] [Warning] [isaaclab_physx.physics.physx_manager] TGS solver with enable_external_forces_every_iteration=False may cause noisy velocities.
+2026-10-19T04:16:33Z [48,156ms] [Warning] [usdrt.population.plugin] Last global time was not created. Did you call setEnableUsdNoticeHandling?

@@ -95,6 +95,30 @@ def _rebot_rs_articulation_cfg() -> ArticulationCfg:
     )
 
 
+PIPER_MOUNT_ROT = (1.0, 0.0, 0.0, 0.0)  # yaw 0 facing +X
+
+
+def piper_mount_pose():
+    """Historical PiPER mount pose taken from scene_layout.
+
+    Kept as its own function so it can be tested without Isaac Sim. Regression guard: this code used
+    to assign 'p' and then read '_p', which raised NameError only when BADMINTON_ARM_MODEL=piper was
+    selected - a path no test exercised.
+    """
+    mount = PIPER["mount_world"]
+    return ((float(mount[0]), float(mount[1]), float(mount[2])), PIPER_MOUNT_ROT)
+
+
+def resolve_arm_model(env_value):
+    """Validate the arm selector, so a typo fails loudly instead of silently picking the default."""
+    value = ("rebot_b601_rs" if env_value is None else str(env_value)).strip().lower()
+    if value not in ("rebot_b601_rs", "piper"):
+        raise ValueError(
+            "BADMINTON_ARM_MODEL=%r is not an arm this project has models for "
+            "(expected 'rebot_b601_rs' or 'piper')" % env_value)
+    return value
+
+
 def _piper_articulation_cfg() -> ArticulationCfg:
     """HISTORICAL: frozen Stage-0 PiPER assembly, kept for pre-migration reproduction."""
     if _PIPER_SCRIPTS not in sys.path:
@@ -102,20 +126,15 @@ def _piper_articulation_cfg() -> ArticulationCfg:
     from piper_cfg import PIPER_CFG  # noqa: E402
 
     cfg = PIPER_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot/PiPER")
-    p = PIPER["mount_world"]
-    cfg.init_state.pos = (_p[0], _p[1], _p[2])
-    cfg.init_state.rot = (1.0, 0.0, 0.0, 0.0)  # yaw 0 facing +X
+    pos, rot = piper_mount_pose()
+    cfg.init_state.pos = pos
+    cfg.init_state.rot = rot
     cfg.init_state.joint_pos = dict(PIPER["rest_joint_pos"])
     cfg.spawn.usd_path = _PIPER_USD
     return cfg
 
 
-ARM_MODEL = os.environ.get("BADMINTON_ARM_MODEL", "rebot_b601_rs").strip().lower()
-if ARM_MODEL not in ("rebot_b601_rs", "piper"):
-    raise ValueError(
-        f"BADMINTON_ARM_MODEL={ARM_MODEL!r} is not an arm this project has models for "
-        "(expected 'rebot_b601_rs' or 'piper')"
-    )
+ARM_MODEL = resolve_arm_model(os.environ.get("BADMINTON_ARM_MODEL"))
 
 ROBOT_ARTICULATION_CFG: ArticulationCfg = (
     _piper_articulation_cfg() if ARM_MODEL == "piper" else _rebot_rs_articulation_cfg()

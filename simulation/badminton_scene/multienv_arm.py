@@ -17,8 +17,14 @@ are only read.
 from __future__ import annotations
 
 from typing import Iterable, Sequence
+from .assembly_route import resolve_scene_arm_route  # noqa: F401  (re-exported for callers)
 
-import torch
+
+def _torch():
+    """Lazy torch import: this module must stay importable where torch is absent (pure unit tests)."""
+    import torch
+
+    return torch
 
 
 class MultiEnvArm:
@@ -33,6 +39,7 @@ class MultiEnvArm:
         rest_joint_pos: dict | None = None,
         stiffness: float = 100.0,
         damping: float = 1.0,
+        physics_dt: float = 1.0 / 240.0,
     ) -> None:
         if num_envs < 1:
             raise ValueError("num_envs must be >= 1")
@@ -42,6 +49,7 @@ class MultiEnvArm:
         self.rest_joint_pos = dict(rest_joint_pos or {})
         self.stiffness = float(stiffness)
         self.damping = float(damping)
+        self.physics_dt = float(physics_dt)
         self.robots: list = []
         self.joint_names: list[str] = []
         self.device = None
@@ -68,7 +76,7 @@ class MultiEnvArm:
             joint_names_expr=[".*"], stiffness=self.stiffness, damping=self.damping)}
 
         self.sim = sim_utils.SimulationContext(
-            sim_utils.SimulationCfg(dt=1.0 / 240.0, device="cuda:0"))
+            sim_utils.SimulationCfg(dt=self.physics_dt, device="cuda:0"))
         ground = sim_utils.GroundPlaneCfg()
         ground.func("/World/ground", ground)
         light = sim_utils.DistantLightCfg(intensity=700.0, color=(0.8, 0.8, 0.8))
@@ -91,6 +99,7 @@ class MultiEnvArm:
 
     def _rest_tensor(self, env_ids: Iterable[int]) -> torch.Tensor:
         rows = [[self.rest_joint_pos.get(nm, 0.0) for nm in self.joint_names] for _ in env_ids]
+        torch = _torch()
         return torch.tensor(rows, dtype=torch.float32, device=self.device)
 
     def reset(self, env_ids: Iterable[int]) -> None:
@@ -101,7 +110,7 @@ class MultiEnvArm:
         for env_id in env_ids:
             robot = self.robots[env_id]
             target = self._rest_tensor([env_id])
-            robot.write_joint_state_to_sim(target, torch.zeros_like(target))
+            robot.write_joint_state_to_sim(target, _torch().zeros_like(target))
             robot.set_joint_position_target(target)
             robot.write_data_to_sim()
 
@@ -124,10 +133,10 @@ class MultiEnvArm:
 
     # -- observation --------------------------------------------------------
     def joint_pos(self) -> torch.Tensor:
-        return torch.cat([r.data.joint_pos for r in self.robots], dim=0)
+        return _torch().cat([r.data.joint_pos for r in self.robots], dim=0)
 
     def joint_vel(self) -> torch.Tensor:
-        return torch.cat([r.data.joint_vel for r in self.robots], dim=0)
+        return _torch().cat([r.data.joint_vel for r in self.robots], dim=0)
 
     def joint_limits(self) -> list[list[float]]:
         return [list(map(float, lim)) for lim in self.robots[0].data.joint_limits[0].cpu().tolist()]
@@ -140,4 +149,5 @@ class MultiEnvArm:
         return out
 
 
-__all__ = ["MultiEnvArm"]
+
+__all__ = ["MultiEnvArm", "resolve_scene_arm_route"]

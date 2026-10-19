@@ -18,6 +18,7 @@ from .scene_layout import (CAMERA, PIPER, MORPH_PLACEHOLDER,
                            TARGET_ZONE, SIMULATION, REBOT_RS)
 from .robot_cfg import (ARM_MODEL, MORPH, ROBOT_ARTICULATION_CFG,
                         spawn_rebot_rs_directly)
+from .assembly_route import resolve_scene_arm_route
 from .shuttle_cfg import SHUTTLE_CFG
 
 SIM_DT = SIMULATION["physics_dt"]
@@ -124,11 +125,10 @@ def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_ax
     # F1: the converted B601-RS gets no drive torque when registered through InteractiveScene, so the
     # formal arm is spawned and bound directly (verified to hold the rest pose). See
     # management/rebot_b601_rs/ARM_MIGRATION_RECORD.md section E/F1.
-    _direct_arm = bool(include_robot) and ARM_MODEL == "rebot_b601_rs"
-    if _direct_arm and num_envs != 1:
-        raise NotImplementedError(
-            "the direct B601-RS spawn supports num_envs == 1 only; replicating it would need the "
-            "drive-binding defect in F1 solved first")
+    # The route (and the num_envs guard) lives in a pure helper so it can be unit tested without
+    # Isaac Sim: see tests/simulation/rebot_b601_rs/test_scene_arm_route.py.
+    _direct_arm = resolve_scene_arm_route(
+        include_robot=include_robot, arm_model=ARM_MODEL, num_envs=num_envs) == "direct"
     sim = sim_utils.SimulationContext(sim_utils.SimulationCfg(dt=SIM_DT, device="cuda:0"))
     if _direct_arm:
         _mount = REBOT_RS["mount_world"]

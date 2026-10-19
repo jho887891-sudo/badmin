@@ -14,6 +14,15 @@
       128
     ]
   },
+  "known_issues": {
+    "velocity_position_mismatch": {
+      "summary": "PhysX reports a steady non-zero DOF velocity while the same DOF's position is constant; the reported value scales with the physics step, so the joint velocity channel cannot be used as dq/dt in this scene.",
+      "measured": "joint2 at 240 Hz: data.joint_vel == physx dof velocity == 0.0676 rad/s, numeric dq/dt == 0.0, position delta over 40 steps == 0.0",
+      "dt_scaling": "outputs/simulation/rebot_b601_rs/STATE_SYNC_dt_scaling.json",
+      "impact": "control/limits use positions here; anything that differentiates or thresholds joint velocity must not trust this channel yet",
+      "analysis": "management/rebot_b601_rs/MULTIENV_ASSEMBLY.md section 5"
+    }
+  },
   "runs": [
     {
       "num_envs": 2,
@@ -103,7 +112,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -140,35 +148,190 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         }
       ],
+      "limit_trace": {
+        "joint1": {
+          "limit": [
+            -2.799999952316284,
+            2.799999952316284
+          ],
+          "observed_min": -0.1,
+          "observed_max": -0.0,
+          "inside": true
+        },
+        "joint2": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.287873,
+          "observed_max": 0.290719,
+          "inside": true
+        },
+        "joint3": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.757373,
+          "observed_max": 0.910219,
+          "inside": true
+        },
+        "joint4": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": -0.005669,
+          "observed_max": -0.005011,
+          "inside": true
+        },
+        "joint5": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": 1e-06,
+          "observed_max": 4e-06,
+          "inside": true
+        },
+        "joint6": {
+          "limit": [
+            -3.140000104904175,
+            3.140000104904175
+          ],
+          "observed_min": 2e-06,
+          "observed_max": 2e-06,
+          "inside": true
+        },
+        "gripper_joint1": {
+          "limit": [
+            0.0,
+            0.05000000074505806
+          ],
+          "observed_min": 0.0,
+          "observed_max": 0.0,
+          "inside": true
+        },
+        "gripper_joint2": {
+          "limit": [
+            0.0,
+            0.07150000333786011
+          ],
+          "observed_min": 0.0,
+          "observed_max": 3e-06,
+          "inside": true
+        }
+      },
+      "first_limit_violation": {},
+      "probe_env": 0,
+      "probe_series_rows": 480,
+      "velocity_position_consistency": {
+        "joint1": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": -0.00013,
+          "mismatch_rad": -9.3e-05,
+          "max_abs_vel_rad_s": 0.000608,
+          "start": -0.099963,
+          "end": -0.1
+        },
+        "joint2": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": 0.129828,
+          "mismatch_rad": 0.129866,
+          "max_abs_vel_rad_s": 0.064932,
+          "start": 0.290721,
+          "end": 0.290684
+        },
+        "joint3": {
+          "measured_delta_rad": -5e-05,
+          "integrated_vel_delta_rad": 0.148445,
+          "mismatch_rad": 0.148496,
+          "max_abs_vel_rad_s": 0.074246,
+          "start": 0.757424,
+          "end": 0.757373
+        },
+        "joint4": {
+          "measured_delta_rad": 2.5e-05,
+          "integrated_vel_delta_rad": 0.031598,
+          "mismatch_rad": 0.031573,
+          "max_abs_vel_rad_s": 0.016137,
+          "start": -0.005671,
+          "end": -0.005645
+        },
+        "joint5": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1e-06,
+          "mismatch_rad": 2e-06,
+          "max_abs_vel_rad_s": 3.2e-05,
+          "start": 4e-06,
+          "end": 1e-06
+        },
+        "joint6": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": -1.2e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 7e-06,
+          "start": 2e-06,
+          "end": 2e-06
+        },
+        "gripper_joint1": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": 0.0,
+          "mismatch_rad": -0.0,
+          "max_abs_vel_rad_s": 0.0,
+          "start": 0.0,
+          "end": 0.0
+        },
+        "gripper_joint2": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1.5e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 4.1e-05,
+          "start": 3e-06,
+          "end": 0.0
+        }
+      },
       "independent_reset": {
         "reset_env": 0,
-        "env0_after_reset_error": 0.21363,
+        "env_immediate_error_vs_rest_rad": 0.0,
+        "env_after_60_steps_error_vs_rest_rad": 0.013452,
+        "env_target_after_reset": [
+          0.0,
+          0.3,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "others_target_unchanged": true,
+        "others_target_unchanged_after_steps": true,
         "other_env_drift_rad": {
           "1": 0.0
         }
       },
       "performance": {
-        "wall_seconds": 4.09,
-        "steps_per_second": 117.4,
-        "sim_seconds_per_wall_second": 0.49,
-        "gpu_memory_before_mib": 39882,
-        "gpu_memory_after_mib": 42088,
-        "gpu_memory_delta_mib": 2206,
-        "gpu_memory_used_mib": 42088,
+        "wall_seconds": 5.922,
+        "steps_per_second": 81.1,
+        "sim_seconds_per_wall_second": 0.34,
+        "gpu_memory_before_mib": 25126,
+        "gpu_memory_after_mib": 27234,
+        "gpu_memory_delta_mib": 2108,
         "num_envs": 2
       },
       "verdict": {
         "all_envs_hold": true,
-        "max_final_vel_rad_s": 0.074437,
         "worst_hold_error_rad": 0.017627,
-        "all_within_limits": true,
+        "all_dofs_within_limits": true,
+        "max_final_vel_rad_s": 0.074437,
         "min_ee_above_mount": 0.435134,
-        "independent_reset_ok": true
+        "independent_reset_ok": true,
+        "velocity_position_consistent": false
       }
     },
     {
@@ -259,7 +422,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -296,7 +458,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -333,7 +494,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -370,14 +530,169 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         }
       ],
+      "limit_trace": {
+        "joint1": {
+          "limit": [
+            -2.799999952316284,
+            2.799999952316284
+          ],
+          "observed_min": -0.1,
+          "observed_max": 0.1,
+          "inside": true
+        },
+        "joint2": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.281213,
+          "observed_max": 0.290719,
+          "inside": true
+        },
+        "joint3": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.757373,
+          "observed_max": 1.216911,
+          "inside": true
+        },
+        "joint4": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": -0.005669,
+          "observed_max": -0.003366,
+          "inside": true
+        },
+        "joint5": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": 1e-06,
+          "observed_max": 4e-06,
+          "inside": true
+        },
+        "joint6": {
+          "limit": [
+            -3.140000104904175,
+            3.140000104904175
+          ],
+          "observed_min": 2e-06,
+          "observed_max": 2e-06,
+          "inside": true
+        },
+        "gripper_joint1": {
+          "limit": [
+            0.0,
+            0.05000000074505806
+          ],
+          "observed_min": -0.0,
+          "observed_max": 1e-06,
+          "inside": true
+        },
+        "gripper_joint2": {
+          "limit": [
+            0.0,
+            0.07150000333786011
+          ],
+          "observed_min": -0.0,
+          "observed_max": 3e-06,
+          "inside": true
+        }
+      },
+      "first_limit_violation": {},
+      "probe_env": 0,
+      "probe_series_rows": 480,
+      "velocity_position_consistency": {
+        "joint1": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": -0.00013,
+          "mismatch_rad": -9.3e-05,
+          "max_abs_vel_rad_s": 0.000608,
+          "start": -0.099963,
+          "end": -0.1
+        },
+        "joint2": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": 0.129828,
+          "mismatch_rad": 0.129866,
+          "max_abs_vel_rad_s": 0.064932,
+          "start": 0.290721,
+          "end": 0.290684
+        },
+        "joint3": {
+          "measured_delta_rad": -5e-05,
+          "integrated_vel_delta_rad": 0.148445,
+          "mismatch_rad": 0.148496,
+          "max_abs_vel_rad_s": 0.074246,
+          "start": 0.757424,
+          "end": 0.757373
+        },
+        "joint4": {
+          "measured_delta_rad": 2.5e-05,
+          "integrated_vel_delta_rad": 0.031598,
+          "mismatch_rad": 0.031573,
+          "max_abs_vel_rad_s": 0.016137,
+          "start": -0.005671,
+          "end": -0.005645
+        },
+        "joint5": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1e-06,
+          "mismatch_rad": 2e-06,
+          "max_abs_vel_rad_s": 3.2e-05,
+          "start": 4e-06,
+          "end": 1e-06
+        },
+        "joint6": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": -1.2e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 7e-06,
+          "start": 2e-06,
+          "end": 2e-06
+        },
+        "gripper_joint1": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": 0.0,
+          "mismatch_rad": -0.0,
+          "max_abs_vel_rad_s": 0.0,
+          "start": 0.0,
+          "end": 0.0
+        },
+        "gripper_joint2": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1.5e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 4.1e-05,
+          "start": 3e-06,
+          "end": 0.0
+        }
+      },
       "independent_reset": {
         "reset_env": 0,
-        "env0_after_reset_error": 0.21363,
+        "env_immediate_error_vs_rest_rad": 0.0,
+        "env_after_60_steps_error_vs_rest_rad": 0.013452,
+        "env_target_after_reset": [
+          0.0,
+          0.3,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "others_target_unchanged": true,
+        "others_target_unchanged_after_steps": true,
         "other_env_drift_rad": {
           "1": 0.0,
           "2": 0.0,
@@ -385,22 +700,22 @@
         }
       },
       "performance": {
-        "wall_seconds": 13.961,
-        "steps_per_second": 34.4,
-        "sim_seconds_per_wall_second": 0.14,
-        "gpu_memory_before_mib": 41170,
-        "gpu_memory_after_mib": 43282,
+        "wall_seconds": 6.253,
+        "steps_per_second": 76.8,
+        "sim_seconds_per_wall_second": 0.32,
+        "gpu_memory_before_mib": 25126,
+        "gpu_memory_after_mib": 27238,
         "gpu_memory_delta_mib": 2112,
-        "gpu_memory_used_mib": 43282,
         "num_envs": 4
       },
       "verdict": {
         "all_envs_hold": true,
-        "max_final_vel_rad_s": 0.074471,
         "worst_hold_error_rad": 0.018784,
-        "all_within_limits": true,
+        "all_dofs_within_limits": true,
+        "max_final_vel_rad_s": 0.074471,
         "min_ee_above_mount": 0.435134,
-        "independent_reset_ok": true
+        "independent_reset_ok": true,
+        "velocity_position_consistent": false
       }
     },
     {
@@ -491,7 +806,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -528,7 +842,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -565,7 +878,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -602,7 +914,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -639,7 +950,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -676,7 +986,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -713,7 +1022,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -750,7 +1058,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -787,7 +1094,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -824,7 +1130,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -861,7 +1166,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -898,7 +1202,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018785,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -935,7 +1238,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -972,7 +1274,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -1009,7 +1310,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -1046,14 +1346,169 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         }
       ],
+      "limit_trace": {
+        "joint1": {
+          "limit": [
+            -2.799999952316284,
+            2.799999952316284
+          ],
+          "observed_min": -0.1,
+          "observed_max": 0.1,
+          "inside": true
+        },
+        "joint2": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.281213,
+          "observed_max": 0.290719,
+          "inside": true
+        },
+        "joint3": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.757373,
+          "observed_max": 1.216911,
+          "inside": true
+        },
+        "joint4": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": -0.005669,
+          "observed_max": -0.003366,
+          "inside": true
+        },
+        "joint5": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": -1e-06,
+          "observed_max": 4e-06,
+          "inside": true
+        },
+        "joint6": {
+          "limit": [
+            -3.140000104904175,
+            3.140000104904175
+          ],
+          "observed_min": 2e-06,
+          "observed_max": 2e-06,
+          "inside": true
+        },
+        "gripper_joint1": {
+          "limit": [
+            0.0,
+            0.05000000074505806
+          ],
+          "observed_min": -0.0,
+          "observed_max": 3e-06,
+          "inside": true
+        },
+        "gripper_joint2": {
+          "limit": [
+            0.0,
+            0.07150000333786011
+          ],
+          "observed_min": -0.0,
+          "observed_max": 3e-06,
+          "inside": true
+        }
+      },
+      "first_limit_violation": {},
+      "probe_env": 0,
+      "probe_series_rows": 480,
+      "velocity_position_consistency": {
+        "joint1": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": -0.00013,
+          "mismatch_rad": -9.3e-05,
+          "max_abs_vel_rad_s": 0.000608,
+          "start": -0.099963,
+          "end": -0.1
+        },
+        "joint2": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": 0.129828,
+          "mismatch_rad": 0.129866,
+          "max_abs_vel_rad_s": 0.064932,
+          "start": 0.290721,
+          "end": 0.290684
+        },
+        "joint3": {
+          "measured_delta_rad": -5e-05,
+          "integrated_vel_delta_rad": 0.148445,
+          "mismatch_rad": 0.148496,
+          "max_abs_vel_rad_s": 0.074246,
+          "start": 0.757424,
+          "end": 0.757373
+        },
+        "joint4": {
+          "measured_delta_rad": 2.5e-05,
+          "integrated_vel_delta_rad": 0.031598,
+          "mismatch_rad": 0.031573,
+          "max_abs_vel_rad_s": 0.016137,
+          "start": -0.005671,
+          "end": -0.005645
+        },
+        "joint5": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1e-06,
+          "mismatch_rad": 2e-06,
+          "max_abs_vel_rad_s": 3.2e-05,
+          "start": 4e-06,
+          "end": 1e-06
+        },
+        "joint6": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": -1.2e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 7e-06,
+          "start": 2e-06,
+          "end": 2e-06
+        },
+        "gripper_joint1": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": 0.0,
+          "mismatch_rad": -0.0,
+          "max_abs_vel_rad_s": 0.0,
+          "start": 0.0,
+          "end": 0.0
+        },
+        "gripper_joint2": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1.5e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 4.1e-05,
+          "start": 3e-06,
+          "end": 0.0
+        }
+      },
       "independent_reset": {
         "reset_env": 0,
-        "env0_after_reset_error": 0.21363,
+        "env_immediate_error_vs_rest_rad": 0.0,
+        "env_after_60_steps_error_vs_rest_rad": 0.013452,
+        "env_target_after_reset": [
+          0.0,
+          0.3,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "others_target_unchanged": true,
+        "others_target_unchanged_after_steps": true,
         "other_env_drift_rad": {
           "1": 0.0,
           "2": 0.0,
@@ -1073,22 +1528,22 @@
         }
       },
       "performance": {
-        "wall_seconds": 46.391,
-        "steps_per_second": 10.3,
-        "sim_seconds_per_wall_second": 0.04,
-        "gpu_memory_before_mib": 43052,
-        "gpu_memory_after_mib": 45160,
-        "gpu_memory_delta_mib": 2108,
-        "gpu_memory_used_mib": 45160,
+        "wall_seconds": 29.138,
+        "steps_per_second": 16.5,
+        "sim_seconds_per_wall_second": 0.07,
+        "gpu_memory_before_mib": 25130,
+        "gpu_memory_after_mib": 27234,
+        "gpu_memory_delta_mib": 2104,
         "num_envs": 16
       },
       "verdict": {
         "all_envs_hold": true,
-        "max_final_vel_rad_s": 0.074471,
         "worst_hold_error_rad": 0.018785,
-        "all_within_limits": true,
+        "all_dofs_within_limits": true,
+        "max_final_vel_rad_s": 0.074471,
         "min_ee_above_mount": 0.435134,
-        "independent_reset_ok": true
+        "independent_reset_ok": true,
+        "velocity_position_consistent": false
       }
     },
     {
@@ -1179,7 +1634,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -1216,7 +1670,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -1253,7 +1706,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -1290,7 +1742,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -1327,7 +1778,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -1364,7 +1814,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -1401,7 +1850,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -1438,7 +1886,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -1475,7 +1922,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -1512,7 +1958,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -1549,7 +1994,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -1586,7 +2030,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018785,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -1623,7 +2066,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -1660,7 +2102,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -1697,7 +2138,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -1734,7 +2174,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -1771,7 +2210,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -1808,7 +2246,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -1845,7 +2282,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -1882,7 +2318,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -1919,7 +2354,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -1956,7 +2390,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -1993,7 +2426,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -2030,7 +2462,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018786,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -2067,7 +2498,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -2104,7 +2534,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -2141,7 +2570,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015307,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -2178,7 +2606,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018783,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -2215,7 +2642,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -2252,7 +2678,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -2289,7 +2714,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -2326,14 +2750,169 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         }
       ],
+      "limit_trace": {
+        "joint1": {
+          "limit": [
+            -2.799999952316284,
+            2.799999952316284
+          ],
+          "observed_min": -0.1,
+          "observed_max": 0.1,
+          "inside": true
+        },
+        "joint2": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.281212,
+          "observed_max": 0.290719,
+          "inside": true
+        },
+        "joint3": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.757373,
+          "observed_max": 1.216912,
+          "inside": true
+        },
+        "joint4": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": -0.005669,
+          "observed_max": -0.003366,
+          "inside": true
+        },
+        "joint5": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": -1e-06,
+          "observed_max": 4e-06,
+          "inside": true
+        },
+        "joint6": {
+          "limit": [
+            -3.140000104904175,
+            3.140000104904175
+          ],
+          "observed_min": 2e-06,
+          "observed_max": 2e-06,
+          "inside": true
+        },
+        "gripper_joint1": {
+          "limit": [
+            0.0,
+            0.05000000074505806
+          ],
+          "observed_min": -0.0,
+          "observed_max": 3e-06,
+          "inside": true
+        },
+        "gripper_joint2": {
+          "limit": [
+            0.0,
+            0.07150000333786011
+          ],
+          "observed_min": -0.0,
+          "observed_max": 3e-06,
+          "inside": true
+        }
+      },
+      "first_limit_violation": {},
+      "probe_env": 0,
+      "probe_series_rows": 480,
+      "velocity_position_consistency": {
+        "joint1": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": -0.00013,
+          "mismatch_rad": -9.3e-05,
+          "max_abs_vel_rad_s": 0.000608,
+          "start": -0.099963,
+          "end": -0.1
+        },
+        "joint2": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": 0.129828,
+          "mismatch_rad": 0.129866,
+          "max_abs_vel_rad_s": 0.064932,
+          "start": 0.290721,
+          "end": 0.290684
+        },
+        "joint3": {
+          "measured_delta_rad": -5e-05,
+          "integrated_vel_delta_rad": 0.148445,
+          "mismatch_rad": 0.148496,
+          "max_abs_vel_rad_s": 0.074246,
+          "start": 0.757424,
+          "end": 0.757373
+        },
+        "joint4": {
+          "measured_delta_rad": 2.5e-05,
+          "integrated_vel_delta_rad": 0.031598,
+          "mismatch_rad": 0.031573,
+          "max_abs_vel_rad_s": 0.016137,
+          "start": -0.005671,
+          "end": -0.005645
+        },
+        "joint5": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1e-06,
+          "mismatch_rad": 2e-06,
+          "max_abs_vel_rad_s": 3.2e-05,
+          "start": 4e-06,
+          "end": 1e-06
+        },
+        "joint6": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": -1.2e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 7e-06,
+          "start": 2e-06,
+          "end": 2e-06
+        },
+        "gripper_joint1": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": 0.0,
+          "mismatch_rad": -0.0,
+          "max_abs_vel_rad_s": 0.0,
+          "start": 0.0,
+          "end": 0.0
+        },
+        "gripper_joint2": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1.5e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 4.1e-05,
+          "start": 3e-06,
+          "end": 0.0
+        }
+      },
       "independent_reset": {
         "reset_env": 0,
-        "env0_after_reset_error": 0.21363,
+        "env_immediate_error_vs_rest_rad": 0.0,
+        "env_after_60_steps_error_vs_rest_rad": 0.013452,
+        "env_target_after_reset": [
+          0.0,
+          0.3,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "others_target_unchanged": true,
+        "others_target_unchanged_after_steps": true,
         "other_env_drift_rad": {
           "1": 0.0,
           "2": 0.0,
@@ -2369,22 +2948,22 @@
         }
       },
       "performance": {
-        "wall_seconds": 68.35,
-        "steps_per_second": 7.0,
-        "sim_seconds_per_wall_second": 0.03,
-        "gpu_memory_before_mib": 43052,
-        "gpu_memory_after_mib": 45164,
-        "gpu_memory_delta_mib": 2112,
-        "gpu_memory_used_mib": 45164,
+        "wall_seconds": 36.843,
+        "steps_per_second": 13.0,
+        "sim_seconds_per_wall_second": 0.05,
+        "gpu_memory_before_mib": 25126,
+        "gpu_memory_after_mib": 27234,
+        "gpu_memory_delta_mib": 2108,
         "num_envs": 32
       },
       "verdict": {
         "all_envs_hold": true,
-        "max_final_vel_rad_s": 0.074471,
         "worst_hold_error_rad": 0.018786,
-        "all_within_limits": true,
+        "all_dofs_within_limits": true,
+        "max_final_vel_rad_s": 0.074471,
         "min_ee_above_mount": 0.435134,
-        "independent_reset_ok": true
+        "independent_reset_ok": true,
+        "velocity_position_consistent": false
       }
     },
     {
@@ -2475,7 +3054,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -2512,7 +3090,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -2549,7 +3126,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -2586,7 +3162,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -2623,7 +3198,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -2660,7 +3234,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -2697,7 +3270,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -2734,7 +3306,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -2771,7 +3342,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -2808,7 +3378,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -2845,7 +3414,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -2882,7 +3450,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018785,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -2919,7 +3486,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -2956,7 +3522,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -2993,7 +3558,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -3030,7 +3594,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -3067,7 +3630,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -3104,7 +3666,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -3141,7 +3702,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -3178,7 +3738,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -3215,7 +3774,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -3252,7 +3810,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -3289,7 +3846,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -3326,7 +3882,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018786,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -3363,7 +3918,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -3400,7 +3954,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -3437,7 +3990,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015307,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -3474,7 +4026,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018783,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -3511,7 +4062,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -3548,7 +4098,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -3585,7 +4134,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -3622,7 +4170,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -3659,7 +4206,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -3696,7 +4242,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -3733,7 +4278,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -3770,7 +4314,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -3807,7 +4350,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -3844,7 +4386,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -3881,7 +4422,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -3918,7 +4458,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018785,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -3955,7 +4494,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017628,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -3992,7 +4530,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -4029,7 +4566,6 @@
             -2e-06
           ],
           "hold_error_rad": 0.015307,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -4066,7 +4602,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018787,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -4103,7 +4638,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -4140,7 +4674,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -4177,7 +4710,6 @@
             -2e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -4214,7 +4746,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -4251,7 +4782,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -4288,7 +4818,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -4325,7 +4854,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -4362,7 +4890,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018785,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -4399,7 +4926,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017628,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -4436,7 +4962,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -4473,7 +4998,6 @@
             -2e-06
           ],
           "hold_error_rad": 0.015307,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -4510,7 +5034,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018787,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -4547,7 +5070,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -4584,7 +5106,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -4621,7 +5142,6 @@
             -2e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -4658,7 +5178,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -4695,7 +5214,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -4732,7 +5250,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -4769,7 +5286,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -4806,14 +5322,169 @@
             -0.0
           ],
           "hold_error_rad": 0.018785,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         }
       ],
+      "limit_trace": {
+        "joint1": {
+          "limit": [
+            -2.799999952316284,
+            2.799999952316284
+          ],
+          "observed_min": -0.1,
+          "observed_max": 0.1,
+          "inside": true
+        },
+        "joint2": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.28121,
+          "observed_max": 0.290722,
+          "inside": true
+        },
+        "joint3": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.757372,
+          "observed_max": 1.216912,
+          "inside": true
+        },
+        "joint4": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": -0.00567,
+          "observed_max": -0.003366,
+          "inside": true
+        },
+        "joint5": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": -1e-06,
+          "observed_max": 4e-06,
+          "inside": true
+        },
+        "joint6": {
+          "limit": [
+            -3.140000104904175,
+            3.140000104904175
+          ],
+          "observed_min": 2e-06,
+          "observed_max": 2e-06,
+          "inside": true
+        },
+        "gripper_joint1": {
+          "limit": [
+            0.0,
+            0.05000000074505806
+          ],
+          "observed_min": -0.0,
+          "observed_max": 3e-06,
+          "inside": true
+        },
+        "gripper_joint2": {
+          "limit": [
+            0.0,
+            0.07150000333786011
+          ],
+          "observed_min": -0.0,
+          "observed_max": 3e-06,
+          "inside": true
+        }
+      },
+      "first_limit_violation": {},
+      "probe_env": 0,
+      "probe_series_rows": 480,
+      "velocity_position_consistency": {
+        "joint1": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": -0.00013,
+          "mismatch_rad": -9.3e-05,
+          "max_abs_vel_rad_s": 0.000608,
+          "start": -0.099963,
+          "end": -0.1
+        },
+        "joint2": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": 0.129828,
+          "mismatch_rad": 0.129866,
+          "max_abs_vel_rad_s": 0.064932,
+          "start": 0.290721,
+          "end": 0.290684
+        },
+        "joint3": {
+          "measured_delta_rad": -5e-05,
+          "integrated_vel_delta_rad": 0.148445,
+          "mismatch_rad": 0.148496,
+          "max_abs_vel_rad_s": 0.074246,
+          "start": 0.757424,
+          "end": 0.757373
+        },
+        "joint4": {
+          "measured_delta_rad": 2.5e-05,
+          "integrated_vel_delta_rad": 0.031598,
+          "mismatch_rad": 0.031573,
+          "max_abs_vel_rad_s": 0.016137,
+          "start": -0.005671,
+          "end": -0.005645
+        },
+        "joint5": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1e-06,
+          "mismatch_rad": 2e-06,
+          "max_abs_vel_rad_s": 3.2e-05,
+          "start": 4e-06,
+          "end": 1e-06
+        },
+        "joint6": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": -1.2e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 7e-06,
+          "start": 2e-06,
+          "end": 2e-06
+        },
+        "gripper_joint1": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": 0.0,
+          "mismatch_rad": -0.0,
+          "max_abs_vel_rad_s": 0.0,
+          "start": 0.0,
+          "end": 0.0
+        },
+        "gripper_joint2": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1.5e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 4.1e-05,
+          "start": 3e-06,
+          "end": 0.0
+        }
+      },
       "independent_reset": {
         "reset_env": 0,
-        "env0_after_reset_error": 0.21363,
+        "env_immediate_error_vs_rest_rad": 0.0,
+        "env_after_60_steps_error_vs_rest_rad": 0.013452,
+        "env_target_after_reset": [
+          0.0,
+          0.3,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "others_target_unchanged": true,
+        "others_target_unchanged_after_steps": true,
         "other_env_drift_rad": {
           "1": 0.0,
           "2": 0.0,
@@ -4881,22 +5552,22 @@
         }
       },
       "performance": {
-        "wall_seconds": 143.369,
-        "steps_per_second": 3.3,
-        "sim_seconds_per_wall_second": 0.01,
-        "gpu_memory_before_mib": 43052,
-        "gpu_memory_after_mib": 45164,
-        "gpu_memory_delta_mib": 2112,
-        "gpu_memory_used_mib": 45164,
+        "wall_seconds": 71.066,
+        "steps_per_second": 6.8,
+        "sim_seconds_per_wall_second": 0.03,
+        "gpu_memory_before_mib": 25130,
+        "gpu_memory_after_mib": 27238,
+        "gpu_memory_delta_mib": 2108,
         "num_envs": 64
       },
       "verdict": {
         "all_envs_hold": true,
-        "max_final_vel_rad_s": 0.074476,
         "worst_hold_error_rad": 0.018787,
-        "all_within_limits": true,
+        "all_dofs_within_limits": true,
+        "max_final_vel_rad_s": 0.074476,
         "min_ee_above_mount": 0.435133,
-        "independent_reset_ok": true
+        "independent_reset_ok": true,
+        "velocity_position_consistent": false
       }
     },
     {
@@ -4987,7 +5658,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -5024,7 +5694,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -5061,7 +5730,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -5098,7 +5766,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -5135,7 +5802,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -5172,7 +5838,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -5209,7 +5874,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -5246,7 +5910,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -5283,7 +5946,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -5320,7 +5982,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -5357,7 +6018,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -5394,7 +6054,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018785,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -5431,7 +6090,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -5468,7 +6126,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -5505,7 +6162,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -5542,7 +6198,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -5579,7 +6234,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -5616,7 +6270,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -5653,7 +6306,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -5690,7 +6342,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -5727,7 +6378,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -5764,7 +6414,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -5801,7 +6450,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -5838,7 +6486,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018786,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -5875,7 +6522,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -5912,7 +6558,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -5949,7 +6594,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015307,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -5986,7 +6630,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018783,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -6023,7 +6666,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017626,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -6060,7 +6702,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -6097,7 +6738,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -6134,7 +6774,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -6171,7 +6810,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -6208,7 +6846,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -6245,7 +6882,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -6282,7 +6918,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -6319,7 +6954,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -6356,7 +6990,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -6393,7 +7026,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -6430,7 +7062,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018785,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -6467,7 +7098,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017628,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -6504,7 +7134,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -6541,7 +7170,6 @@
             -2e-06
           ],
           "hold_error_rad": 0.015307,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -6578,7 +7206,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018787,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -6615,7 +7242,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -6652,7 +7278,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -6689,7 +7314,6 @@
             -2e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -6726,7 +7350,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -6763,7 +7386,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -6800,7 +7422,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -6837,7 +7458,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -6874,7 +7494,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018785,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -6911,7 +7530,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017628,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -6948,7 +7566,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -6985,7 +7602,6 @@
             -2e-06
           ],
           "hold_error_rad": 0.015307,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -7022,7 +7638,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018787,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -7059,7 +7674,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -7096,7 +7710,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -7133,7 +7746,6 @@
             -2e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -7170,7 +7782,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -7207,7 +7818,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -7244,7 +7854,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -7281,7 +7890,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015308,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -7318,7 +7926,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018785,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -7355,7 +7962,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017628,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -7392,7 +7998,6 @@
             -4e-06
           ],
           "hold_error_rad": 0.014801,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -7429,7 +8034,6 @@
             -2e-06
           ],
           "hold_error_rad": 0.015307,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -7466,7 +8070,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018787,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -7503,7 +8106,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017627,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -7540,7 +8142,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -7577,7 +8178,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.01531,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -7614,7 +8214,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836367,
           "ee_above_mount": 0.536367
         },
@@ -7651,7 +8250,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017628,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -7688,7 +8286,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -7725,7 +8322,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -7762,7 +8358,6 @@
             -0.0
           ],
           "hold_error_rad": 0.01879,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -7799,7 +8394,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017625,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -7836,7 +8430,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -7873,7 +8466,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015305,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -7910,7 +8502,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -7947,7 +8538,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017629,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -7984,7 +8574,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -8021,7 +8610,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.01531,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -8058,7 +8646,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836367,
           "ee_above_mount": 0.536367
         },
@@ -8095,7 +8682,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017628,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -8132,7 +8718,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -8169,7 +8754,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -8206,7 +8790,6 @@
             -0.0
           ],
           "hold_error_rad": 0.01879,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -8243,7 +8826,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017625,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -8280,7 +8862,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -8317,7 +8898,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015305,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -8354,7 +8934,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -8391,7 +8970,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017629,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -8428,7 +9006,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -8465,7 +9042,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.01531,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -8502,7 +9078,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836367,
           "ee_above_mount": 0.536367
         },
@@ -8539,7 +9114,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017628,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -8576,7 +9150,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -8613,7 +9186,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -8650,7 +9222,6 @@
             -0.0
           ],
           "hold_error_rad": 0.01879,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -8687,7 +9258,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017625,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -8724,7 +9294,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -8761,7 +9330,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015305,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -8798,7 +9366,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -8835,7 +9402,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017629,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -8872,7 +9438,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -8909,7 +9474,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.01531,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -8946,7 +9510,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836367,
           "ee_above_mount": 0.536367
         },
@@ -8983,7 +9546,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017628,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -9020,7 +9582,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -9057,7 +9618,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -9094,7 +9654,6 @@
             -0.0
           ],
           "hold_error_rad": 0.01879,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -9131,7 +9690,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017625,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -9168,7 +9726,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -9205,7 +9762,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015305,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -9242,7 +9798,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -9279,7 +9834,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017629,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -9316,7 +9870,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014802,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775506,
           "ee_above_mount": 0.475506
         },
@@ -9353,7 +9906,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.01531,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -9390,7 +9942,6 @@
             -0.0
           ],
           "hold_error_rad": 0.018782,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836367,
           "ee_above_mount": 0.536367
         },
@@ -9427,7 +9978,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017628,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735133,
           "ee_above_mount": 0.435133
         },
@@ -9464,7 +10014,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -9501,7 +10050,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015309,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.809571,
           "ee_above_mount": 0.509571
         },
@@ -9538,7 +10086,6 @@
             -0.0
           ],
           "hold_error_rad": 0.01879,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         },
@@ -9575,7 +10122,6 @@
             -6e-06
           ],
           "hold_error_rad": 0.017625,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.735134,
           "ee_above_mount": 0.435134
         },
@@ -9612,7 +10158,6 @@
             -5e-06
           ],
           "hold_error_rad": 0.014799,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.775507,
           "ee_above_mount": 0.475507
         },
@@ -9649,7 +10194,6 @@
             -3e-06
           ],
           "hold_error_rad": 0.015305,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.80957,
           "ee_above_mount": 0.50957
         },
@@ -9686,14 +10230,169 @@
             -0.0
           ],
           "hold_error_rad": 0.018784,
-          "joint2_joint3_inside_limits": true,
           "ee_world_z": 0.836366,
           "ee_above_mount": 0.536366
         }
       ],
+      "limit_trace": {
+        "joint1": {
+          "limit": [
+            -2.799999952316284,
+            2.799999952316284
+          ],
+          "observed_min": -0.1,
+          "observed_max": 0.1,
+          "inside": true
+        },
+        "joint2": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.28121,
+          "observed_max": 0.290723,
+          "inside": true
+        },
+        "joint3": {
+          "limit": [
+            0.0,
+            3.140000104904175
+          ],
+          "observed_min": 0.757371,
+          "observed_max": 1.216913,
+          "inside": true
+        },
+        "joint4": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": -0.005671,
+          "observed_max": -0.003365,
+          "inside": true
+        },
+        "joint5": {
+          "limit": [
+            -1.5700000524520874,
+            1.5700000524520874
+          ],
+          "observed_min": -1e-06,
+          "observed_max": 4e-06,
+          "inside": true
+        },
+        "joint6": {
+          "limit": [
+            -3.140000104904175,
+            3.140000104904175
+          ],
+          "observed_min": 2e-06,
+          "observed_max": 2e-06,
+          "inside": true
+        },
+        "gripper_joint1": {
+          "limit": [
+            0.0,
+            0.05000000074505806
+          ],
+          "observed_min": -0.0,
+          "observed_max": 3e-06,
+          "inside": true
+        },
+        "gripper_joint2": {
+          "limit": [
+            0.0,
+            0.07150000333786011
+          ],
+          "observed_min": -0.0,
+          "observed_max": 3e-06,
+          "inside": true
+        }
+      },
+      "first_limit_violation": {},
+      "probe_env": 0,
+      "probe_series_rows": 480,
+      "velocity_position_consistency": {
+        "joint1": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": -0.00013,
+          "mismatch_rad": -9.3e-05,
+          "max_abs_vel_rad_s": 0.000608,
+          "start": -0.099963,
+          "end": -0.1
+        },
+        "joint2": {
+          "measured_delta_rad": -3.8e-05,
+          "integrated_vel_delta_rad": 0.129828,
+          "mismatch_rad": 0.129866,
+          "max_abs_vel_rad_s": 0.064932,
+          "start": 0.290721,
+          "end": 0.290684
+        },
+        "joint3": {
+          "measured_delta_rad": -5e-05,
+          "integrated_vel_delta_rad": 0.148445,
+          "mismatch_rad": 0.148496,
+          "max_abs_vel_rad_s": 0.074246,
+          "start": 0.757424,
+          "end": 0.757373
+        },
+        "joint4": {
+          "measured_delta_rad": 2.5e-05,
+          "integrated_vel_delta_rad": 0.031598,
+          "mismatch_rad": 0.031573,
+          "max_abs_vel_rad_s": 0.016137,
+          "start": -0.005671,
+          "end": -0.005645
+        },
+        "joint5": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1e-06,
+          "mismatch_rad": 2e-06,
+          "max_abs_vel_rad_s": 3.2e-05,
+          "start": 4e-06,
+          "end": 1e-06
+        },
+        "joint6": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": -1.2e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 7e-06,
+          "start": 2e-06,
+          "end": 2e-06
+        },
+        "gripper_joint1": {
+          "measured_delta_rad": 0.0,
+          "integrated_vel_delta_rad": 0.0,
+          "mismatch_rad": -0.0,
+          "max_abs_vel_rad_s": 0.0,
+          "start": 0.0,
+          "end": 0.0
+        },
+        "gripper_joint2": {
+          "measured_delta_rad": -3e-06,
+          "integrated_vel_delta_rad": -1.5e-05,
+          "mismatch_rad": -1.2e-05,
+          "max_abs_vel_rad_s": 4.1e-05,
+          "start": 3e-06,
+          "end": 0.0
+        }
+      },
       "independent_reset": {
         "reset_env": 0,
-        "env0_after_reset_error": 0.21363,
+        "env_immediate_error_vs_rest_rad": 0.0,
+        "env_after_60_steps_error_vs_rest_rad": 0.013452,
+        "env_target_after_reset": [
+          0.0,
+          0.3,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "others_target_unchanged": true,
+        "others_target_unchanged_after_steps": true,
         "other_env_drift_rad": {
           "1": 0.0,
           "2": 0.0,
@@ -9825,22 +10524,22 @@
         }
       },
       "performance": {
-        "wall_seconds": 132.225,
-        "steps_per_second": 3.6,
+        "wall_seconds": 80.069,
+        "steps_per_second": 6.0,
         "sim_seconds_per_wall_second": 0.02,
-        "gpu_memory_before_mib": 43056,
+        "gpu_memory_before_mib": 25126,
         "gpu_memory_after_mib": 27234,
-        "gpu_memory_delta_mib": -15822,
-        "gpu_memory_used_mib": 27234,
+        "gpu_memory_delta_mib": 2108,
         "num_envs": 128
       },
       "verdict": {
         "all_envs_hold": true,
-        "max_final_vel_rad_s": 0.074476,
         "worst_hold_error_rad": 0.01879,
-        "all_within_limits": true,
+        "all_dofs_within_limits": true,
+        "max_final_vel_rad_s": 0.074476,
         "min_ee_above_mount": 0.435133,
-        "independent_reset_ok": true
+        "independent_reset_ok": true,
+        "velocity_position_consistent": false
       }
     }
   ]
