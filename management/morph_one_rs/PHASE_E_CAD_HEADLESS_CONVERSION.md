@@ -134,12 +134,14 @@
 
 ---
 
-## 5. 仍未验证的部分（不得当成已验证）
+## 5. 已验证 / 未验证的边界
 
-1. ~~整机转换~~：已完成，见第 4 节末表；证据
-   `cad_conversion/full_step.json` 与 `cad_conversion/full_step_usd_geometry.json`。
-   仍未做的是**用 Isaac Lab 场景加载它并跑物理**（见下条）。
-2. **Isaac Sim 内的实际可用性**：未在 Isaac Lab 场景里引用该 USD，未验证渲染、碰撞、质量/惯量。
+**已验证**：headless 转换链路（进程内 API）、整机 115 MB 转换、产物结构化核对
+（见第 4 节表格，证据 `cad_conversion/full_step.json` 与 `full_step_usd_geometry.json`）。
+
+**未验证**：
+
+1. **Isaac Sim 内的实际可用性**：未在 Isaac Lab 场景里引用该 USD，未验证渲染、碰撞、质量/惯量。
 3. **官方 service 路线**（`omni.services.convert.cad` + `job.cad_converter.kit`）未端到端验证；
    本轮只验证了进程内 API 路线。
 4. **内存/时间不是性能结论**：主机与他人 Isaac Sim 会话共用 GPU，wall-clock 仅供容量参考。
@@ -153,6 +155,7 @@
 | `scripts/simulation/convert_step_to_usd.py` | headless 转换 + 结构化自校验（本阶段新增） |
 | `outputs/simulation/rebot_b601_rs/morph_one/cad_conversion/smoke_medium.json` | 冒烟转换证据 |
 | `outputs/simulation/rebot_b601_rs/morph_one/cad_conversion/smoke_small.json` | 退化样本证据（0 网格，如实记录） |
-| `outputs/simulation/rebot_b601_rs/morph_one/cad_conversion/full_step.json` | 整机转换证据（若存在） |
+| `outputs/simulation/rebot_b601_rs/morph_one/cad_conversion/full_step.json` | 整机转换证据（sha256、状态、USD 校验） |
+| `outputs/simulation/rebot_b601_rs/morph_one/cad_conversion/full_step_usd_geometry.json` | 整机 USD 几何统计（282 网格、包围盒、>1 m 网格数=0） |
 
 生成的 USD 留在 GPU 主机 `/home/T7/dgut/runs/cad/usd/`，不入库（资源不落本地原则）。
