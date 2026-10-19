@@ -18,14 +18,21 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.simulation.step_geometry_census import (  # noqa: E402
+    POINT_KIND_BREP_VERTEX,
+    POINT_KIND_BSPLINE_CONTROL,
+    POINT_KIND_UNKNOWN,
     Entity,
     attribute_points_to_solids,
     build_census,
+    classify_point,
+    decode_step_name,
+    entity_name,
     extract_subset,
     forward_closure,
     parse_step,
     point_statistics,
     reverse_index,
+    walk_up_paths,
 )
 
 HEADER = """ISO-10303-21;
@@ -240,6 +247,85 @@ def test_extract_subset_rejects_unknown_and_non_solid_ids(mini_step):
         extract_subset(model, [999999])
     with pytest.raises(TypeError):
         extract_subset(model, [130])
+
+
+@pytest.fixture()
+def mini_step_with_bspline(tmp_path) -> Path:
+    """Adds a rational B-spline whose control point is far from the surface."""
+    extra = (
+        "#301=CARTESIAN_POINT('',(900000.,0.,0.));\n"
+        "#300=(BOUNDED_CURVE()B_SPLINE_CURVE(3,(#130,#301),.UNSPECIFIED.,.F.,.F.)"
+        "B_SPLINE_CURVE_WITH_KNOTS((4,4),(0.,1.),.UNSPECIFIED.)CURVE()"
+        "GEOMETRIC_REPRESENTATION_ITEM()RATIONAL_B_SPLINE_CURVE((1.,1.))"
+        "REPRESENTATION_ITEM(''));\n"
+    )
+    path = tmp_path / "mini_bspline.step"
+    path.write_text(HEADER + SCAFFOLD_V1 + SOLIDS + extra + TRAILER, encoding="utf-8")
+    return path
+
+
+def test_decode_step_name_recovers_gbk_part_name():
+    # 底盘模块 exported as GBK bytes and read back as latin-1
+    mojibake = "\u00b5\u00d7\u00c5\u00cc\u00c4\u00a3\u00bf\u00e9"
+    assert decode_step_name(mojibake) == "\u5e95\u76d8\u6a21\u5757"
+    # ASCII names must survive untouched
+    assert decode_step_name("MINI") == "MINI"
+
+
+def test_entity_name_reads_the_first_string_of_the_body(mini_step):
+    model = parse_step(mini_step)
+    assert entity_name(model.entities[1]) == "MINI"
+    assert entity_name(model.entities[100]) == "near"
+
+
+def test_walk_up_paths_reaches_the_owning_solid(mini_step):
+    model = parse_step(mini_step)
+    reverse = reverse_index(model.entities)
+    paths = walk_up_paths(model.entities, 130, reverse)
+    assert paths, "expected at least one upward path"
+    assert all(path[-1] == 100 for path in paths)
+    assert all(path[0] == 130 for path in paths)
+
+
+def test_classify_point_marks_a_brep_vertex_with_faces_and_edges(mini_step):
+    model = parse_step(mini_step)
+    reverse = reverse_index(model.entities)
+    detail = classify_point(model.entities, reverse, 130)
+    assert detail["kind"] == POINT_KIND_BREP_VERTEX
+    assert detail["solid_ids"] == [100]
+    assert detail["face_count"] >= 1 and detail["edge_count"] >= 1
+    assert detail["vertex_point_ids"] == [120]
+    # the point is consumed directly by a vertex_point and by placements
+    assert "VERTEX_POINT" in detail["direct_parent_types"]
+
+
+def test_classify_point_marks_a_bspline_control_point(mini_step_with_bspline):
+    """A far-away control point must not be reported as BREP geometry.
+
+    This is the distinction the whole outlier discussion hinges on: control
+    points are referenced by a B-spline and need not lie on the surface, so they
+    cannot be used as evidence about the part's real extent.
+    """
+    model = parse_step(mini_step_with_bspline)
+    reverse = reverse_index(model.entities)
+    detail = classify_point(model.entities, reverse, 301)
+    assert detail["kind"] == POINT_KIND_BSPLINE_CONTROL
+    assert detail["vertex_point_ids"] == []
+    assert detail["solid_ids"] == []
+    # the complex instance reports its first component as etype, so the full
+    # component signature is what proves it is a B-spline
+    assert detail["direct_parent_types"] == ["BOUNDED_CURVE"]
+    assert detail["bspline_ids_sample"] == [300]
+    assert any("B_SPLINE_CURVE_WITH_KNOTS" in sig for sig in detail["bspline_signatures"])
+
+
+def test_classify_point_reports_unknown_for_an_orphan_point(mini_step):
+    model = parse_step(mini_step)
+    reverse = reverse_index(model.entities)
+    detail = classify_point(model.entities, reverse, 999999)
+    assert detail["kind"] == POINT_KIND_UNKNOWN
+    assert detail["solid_count"] == 0
+    assert detail["shortest_path_types"] == []
 
 
 def test_entity_to_record_roundtrips():

@@ -1,0 +1,1995 @@
+{
+  "census": {
+    "input": {
+      "path": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/morph_one/cad/M1-4WD4S_model2601.step",
+      "size_bytes": 115496178,
+      "file_schema": "CONFIG_CONTROL_DESIGN",
+      "parse_warnings": 0
+    },
+    "entity_total": 1070664,
+    "entity_types": {
+      "CARTESIAN_POINT": 720342,
+      "DIRECTION": 73606,
+      "ORIENTED_EDGE": 72170,
+      "EDGE_CURVE": 36085,
+      "AXIS2_PLACEMENT_3D": 27496,
+      "VERTEX_POINT": 22871,
+      "LINE": 18614,
+      "VECTOR": 18614,
+      "EDGE_LOOP": 16602,
+      "ADVANCED_FACE": 14714,
+      "FACE_OUTER_BOUND": 14714,
+      "CIRCLE": 13324,
+      "PLANE": 6200,
+      "CYLINDRICAL_SURFACE": 5692,
+      "B_SPLINE_CURVE_WITH_KNOTS": 3567,
+      "FACE_BOUND": 1888,
+      "CONICAL_SURFACE": 1515,
+      "TOROIDAL_SURFACE": 664,
+      "BOUNDED_CURVE": 580,
+      "CLOSED_SHELL": 340,
+      "BOUNDED_SURFACE": 286,
+      "MANIFOLD_SOLID_BREP": 281,
+      "B_SPLINE_SURFACE_WITH_KNOTS": 257,
+      "SPHERICAL_SURFACE": 100,
+      "ORIENTED_CLOSED_SHELL": 58,
+      "PERSON_AND_ORGANIZATION": 8,
+      "CALENDAR_DATE": 5,
+      "CC_DESIGN_PERSON_AND_ORGANIZATION_ASSIGNMENT": 5,
+      "COORDINATED_UNIVERSAL_TIME_OFFSET": 5,
+      "DATE_AND_TIME": 5,
+      "LOCAL_TIME": 5,
+      "PERSON_AND_ORGANIZATION_ROLE": 5,
+      "APPROVAL": 3,
+      "APPROVAL_DATE_TIME": 3,
+      "APPROVAL_PERSON_ORGANIZATION": 3,
+      "APPROVAL_ROLE": 3,
+      "APPROVAL_STATUS": 3,
+      "CC_DESIGN_APPROVAL": 3,
+      "APPLICATION_CONTEXT": 2,
+      "APPLICATION_PROTOCOL_DEFINITION": 2,
+      "CC_DESIGN_DATE_AND_TIME_ASSIGNMENT": 2,
+      "DATE_TIME_ROLE": 2,
+      "NAMED_UNIT": 2,
+      "ADVANCED_BREP_SHAPE_REPRESENTATION": 1,
+      "BREP_WITH_VOIDS": 1,
+      "CC_DESIGN_SECURITY_CLASSIFICATION": 1,
+      "DESIGN_CONTEXT": 1,
+      "GEOMETRIC_REPRESENTATION_CONTEXT": 1,
+      "LENGTH_UNIT": 1,
+      "MECHANICAL_CONTEXT": 1,
+      "ORGANIZATION": 1,
+      "PERSON": 1,
+      "PRODUCT": 1,
+      "PRODUCT_DEFINITION": 1,
+      "PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE": 1,
+      "PRODUCT_DEFINITION_SHAPE": 1,
+      "PRODUCT_RELATED_PRODUCT_CATEGORY": 1,
+      "SECURITY_CLASSIFICATION": 1,
+      "SECURITY_CLASSIFICATION_LEVEL": 1,
+      "SHAPE_DEFINITION_REPRESENTATION": 1,
+      "UNCERTAINTY_MEASURE_WITH_UNIT": 1
+    },
+    "complex_instance_count": 870,
+    "complex_instance_types": {
+      "BOUNDED_CURVE+B_SPLINE_CURVE+B_SPLINE_CURVE_WITH_KNOTS+CURVE+GEOMETRIC_REPRESENTATION_ITEM+RATIONAL_B_SPLINE_CURVE+REPRESENTATION_ITEM": 580,
+      "BOUNDED_SURFACE+B_SPLINE_SURFACE+B_SPLINE_SURFACE_WITH_KNOTS+GEOMETRIC_REPRESENTATION_ITEM+RATIONAL_B_SPLINE_SURFACE+REPRESENTATION_ITEM+SURFACE": 286,
+      "GEOMETRIC_REPRESENTATION_CONTEXT+GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT+GLOBAL_UNIT_ASSIGNED_CONTEXT+REPRESENTATION_CONTEXT": 1,
+      "LENGTH_UNIT+NAMED_UNIT+SI_UNIT": 1,
+      "NAMED_UNIT+PLANE_ANGLE_UNIT+SI_UNIT": 1,
+      "NAMED_UNIT+SI_UNIT+SOLID_ANGLE_UNIT": 1
+    },
+    "units": {
+      "si_unit_declarations": 3,
+      "length_unit_metre": true,
+      "length_unit_is_millimetre": true,
+      "raw_length_units": [
+        " LENGTH_UNIT ( ) NAMED_UNIT ( * ) SI_UNIT ( .MILLI., .METRE. ) "
+      ],
+      "conversion_based_units": []
+    },
+    "products": {
+      "products": [
+        {
+          "entity_id": 384791,
+          "name": "M1-1.00V3",
+          "raw": " 'M1-1.00V3', 'M1-1.00V3', '', ( #288470 ) ) "
+        }
+      ],
+      "product_definitions": [
+        {
+          "entity_id": 689527,
+          "raw": " '\u00ce\u00b4\u00d6\u00aa', '', #388881, #180289 ) "
+        }
+      ],
+      "next_assembly_usage_occurrences": 0
+    },
+    "points": {
+      "count": 720342,
+      "bounds": {
+        "min": [
+          -500149.49471199996,
+          -499027.89999999997,
+          -447521.0954990081
+        ],
+        "max": [
+          500149.49471200036,
+          498995.0000000003,
+          447521.095499
+        ],
+        "size": [
+          1000298.9894240003,
+          998022.9000000003,
+          895042.190998008
+        ]
+      },
+      "bands": [
+        {
+          "axis": "x",
+          "low_percentile": 0.1,
+          "high_percentile": 99.9,
+          "low_value": -287.5000000000002,
+          "high_value": 287.60405820882846,
+          "span": 575.1040582088287,
+          "allowed_low": -575.0520291044146,
+          "allowed_high": 575.1560873132428
+        },
+        {
+          "axis": "y",
+          "low_percentile": 0.1,
+          "high_percentile": 99.9,
+          "low_value": -325.04375582002893,
+          "high_value": 25.999999999998874,
+          "span": 351.0437558200278,
+          "allowed_low": -500.5656337300428,
+          "allowed_high": 201.52187791001276
+        },
+        {
+          "axis": "z",
+          "low_percentile": 0.1,
+          "high_percentile": 99.9,
+          "low_value": -382.999999999999,
+          "high_value": 401.15000000000003,
+          "span": 784.149999999999,
+          "allowed_low": -775.0749999999985,
+          "allowed_high": 793.2249999999995
+        }
+      ],
+      "candidate_outliers": 469,
+      "candidate_outlier_rule": "outside [p0.1, p99.9] widened by 50% of the span on any axis",
+      "candidate_outlier_axis_violations": {
+        "x": 405,
+        "y": 333,
+        "z": 350
+      },
+      "candidate_outlier_sample": [
+        {
+          "point_id": 1584,
+          "coords": [
+            -149.62559376610736,
+            243.7600252444474,
+            260.0
+          ]
+        },
+        {
+          "point_id": 2259,
+          "coords": [
+            -257277.12106197618,
+            214017.81260983454,
+            370815.345563112
+          ]
+        },
+        {
+          "point_id": 5881,
+          "coords": [
+            353824.7655930082,
+            305913.3751390677,
+            -177126.9023338662
+          ]
+        },
+        {
+          "point_id": 6550,
+          "coords": [
+            -353753.640593,
+            305969.2795489999,
+            177089.32305600005
+          ]
+        },
+        {
+          "point_id": 7343,
+          "coords": [
+            -257277.121062,
+            -214475.56261000014,
+            -370867.7401000001
+          ]
+        },
+        {
+          "point_id": 7911,
+          "coords": [
+            -257277.12106197618,
+            214108.5626098345,
+            370867.74010011205
+          ]
+        },
+        {
+          "point_id": 9063,
+          "coords": [
+            -432722.404633,
+            -248965.86301200002,
+            -25283.956823000084
+          ]
+        },
+        {
+          "point_id": 9322,
+          "coords": [
+            -353253.64059299993,
+            328437.17269100004,
+            -130051.7045650002
+          ]
+        },
+        {
+          "point_id": 10866,
+          "coords": [
+            353294.015593,
+            -177034.75779700006,
+            306507.57481200004
+          ]
+        },
+        {
+          "point_id": 12127,
+          "coords": [
+            353324.76559300005,
+            -306461.8751389999,
+            -177022.11325999995
+          ]
+        },
+        {
+          "point_id": 15248,
+          "coords": [
+            -353336.99059298704,
+            -244.00000015252175,
+            353262.89059301274
+          ]
+        },
+        {
+          "point_id": 19288,
+          "coords": [
+            -140.0,
+            715.0249675906657,
+            389.9999999999999
+          ]
+        },
+        {
+          "point_id": 22919,
+          "coords": [
+            437251.79523900006,
+            -244.00000000015342,
+            -242550.60846600003
+          ]
+        },
+        {
+          "point_id": 24659,
+          "coords": [
+            353753.64059299993,
+            -306457.2795490001,
+            177089.32305600005
+          ]
+        },
+        {
+          "point_id": 25226,
+          "coords": [
+            353324.765593,
+            -183.50000000005883,
+            353852.01559300005
+          ]
+        },
+        {
+          "point_id": 27407,
+          "coords": [
+            223812.9477520164,
+            -244.00000022493097,
+            446927.0954989918
+          ]
+        },
+        {
+          "point_id": 29886,
+          "coords": [
+            582.0994634908559,
+            -104.0,
+            -149.17157287525376
+          ]
+        },
+        {
+          "point_id": 31097,
+          "coords": [
+            582.0994634908559,
+            -106.0,
+            -149.99999999999994
+          ]
+        },
+        {
+          "point_id": 33486,
+          "coords": [
+            582.0994634908559,
+            -103.99999999999996,
+            149.17157287525387
+          ]
+        },
+        {
+          "point_id": 33585,
+          "coords": [
+            -100.0,
+            715.0249675906657,
+            389.9999999999999
+          ]
+        },
+        {
+          "point_id": 35081,
+          "coords": [
+            433222.40463298716,
+            -248965.86301200854,
+            -25877.956823134962
+          ]
+        },
+        {
+          "point_id": 40133,
+          "coords": [
+            -353794.015593,
+            -177034.75779700023,
+            305913.57481200004
+          ]
+        },
+        {
+          "point_id": 40906,
+          "coords": [
+            582.0994634908559,
+            -64.58578643762682,
+            188.58578643762692
+          ]
+        },
+        {
+          "point_id": 41413,
+          "coords": [
+            -353336.990593,
+            -243.99999999990658,
+            353856.8905929998
+          ]
+        },
+        {
+          "point_id": 46078,
+          "coords": [
+            -353324.76559300005,
+            -306401.37513899995,
+            177126.90233399993
+          ]
+        },
+        {
+          "point_id": 49045,
+          "coords": [
+            -433222.4046329999,
+            -248965.8630120002,
+            25283.956822999986
+          ]
+        },
+        {
+          "point_id": 50561,
+          "coords": [
+            -353794.015593,
+            176546.75779699994,
+            -305913.574812
+          ]
+        },
+        {
+          "point_id": 50683,
+          "coords": [
+            -197.99999999999997,
+            -1032.4271909999159,
+            332.00000000000074
+          ]
+        },
+        {
+          "point_id": 52942,
+          "coords": [
+            149.6255937661073,
+            243.76002524444746,
+            -257.0
+          ]
+        },
+        {
+          "point_id": 54089,
+          "coords": [
+            -353753.64059299993,
+            -306457.27954900014,
+            -177089.32305600005
+          ]
+        },
+        {
+          "point_id": 58343,
+          "coords": [
+            257777.1210620001,
+            -214475.5626100002,
+            -370867.74010000005
+          ]
+        },
+        {
+          "point_id": 61129,
+          "coords": [
+            353324.76559300005,
+            -306461.875139,
+            176428.11326000007
+          ]
+        },
+        {
+          "point_id": 61585,
+          "coords": [
+            -437251.795239,
+            -244.0000000000886,
+            243144.60846600003
+          ]
+        },
+        {
+          "point_id": 62418,
+          "coords": [
+            443632.93111599155,
+            -243.99999991067634,
+            -231289.28703901617
+          ]
+        },
+        {
+          "point_id": 65333,
+          "coords": [
+            -353385.2588580193,
+            -162232.11874383257,
+            -314559.4653550647
+          ]
+        },
+        {
+          "point_id": 65552,
+          "coords": [
+            353757.515592987,
+            -243.99999984766725,
+            -353877.0155930128
+          ]
+        },
+        {
+          "point_id": 66760,
+          "coords": [
+            140.0,
+            715.0249675906657,
+            389.9999999999999
+          ]
+        },
+        {
+          "point_id": 70062,
+          "coords": [
+            -353253.64059299184,
+            305969.2811421015,
+            -177089.32029684042
+          ]
+        },
+        {
+          "point_id": 73255,
+          "coords": [
+            -149.62559376610736,
+            243.7600252444474,
+            260.0
+          ]
+        },
+        {
+          "point_id": 73425,
+          "coords": [
+            257777.121062,
+            214017.8126100001,
+            371409.34556299995
+          ]
+        },
+        {
+          "point_id": 74284,
+          "coords": [
+            257277.12106200005,
+            -214475.5626100001,
+            370867.74010000005
+          ]
+        },
+        {
+          "point_id": 77908,
+          "coords": [
+            -257777.12106200005,
+            -214596.56261000005,
+            371461.74010000005
+          ]
+        },
+        {
+          "point_id": 78411,
+          "coords": [
+            353824.7655930211,
+            305913.37513889826,
+            176532.90233413375
+          ]
+        },
+        {
+          "point_id": 78762,
+          "coords": [
+            353824.76559301297,
+            -304.50000018634506,
+            353258.015592987
+          ]
+        },
+        {
+          "point_id": 82307,
+          "coords": [
+            499057.9757635731,
+            498959.1,
+            356.4342516180745
+          ]
+        },
+        {
+          "point_id": 82586,
+          "coords": [
+            353254.46559299994,
+            345458.4565279999,
+            -73946.78387679996
+          ]
+        },
+        {
+          "point_id": 86778,
+          "coords": [
+            -242180.94315100007,
+            -437550.65576500003,
+            296.9999999999829
+          ]
+        },
+        {
+          "point_id": 94335,
+          "coords": [
+            353824.76559297886,
+            -306461.8751389324,
+            -177022.1132601596
+          ]
+        },
+        {
+          "point_id": 94648,
+          "coords": [
+            499057.9757635731,
+            -499010.89999999997,
+            368.5586072710566
+          ]
+        },
+        {
+          "point_id": 98922,
+          "coords": [
+            443632.9311160085,
+            -244.00000013193875,
+            230695.28703898384
+          ]
+        }
+      ]
+    }
+  },
+  "input_path": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/morph_one/cad/M1-4WD4S_model2601.step",
+  "attribution": {
+    "points_attributed": 469,
+    "points_unattributed": 0,
+    "unattributed_sample": [],
+    "solids_hit": 17,
+    "solid_hit_histogram": {
+      "894929": 113,
+      "898440": 34,
+      "62326": 34,
+      "185156": 34,
+      "106592": 34,
+      "912621": 26,
+      "551665": 26,
+      "858857": 26,
+      "458838": 26,
+      "787910": 22,
+      "925020": 22,
+      "396729": 22,
+      "190464": 22,
+      "432139": 7,
+      "478417": 7,
+      "782571": 7,
+      "826997": 7
+    },
+    "solid_bboxes_xyzxyz": {
+      "894929": [
+        -498959.0242364269,
+        -499027.89999999997,
+        -432110.7967591185,
+        499174.9999999999,
+        498995.0000000003,
+        432521.293188562
+      ],
+      "898440": [
+        -353294.01559301966,
+        -353314.1443090262,
+        -371514.13463711203,
+        353794.01559301966,
+        343378.0458310568,
+        370920.134637112
+      ],
+      "787910": [
+        -423683.98700300977,
+        -353609.91088697716,
+        -353877.0155929871,
+        433222.40463301283,
+        345458.45652798127,
+        353283.01559301274
+      ],
+      "62326": [
+        -353794.015593,
+        -353314.1443090001,
+        -370920.134637,
+        353294.015593,
+        343378.04583099997,
+        371514.13463700004
+      ],
+      "185156": [
+        -353294.01559300005,
+        -343866.0458310001,
+        -370920.1346370001,
+        353794.01559300005,
+        352826.144309,
+        371514.1346369999
+      ],
+      "912621": [
+        -432722.404633,
+        -306461.87513900007,
+        -446927.09549900005,
+        443632.931116,
+        305973.8751390001,
+        447521.0954989999
+      ],
+      "551665": [
+        -443632.931116,
+        -306461.875139,
+        -447521.0954989999,
+        432722.404633,
+        305973.8751390002,
+        446927.09549900005
+      ],
+      "858857": [
+        -432722.40463301283,
+        -306461.87513906776,
+        -447521.0954990081,
+        443632.9311160085,
+        305973.87513910147,
+        446927.0954989918
+      ],
+      "458838": [
+        -443632.931116,
+        -306461.87513900007,
+        -446927.095499,
+        432722.40463299997,
+        305973.8751389999,
+        447521.095499
+      ],
+      "106592": [
+        -353794.015593,
+        -343866.045831,
+        -371514.13463699986,
+        353294.015593,
+        352826.14430899994,
+        370920.13463700004
+      ]
+    }
+  },
+  "trace": {
+    "points_traced": 469,
+    "kind_histogram": {
+      "auxiliary_geometry": 469
+    },
+    "kind_meaning": {
+      "brep_vertex": "the point is a BREP vertex (lies on the model)",
+      "bspline_control_point": "the point is a B-spline control point (need not lie on the surface)",
+      "auxiliary_geometry": "referenced through auxiliary geometry only",
+      "unknown": "no upward path found"
+    },
+    "solid_hit_histogram": {
+      "894929": 113,
+      "898440": 34,
+      "62326": 34,
+      "185156": 34,
+      "106592": 34,
+      "912621": 26,
+      "551665": 26,
+      "858857": 26,
+      "458838": 26,
+      "787910": 22,
+      "925020": 22,
+      "396729": 22,
+      "190464": 22,
+      "432139": 7,
+      "478417": 7,
+      "782571": 7,
+      "826997": 7
+    },
+    "solid_bspline_control_histogram": {},
+    "solid_brep_vertex_histogram": {},
+    "usage_histogram": {
+      "LINE": 419,
+      "AXIS2_PLACEMENT_3D": 50
+    },
+    "samples": [
+      {
+        "point_id": 1584,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          894929
+        ],
+        "face_count": 1,
+        "face_ids_sample": [
+          795730
+        ],
+        "edge_count": 0,
+        "edge_ids_sample": [],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "AXIS2_PLACEMENT_3D"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "ADVANCED_FACE",
+          "BREP_WITH_VOIDS"
+        ],
+        "ancestors_visited": 6,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "AXIS2_PLACEMENT_3D",
+          "PLANE",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "BREP_WITH_VOIDS"
+        ],
+        "shortest_path_ids": [
+          1584,
+          440422,
+          336753,
+          795730,
+          832971,
+          894929
+        ]
+      },
+      {
+        "point_id": 2259,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          898440
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          145932,
+          650527
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          655038
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          2259,
+          570323,
+          655038,
+          310106,
+          691179,
+          389030,
+          650527,
+          468679,
+          898440
+        ]
+      },
+      {
+        "point_id": 5881,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          787910
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          3398,
+          1020942
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          368590
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          5881,
+          970241,
+          368590,
+          869319,
+          398873,
+          691272,
+          1020942,
+          21436,
+          787910
+        ]
+      },
+      {
+        "point_id": 6550,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          62326
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          168080,
+          803883
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          680887
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          6550,
+          488141,
+          680887,
+          155710,
+          486405,
+          451422,
+          803883,
+          900794,
+          62326
+        ]
+      },
+      {
+        "point_id": 7343,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          185156
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          115038,
+          968521
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          31307
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          7343,
+          277294,
+          31307,
+          512832,
+          588982,
+          14909,
+          115038,
+          676214,
+          185156
+        ]
+      },
+      {
+        "point_id": 7911,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          898440
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          14072,
+          926088
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          173406
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          7911,
+          13219,
+          173406,
+          578287,
+          923074,
+          134008,
+          926088,
+          468679,
+          898440
+        ]
+      },
+      {
+        "point_id": 9063,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          912621
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          241223,
+          477979
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          289256
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          9063,
+          728612,
+          289256,
+          75172,
+          385193,
+          795294,
+          241223,
+          296247,
+          912621
+        ]
+      },
+      {
+        "point_id": 9322,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          185156
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          991470,
+          1038528
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          897195
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          9322,
+          760776,
+          897195,
+          222175,
+          68311,
+          507751,
+          1038528,
+          676214,
+          185156
+        ]
+      },
+      {
+        "point_id": 10866,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          62326
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          320042,
+          1034510
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          489329
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          10866,
+          919320,
+          489329,
+          10597,
+          273436,
+          498190,
+          1034510,
+          900794,
+          62326
+        ]
+      },
+      {
+        "point_id": 12127,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          551665
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          259654,
+          525332
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          548295
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          12127,
+          103855,
+          548295,
+          28354,
+          816361,
+          135974,
+          259654,
+          538919,
+          551665
+        ]
+      },
+      {
+        "point_id": 15248,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          858857
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          103433,
+          584591
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          136915
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          15248,
+          907797,
+          136915,
+          229887,
+          403760,
+          709871,
+          584591,
+          951828,
+          858857
+        ]
+      },
+      {
+        "point_id": 19288,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          894929
+        ],
+        "face_count": 1,
+        "face_ids_sample": [
+          261991
+        ],
+        "edge_count": 0,
+        "edge_ids_sample": [],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "AXIS2_PLACEMENT_3D"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "ADVANCED_FACE",
+          "BREP_WITH_VOIDS"
+        ],
+        "ancestors_visited": 6,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "AXIS2_PLACEMENT_3D",
+          "PLANE",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "BREP_WITH_VOIDS"
+        ],
+        "shortest_path_ids": [
+          19288,
+          556449,
+          150974,
+          261991,
+          832971,
+          894929
+        ]
+      },
+      {
+        "point_id": 22919,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          912621
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          111282,
+          738515
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          490533
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          22919,
+          1007192,
+          490533,
+          110991,
+          947551,
+          825468,
+          111282,
+          296247,
+          912621
+        ]
+      },
+      {
+        "point_id": 24659,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          185156
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          347827,
+          803306
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          870247
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          24659,
+          862595,
+          870247,
+          231895,
+          319143,
+          68358,
+          803306,
+          676214,
+          185156
+        ]
+      },
+      {
+        "point_id": 25226,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          458838
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          7874,
+          903467
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          322195
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          25226,
+          436198,
+          322195,
+          184577,
+          320423,
+          499494,
+          7874,
+          761850,
+          458838
+        ]
+      },
+      {
+        "point_id": 27407,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          858857
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          534078,
+          565645
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          202484
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          27407,
+          194993,
+          202484,
+          223353,
+          168313,
+          1041062,
+          534078,
+          951828,
+          858857
+        ]
+      },
+      {
+        "point_id": 29886,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          894929
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          460856,
+          609984
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          30366
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "BREP_WITH_VOIDS"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "BREP_WITH_VOIDS"
+        ],
+        "shortest_path_ids": [
+          29886,
+          273285,
+          30366,
+          351005,
+          825484,
+          483560,
+          460856,
+          832971,
+          894929
+        ]
+      },
+      {
+        "point_id": 31097,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          894929
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          1008125,
+          1016371
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          250524
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "BREP_WITH_VOIDS"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "BREP_WITH_VOIDS"
+        ],
+        "shortest_path_ids": [
+          31097,
+          771945,
+          250524,
+          125164,
+          742157,
+          665491,
+          1008125,
+          832971,
+          894929
+        ]
+      },
+      {
+        "point_id": 33486,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          894929
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          128353,
+          977577
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          716897
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "BREP_WITH_VOIDS"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "BREP_WITH_VOIDS"
+        ],
+        "shortest_path_ids": [
+          33486,
+          444481,
+          716897,
+          288392,
+          902561,
+          738198,
+          977577,
+          832971,
+          894929
+        ]
+      },
+      {
+        "point_id": 33585,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          894929
+        ],
+        "face_count": 1,
+        "face_ids_sample": [
+          754532
+        ],
+        "edge_count": 0,
+        "edge_ids_sample": [],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "AXIS2_PLACEMENT_3D"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "ADVANCED_FACE",
+          "BREP_WITH_VOIDS"
+        ],
+        "ancestors_visited": 6,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "AXIS2_PLACEMENT_3D",
+          "PLANE",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "BREP_WITH_VOIDS"
+        ],
+        "shortest_path_ids": [
+          33585,
+          512975,
+          412725,
+          754532,
+          832971,
+          894929
+        ]
+      },
+      {
+        "point_id": 35081,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          787910
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          380707,
+          749640
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          95674
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          35081,
+          775926,
+          95674,
+          232257,
+          95712,
+          74610,
+          380707,
+          21436,
+          787910
+        ]
+      },
+      {
+        "point_id": 40133,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          106592
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          350517,
+          811869
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          505210
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          40133,
+          597522,
+          505210,
+          735324,
+          151247,
+          675771,
+          350517,
+          677743,
+          106592
+        ]
+      },
+      {
+        "point_id": 40906,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          894929
+        ],
+        "face_count": 1,
+        "face_ids_sample": [
+          950053
+        ],
+        "edge_count": 0,
+        "edge_ids_sample": [],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "AXIS2_PLACEMENT_3D"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "ADVANCED_FACE",
+          "BREP_WITH_VOIDS"
+        ],
+        "ancestors_visited": 6,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "AXIS2_PLACEMENT_3D",
+          "PLANE",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "BREP_WITH_VOIDS"
+        ],
+        "shortest_path_ids": [
+          40906,
+          797822,
+          1046464,
+          950053,
+          832971,
+          894929
+        ]
+      },
+      {
+        "point_id": 41413,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          912621
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          717467,
+          851954
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          224720
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          41413,
+          512291,
+          224720,
+          237592,
+          697966,
+          665384,
+          717467,
+          296247,
+          912621
+        ]
+      },
+      {
+        "point_id": 46078,
+        "kind": "auxiliary_geometry",
+        "solid_count": 1,
+        "solid_ids": [
+          912621
+        ],
+        "face_count": 2,
+        "face_ids_sample": [
+          730380,
+          862126
+        ],
+        "edge_count": 1,
+        "edge_ids_sample": [
+          564552
+        ],
+        "vertex_point_ids": [],
+        "bspline_ids_sample": [],
+        "bspline_signatures": [],
+        "direct_parent_types": [
+          "LINE"
+        ],
+        "direct_parent_count": 1,
+        "ancestor_types": [
+          "EDGE_CURVE",
+          "ADVANCED_FACE",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "ancestors_visited": 13,
+        "shortest_path_types": [
+          "CARTESIAN_POINT",
+          "LINE",
+          "EDGE_CURVE",
+          "ORIENTED_EDGE",
+          "EDGE_LOOP",
+          "FACE_OUTER_BOUND",
+          "ADVANCED_FACE",
+          "CLOSED_SHELL",
+          "MANIFOLD_SOLID_BREP"
+        ],
+        "shortest_path_ids": [
+          46078,
+          137837,
+          564552,
+          771217,
+          423152,
+          899951,
+          862126,
+          296247,
+          912621
+        ]
+      }
+    ],
+    "solid_names": {
+      "894929": "NONE",
+      "898440": "NONE",
+      "787910": "NONE",
+      "62326": "NONE",
+      "185156": "NONE",
+      "912621": "NONE",
+      "551665": "NONE",
+      "858857": "NONE",
+      "458838": "NONE",
+      "106592": "NONE",
+      "925020": "NONE",
+      "432139": "NONE",
+      "396729": "NONE",
+      "478417": "NONE",
+      "190464": "NONE",
+      "782571": "NONE",
+      "826997": "NONE"
+    }
+  }
+}

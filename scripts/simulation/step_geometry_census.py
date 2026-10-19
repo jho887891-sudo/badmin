@@ -47,6 +47,15 @@ __all__ = [
     "is_scaffold",
     "split_item_and_metadata_refs",
     "extract_subset",
+    "decode_step_name",
+    "entity_name",
+    "walk_up_paths",
+    "collect_ancestors",
+    "classify_point",
+    "POINT_KIND_BSPLINE_CONTROL",
+    "POINT_KIND_BREP_VERTEX",
+    "POINT_KIND_AUXILIARY",
+    "POINT_KIND_UNKNOWN",
 ]
 
 # Entity types that carry the product/structure chain rather than raw geometry.
@@ -471,6 +480,243 @@ def attribute_points_to_solids(
     return result
 
 
+# Complex-instance components that own a control_points_list.  A point that is a
+# control point of a polynomial curve or surface is NOT a point on the surface,
+# so a "far away" coordinate there says nothing about the part's real extent.
+_BSPLINE_TYPES: frozenset = frozenset(
+    {
+        "B_SPLINE_CURVE_WITH_KNOTS",
+        "B_SPLINE_CURVE",
+        "RATIONAL_B_SPLINE_CURVE",
+        "B_SPLINE_SURFACE_WITH_KNOTS",
+        "B_SPLINE_SURFACE",
+        "RATIONAL_B_SPLINE_SURFACE",
+        "BEZIER_CURVE",
+        "BEZIER_SURFACE",
+        "UNIFORM_CURVE",
+        "UNIFORM_SURFACE",
+    }
+)
+
+# Structural types whose presence in an upward path tells us how a point is used.
+_VERTEX_TYPES: frozenset = frozenset({"VERTEX_POINT"})
+_EDGE_TYPES: frozenset = frozenset({"EDGE_CURVE"})
+_FACE_TYPES: frozenset = frozenset({"ADVANCED_FACE", "FACE_SURFACE"})
+
+POINT_KIND_BSPLINE_CONTROL = "bspline_control_point"
+POINT_KIND_BREP_VERTEX = "brep_vertex"
+POINT_KIND_AUXILIARY = "auxiliary_geometry"
+POINT_KIND_UNKNOWN = "unknown"
+
+
+def decode_step_name(raw: "str | bytes") -> str:
+    """Decode a STEP name that was exported from a GBK (Chinese) SolidWorks.
+
+    The Morph One export stores GBK bytes inside STEP strings, so a latin-1 read
+    shows mojibake such as "µ×ÅÌÄ£¿é" instead of "底盘模块".  Decoding through
+    GB18030 recovers the designer's part names, which are legitimate evidence of
+    intent (not of measured geometry).
+    """
+    if isinstance(raw, bytes):
+        candidates = [raw]
+    else:
+        candidates = []
+        try:
+            candidates.append(raw.encode("latin-1"))
+        except UnicodeEncodeError:
+            pass
+        candidates.append(raw.encode("utf-8", "ignore"))
+    for blob in candidates:
+        for encoding in ("gb18030", "utf-8"):
+            try:
+                text = blob.decode(encoding)
+            except Exception:  # noqa: BLE001 - try the next candidate
+                continue
+            if text and not any(ch == "\ufffd" for ch in text):
+                return text
+    return raw if isinstance(raw, str) else raw.decode("latin-1", "ignore")
+
+
+def entity_name(entity: Entity) -> str:
+    """First string argument of an entity body, decoded from GBK when needed."""
+    body = entity.body.lstrip()
+    if not body.startswith("'"):
+        return ""
+    end = body.find("'", 1)
+    if end < 0:
+        return ""
+    return decode_step_name(body[1:end])
+
+
+def walk_up_paths(
+    entities: Dict[int, Entity],
+    point_id: int,
+    reverse: Dict[int, List[int]],
+    max_hops: int = 40,
+    max_paths: int = 2000,
+) -> List[List[int]]:
+    """All upward reference paths from a point to the solids that own it.
+
+    Returning whole paths (not just the owner set) is what makes it possible to
+    say *how* a point is attached: as a BREP vertex of an edge, or as a control
+    point of a B-spline the point never touches.
+    """
+    paths: List[List[int]] = []
+    stack: List[List[int]] = [[point_id]]
+    while stack and len(paths) < max_paths:
+        path = stack.pop()
+        head = path[-1]
+        entity = entities.get(head)
+        if entity is not None and head != point_id and (set(entity.components) & SOLID_TYPES):
+            paths.append(path)
+            continue
+        if len(path) > max_hops:
+            continue
+        parents = [p for p in reverse.get(head, ()) if p not in path]
+        # Breadth of the upward graph can explode on shared points; keep the
+        # walk bounded and deterministic.
+        for parent in sorted(parents, reverse=True):
+            stack.append(path + [parent])
+    return paths
+
+
+def collect_ancestors(
+    entities: Dict[int, Entity],
+    reverse: Dict[int, List[int]],
+    point_id: int,
+    max_nodes: int = 200000,
+) -> dict:
+    """Walk every upward reference from a point and bucket the ancestors by role.
+
+    The walk deliberately continues *past* nothing and stops *at* solids: a
+    control point of a B-spline that no solid references must still be explained
+    (it is geometry, just not BREP geometry), otherwise it would look like an
+    orphan and be silently mislabelled.
+    """
+    visited: Set[int] = {point_id}
+    parent_of: Dict[int, int] = {}
+    nearest_solid: "int | None" = None
+    frontier = [point_id]
+    faces: Set[int] = set()
+    edges: Set[int] = set()
+    vertices: Set[int] = set()
+    bsplines: Set[int] = set()
+    solids: Set[int] = set()
+    seen_nodes = 0
+    while frontier and seen_nodes < max_nodes:
+        nxt: List[int] = []
+        for eid in frontier:
+            for parent in reverse.get(eid, ()):  # type: ignore[arg-type]
+                if parent in visited:
+                    continue
+                visited.add(parent)
+                parent_of[parent] = eid
+                entity = entities.get(parent)
+                if entity is None:
+                    continue
+                components = set(entity.components)
+                if components & SOLID_TYPES:
+                    solids.add(parent)
+                    if nearest_solid is None:
+                        nearest_solid = parent
+                    continue
+                if components & _FACE_TYPES:
+                    faces.add(parent)
+                if components & _EDGE_TYPES:
+                    edges.add(parent)
+                if components & _VERTEX_TYPES:
+                    vertices.add(parent)
+                if components & _BSPLINE_TYPES:
+                    bsplines.add(parent)
+                nxt.append(parent)
+        seen_nodes += len(nxt)
+        frontier = nxt
+    shortest_path: List[int] = []
+    if nearest_solid is not None:
+        cursor = nearest_solid
+        while True:
+            shortest_path.append(cursor)
+            if cursor == point_id:
+                break
+            previous = parent_of.get(cursor)
+            if previous is None:
+                break
+            cursor = previous
+        shortest_path.reverse()
+
+    return {
+        "solids": solids,
+        "faces": faces,
+        "edges": edges,
+        "vertices": vertices,
+        "bsplines": bsplines,
+        "ancestors_visited": len(visited),
+        "shortest_path": shortest_path,
+    }
+
+
+def classify_point(
+    entities: Dict[int, Entity], reverse: Dict[int, List[int]], point_id: int
+) -> dict:
+    """Explain what a Cartesian point is used for, with entity-level evidence."""
+    buckets = collect_ancestors(entities, reverse, point_id)
+    shortest_path: List[int] = buckets["shortest_path"]
+    solids = buckets["solids"]
+    faces = buckets["faces"]
+    edges = buckets["edges"]
+    vertices = buckets["vertices"]
+    bsplines = buckets["bsplines"]
+
+    direct_parent_types = sorted(
+        {
+            entities[parent].etype
+            for parent in reverse.get(point_id, ())
+            if parent in entities
+        }
+    )
+    ancestor_types: List[str] = []
+    for group in (vertices, edges, faces, bsplines, solids):
+        for eid in sorted(group):
+            entity = entities.get(eid)
+            if entity is not None and entity.etype not in ancestor_types:
+                ancestor_types.append(entity.etype)
+
+    if vertices:
+        kind = POINT_KIND_BREP_VERTEX
+    elif bsplines:
+        kind = POINT_KIND_BSPLINE_CONTROL
+    elif solids or edges or faces:
+        kind = POINT_KIND_AUXILIARY
+    else:
+        kind = POINT_KIND_UNKNOWN
+
+    return {
+        "point_id": point_id,
+        "kind": kind,
+        "solid_count": len(solids),
+        "solid_ids": sorted(solids)[:8],
+        "face_count": len(faces),
+        "face_ids_sample": sorted(faces)[:8],
+        "edge_count": len(edges),
+        "edge_ids_sample": sorted(edges)[:8],
+        "vertex_point_ids": sorted(vertices)[:8],
+        "bspline_ids_sample": sorted(bsplines)[:8],
+        "bspline_signatures": sorted(
+            {
+                "+".join(entities[eid].components)
+                for eid in bsplines
+                if eid in entities
+            }
+        )[:4],
+        "direct_parent_types": direct_parent_types,
+        "direct_parent_count": len(reverse.get(point_id, ())),
+        "ancestor_types": ancestor_types[:10],
+        "ancestors_visited": buckets["ancestors_visited"],
+        "shortest_path_types": [entities[e].etype for e in shortest_path if e in entities],
+        "shortest_path_ids": shortest_path,
+    }
+
+
 def scaffold_types() -> frozenset:
     return _SCAFFOLD_TYPES
 
@@ -794,7 +1040,7 @@ def main(argv: "Sequence[str] | None" = None) -> int:
     parser.add_argument("--output-dir", required=True, help="directory for JSON/CSV outputs")
     parser.add_argument(
         "--mode",
-        choices=("census", "attribute", "subset"),
+        choices=("census", "attribute", "subset", "trace"),
         default="census",
         help="census only, plus outlier->solid attribution, or extract a subset",
     )
@@ -819,6 +1065,25 @@ def main(argv: "Sequence[str] | None" = None) -> int:
         default=0,
         help="attribute at most N outliers (0 = all); attribution is the slow part",
     )
+    parser.add_argument(
+        "--point-id",
+        type=int,
+        action="append",
+        default=[],
+        help="trace mode: Cartesian point entity id to trace (repeatable); default all outliers",
+    )
+    parser.add_argument(
+        "--trace-sample",
+        type=int,
+        default=20,
+        help="trace mode: how many per-point detail records to store in the report",
+    )
+    parser.add_argument(
+        "--trace-limit",
+        type=int,
+        default=0,
+        help="trace mode: trace at most N candidate outliers (0 = all)",
+    )
     args = parser.parse_args(argv)
 
     out_dir = Path(args.output_dir)
@@ -831,7 +1096,7 @@ def main(argv: "Sequence[str] | None" = None) -> int:
 
     report = {"census": census, "input_path": str(Path(args.input).resolve())}
 
-    if args.mode in ("attribute", "subset"):
+    if args.mode in ("attribute", "subset", "trace"):
         targets = outlier_indices
         if args.attribute_limit:
             targets = targets[: args.attribute_limit]
@@ -861,6 +1126,59 @@ def main(argv: "Sequence[str] | None" = None) -> int:
                 owner_bboxes[solid_id] = bbox
         report["attribution"]["solid_bboxes_xyzxyz"] = owner_bboxes
 
+    if args.mode == "trace":
+        reverse = reverse_index(model.entities)
+        if args.point_id:
+            point_ids = [pid for pid in args.point_id if pid in model.entities]
+            missing = [pid for pid in args.point_id if pid not in model.entities]
+            if missing:
+                report["trace_missing_point_ids"] = missing
+        else:
+            point_ids = [model.point_ids[i] for i in outlier_indices]
+            if args.trace_limit:
+                point_ids = point_ids[: args.trace_limit]
+        details = [classify_point(model.entities, reverse, pid) for pid in point_ids]
+        kinds: Counter = Counter(d["kind"] for d in details)
+        by_solid: Counter = Counter()
+        control_in_solid: Counter = Counter()
+        vertex_in_solid: Counter = Counter()
+        for detail in details:
+            for solid_id in detail["solid_ids"]:
+                by_solid[solid_id] += 1
+                if detail["kind"] == POINT_KIND_BSPLINE_CONTROL:
+                    control_in_solid[solid_id] += 1
+                elif detail["kind"] == POINT_KIND_BREP_VERTEX:
+                    vertex_in_solid[solid_id] += 1
+        report["trace"] = {
+            "points_traced": len(details),
+            "kind_histogram": dict(kinds),
+            "kind_meaning": {
+                POINT_KIND_BREP_VERTEX: "the point is a BREP vertex (lies on the model)",
+                POINT_KIND_BSPLINE_CONTROL: "the point is a B-spline control point (need not lie on the surface)",
+                POINT_KIND_AUXILIARY: "referenced through auxiliary geometry only",
+                POINT_KIND_UNKNOWN: "no upward path found",
+            },
+            "solid_hit_histogram": dict(
+                sorted(by_solid.items(), key=lambda kv: -kv[1])[:20]
+            ),
+            "solid_bspline_control_histogram": dict(
+                sorted(control_in_solid.items(), key=lambda kv: -kv[1])[:20]
+            ),
+            "solid_brep_vertex_histogram": dict(
+                sorted(vertex_in_solid.items(), key=lambda kv: -kv[1])[:20]
+            ),
+            "usage_histogram": dict(
+                Counter(",".join(d["direct_parent_types"]) for d in details).most_common()
+            ),
+            "samples": details[: args.trace_sample],
+        }
+        solid_names = {}
+        for solid_id in list(by_solid)[:20]:
+            entity = model.entities.get(solid_id)
+            if entity is not None:
+                solid_names[str(solid_id)] = entity_name(entity)
+        report["trace"]["solid_names"] = solid_names
+
     if args.mode == "subset":
         solid_ids = list(args.solid_id)
         if args.pick_largest_solids:
@@ -881,18 +1199,16 @@ def main(argv: "Sequence[str] | None" = None) -> int:
 
     report_path = out_dir / ("step_%s.json" % args.mode)
     report_path.write_text(json.dumps(report, indent=2, sort_keys=False), encoding="utf-8")
-    print(
-        json.dumps(
-            {
-                "report": str(report_path),
-                "mode": args.mode,
-                "entities": census["entity_total"],
-                "points": census["points"]["count"],
-                "candidate_outliers": census["points"]["candidate_outliers"],
-            },
-            indent=2,
-        )
-    )
+    summary = {
+        "report": str(report_path),
+        "mode": args.mode,
+        "entities": census["entity_total"],
+        "points": census["points"]["count"],
+        "candidate_outliers": census["points"]["candidate_outliers"],
+    }
+    if "trace" in report:
+        summary["trace_kind_histogram"] = report["trace"]["kind_histogram"]
+    print(json.dumps(summary, indent=2))
     return 0
 
 
