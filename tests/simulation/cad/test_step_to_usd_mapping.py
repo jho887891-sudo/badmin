@@ -214,3 +214,31 @@ def test_matching_does_not_claim_unique_identity_for_duplicated_names():
     assert len(result["pairs"]) == 2
     assert all(p["grade"] == GRADE_CANDIDATE for p in result["pairs"])
     assert result["bijection_proven"] is False
+
+
+def test_unmatched_evidence_has_explicit_candidate_reason():
+    result = match_parts(
+        [solid(3, "PART", [0, 0, 0], [10, 10, 10])],
+        [mesh_row("/p/not-matching", "PART", [100, 0, 0], [110, 10, 10])],
+    )
+    assert result["pairs"] == []
+    row = result["unmatched_solids"][0]
+    assert row["unmatched_reason"] == "no same-key mesh passes corrected geometry sandwich"
+    assert row["same_key_candidates"] == 1
+    assert row["admissible_same_key_candidates"] == 0
+
+
+def test_rejection_list_is_explicitly_labeled_truncated():
+    solids = [
+        solid(i, "DUP", [float(i*100), 0, 0], [float(i*100+10), 10, 10])
+        for i in range(9)
+    ]
+    meshes = [
+        mesh_row("/m/%d" % i, "DUP", [10000.0+i*100, 0, 0], [10010.0+i*100, 10, 10])
+        for i in range(9)
+    ]
+    result = match_parts(solids, meshes)
+    assert result["pairs"] == []
+    assert result["rejected_pair_count"] == 81
+    assert len(result["rejected_pairs"]) == 50
+    assert result["rejected_pairs_truncated"] is True
