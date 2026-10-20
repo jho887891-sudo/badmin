@@ -1,6 +1,6 @@
 # reBot B601-DM badminton capability: delivery package
 
-Assembled by `tools/assemble_b601dm_delivery.py` from commit `c798f789c4a9891a9e9704d31502bcb447b576f4`.
+Assembled by `tools/assemble_b601dm_delivery.py` from commit `3a679b35fc326ed8eadfdaf299f56ce19d28c321`.
 
 **This folder is generated. Do not edit it in place.** The repository above it is the single point of
 truth; a change made here is lost the next time the assembler runs, and is not in the repository at all.
@@ -64,30 +64,30 @@ ones enforced 2864.789 and 11459.156. Everything else exists to make that correc
 
 | Path in this package | Size | sha256 (16) |
 |---|---|---|
-| `management/rebot_b601dm/ARM_IDENTITY_DECISION.md` | 2,530 B | `17a9a502e7c9b8fb` |
-| `management/rebot_b601dm/REBOT_B601DM_REPORT.md` | 11,619 B | `90ebb75153fc3568` |
-| `management/rebot_b601dm/BADMINTON_CAPABILITY_RESULT.md` | 7,898 B | `bf6b41af3c2cf04d` |
+| `management/rebot_b601dm/ARM_IDENTITY_DECISION.md` | 2,571 B | `b8fe2226e39a67cc` |
+| `management/rebot_b601dm/REBOT_B601DM_REPORT.md` | 11,834 B | `d81d1c612204c915` |
+| `management/rebot_b601dm/BADMINTON_CAPABILITY_RESULT.md` | 8,041 B | `444ad9f02eab7a5a` |
 | `management/rebot_b601dm/DELIVERABLES.md` | 7,793 B | `c6480aeb2a0d23b5` |
 | `management/rebot_b601dm/TEMP_README.md` | 4,615 B | `3e303e6966459020` |
-| `management/rebot_b601dm/TASK7_MEASUREMENT_STATUS.md` | 4,125 B | `f7c49e4ed3373e5a` |
-| `management/rebot_b601dm/FIRST_SWING_RECORD_INVALID.md` | 2,722 B | `f8870e3a84226281` |
-| `docs/superpowers/plans/2026-09-17-rebot-b601dm-badminton-capability-plan.md` | 14,871 B | `745bd5545af3d635` |
-| `src/simulation/__init__.py` | 250 B | `c502d63ecf78f2f2` |
-| `src/simulation/rebot_b601dm/__init__.py` | 197 B | `4da0d8103b40643d` |
-| `src/simulation/rebot_b601dm/joint_limits.py` | 7,722 B | `0964366db5985700` |
-| `src/simulation/rebot_b601dm/patch_asset.py` | 5,682 B | `cde5b84c4f80236a` |
-| `src/simulation/rebot_b601dm/torque_convention.py` | 5,059 B | `52fea0a4848c8066` |
-| `src/simulation/rebot_b601dm/motor_mass.py` | 7,253 B | `da22887489e30746` |
-| `src/simulation/rebot_b601dm/launch.py` | 3,737 B | `21c22f4bede13752` |
-| `src/simulation/rebot_b601dm/racket.py` | 6,099 B | `267f095cd2654bbd` |
-| `src/simulation/rebot_b601dm/speed_bound.py` | 7,350 B | `1fe133bcb373c5a8` |
+| `management/rebot_b601dm/TASK7_MEASUREMENT_STATUS.md` | 4,202 B | `725fc9b0e551321a` |
+| `management/rebot_b601dm/FIRST_SWING_RECORD_INVALID.md` | 2,777 B | `0b65ef2beac385a9` |
+| `docs/superpowers/plans/2026-09-17-rebot-b601dm-badminton-capability-plan.md` | 15,160 B | `575c0d3cf2f70643` |
+| `src/simulation/__init__.py` | 259 B | `ea9666627706450b` |
+| `src/simulation/rebot_b601dm/__init__.py` | 206 B | `d624155876b65bff` |
+| `src/simulation/rebot_b601dm/joint_limits.py` | 7,898 B | `60d106a2560b805c` |
+| `src/simulation/rebot_b601dm/patch_asset.py` | 5,825 B | `8023dbf99e06bb49` |
+| `src/simulation/rebot_b601dm/torque_convention.py` | 5,180 B | `e38953c7d883eaba` |
+| `src/simulation/rebot_b601dm/motor_mass.py` | 7,419 B | `225c5272c524d992` |
+| `src/simulation/rebot_b601dm/launch.py` | 3,833 B | `9ee90137dd2d666a` |
+| `src/simulation/rebot_b601dm/racket.py` | 6,246 B | `ca2d5f444adc9776` |
+| `src/simulation/rebot_b601dm/speed_bound.py` | 7,514 B | `888ba70da03914b1` |
 | `configs/simulation/rebot_b601dm_joint_limits.yaml` | 6,666 B | `fc4498f32f2cb3c4` |
-| `scripts/simulation/isaacsim_receiver_driver.py` | 3,957 B | `ceccef1171c37dd5` |
-| `scripts/simulation/run_isaacsim_receiver.sh` | 2,612 B | `8711ceb5c9918058` |
-| `scripts/simulation/measure_racket_speed.py` | 12,163 B | `07d2b392dfe6b5a5` |
-| `scripts/simulation/wait_for_quiet_window.sh` | 2,671 B | `20401430a38ba140` |
-| `tools/generate_b601dm_limits_yaml.py` | 4,492 B | `7249b6cb15a8ffa9` |
-| `tools/generate_b601dm_temp_readme.py` | 4,497 B | `6aa11921ac4c3a19` |
+| `scripts/simulation/isaacsim_receiver_driver.py` | 4,059 B | `53cc6dcc761f1135` |
+| `scripts/simulation/run_isaacsim_receiver.sh` | 2,666 B | `573511192477d1ea` |
+| `scripts/simulation/measure_racket_speed.py` | 12,409 B | `a5bf27dfefb195d7` |
+| `scripts/simulation/wait_for_quiet_window.sh` | 2,721 B | `dbb2c749807218d1` |
+| `tools/generate_b601dm_limits_yaml.py` | 4,575 B | `485523a182b90ada` |
+| `tools/generate_b601dm_temp_readme.py` | 4,605 B | `bd9587e7d423bf2f` |
 | `outputs/simulation/rebot_b601dm/real_limits/reBot_B601_DM.usda` | 9,875 B | `8d21beddc01a8870` |
 | `outputs/simulation/rebot_b601dm/real_limits/PATCH_NOTES.md` | 1,290 B | `267b1343ec971a2e` |
 | `outputs/simulation/rebot_b601dm/real_limits/payloads/Physics/physx.usda` | 4,955 B | `7cab2579fa908bfd` |
@@ -95,16 +95,16 @@ ones enforced 2864.789 and 11459.156. Everything else exists to make that correc
 | `outputs/simulation/rebot_b601dm/recommended_70_limits/reBot_B601_DM.usda` | 9,875 B | `8d21beddc01a8870` |
 | `outputs/simulation/rebot_b601dm/recommended_70_limits/PATCH_NOTES.md` | 1,300 B | `23ec323091829928` |
 | `outputs/simulation/rebot_b601dm/recommended_70_limits/payloads/Physics/physx.usda` | 4,952 B | `efc027cf8588435d` |
-| `tests/simulation/rebot_b601dm/conftest.py` | 259 B | `1a30dc889d73226a` |
-| `tests/simulation/rebot_b601dm/test_joint_limits.py` | 8,902 B | `7ba669793fcf2b4d` |
-| `tests/simulation/rebot_b601dm/test_launcher_contract.py` | 5,942 B | `a9abf1a45fa51dfd` |
-| `tests/simulation/rebot_b601dm/test_limits_yaml_consistency.py` | 3,168 B | `e3be24ce739027a5` |
-| `tests/simulation/rebot_b601dm/test_measure_script.py` | 8,392 B | `6211830956bf5541` |
-| `tests/simulation/rebot_b601dm/test_motor_mass.py` | 6,634 B | `ccbd433563735cd4` |
-| `tests/simulation/rebot_b601dm/test_patch_asset.py` | 5,489 B | `7e92fefaf3566d37` |
-| `tests/simulation/rebot_b601dm/test_racket_attachment.py` | 6,273 B | `9fd7b7a5dad71cf9` |
-| `tests/simulation/rebot_b601dm/test_speed_bound.py` | 6,327 B | `f2415eb80ac28541` |
-| `tests/simulation/rebot_b601dm/test_torque_convention.py` | 4,396 B | `72cab31ff22565b8` |
+| `tests/simulation/rebot_b601dm/conftest.py` | 267 B | `0789b7c9a5aab484` |
+| `tests/simulation/rebot_b601dm/test_joint_limits.py` | 9,084 B | `970fe6e5dd72cabf` |
+| `tests/simulation/rebot_b601dm/test_launcher_contract.py` | 6,089 B | `5d34e6d6f46ce77e` |
+| `tests/simulation/rebot_b601dm/test_limits_yaml_consistency.py` | 3,247 B | `f2c1e2bb9782f038` |
+| `tests/simulation/rebot_b601dm/test_measure_script.py` | 8,565 B | `818197febb5b1a44` |
+| `tests/simulation/rebot_b601dm/test_motor_mass.py` | 6,782 B | `86c2c26b2c052a8c` |
+| `tests/simulation/rebot_b601dm/test_patch_asset.py` | 5,612 B | `95b8b75afa94541e` |
+| `tests/simulation/rebot_b601dm/test_racket_attachment.py` | 6,421 B | `e38f13059e6f9c62` |
+| `tests/simulation/rebot_b601dm/test_speed_bound.py` | 6,470 B | `2e1dcce390b59ec0` |
+| `tests/simulation/rebot_b601dm/test_torque_convention.py` | 4,490 B | `0db791f8645180d1` |
 
 ---
 

@@ -1,0 +1,61 @@
+{
+ "root": "/home/dgut/runs/a1/final",
+ "distinct_labels": 76,
+ "labels_with_bare_negative_zero": 0,
+ "occurrences_with_bare_negative_zero": 0,
+ "labels_with_any_minus_zero_substring": 31,
+ "occurrences_with_any_minus_zero_substring": 48,
+ "bare_negative_zero_samples": [],
+ "substring_samples": [
+  [
+   "(0,1,-0.144)",
+   4
+  ],
+  [
+   "(1,0,-0.839)",
+   3
+  ],
+  [
+   "(0,-1,-0.029)",
+   3
+  ],
+  [
+   "(0,1,-0.029)",
+   3
+  ],
+  [
+   "(1,0,-0.257)",
+   2
+  ],
+  [
+   "(-1,0,-0.595)",
+   2
+  ]
+ ],
+ "top_labels": [
+  [
+   "(-1,0,0)",
+   140
+  ],
+  [
+   "(0,1,0)",
+   133
+  ],
+  [
+   "(1,0,0)",
+   129
+  ],
+  [
+   "(0,-1,0)",
+   121
+  ],
+  [
+   "(0,0,1)",
+   39
+  ],
+  [
+   "(0,0,-1)",
+   39
+  ]
+ ]
+}

@@ -1,0 +1,57 @@
+{
+ "label": "final",
+ "root": "/home/dgut/runs/a1/final",
+ "solids": 282,
+ "direction_entities": 73606,
+ "direction_parsed": 73606,
+ "direction_unparsed": 0,
+ "unparsed_samples": [],
+ "circles_total": 13324,
+ "solids_with_dominant_axes": 276,
+ "solids_with_circles_but_no_axes": 0,
+ "axis_labels_distinct": 76,
+ "axis_label_top": [
+  [
+   "(-1,0,0)",
+   140
+  ],
+  [
+   "(0,1,0)",
+   133
+  ],
+  [
+   "(1,0,0)",
+   129
+  ],
+  [
+   "(0,-1,0)",
+   121
+  ],
+  [
+   "(0,0,1)",
+   39
+  ],
+  [
+   "(0,0,-1)",
+   39
+  ],
+  [
+   "(-1,0,0.257)",
+   6
+  ],
+  [
+   "(-1,0,0.839)",
+   5
+  ]
+ ],
+ "labels_containing_minus_zero": 48,
+ "solids_with_minus_zero_label": 48,
+ "probe_direction_254973": {
+  "254973": [
+   1.0,
+   0.0,
+   0.0
+  ]
+ },
+ "triple_regex": "\\(\\s*([-+]?(?:[0-9]+\\.?[0-9]*|\\.[0-9]+)(?:[EeDd][-+]?[0-9]+)?)\\s*,\\s*([-+]?(?:[0-9]+\\.?[0-9]*|\\.[0-9]+)(?:[EeDd][-+]?[0-9]+)?)\\s*,\\s*([-+]?(?:[0-9]+\\.?[0-9]*|\\.[0-9]+)(?:[EeDd][-+]?[0-9]+)?)\\s*\\)"
+}
