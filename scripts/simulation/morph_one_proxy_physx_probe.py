@@ -190,6 +190,45 @@ def flatten(values):
     return np.asarray(values).reshape(-1).astype(float).tolist()
 
 
+def _unit_quat_wxyz(quat):
+    """Normalized world-frame quaternion; allow q and -q as same rotation."""
+    values = np.asarray(quat, dtype=float)
+    norm = float(np.linalg.norm(values))
+    if not np.isfinite(norm) or norm <= 0.0:
+        raise ValueError("non-finite or degenerate body quaternion")
+    return values / norm
+
+
+def _quat_mul_wxyz(a, b):
+    w, x, y, z = a
+    p, u, v, t = b
+    return np.array([
+        w*p-x*u-y*v-z*t,
+        w*u+x*p+y*t-z*v,
+        w*v-x*t+y*p+z*u,
+        w*t+x*v-y*u+z*p,
+    ], dtype=float)
+
+
+def _relative_mount_pose(chassis_p, chassis_q, arm_p, arm_q):
+    """Return arm-body pose in the chassis-body frame (position, quaternion)."""
+    q = _unit_quat_wxyz(chassis_q)
+    inverse_q = q * np.array([1.0, -1.0, -1.0, -1.0])
+    relative_quat = _quat_mul_wxyz(inverse_q, _unit_quat_wxyz(arm_q))
+    displacement = np.asarray(arm_p, dtype=float) - np.asarray(chassis_p, dtype=float)
+    # Rotate displacement into chassis local coordinates.
+    v = inverse_q[1:]
+    t = 2.0 * np.cross(v, displacement)
+    relative_pos = displacement + inverse_q[0] * t + np.cross(v, t)
+    return relative_pos, _unit_quat_wxyz(relative_quat)
+
+
+def _quat_difference_angle(a, b):
+    """Minimal SO(3) rotation angle, accounting for q == -q equivalence."""
+    dot = abs(float(np.dot(_unit_quat_wxyz(a), _unit_quat_wxyz(b))))
+    return 2.0 * math.acos(max(-1.0, min(1.0, dot)))
+
+
 def build_sim(gravity_off=False):
     physics = PhysxCfg(solver_type=1, enable_external_forces_every_iteration=True)
     kwargs = {"dt": DT, "device": "cuda:0", "physics": physics}
@@ -273,6 +312,14 @@ def run(usd_path, prim_path, out_path, gravity_off=False):
     start_chassis = None if chassis_index is None else flatten(
         robot.data.body_pos_w[0, chassis_index])
     start_base = None if base_index is None else flatten(robot.data.body_pos_w[0, base_index])
+    start_chassis_quat = None if chassis_index is None else flatten(
+        robot.data.body_quat_w[0, chassis_index])
+    start_base_quat = None if base_index is None else flatten(
+        robot.data.body_quat_w[0, base_index])
+    initial_mount_pose = (
+        _relative_mount_pose(start_chassis, start_chassis_quat, start_base, start_base_quat)
+        if start_chassis is not None and start_base is not None else None
+    )
     start_pos, start_quat, start_yaw = root_state()
 
     # command a base twist: only meaningful when the base body is part of the articulation
@@ -303,6 +350,10 @@ def run(usd_path, prim_path, out_path, gravity_off=False):
             row["chassis_pos"] = flatten(robot.data.body_pos_w[0, chassis_index])
         if base_index is not None:
             row["arm_base_pos"] = flatten(robot.data.body_pos_w[0, base_index])
+        if chassis_index is not None:
+            row["chassis_quat_wxyz"] = flatten(robot.data.body_quat_w[0, chassis_index])
+        if base_index is not None:
+            row["arm_base_quat_wxyz"] = flatten(robot.data.body_quat_w[0, base_index])
         for key in ("root_pos", "root_lin_vel", "joint_pos", "joint_vel"):
             if not all(math.isfinite(v) for v in row[key]):
                 non_finite += 1
@@ -331,6 +382,21 @@ def run(usd_path, prim_path, out_path, gravity_off=False):
         }
 
     end_root = samples[-1]["root_pos"]
+    mount_translation_errors = []
+    mount_rotation_errors = []
+    if initial_mount_pose is not None:
+        original_relative_pos, original_relative_quat = initial_mount_pose
+        for row in samples:
+            measured_pos, measured_quat = _relative_mount_pose(
+                row["chassis_pos"], row["chassis_quat_wxyz"],
+                row["arm_base_pos"], row["arm_base_quat_wxyz"],
+            )
+            mount_translation_errors.append(
+                float(np.linalg.norm(measured_pos - original_relative_pos))
+            )
+            mount_rotation_errors.append(
+                _quat_difference_angle(measured_quat, original_relative_quat)
+            )
     report.update({
         "twist_command_xy_yaw": [0.4, 0.0, 0.3],
         "twist_written": twist_applied,
@@ -343,7 +409,21 @@ def run(usd_path, prim_path, out_path, gravity_off=False):
         "root_horizontal_travel_m": round(float(np.linalg.norm(
             np.array(end_root[:2]) - np.array(start_pos[:2]))), 6),
         "root_end_z_m": round(float(end_root[2]), 6),
+        # Absolute root z is NOT a vertical drift. Compare with the measured
+        # post-settling start, and expose the transient range separately.
+        "root_vertical_delta_after_settle_m": round(float(end_root[2] - start_pos[2]), 6),
+        "root_vertical_span_during_drive_m": round(float(
+            max(row["root_pos"][2] for row in samples)
+            - min(row["root_pos"][2] for row in samples)), 6),
         "root_min_z_m": round(float(min(row["root_pos"][2] for row in samples)), 6),
+        "max_fixed_mount_local_translation_error_m": (
+            round(max(mount_translation_errors), 6) if mount_translation_errors else None
+        ),
+        "max_fixed_mount_relative_rotation_error_rad": (
+            round(max(mount_rotation_errors), 6) if mount_rotation_errors else None
+        ),
+        # Backward-compatible old metric: world-frame offset difference only.
+        # It cannot certify a nonzero-offset rigid mount under chassis rotation.
         "max_fixed_mount_error_m": round(float(max(
             np.linalg.norm(
                 (np.array(row["arm_base_pos"]) - np.array(row["chassis_pos"]))
@@ -387,7 +467,10 @@ def run(usd_path, prim_path, out_path, gravity_off=False):
     brief = {key: report[key] for key in (
         "num_bodies_physx", "num_joints_physx", "dofs_physx", "chassis_in_articulation",
         "body_names", "twist_written", "root_translation_m", "chassis_moved_m",
-        "arm_base_moved_m", "fixed_mount_relative_error_m", "max_abs_joint_vel",
+        "arm_base_moved_m", "fixed_mount_relative_error_m",
+        "max_fixed_mount_local_translation_error_m",
+        "max_fixed_mount_relative_rotation_error_rad",
+        "root_vertical_delta_after_settle_m", "max_abs_joint_vel",
         "non_finite_samples", "diverged")}
     print(json.dumps(brief, ensure_ascii=False, indent=1))
     print("OUT", out_path)
