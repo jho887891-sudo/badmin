@@ -37,6 +37,8 @@ PARSER.add_argument("--lift", type=float, default=0.0)
 PARSER.add_argument("--steps", type=int, default=STEPS)
 PARSER.add_argument("--include-ground", action="store_true", default=True)
 PARSER.add_argument("--no-ground", dest="include_ground", action="store_false")
+PARSER.add_argument("--read-contacts", action="store_true",
+                    help="record net contact forces per body when the PhysX view exposes them")
 AppLauncher.add_app_launcher_args(PARSER)
 ARGS = PARSER.parse_args()
 LAUNCHER = AppLauncher(ARGS)
@@ -157,6 +159,16 @@ def main():
     chassis_index = index_of.get("Chassis")
     base_index = index_of.get("base_link")
 
+    contact_api = "UNKNOWN"
+    contact_reader = None
+    if ARGS.read_contacts:
+        for name in ("get_net_contact_forces", "get_net_contact_forces_w"):
+            candidate = getattr(robot.root_physx_view, name, None)
+            if callable(candidate):
+                contact_reader = candidate
+                contact_api = "root_physx_view." + name
+                break
+
     jsonl = open(os.path.join(out_dir, "raw_poses.jsonl"), "w", encoding="utf-8")
     frames = []
 
@@ -182,6 +194,17 @@ def main():
             "lin_vel": [round(float(v), 12) for v in
                         _np(robot.data.root_lin_vel_w[0]).reshape(-1)[:3]],
         }
+        if contact_reader is not None:
+            try:
+                forces = _np(contact_reader()).reshape(len(body_names), -1)[:, :3]
+                row["net_contact_forces_n"] = {
+                    name: [round(float(v), 9) for v in forces[index_of[name]]]
+                    for name in body_names
+                }
+                row["max_contact_force_n"] = round(
+                    float(np.max(np.linalg.norm(forces, axis=1))), 9)
+            except Exception as exc:  # pragma: no cover
+                row["net_contact_forces_n"] = "UNKNOWN: %s" % type(exc).__name__
         row["finite"] = all(
             math.isfinite(v)
             for entry in row["bodies"].values()
@@ -252,7 +275,12 @@ def main():
                     "t0_mount_rotation_error_rad": None if mount_rot is None else round(mount_rot, 12),
                     "settle_60_step_chassis_drift_m": round(drift, 12)},
         "thresholds": thresholds, "gates": verdict,
-        "diagnostics": {"body_names": body_names, "joint_names": joint_names,
+        "diagnostics": {"contact_api": contact_api,
+                        "max_contact_force_step0_n": reset0.get("max_contact_force_n", "UNKNOWN"),
+                        "max_contact_force_settle_n": (
+                            max((row.get("max_contact_force_n", 0.0) or 0.0)
+                                for row in settle) if contact_reader is not None else "UNKNOWN"),
+                        "body_names": body_names, "joint_names": joint_names,
                         "dofs": int(robot.data.joint_pos.shape[1]),
                         "root_lin_speed_at_step0_m_s": round(v0, 12),
                         "chassis_in_articulation": chassis_index is not None,

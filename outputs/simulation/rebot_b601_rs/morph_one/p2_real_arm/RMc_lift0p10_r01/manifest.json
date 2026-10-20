@@ -1,0 +1,20 @@
+{
+ "stage": "P2",
+ "run_id": "RMc_lift0p10_r01",
+ "scene_variant": "REAL_ARM_MOUNT",
+ "arm_asset": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+ "arm_sha256": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+ "arm_asset_unchanged": true,
+ "physics_dt_s": 0.008333333333333333,
+ "gravity_m_s2": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "include_ground": true,
+ "lift_m": 0.1,
+ "drive_mode": "implicit 300/20, targets untouched",
+ "write_data_to_sim": true,
+ "steps": 60,
+ "command": "/home/dgut/runs/p2/morph_one_p2_real_arm_mount.py --run-id RMc_lift0p10_r01 --out-dir /home/dgut/runs/p2/RMc_lift0p10_r01 --read-contacts --lift 0.10"
+}
