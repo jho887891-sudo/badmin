@@ -437,8 +437,21 @@ def symmetry_check(corners: Sequence[dict], up_index: int) -> List[dict]:
         if a and b:
             mirrored = _mirror_point(a, axis_index)
             residual = [round(float(mirrored[i] - float(b[i])), 4) for i in range(3)]
+            # The chosen point on an axis is arbitrary along that axis.
+            # For a near-vertical steering candidate, a height difference in
+            # those anchor points does NOT shift the steering axis footprint.
+            # Preserve the full anchor residual for diagnostics, but compare
+            # the horizontal projection for wheel-layout mirror symmetry.
+            ground_residual = list(residual)
+            ground_residual[up_index] = 0.0
             row["mirror_residual_mm"] = residual
             row["mirror_residual_norm_mm"] = round(float(np.linalg.norm(residual)), 4)
+            row["ground_projection_residual_mm"] = ground_residual
+            row["ground_projection_residual_norm_mm"] = round(
+                float(np.linalg.norm(ground_residual)), 4
+            )
+            row["anchor_up_offset_mm"] = residual[up_index]
+            row["symmetry_metric"] = "horizontal_axis_footprint"
             radius_a = left["max_steering_circle_radius_mm"]
             radius_b = right["max_steering_circle_radius_mm"]
             row["radius_a_mm"] = radius_a
@@ -449,7 +462,7 @@ def symmetry_check(corners: Sequence[dict], up_index: int) -> List[dict]:
                 else None
             )
             row["consistent"] = bool(
-                row["mirror_residual_norm_mm"] <= CORNER_POSITION_TOL_MM
+                row["ground_projection_residual_norm_mm"] <= CORNER_POSITION_TOL_MM
                 and (row["radius_delta_mm"] is None or row["radius_delta_mm"] <= CORNER_RADIUS_TOL_MM)
             )
         else:
