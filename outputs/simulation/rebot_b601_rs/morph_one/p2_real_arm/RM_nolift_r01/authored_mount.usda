@@ -1,0 +1,49 @@
+#usda 1.0
+(
+    defaultPrim = "RM"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "RM" (
+    customData = {
+        string label = "TEST_PROXY chassis carrying the REAL B601-RS asset (read-only reference)"
+    }
+)
+{
+    def Xform "Chassis" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float physics:mass = 25
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "geometry" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        )
+        {
+            double size = 1
+            float3 xformOp:scale = (0.5, 0.35, 0.1)
+            uniform token[] xformOpOrder = ["xformOp:scale"]
+        }
+    }
+
+    def Xform "Arm" (
+        prepend references = @/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda@
+    )
+    {
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        over "Physics"
+        {
+            over "root_joint"
+            {
+                rel physics:body0 = </RM/Chassis>
+            }
+        }
+    }
+}
+
