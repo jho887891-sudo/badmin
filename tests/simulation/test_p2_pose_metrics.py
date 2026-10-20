@@ -39,6 +39,19 @@ class PoseMetricsTest(unittest.TestCase):
         usd_chassis = Pose.from_usd_wxyz((0, 0, 0), (1, 0, 0, 0))
         self.assertAlmostEqual(world_pose_error(usd_chassis, chassis)['world_position_error_m'], .0379)
 
+    def test_archived_p2_reset0_has_good_mount_but_bad_absolute_pose(self):
+        # Evidence: e947bad1 / p2_b0853ef/p2_joint-local.json (reset0).
+        authored = Pose.from_usd_wxyz((0, 0, 0), (1, 0, 0, 0))
+        q = (0.007430156, -0.000311807, 0.00041042, 0.999972224)
+        chassis = Pose.from_isaac_body_xyzw((.000044573, .000191213, .037923977), q)
+        base = Pose.from_isaac_body_xyzw((.11996226, -.052677333, .237234399), q)
+        absolute = world_pose_error(authored, chassis)
+        mount = mount_pose_error(chassis, base, (.119999997, -.050000001, .200000003))
+        self.assertAlmostEqual(absolute['world_position_error_m'], .037924485239, places=7)
+        self.assertAlmostEqual(absolute['world_rotation_error_rad'], .014896162793, places=6)
+        self.assertLess(mount['mount_position_error_m'], 1e-6)
+        self.assertEqual(mount['mount_rotation_error_rad'], 0)
+
     def test_signed_quaternion_invariance(self):
         self.assertEqual(angle((1, 0, 0, 0), (-1, 0, 0, 0)), 0)
 
