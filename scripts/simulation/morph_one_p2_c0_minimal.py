@@ -23,6 +23,8 @@ import json
 import math
 import os
 import platform
+import sys
+import traceback
 
 import numpy as np
 
@@ -50,6 +52,7 @@ import isaaclab.sim as sim_utils  # noqa: E402
 from isaaclab.assets import Articulation, ArticulationCfg  # noqa: E402
 from isaaclab_physx.physics import PhysxCfg  # noqa: E402
 from pxr import Gf, Sdf, Usd, UsdGeom, UsdPhysics  # noqa: E402
+from p2_tensor_readback import host_floats  # noqa: E402
 
 USD_SOURCE = "usd_gf_quat_wxyz"
 RUNTIME_SOURCE = "isaaclab_body_quat_raw"
@@ -147,7 +150,9 @@ def angle_between(a_wxyz, b_wxyz):
 
 def main():
     out_dir = os.path.abspath(ARGS.out_dir)
-    os.makedirs(out_dir, exist_ok=True)
+    if ARGS.steps < 1:
+        raise ValueError('--steps must be >= 1')
+    os.makedirs(out_dir, exist_ok=False)  # Each run needs its own evidence directory.
     authored_layer = author(os.path.join(out_dir, "authored_proxy.usda"))
     authored = read_authored_world(authored_layer["usd"])
 
@@ -175,12 +180,14 @@ def main():
     frames = []
 
     def capture(tag, step):
-        row = {"run_id": ARGS.run_id, "tag": tag, "step": step, "t_s": round(step * DT, 9),
-               "bodies": {}}
-        root_pos = [float(v) for v in np.asarray(robot.data.root_pos_w[0]).reshape(-1)[:3]]
-        root_raw = [float(v) for v in np.asarray(robot.data.root_quat_w[0]).reshape(-1)[:4]]
-        root_lin = [float(v) for v in np.asarray(robot.data.root_lin_vel_w[0]).reshape(-1)[:3]]
-        root_ang = [float(v) for v in np.asarray(robot.data.root_ang_vel_w[0]).reshape(-1)[:3]]
+        row = {"run_id": ARGS.run_id, "tag": tag,
+               "event": "reset0" if step == 0 else "post_step",
+               "step": step, "t_s": round(step * DT, 9),
+               "bodies": {}, "joints": {}, "contact_status": "unavailable"}
+        root_pos = host_floats(robot.data.root_pos_w[0], 3)
+        root_raw = host_floats(robot.data.root_quat_w[0], 4)
+        root_lin = host_floats(robot.data.root_lin_vel_w[0], 3)
+        root_ang = host_floats(robot.data.root_ang_vel_w[0], 3)
         row["root"] = {
             "pos": [round(v, 12) for v in root_pos],
             "raw_quat": [round(v, 12) for v in root_raw],
@@ -194,17 +201,25 @@ def main():
                 row["bodies"][name] = {"found": False}
                 continue
             index = index_of[name]
-            raw = [float(v) for v in np.asarray(robot.data.body_quat_w[0, index]).reshape(-1)[:4]]
+            raw = host_floats(robot.data.body_quat_w[0, index], 4)
+            pos = host_floats(robot.data.body_pos_w[0, index], 3)
+            lin = host_floats(robot.data.body_lin_vel_w[0, index], 3)
+            ang = host_floats(robot.data.body_ang_vel_w[0, index], 3)
             row["bodies"][name] = {
-                "pos": [round(float(v), 12) for v in
-                        np.asarray(robot.data.body_pos_w[0, index]).reshape(-1)[:3]],
+                "pos": [round(v, 12) for v in pos],
                 "raw_quat": [round(v, 12) for v in raw],
                 "normalized_quat_wxyz": [round(v, 12) for v in raw_to_wxyz(raw)],
                 "quat_source": RUNTIME_SOURCE,
-                "lin_vel": [round(float(v), 12) for v in
-                            np.asarray(robot.data.body_lin_vel_w[0, index]).reshape(-1)[:3]],
-                "ang_vel": [round(float(v), 12) for v in
-                            np.asarray(robot.data.body_ang_vel_w[0, index]).reshape(-1)[:3]],
+                "lin_vel": [round(v, 12) for v in lin],
+                "ang_vel": [round(v, 12) for v in ang],
+                # Also carry explicit SPEC-compatible telemetry field names.
+                "position_m": pos,
+                "raw_quaternion": raw,
+                "quat_layout": "xyzw",
+                "source_api": RUNTIME_SOURCE,
+                "linear_velocity_m_s": lin,
+                "angular_velocity_rad_s": ang,
+                "source_prim_path": "/World/C0/" + name,
             }
         row["finite"] = all(
             math.isfinite(v)
@@ -249,9 +264,9 @@ def main():
         np.asarray(reset0["bodies"]["Chassis"]["pos"]) - np.asarray(authored["Chassis"]["pos"])))
     world_rot_0 = angle_between(reset0["bodies"]["Chassis"]["normalized_quat_wxyz"],
                                 authored["Chassis"]["quat_wxyz"])
-    drift = float(np.linalg.norm(
-        np.asarray(settle[-1]["bodies"]["Chassis"]["pos"])
-        - np.asarray(reset0["bodies"]["Chassis"]["pos"])))
+    drift = max(float(np.linalg.norm(
+        np.asarray(row["bodies"]["Chassis"]["pos"])
+        - np.asarray(reset0["bodies"]["Chassis"]["pos"]))) for row in settle)
     root_speed_0 = float(np.linalg.norm(reset0["root"]["lin_vel"]))
     root_speed_1 = float(np.linalg.norm(settle[0]["root"]["lin_vel"]))
     velocities = [float(np.linalg.norm(row["root"]["lin_vel"])) for row in settle]
@@ -286,7 +301,16 @@ def main():
         "collision_mode": "default",
         "drive_mode": "none",
         "write_data_to_sim": bool(ARGS.write_data),
-        "steps": ARGS.steps,
+        "steps": ARGS.steps, "settle_steps": ARGS.steps,
+        "joint_names": [],
+        "authored_world": {
+            name: {"position_m": authored[name]["pos"],
+                   "quat_wxyz": authored[name]["quat_wxyz"]}
+            for name in ("Chassis", "Payload")
+        },
+        "expected_mount": {"position_m": list(MOUNT_OFFSET),
+                           "quat_wxyz": [1, 0, 0, 0],
+                           "base_body_name": "Payload"},
         "command": " ".join(os.sys.argv),
         "seed": "n/a (no randomness)",
     }
@@ -315,9 +339,29 @@ def main():
     print(json.dumps({k: result[k] for k in ("run_id", "gate_result", "metrics", "gates")},
                      ensure_ascii=False, indent=1))
     print("GATE_RESULT=%s" % gate_result, flush=True)
-    SIMULATION_APP.close()
     return 0 if gate_result == "PASS" else 1
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    code = 1
+    try:
+        code = main()
+    except BaseException as exc:
+        # On this Isaac/Kit build the child can return 0 even after a Python
+        # exception. Persist the traceback before Kit teardown regardless.
+        trace = traceback.format_exc()
+        sys.stderr.write(trace + "\\n")
+        sys.stderr.flush()
+        try:
+            os.makedirs(ARGS.out_dir, exist_ok=True)
+            with open(os.path.join(ARGS.out_dir, "failure.json"), "x", encoding="utf-8") as handle:
+                json.dump({"gate_result": "FAIL", "gates": {"uncaught_exception": False},
+                           "error": repr(exc), "traceback": trace},
+                          handle, indent=2)
+        except OSError as record_error:
+            print("FAILURE_EVIDENCE_WRITE_ERROR:", record_error, file=sys.stderr, flush=True)
+    finally:
+        sys.stdout.flush()
+        sys.stderr.flush()
+        SIMULATION_APP.close()
+    raise SystemExit(code)

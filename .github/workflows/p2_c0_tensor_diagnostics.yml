@@ -1,0 +1,29 @@
+name: P2 C0 Tensor Diagnostics
+
+on:
+  push:
+    branches:
+      - chatgpt/p2-c0-gpu-diagnostic-fix-20261021
+  pull_request:
+    paths:
+      - "scripts/simulation/morph_one_p2_c0_minimal.py"
+      - "scripts/simulation/p2_tensor_readback.py"
+      - "tests/simulation/test_p2_tensor_readback.py"
+      - ".github/workflows/p2_c0_tensor_diagnostics.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  offline-syntax-and-readback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Isaac script without importing Isaac
+        run: python -m py_compile scripts/simulation/morph_one_p2_c0_minimal.py scripts/simulation/p2_tensor_readback.py
+      - name: Run fake CUDA tensor tests
+        run: python -m unittest discover -s tests/simulation -p 'test_p2_tensor_readback.py' -v
