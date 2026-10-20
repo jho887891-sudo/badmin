@@ -1,0 +1,153 @@
+{
+ "chassis_usd": "/home/T7/dgut/runs/cad_dev/usd/M1-4WD4S_model2601_dev.usda",
+ "mapping": "/home/dgut/runs/wheels/mapping.json",
+ "asset_meters_per_unit": 0.001,
+ "asset_up_axis": "Z",
+ "applied_scale": 0.001,
+ "applied_rotation_deg_about_x": 90.0,
+ "cad_bbox_mm": {
+  "min": [
+   -290.0,
+   -346.996,
+   -400.0
+  ],
+  "max": [
+   290.0,
+   26.0,
+   402.852
+  ],
+  "size": [
+   580.0,
+   372.996,
+   802.852
+  ]
+ },
+ "cad_most_negative_axis": "z",
+ "up_axis_by_smallest_extent": "y",
+ "world_up_axis_by_smallest_extent": "z",
+ "world_bbox_m": {
+  "min": [
+   -0.29,
+   -0.402852,
+   -0.346996
+  ],
+  "max": [
+   0.29,
+   0.4,
+   0.026
+  ],
+  "size": [
+   0.58,
+   0.802852,
+   0.372996
+  ]
+ },
+ "world_bbox_size_permuted": true,
+ "wheel_solids": [
+  {
+   "step_eid": 435700,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_15/Mesh",
+   "found": true,
+   "cad_centre_mm": [
+    250.002,
+    -244.0,
+    -297.0
+   ],
+   "cad_bbox_size_mm": [
+    48.791,
+    205.991,
+    205.991
+   ],
+   "world_centre_m_after_scale": [
+    0.250002,
+    -0.244,
+    -0.297
+   ],
+   "world_centre_m_after_scale_and_rotation": [
+    0.250002,
+    0.297,
+    -0.244
+   ],
+   "world_low_z_m_after_scale_and_rotation": -0.346996
+  },
+  {
+   "step_eid": 759491,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_23/Mesh",
+   "found": true,
+   "cad_centre_mm": [
+    250.002,
+    -244.0,
+    297.0
+   ],
+   "cad_bbox_size_mm": [
+    48.791,
+    205.991,
+    205.991
+   ],
+   "world_centre_m_after_scale": [
+    0.250002,
+    -0.244,
+    0.297
+   ],
+   "world_centre_m_after_scale_and_rotation": [
+    0.250002,
+    -0.297,
+    -0.244
+   ],
+   "world_low_z_m_after_scale_and_rotation": -0.346996
+  },
+  {
+   "step_eid": 773650,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_7/Mesh",
+   "found": true,
+   "cad_centre_mm": [
+    -250.002,
+    -244.0,
+    -297.0
+   ],
+   "cad_bbox_size_mm": [
+    48.791,
+    205.991,
+    205.991
+   ],
+   "world_centre_m_after_scale": [
+    -0.250002,
+    -0.244,
+    -0.297
+   ],
+   "world_centre_m_after_scale_and_rotation": [
+    -0.250002,
+    0.297,
+    -0.244
+   ],
+   "world_low_z_m_after_scale_and_rotation": -0.346996
+  },
+  {
+   "step_eid": 871375,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_31/Mesh",
+   "found": true,
+   "cad_centre_mm": [
+    -250.002,
+    -244.0,
+    297.0
+   ],
+   "cad_bbox_size_mm": [
+    48.791,
+    205.991,
+    205.991
+   ],
+   "world_centre_m_after_scale": [
+    -0.250002,
+    -0.244,
+    0.297
+   ],
+   "world_centre_m_after_scale_and_rotation": [
+    -0.250002,
+    -0.297,
+    -0.244
+   ],
+   "world_low_z_m_after_scale_and_rotation": -0.346996
+  }
+ ],
+ "note": "an up axis and a rotation sign inferred from CAD are CANDIDATE conventions; they are not the vendor's declared robot frame"
+}
