@@ -193,5 +193,10 @@ def test_build_report_aggregates_groups_and_caveats(step_path):
     groups = {group["part_group"]: group for group in report["groups"]}
     assert groups["M1.2.2-00V3 舵轮前组件-2"]["solids"] == 1
     assert groups["UNKNOWN"]["solids"] == 2
-    assert len(report["caveats"]) == 3
+    # Guard *meaningful* limitations rather than a brittle literal count.
+    # The reviewer added an essential warning that fingerprints are only
+    # duplicate candidates, not exact BREP identity certificates.
+    assert len(report["caveats"]) >= 4
     assert any("no wheel radius" in caveat for caveat in report["caveats"])
+    assert any("candidate" in caveat.lower() and "fingerprint" in caveat.lower()
+               for caveat in report["caveats"])
