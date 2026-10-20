@@ -51,9 +51,12 @@ __all__ = [
 ]
 
 _FLOAT_RE = re.compile(r"[-+]?(?:[0-9]+\.?[0-9]*|\.[0-9]+)(?:[EeDd][-+]?[0-9]+)?")
+# Reuse the STEP numeric token (including E/D scientific notation) for ALL
+# three vector components.  Otherwise SolidWorks DIRECTION values with a
+# near-zero component such as -4.789422297650225240E-14 silently disappear.
 _TRIPLE_RE = re.compile(
-    r"\(\s*([-+]?(?:[0-9]+\.?[0-9]*|\.[0-9]+))\s*,\s*([-+]?(?:[0-9]+\.?[0-9]*|\.[0-9]+))"
-    r"\s*,\s*([-+]?(?:[0-9]+\.?[0-9]*|\.[0-9]+))\s*\)"
+    r"\(\s*(" + _FLOAT_RE.pattern + r")\s*,\s*("
+    + _FLOAT_RE.pattern + r")\s*,\s*(" + _FLOAT_RE.pattern + r")\s*\)"
 )
 
 SHAPE_DISC = "disc_like"
@@ -78,7 +81,11 @@ def _direction_vector(entity: Entity) -> "Tuple[float, float, float] | None":
     scale = max(abs(v) for v in values)
     if scale == 0:
         return None
-    return tuple(round(v / scale, 3) for v in values)  # type: ignore[return-value]
+    # Rounding tiny negative STEP components yields -0.0, which formats as
+    # "-0" and splits identical axis bins in dominant_circle_axes statistics.
+    # Adding +0.0 canonically removes the negative-zero sign without affecting
+    # any nonzero, rounded direction component.
+    return tuple(round(v / scale, 3) + 0.0 for v in values)  # type: ignore[return-value]
 
 
 def _last_float(body: str) -> "float | None":
