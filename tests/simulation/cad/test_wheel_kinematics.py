@@ -223,3 +223,25 @@ def test_symmetry_check_flags_a_corner_that_does_not_mirror():
     assert bad, "a 5 mm mismatch must not be reported as symmetric"
     assert all(row["mirror_residual_norm_mm"] >= 4.9 for row in bad)
 
+
+
+def test_vertical_axis_anchor_height_must_not_fail_ground_symmetry():
+    """Two points at different heights can describe the same steering line."""
+    parts_by_eid = {11: {"named": True, "module": "m", "name_leaf": "n"}}
+    features = []
+    eid = 1
+    for x in (-250.0, 250.0):
+        for z in (-297.0, 297.0):
+            # Different arbitrary origins along otherwise perfectly symmetric Y axes.
+            height = -100.0 if x > 0 else -102.281
+            features.append(feature([0, 1, 0], [x, height, z], 40.0,
+                                    eid=eid, step_eid=11))
+            eid += 1
+    segments, up_index = segments_of(features, "y")
+    comparisons = symmetry_check(corner_summary(segments, up_index, parts_by_eid), up_index)
+    x_mirrors = [item for item in comparisons if item["mirror_axis"] == "x"]
+    assert len(x_mirrors) == 2
+    assert all(item["consistent"] for item in x_mirrors)
+    assert all(item["ground_projection_residual_norm_mm"] == 0.0 for item in x_mirrors)
+    assert all(item["mirror_residual_norm_mm"] > 2.0 for item in x_mirrors)
+    assert all(abs(item["anchor_up_offset_mm"]) > 2.0 for item in x_mirrors)
