@@ -1,0 +1,18 @@
+#usda 1.0
+(
+    defaultPrim = "MorphOne"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "MorphOne"
+{
+    def Xform "Visual" (
+        prepend references = @/home/T7/dgut/runs/cad_dev/usd/M1-4WD4S_model2601_dev.usda@
+    )
+    {
+        float3 xformOp:scale = (0.001, 0.001, 0.001)
+        uniform token[] xformOpOrder = ["xformOp:scale"]
+    }
+}
+

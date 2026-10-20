@@ -1,0 +1,312 @@
+{
+ "runner": "isaac sim app (headless)",
+ "visual_usd": "/home/T7/dgut/runs/cad_dev/usd/M1-4WD4S_model2601_dev.usda",
+ "expected_envelope_m": [
+  0.58,
+  0.373,
+  0.803
+ ],
+ "cases": {
+  "A_no_scale": {
+   "scene": "/home/T7/dgut/runs/cad_dev/metric_scene/A_no_scale_metre_stage.usda",
+   "opened": true,
+   "stage_meters_per_unit": 1.0,
+   "up_axis": "Z",
+   "prim_count": 575,
+   "prim_type_counts": {
+    "Xform": 286,
+    "Mesh": 282,
+    "Scope": 3,
+    "Material": 2,
+    "Shader": 2
+   },
+   "authored_scale_ops": [],
+   "composed_local_to_world_diagonal": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "world_bbox_from_points_stage_units": [
+    580.0,
+    372.995697021,
+    802.851623535
+   ],
+   "world_bbox_from_points_meters": [
+    580.0,
+    372.995697021,
+    802.851623535
+   ],
+   "world_bbox_from_cache_stage_units": [
+    580.0,
+    372.995697021,
+    802.851623535
+   ],
+   "bbox_methods_agree": true,
+   "mesh_instances": 282,
+   "points_used": 455255,
+   "per_mesh_sample": [
+    {
+     "path": "/MorphOne/Visual/tn__M1100V3_qAD/NONE/Mesh",
+     "points": 6,
+     "world_size": [
+      0.003692627,
+      0.222450256,
+      0.103988647
+     ],
+     "world_min": [
+      180.496307373,
+      -81.856185913,
+      54.003486633
+     ]
+    },
+    {
+     "path": "/MorphOne/Visual/tn__M1100V3_qAD/tn__M1100V31M1105V33solid1_zMGn99EKMW0Ei0uy2yCy0Z2h3V1qAt5m2b1d6lDaLa0n5WLZ0r9/Mesh",
+     "points": 584,
+     "world_size": [
+      286.0,
+      40.837165833,
+      24.732055664
+     ],
+     "world_min": [
+      -143.0,
+      -106.837165833,
+      -361.732055664
+     ]
+    },
+    {
+     "path": "/MorphOne/Visual/tn__M1100V3_qAD/tn__M1100V31M1105V34solid1_zMGn99EKMW0Ei0uy2yCy0Z2h3V1qAt5m2b1d6lDaLa0n5WLZ0r9/Mesh",
+     "points": 584,
+     "world_size": [
+      286.0,
+      40.837165833,
+      24.732055664
+     ],
+     "world_min": [
+      -143.0,
+      -106.837165833,
+      337.0
+     ]
+    },
+    {
+     "path": "/MorphOne/Visual/tn__M1100V3_qAD/tn__M1100V31M1106V33solid1_zMGn99EKMW0Ei0uy2d5Pe3z0a7W1b1o2q2h1g4r3s6Y3m4X4b0r6h9WPk6bOf0t3x9/Mesh",
+     "points": 1416,
+     "world_size": [
+      72.0,
+      36.0,
+      50.38269043
+     ],
+     "world_min": [
+      -36.0,
+      -102.0,
+      -387.0
+     ]
+    },
+    {
+     "path": "/MorphOne/Visual/tn__M1100V3_qAD/tn__M1100V31M1106V32solid1_zMGn99EKMW0Ei0uy2d5Pe3z0a7W1b1o2q2h1g4r3s6Y3m4X4b0r6h9WPk6bOf0t3x9/Mesh",
+     "points": 1412,
+     "world_size": [
+      72.0,
+      36.0,
+      50.38269043
+     ],
+     "world_min": [
+      -36.0,
+      -102.0,
+      336.61730957
+     ]
+    }
+   ],
+   "physx_apis": {
+    "CollisionAPI": 0,
+    "RigidBodyAPI": 0,
+    "MassAPI": 0,
+    "ArticulationRootAPI": 0
+   },
+   "measured_envelope_m": [
+    580.0,
+    372.995697021,
+    802.851623535
+   ],
+   "expected_envelope_m": [
+    0.58,
+    0.373,
+    0.803
+   ],
+   "matches_expected_envelope": false,
+   "checks": {
+    "opened": true,
+    "bbox_methods_agree": true,
+    "has_meshes": true,
+    "no_physics_apis": true
+   }
+  },
+  "B_scale_0.001": {
+   "scene": "/home/T7/dgut/runs/cad_dev/metric_scene/B_scale_0.001_metre_stage.usda",
+   "opened": true,
+   "stage_meters_per_unit": 1.0,
+   "up_axis": "Z",
+   "prim_count": 575,
+   "prim_type_counts": {
+    "Xform": 286,
+    "Mesh": 282,
+    "Scope": 3,
+    "Material": 2,
+    "Shader": 2
+   },
+   "authored_scale_ops": [
+    [
+     0.0010000000474974513,
+     0.0010000000474974513,
+     0.0010000000474974513
+    ]
+   ],
+   "composed_local_to_world_diagonal": [
+    0.001,
+    0.001,
+    0.001
+   ],
+   "world_bbox_from_points_stage_units": [
+    0.580000028,
+    0.372995715,
+    0.802851662
+   ],
+   "world_bbox_from_points_meters": [
+    0.580000028,
+    0.372995715,
+    0.802851662
+   ],
+   "world_bbox_from_cache_stage_units": [
+    0.580000028,
+    0.372995715,
+    0.802851662
+   ],
+   "bbox_methods_agree": true,
+   "mesh_instances": 282,
+   "points_used": 455255,
+   "per_mesh_sample": [
+    {
+     "path": "/MorphOne/Visual/tn__M1100V3_qAD/NONE/Mesh",
+     "points": 6,
+     "world_size": [
+      3.693e-06,
+      0.00022245,
+      0.000103989
+     ],
+     "world_min": [
+      0.180496316,
+      -0.08185619,
+      0.054003489
+     ]
+    },
+    {
+     "path": "/MorphOne/Visual/tn__M1100V3_qAD/tn__M1100V31M1105V33solid1_zMGn99EKMW0Ei0uy2yCy0Z2h3V1qAt5m2b1d6lDaLa0n5WLZ0r9/Mesh",
+     "points": 584,
+     "world_size": [
+      0.286000014,
+      0.040837168,
+      0.024732057
+     ],
+     "world_min": [
+      -0.143000007,
+      -0.106837171,
+      -0.361732073
+     ]
+    },
+    {
+     "path": "/MorphOne/Visual/tn__M1100V3_qAD/tn__M1100V31M1105V34solid1_zMGn99EKMW0Ei0uy2yCy0Z2h3V1qAt5m2b1d6lDaLa0n5WLZ0r9/Mesh",
+     "points": 584,
+     "world_size": [
+      0.286000014,
+      0.040837168,
+      0.024732057
+     ],
+     "world_min": [
+      -0.143000007,
+      -0.106837171,
+      0.337000016
+     ]
+    },
+    {
+     "path": "/MorphOne/Visual/tn__M1100V3_qAD/tn__M1100V31M1106V33solid1_zMGn99EKMW0Ei0uy2d5Pe3z0a7W1b1o2q2h1g4r3s6Y3m4X4b0r6h9WPk6bOf0t3x9/Mesh",
+     "points": 1416,
+     "world_size": [
+      0.072000003,
+      0.036000002,
+      0.050382693
+     ],
+     "world_min": [
+      -0.036000002,
+      -0.102000005,
+      -0.387000018
+     ]
+    },
+    {
+     "path": "/MorphOne/Visual/tn__M1100V3_qAD/tn__M1100V31M1106V32solid1_zMGn99EKMW0Ei0uy2d5Pe3z0a7W1b1o2q2h1g4r3s6Y3m4X4b0r6h9WPk6bOf0t3x9/Mesh",
+     "points": 1412,
+     "world_size": [
+      0.072000003,
+      0.036000002,
+      0.050382693
+     ],
+     "world_min": [
+      -0.036000002,
+      -0.102000005,
+      0.336617326
+     ]
+    }
+   ],
+   "physx_apis": {
+    "CollisionAPI": 0,
+    "RigidBodyAPI": 0,
+    "MassAPI": 0,
+    "ArticulationRootAPI": 0
+   },
+   "measured_envelope_m": [
+    0.580000028,
+    0.372995715,
+    0.802851662
+   ],
+   "expected_envelope_m": [
+    0.58,
+    0.373,
+    0.803
+   ],
+   "matches_expected_envelope": true,
+   "checks": {
+    "opened": true,
+    "bbox_methods_agree": true,
+    "has_meshes": true,
+    "no_physics_apis": true
+   }
+  }
+ },
+ "ratio_B_over_A": [
+  0.001,
+  0.001,
+  0.001
+ ],
+ "verdict": {
+  "A_matches_expected": false,
+  "B_matches_expected": true,
+  "B_is_thousandth_of_A": true,
+  "both_have_meshes": true,
+  "both_free_of_physics_apis": true,
+  "ok": true
+ },
+ "screenshots": {
+  "B_scale_0.001_metre_stage": {
+   "available": false,
+   "reason": "ModuleNotFoundError: No module named 'omni.kit.viewport'",
+   "seconds": 0.0
+  },
+  "A_no_scale_metre_stage": {
+   "available": false,
+   "reason": "ModuleNotFoundError: No module named 'omni.kit.viewport'",
+   "seconds": 0.0
+  }
+ },
+ "notes": [
+  "unit and composition test only: no collider, mass, joint or arm attachment",
+  "the measured envelope is conversion geometry, not a verified chassis dimension"
+ ]
+}
