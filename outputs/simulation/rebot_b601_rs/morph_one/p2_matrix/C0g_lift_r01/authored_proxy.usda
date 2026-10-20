@@ -1,0 +1,62 @@
+#usda 1.0
+(
+    defaultPrim = "C0"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "C0" (
+    customData = {
+        string label = "TEST_PROXY C0 two bodies + one FixedJoint"
+    }
+)
+{
+    def Xform "Chassis" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float physics:mass = 12
+        double3 xformOp:translate = (0, 0, 0.30000001192092896)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "geometry" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        )
+        {
+            double size = 1
+            float3 xformOp:scale = (0.4, 0.3, 0.08)
+            uniform token[] xformOpOrder = ["xformOp:scale"]
+        }
+    }
+
+    def Xform "Payload" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float physics:mass = 2
+        double3 xformOp:translate = (0.11999999731779099, -0.05000000074505806, 0.5)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "geometry" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        )
+        {
+            double size = 1
+            float3 xformOp:scale = (0.1, 0.1, 0.1)
+            uniform token[] xformOpOrder = ["xformOp:scale"]
+        }
+    }
+
+    def PhysicsFixedJoint "mount_fixed"
+    {
+        rel physics:body0 = </C0/Chassis>
+        rel physics:body1 = </C0/Payload>
+        point3f physics:localPos0 = (0.12, -0.05, 0.2)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+    }
+}
+

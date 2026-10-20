@@ -1,0 +1,27 @@
+{
+ "stage": "P2",
+ "run_id": "C0g_lift_r01",
+ "scene_variant": "C0",
+ "commit": "UNKNOWN",
+ "base_commit": "UNKNOWN",
+ "asset_hashes": {
+  "authored_proxy.usda": "TEST_PROXY"
+ },
+ "python_version": "3.12.13",
+ "isaac_sim_version": "UNKNOWN",
+ "physics_dt_s": 0.008333333333333333,
+ "gravity_m_s2": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "root_api_target": "/C0/Chassis",
+ "include_ground": true,
+ "lift_m": 0.3,
+ "collision_mode": "default",
+ "drive_mode": "none",
+ "write_data_to_sim": false,
+ "steps": 60,
+ "command": "morph_one_p2_c0_minimal.py --run-id C0g_lift_r01 --out-dir /home/dgut/runs/p2/C0g_lift_r01 --variant C0g_lift --include-ground --lift 0.30",
+ "seed": "n/a (no randomness)"
+}

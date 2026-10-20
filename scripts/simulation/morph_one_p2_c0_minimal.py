@@ -44,6 +44,8 @@ PARSER.add_argument("--root-api", choices=["chassis", "xform", "none"], default=
 PARSER.add_argument("--joints", type=int, choices=[0, 1, 2], default=0,
                     help="SPEC C4/C5: number of revolute joints in the chain")
 PARSER.add_argument("--variant", default="C0")
+PARSER.add_argument("--lift", type=float, default=0.0,
+                    help="raise every body by this many metres (isolates ground penetration)")
 PARSER.add_argument("--write-data", action="store_true",
                     help="call write_data_to_sim every step (SPEC C6/C7 factor)")
 AppLauncher.add_app_launcher_args(PARSER)
@@ -90,8 +92,12 @@ def author(path, root_api="chassis", joints=0):
         mass_api.CreateCenterOfMassAttr(Gf.Vec3f(0.0))
         return body.GetPrim()
 
-    chassis = box("/C0/Chassis", CHASSIS_HALF, None, 12.0)
-    payload = box("/C0/Payload", BODY_HALF, MOUNT_OFFSET, 2.0)
+    lift = float(ARGS.lift)
+    chassis_z = (lift,) if lift else None
+    chassis = box("/C0/Chassis", CHASSIS_HALF,
+                  None if chassis_z is None else (0.0, 0.0, lift), 12.0)
+    payload = box("/C0/Payload", BODY_HALF,
+                  (MOUNT_OFFSET[0], MOUNT_OFFSET[1], MOUNT_OFFSET[2] + lift), 2.0)
 
     joint = UsdPhysics.FixedJoint.Define(stage, "/C0/mount_fixed")
     joint.CreateBody0Rel().SetTargets([chassis.GetPath()])
@@ -103,11 +109,11 @@ def author(path, root_api="chassis", joints=0):
     targets = []
     if joints >= 1:
         link1 = box("/C0/Link1", (0.12, 0.02, 0.02),
-                    (MOUNT_OFFSET[0] + 0.13, MOUNT_OFFSET[1], MOUNT_OFFSET[2]), 1.0)
+                    (MOUNT_OFFSET[0] + 0.13, MOUNT_OFFSET[1], MOUNT_OFFSET[2] + lift), 1.0)
         targets.append((payload, link1, (0.08, 0.0, 0.0)))
     if joints >= 2:
         link2 = box("/C0/Link2", (0.09, 0.018, 0.018),
-                    (MOUNT_OFFSET[0] + 0.36, MOUNT_OFFSET[1], MOUNT_OFFSET[2]), 0.5)
+                    (MOUNT_OFFSET[0] + 0.36, MOUNT_OFFSET[1], MOUNT_OFFSET[2] + lift), 0.5)
         targets.append((link1, link2, (0.24, 0.0, 0.0)))
     for index, (parent, child, anchor) in enumerate(targets, start=1):
         joint = UsdPhysics.RevoluteJoint.Define(stage, "/C0/joint%d" % index)
@@ -337,6 +343,7 @@ def main():
         "physics_dt_s": DT, "gravity_m_s2": [0.0, 0.0, 0.0],
         "root_api_target": authored_layer["root_api_target"],
         "include_ground": bool(ARGS.include_ground),
+        "lift_m": float(ARGS.lift),
         "collision_mode": "default",
         "drive_mode": "none",
         "write_data_to_sim": bool(ARGS.write_data),
