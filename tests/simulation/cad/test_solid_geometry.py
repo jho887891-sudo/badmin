@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -24,6 +25,7 @@ from scripts.simulation.step_solid_geometry import (  # noqa: E402
     SHAPE_ROD,
     SHAPE_SLAB,
     build_report,
+    _direction_vector,
     circle_facts,
     part_group,
     part_root,
@@ -200,3 +202,25 @@ def test_build_report_aggregates_groups_and_caveats(step_path):
     assert any("no wheel radius" in caveat for caveat in report["caveats"])
     assert any("candidate" in caveat.lower() and "fingerprint" in caveat.lower()
                for caveat in report["caveats"])
+
+
+def test_step_direction_accepts_e_and_d_scientific_notation():
+    """SolidWorks exports scientific notation even for near-zero DIRECTION axes."""
+    for exponent in ("-4.789422297650225240E-14", "-4.789422297650225240D-14"):
+        entity = SimpleNamespace(body="DIRECTION('',(%s,0.,1.))" % exponent)
+        assert _direction_vector(entity) == (0.0, 0.0, 1.0)
+
+
+def test_circle_facts_preserves_axis_with_exponential_direction(step_path, tmp_path):
+    """Regression: a real circle referencing that axis must not silently lose it."""
+    source = step_path.read_text(encoding="utf-8")
+    assert "#170=DIRECTION('',(0.,0.,1.));" in source
+    source = source.replace(
+        "#170=DIRECTION('',(0.,0.,1.));",
+        "#170=DIRECTION('',(-4.789422297650225240E-14,0.,1.));",
+    )
+    changed = tmp_path / "scientific_axis.step"
+    changed.write_text(source, encoding="utf-8")
+    facts = circle_facts(parse_step(changed), 100)
+    assert facts["circles"] == 1
+    assert facts["dominant_circle_axes"][0][0] == "(0,0,1)"
