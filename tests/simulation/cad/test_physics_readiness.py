@@ -101,3 +101,30 @@ def test_sandbox_labels_itself_as_a_proxy(tmp_path):
     text = " ".join(str(label) for label in labels if label)
     assert "TEST_PROXY" in text
     assert "not the Morph One mechanical assembly" in text.lower() or "NOT the B601-RS" in text
+
+
+def test_existing_arm_root_does_not_verify_combined_physx_articulation():
+    """Counting one preexisting root is not proof of a mobile-arm articulation."""
+    arm = {
+        "articulation_roots": ["/Arm/Geometry"],
+        "rigid_body_paths": ["/Arm/Geometry/base_link"],
+        "physics": {"joints": 9, "mass_api": 0},
+        "candidate_root_joints": [],
+        "joints_with_limits": 8,
+        "joints_with_drives": 8,
+        "joint_count_by_type": {},
+    }
+    findings = build_findings(None, arm)
+    c3 = next(item for item in findings if item["question"].startswith("C3"))
+    assert c3["status"] == "CANDIDATE"
+    assert "NOT proven" in c3["statement"]
+
+
+def test_y_up_to_z_up_x_rotation_is_plus_ninety_degrees():
+    """Guard against silently authoring -90 deg and flipping the up vector."""
+    rotation = Gf.Matrix4d(1.0)
+    rotation.SetRotate(Gf.Rotation(Gf.Vec3d(1, 0, 0), 90.0))
+    transformed = rotation.TransformDir(Gf.Vec3d(0, 1, 0))
+    assert transformed[0] == pytest.approx(0, abs=1e-12)
+    assert transformed[1] == pytest.approx(0, abs=1e-12)
+    assert transformed[2] == pytest.approx(1, abs=1e-12)
