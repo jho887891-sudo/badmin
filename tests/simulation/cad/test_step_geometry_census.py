@@ -192,6 +192,22 @@ def test_attribution_proves_the_owning_solid(mini_step):
     assert attribution[230] == [200]
 
 
+def test_attribution_finds_owners_at_different_reference_depths():
+    """An early solid match must not mask another owner on a longer path."""
+    def entity(eid, kind, refs=()):
+        return Entity(eid, kind, "", tuple(refs), (kind,))
+    entities = {
+        1: entity(1, "CARTESIAN_POINT"),
+        2: entity(2, "VERTEX_POINT", (1,)),
+        3: entity(3, "MANIFOLD_SOLID_BREP", (2,)),  # short path
+        4: entity(4, "LINE", (1,)),
+        5: entity(5, "EDGE_CURVE", (4,)),
+        6: entity(6, "CLOSED_SHELL", (5,)),
+        7: entity(7, "MANIFOLD_SOLID_BREP", (6,)),  # longer path
+    }
+    assert attribute_points_to_solids(entities, [1])[1] == [3, 7]
+
+
 def test_extract_subset_keeps_only_requested_solid(tmp_path, mini_step):
     model = parse_step(mini_step)
     text, stats = extract_subset(model, [100])
