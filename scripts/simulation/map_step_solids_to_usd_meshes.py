@@ -320,8 +320,24 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
             if ratio > closest_ratio:
                 closest_ratio = ratio
                 closest_key = name_key(mesh["core"])
+        candidates = mesh_keys.get(key, [])
+        admissible = [
+            mesh for mesh in candidates
+            if sandwich(solid["lower_min"], solid["lower_max"],
+                        solid["upper_min"], solid["upper_max"],
+                        mesh["min"], mesh["max"])["ok"]
+        ]
+        if not candidates:
+            unmatched_reason = "no mesh shares the normalized name key"
+        elif not admissible:
+            unmatched_reason = "no same-key mesh passes corrected geometry sandwich"
+        else:
+            unmatched_reason = "admissible same-key meshes assigned to other solids"
         unmatched_solids.append(
             {
+                "unmatched_reason": unmatched_reason,
+                "same_key_candidates": len(candidates),
+                "admissible_same_key_candidates": len(admissible),
                 "eid": solid["eid"],
                 "name": solid["name"],
                 "name_key": key,
@@ -363,6 +379,8 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
         "unmatched_meshes": unmatched_meshes,
         "rejected_pairs": rejected[:50],
         "rejected_pair_count": len(rejected),
+        "rejected_pairs_sample_limit": 50,
+        "rejected_pairs_truncated": len(rejected) > 50,
         "bijection_proven": (
             len(pairs) == len(solids) == len(meshes)
             and grades.get(GRADE_VERIFIED, 0) == len(pairs)
