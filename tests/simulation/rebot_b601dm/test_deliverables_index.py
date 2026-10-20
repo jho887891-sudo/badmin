@@ -43,15 +43,27 @@ def test_it_gives_the_way_to_complete_the_missing_gate(text):
     assert "wait_for_quiet_window.sh" in text
 
 
-def test_it_can_be_regenerated(text):
-    """The generator must run; a broken generator makes the index unmaintainable."""
-    r = subprocess.run([sys.executable, "tools/generate_b601dm_deliverables.py"],
-                       capture_output=True, timeout=180, cwd=".")
+def test_it_can_be_regenerated(tmp_path):
+    """Generate to a temporary file: a test must not rewrite tracked artifacts."""
+    generated = tmp_path / "DELIVERABLES.md"
+    r = subprocess.run(
+        [sys.executable, "tools/generate_b601dm_deliverables.py",
+         "--output", str(generated)],
+        capture_output=True, timeout=180, cwd=".")
     assert r.returncode == 0, r.stderr.decode("utf-8", "replace")[:400]
     assert "files present" in r.stdout.decode("utf-8", "replace")
+    assert generated.is_file()
+    assert "UNEVALUATED" in generated.read_text(encoding="utf-8")
 
 
-def test_the_regenerated_index_still_lists_only_existing_files():
-    after = INDEX.read_text(encoding="utf-8")
+def test_the_regenerated_index_still_lists_only_existing_files(tmp_path):
+    generated = tmp_path / "DELIVERABLES.md"
+    r = subprocess.run(
+        [sys.executable, "tools/generate_b601dm_deliverables.py",
+         "--output", str(generated)],
+        capture_output=True, timeout=180, cwd=".")
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")[:400]
+    after = generated.read_text(encoding="utf-8")
     listed = re.findall(r"^\| \x60([^\x60]+)\x60", after, re.M)
+    assert listed, "the generated index should include file paths"
     assert not [rel for rel in listed if not Path(rel).is_file()]

@@ -234,13 +234,14 @@ def shape_fingerprint(
     coords: "Dict[int, Tuple[float, float, float]] | None" = None,
     tolerance: float = 0.1,
 ) -> dict:
-    """Translation-invariant fingerprint of a solid's shape.
+    """A vertex-and-circle *candidate* duplicate fingerprint, not a shape proof.
 
-    Vertex coordinates are shifted by the bbox centre and rounded to the given
-    tolerance, then combined with the sorted circle radii.  Two solids that are
-    copies of the same part placed at different positions therefore hash
-    identically, while two different parts do not.  This is how repeated parts
-    are proven rather than assumed from equal entity counts.
+    Coordinates are shifted by the bbox centre then quantized to tolerance,
+    and sorted circle radii are included. This is translation-invariant but
+    NOT rotation-invariant, and different topology may share the same
+    quantized vertex/radius multiset. Equal hashes flag likely repeats for
+    follow-up CAD kernel verification; unequal hashes do not disprove a rotated
+    or mirrored copy. Do not call this a BREP equality certificate.
     """
     if coords is None:
         coords = _coords(model)
@@ -396,6 +397,8 @@ def build_report(model: StepModel, max_solids: int = 0) -> dict:
             for row in sorted(unnamed, key=lambda r: -r["closure_entities"])[:10]
         ],
         "scene_vertex_bbox_mm": _union_bbox(rows),
+        "candidate_duplicate_shape_groups": repeated,
+        # Back-compat alias for downstream consumers. Groups are NOT proven identical.
         "identical_shape_groups": repeated,
         "repeated_shape_groups": sum(1 for item in repeated if item["copies"] >= 2),
         "groups": group_rows,
@@ -403,6 +406,7 @@ def build_report(model: StepModel, max_solids: int = 0) -> dict:
         "caveats": [
             "extents come from BREP vertices only; they are lower bounds of the true extent",
             "shape hints are ratio rules, not semantic labels",
+            "matching fingerprints are duplicate candidates only, NOT exact shape equality; rotated/mirrored copies may differ",
             "no wheel radius / steer axis / wheelbase / mass / inertia is derived here",
         ],
     }

@@ -472,8 +472,10 @@ def attribute_points_to_solids(
                         owners.add(parent)
                         continue
                     next_frontier.append(parent)
-            if not next_frontier or owners:
-                # A solid boundary ends the upward walk for this point.
+            # Finding one owner does NOT mean we found all owners: a point
+            # can reach different solids through paths of different lengths.
+            # Keep searching other branches, stopping each branch at its solid.
+            if not next_frontier:
                 break
             frontier = next_frontier
         result[point_id] = sorted(owners)

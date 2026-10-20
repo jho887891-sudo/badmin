@@ -225,11 +225,27 @@ def main(argv=None) -> int:
         help="JSON dict of converter options (default: tessLOD=2, useMaterials/useNormals on)",
     )
     parser.add_argument("--max-seconds", type=float, default=7200.0)
+    parser.add_argument("--expect-meshes", type=int, default=None,
+                        help="Fail if actual prototype mesh count differs (282 for this STEP)")
+    parser.add_argument("--expect-rendered-instances", type=int, default=None)
+    parser.add_argument("--expect-meters-per-unit", type=float, default=None,
+                        help="For Morph One STEP, require 0.001 (mm)")
+    parser.add_argument("--expect-up-axis", choices=("X", "Y", "Z"), default=None)
 
     from isaaclab.app import AppLauncher
 
     AppLauncher.add_app_launcher_args(parser)
     args_cli = parser.parse_args(argv)
+    if args_cli.max_seconds <= 0:
+        parser.error("--max-seconds must be positive")
+    if args_cli.expect_meshes is not None and args_cli.expect_meshes < 1:
+        parser.error("--expect-meshes must be positive")
+    if args_cli.expect_rendered_instances is not None and args_cli.expect_rendered_instances < 1:
+        parser.error("--expect-rendered-instances must be positive")
+    if args_cli.expect_meters_per_unit is not None and (
+        not 0 < args_cli.expect_meters_per_unit <= 1
+    ):
+        parser.error("--expect-meters-per-unit must be in (0, 1]")
     args_cli.headless = True
     simulation_app = AppLauncher(args_cli).app
 
@@ -245,6 +261,12 @@ def main(argv=None) -> int:
         if not input_path.is_file():
             report["fatal"] = "input file not found"
             report["verdict"] = "input file not found"
+            exit_code = 4
+        elif output_path.exists():
+            # A stale nonempty USD must never be accepted as the result of a
+            # new conversion run. Require a fresh, versioned output location.
+            report["fatal"] = "output already exists; use a new unique output path"
+            report["verdict"] = report["fatal"]
             exit_code = 4
         else:
             output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -278,7 +300,7 @@ def main(argv=None) -> int:
                 if not result["completed"]:
                     report["verdict"] = "conversion did not complete - see conversion.error"
                     exit_code = 2
-                elif result["status_error_code"] not in (0, None):
+                elif result["status_error_code"] != 0:
                     report["verdict"] = "converter returned error code %s" % result[
                         "status_error_code"
                     ]
@@ -291,12 +313,29 @@ def main(argv=None) -> int:
                     report["output_sha256"] = _sha256(output_path)
                     usd = _verify_usd(output_path)
                     report["usd"] = usd
-                    if (
-                        usd.get("opened")
-                        and usd.get("mesh_count", 0) > 0
-                        and usd.get("rendered_mesh_instances", 0) > 0
-                        and usd.get("world_bbox")
-                    ):
+                    checks = {
+                        "has_nonempty_meshes": bool(
+                            usd.get("opened") and usd.get("mesh_count", 0) > 0
+                            and usd.get("rendered_mesh_instances", 0) > 0
+                            and usd.get("world_bbox")
+                        ),
+                    }
+                    if args_cli.expect_meshes is not None:
+                        checks["expected_prototype_mesh_count"] = (
+                            usd.get("mesh_count") == args_cli.expect_meshes)
+                    if args_cli.expect_rendered_instances is not None:
+                        checks["expected_rendered_instance_count"] = (
+                            usd.get("rendered_mesh_instances")
+                            == args_cli.expect_rendered_instances)
+                    if args_cli.expect_meters_per_unit is not None:
+                        checks["expected_meters_per_unit"] = (
+                            abs(usd.get("meters_per_unit", -1)
+                                - args_cli.expect_meters_per_unit) <= 1e-12)
+                    if args_cli.expect_up_axis is not None:
+                        checks["expected_up_axis"] = (
+                            usd.get("up_axis") == args_cli.expect_up_axis)
+                    report["verification_checks"] = checks
+                    if all(checks.values()):
                         report["verdict"] = (
                             "converted and verified: %d prototype meshes / %d points, "
                             "%d rendered mesh instances, bbox size %s"
@@ -309,7 +348,11 @@ def main(argv=None) -> int:
                         )
                         exit_code = 0
                     else:
-                        report["verdict"] = "output exists but contains no meshes"
+                        report["verdict"] = (
+                            "USD verification failed: "
+                            + ", ".join(name for name, passed in checks.items()
+                                        if not passed)
+                        )
                         exit_code = 3
     finally:
         report["exit_code"] = exit_code

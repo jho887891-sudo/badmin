@@ -85,9 +85,26 @@ def audit_usd(usd_path: str, top_n: int = 8) -> dict:
             "size": [round(maximum[i] - minimum[i], 3) for i in range(3)],
         }
 
+    # OpenUSD references do not auto-convert length metrics. A STEP-authored
+    # millimetre stage with raw coordinates near 580 must be scaled 0.001
+    # when referenced into an Isaac Lab metre-scale stage. Merely reading
+    # metersPerUnit=0.001 is NOT a guarantee of correct physical dimensions.
+    source_mpu = float(UsdGeom.GetStageMetersPerUnit(stage))
+    bbox_size_m = (
+        [round(v * source_mpu, 9) for v in stage_bbox["size"]]
+        if stage_bbox is not None else None
+    )
+
     return {
         "opened": True,
         "usd_path": usd_path,
+        "assembly_unit_warning": (
+            "USD references do not automatically convert metersPerUnit; "
+            "apply scale=source_meters_per_unit/target_meters_per_unit "
+            "and verify a composed test scene before adding collisions"
+        ),
+        "raw_bbox_size_in_source_meters": bbox_size_m,
+        "required_xform_scale_for_metre_stage": source_mpu,
         "stage": {
             "meters_per_unit": UsdGeom.GetStageMetersPerUnit(stage),
             "up_axis": UsdGeom.GetStageUpAxis(stage),

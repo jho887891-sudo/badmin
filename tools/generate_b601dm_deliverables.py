@@ -1,6 +1,7 @@
 """Generate management/rebot_b601dm/DELIVERABLES.md from the files that actually exist."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import subprocess
 from pathlib import Path
@@ -76,7 +77,7 @@ def git(*args) -> str:
     return subprocess.run(["git", *args], capture_output=True, text=True, cwd=str(REPO)).stdout.strip()
 
 
-def main() -> int:
+def main(output_path: Path | None = None) -> int:
     head = git("rev-parse", "HEAD")
     lines = [
         "# Deliverables: reBot B601-DM badminton capability work",
@@ -177,11 +178,16 @@ def main() -> int:
         "",
     ]
 
-    out = REPO / "management/rebot_b601dm/DELIVERABLES.md"
+    out = output_path if output_path is not None else REPO / "management/rebot_b601dm/DELIVERABLES.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n".join(lines), encoding="utf-8")
     print("wrote", out, "({} lines, {} of {} files present)".format(len(lines), total - missing, total))
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=None,
+                        help="Optional alternate output file for non-mutating tests")
+    args = parser.parse_args()
+    raise SystemExit(main(output_path=args.output))
