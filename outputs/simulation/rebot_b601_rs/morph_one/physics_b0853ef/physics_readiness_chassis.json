@@ -1,0 +1,91 @@
+{
+ "chassis": {
+  "path": "/home/T7/dgut/runs/cad_dev/usd/M1-4WD4S_model2601_dev.usda",
+  "bytes": 58659744,
+  "default_prim": "/tn__M14WD4S_model2601_dev_VV0",
+  "meters_per_unit": 0.001,
+  "up_axis": "Z",
+  "used_layers": [
+   "anon:0x5ec5b80:M1-4WD4S_model2601_dev-session.usda",
+   "M1-4WD4S_model2601_dev.usda"
+  ],
+  "counts": {
+   "instance_proxies": 567,
+   "instanceable": 1,
+   "instances": 1,
+   "meshes": 564,
+   "prims": 1141,
+   "type:Material": 3,
+   "type:Mesh": 564,
+   "type:Scope": 4,
+   "type:Shader": 3,
+   "type:Xform": 567
+  },
+  "mesh_points_total": 910510,
+  "prototype_groups": [],
+  "instanceable_paths": [
+   "/tn__M14WD4S_model2601_dev_VV0/tn__M1100V3_qAD"
+  ],
+  "instanceable_count": 1,
+  "scale_0001_prims": [],
+  "physics": {},
+  "physics_authoring_present": false,
+  "groups": [
+   {
+    "meshes": 282,
+    "points": 455255,
+    "instance_proxies": 0,
+    "instanceable": 0,
+    "scopes": 0,
+    "group": "/tn__M14WD4S_model2601_dev_VV0/Prototypes",
+    "only_via_instance_proxies": false
+   },
+   {
+    "meshes": 282,
+    "points": 455255,
+    "instance_proxies": 282,
+    "instanceable": 0,
+    "scopes": 0,
+    "group": "/tn__M14WD4S_model2601_dev_VV0/tn__M1100V3_qAD",
+    "only_via_instance_proxies": true
+   }
+  ]
+ },
+ "arm": null,
+ "findings": [
+  {
+   "question": "C1 separate rigid bodies from the converted chassis",
+   "status": "VERIFIED",
+   "evidence": {
+    "meshes": 564,
+    "groups": 2,
+    "prototypes": 0,
+    "instanceable": 1
+   },
+   "statement": "the chassis mesh prims fall into 2 top-level groups; nothing in the asset is a rigid body today"
+  },
+  {
+   "question": "C2 must the instance/prototype structure be broken for colliders",
+   "status": "VERIFIED",
+   "evidence": {
+    "instanceable_prims": 1,
+    "prototype_prim_count": 0,
+    "in_prototype_prims": 0,
+    "groups_only_reachable_as_instance_proxies": [
+     "/tn__M14WD4S_model2601_dev_VV0/tn__M1100V3_qAD"
+    ]
+   },
+   "statement": "colliders authored on prototype geometry are shared by every instance of that prototype; per-part colliders or per-part masses therefore require either authoring inside the prototype or un-instancing the affected subtrees"
+  },
+  {
+   "question": "C6 values that must await real vendor or measurement data",
+   "status": "UNKNOWN",
+   "evidence": {
+    "chassis_mass_api": 0,
+    "chassis_colliders": 0,
+    "arm_mass_api": 0
+   },
+   "statement": "no mass, inertia, friction or mount compliance value exists in either asset; these must come from the vendor or from a weighing measurement"
+  }
+ ]
+}

@@ -1,0 +1,151 @@
+{
+ "labels": {
+  "proxy": "TEST_PROXY: simple boxes, not the Morph One mechanical assembly",
+  "physics_stepped": false,
+  "claim": "authoring and composition evidence only; no PhysX evaluation"
+ },
+ "proxy": {
+  "path": "/home/dgut/runs/physics/out/mount_proxy.usda",
+  "articulation_roots": [
+   "/World/ArmProxy"
+  ],
+  "rigid_bodies": 4,
+  "joints": [
+   {
+    "path": "/World/ArmProxy/joint1",
+    "type": "PhysicsRevoluteJoint",
+    "body0": [
+     "/World/ArmProxy/base"
+    ],
+    "body1": [
+     "/World/ArmProxy/link1"
+    ],
+    "resolved": true
+   },
+   {
+    "path": "/World/ArmProxy/joint2",
+    "type": "PhysicsRevoluteJoint",
+    "body0": [
+     "/World/ArmProxy/link1"
+    ],
+    "body1": [
+     "/World/ArmProxy/link2"
+    ],
+    "resolved": true
+   },
+   {
+    "path": "/World/mount_fixed",
+    "type": "PhysicsFixedJoint",
+    "body0": [
+     "/World/ChassisProxy"
+    ],
+    "body1": [
+     "/World/ArmProxy/base"
+    ],
+    "resolved": true
+   }
+  ],
+  "dof_from_joint_types": 2,
+  "all_joint_targets_resolve": true,
+  "meters_per_unit": 1.0,
+  "up_axis": "Z"
+ },
+ "proxy_description": {
+  "arm_joints": [
+   "/World/ArmProxy/joint1",
+   "/World/ArmProxy/joint2"
+  ],
+  "mount_joint": "/World/mount_fixed",
+  "proxy_dof": 2
+ },
+ "mount_override": {
+  "path": "/home/dgut/runs/physics/out/mount_override.usda",
+  "joint_count": 9,
+  "articulation_roots": [
+   "/MorphOneMount/Arm/Geometry"
+  ],
+  "single_articulation_root": true,
+  "root_joint": {
+   "path": "/MorphOneMount/Arm/Physics/root_joint",
+   "body0": [
+    "/MorphOneMount/Chassis"
+   ],
+   "body1": [
+    "/MorphOneMount/Arm/Geometry/base_link"
+   ],
+   "body0_resolves": true,
+   "body1_resolves": true,
+   "overridden": true
+  },
+  "unit_scales": [
+   {
+    "prim": "/MorphOneMount/Chassis",
+    "scale": 0.001,
+    "reason": "source metersPerUnit 0.001 -> stage metersPerUnit 1.0"
+   },
+   {
+    "prim": "/MorphOneMount/Arm",
+    "scale": 1.0,
+    "reason": "same metersPerUnit, no scale needed"
+   }
+  ],
+  "chassis_sha256_before": "3b9962913ec517637df2a57df58acb5650fe995b437088539e26f00912af74b7",
+  "chassis_sha256_after": "3b9962913ec517637df2a57df58acb5650fe995b437088539e26f00912af74b7",
+  "arm_sha256_before": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+  "arm_sha256_after": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+  "assets_unchanged": true
+ },
+ "arm_dof_expected": 8,
+ "self_checks": [
+  {
+   "check": "proxy has exactly one articulation root",
+   "pass": true,
+   "detail": [
+    "/World/ArmProxy"
+   ]
+  },
+  {
+   "check": "proxy DOF equals the expected 2",
+   "pass": true,
+   "detail": 2
+  },
+  {
+   "check": "every proxy joint target resolves",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "proxy includes the fixed mount joint",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "override retargets body0 at the chassis body",
+   "pass": true,
+   "detail": {
+    "path": "/MorphOneMount/Arm/Physics/root_joint",
+    "body0": [
+     "/MorphOneMount/Chassis"
+    ],
+    "body1": [
+     "/MorphOneMount/Arm/Geometry/base_link"
+    ],
+    "body0_resolves": true,
+    "body1_resolves": true,
+    "overridden": true
+   }
+  },
+  {
+   "check": "override targets resolve in the composed stage",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "check": "one articulation root after mounting",
+   "pass": true,
+   "detail": [
+    "/MorphOneMount/Arm/Geometry"
+   ]
+  }
+ ]
+}

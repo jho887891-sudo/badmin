@@ -1,0 +1,407 @@
+{
+ "chassis": null,
+ "arm": {
+  "path": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+  "bytes": 1251,
+  "default_prim": "/ReBot_Arm_RS",
+  "meters_per_unit": 1.0,
+  "up_axis": "Z",
+  "used_layers": [
+   "ReBot_Arm_RS.usda",
+   "geometries.usd",
+   "anon:0x94b4c70:ReBot_Arm_RS-session.usda",
+   "materials.usda",
+   "instances.usda",
+   "base.usda",
+   "robot.usda",
+   "physx.usda",
+   "physics.usda"
+  ],
+  "meshes": 35,
+  "physics": {
+   "articulation_roots": 1,
+   "colliders": 10,
+   "joints": 9,
+   "mass_api": 9,
+   "rigid_bodies": 9
+  },
+  "joint_count_by_type": {
+   "PhysicsFixedJoint": 1,
+   "PhysicsPrismaticJoint": 2,
+   "PhysicsRevoluteJoint": 6
+  },
+  "joints": [
+   {
+    "path": "/ReBot_Arm_RS/Physics/gripper_joint1",
+    "type": "PhysicsPrismaticJoint",
+    "body0": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6"
+    ],
+    "body1": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_left"
+    ],
+    "axis": "Z",
+    "lowerLimit": 0.0,
+    "upperLimit": 0.05,
+    "local_pos0": [
+     0.0,
+     7.3e-05,
+     0.124271
+    ],
+    "local_pos1": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "drives": {
+     "linear": {
+      "type": "force",
+      "stiffness": 100.0,
+      "damping": 1.0,
+      "max_force": 500.0
+     }
+    }
+   },
+   {
+    "path": "/ReBot_Arm_RS/Physics/gripper_joint2",
+    "type": "PhysicsPrismaticJoint",
+    "body0": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6"
+    ],
+    "body1": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_right"
+    ],
+    "axis": "Z",
+    "lowerLimit": 0.0,
+    "upperLimit": 0.0715,
+    "local_pos0": [
+     0.0,
+     -7.3e-05,
+     0.124271
+    ],
+    "local_pos1": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "drives": {
+     "linear": {
+      "type": "force",
+      "stiffness": 100.0,
+      "damping": 1.0,
+      "max_force": 500.0
+     }
+    }
+   },
+   {
+    "path": "/ReBot_Arm_RS/Physics/joint1",
+    "type": "PhysicsRevoluteJoint",
+    "body0": [
+     "/ReBot_Arm_RS/Geometry/base_link"
+    ],
+    "body1": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1"
+    ],
+    "axis": "Z",
+    "lowerLimit": -160.428177,
+    "upperLimit": 160.428177,
+    "local_pos0": [
+     -0.000343,
+     -0.000987,
+     0.075
+    ],
+    "local_pos1": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "drives": {
+     "angular": {
+      "type": "force",
+      "stiffness": 1.745329,
+      "damping": 0.017453,
+      "max_force": 36.0
+     }
+    }
+   },
+   {
+    "path": "/ReBot_Arm_RS/Physics/joint2",
+    "type": "PhysicsRevoluteJoint",
+    "body0": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1"
+    ],
+    "body1": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2"
+    ],
+    "axis": "Z",
+    "lowerLimit": 0.0,
+    "upperLimit": 179.908752,
+    "local_pos0": [
+     0.020343,
+     0.027237,
+     0.07
+    ],
+    "local_pos1": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "drives": {
+     "angular": {
+      "type": "force",
+      "stiffness": 1.745329,
+      "damping": 0.017453,
+      "max_force": 36.0
+     }
+    }
+   },
+   {
+    "path": "/ReBot_Arm_RS/Physics/joint3",
+    "type": "PhysicsRevoluteJoint",
+    "body0": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2"
+    ],
+    "body1": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3"
+    ],
+    "axis": "Z",
+    "lowerLimit": 0.0,
+    "upperLimit": 179.908752,
+    "local_pos0": [
+     -0.236,
+     0.0,
+     0.0
+    ],
+    "local_pos1": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "drives": {
+     "angular": {
+      "type": "force",
+      "stiffness": 1.745329,
+      "damping": 0.017453,
+      "max_force": 36.0
+     }
+    }
+   },
+   {
+    "path": "/ReBot_Arm_RS/Physics/joint4",
+    "type": "PhysicsRevoluteJoint",
+    "body0": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3"
+    ],
+    "body1": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4"
+    ],
+    "axis": "Z",
+    "lowerLimit": -89.954376,
+    "upperLimit": 89.954376,
+    "local_pos0": [
+     0.228,
+     -0.072746,
+     0.0045
+    ],
+    "local_pos1": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "drives": {
+     "angular": {
+      "type": "force",
+      "stiffness": 1.745329,
+      "damping": 0.017453,
+      "max_force": 14.0
+     }
+    }
+   },
+   {
+    "path": "/ReBot_Arm_RS/Physics/joint5",
+    "type": "PhysicsRevoluteJoint",
+    "body0": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4"
+    ],
+    "body1": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5"
+    ],
+    "axis": "Z",
+    "lowerLimit": -89.954376,
+    "upperLimit": 89.954376,
+    "local_pos0": [
+     0.087,
+     -0.048,
+     -0.03075
+    ],
+    "local_pos1": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "drives": {
+     "angular": {
+      "type": "force",
+      "stiffness": 1.745329,
+      "damping": 0.017453,
+      "max_force": 14.0
+     }
+    }
+   },
+   {
+    "path": "/ReBot_Arm_RS/Physics/joint6",
+    "type": "PhysicsRevoluteJoint",
+    "body0": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5"
+    ],
+    "body1": [
+     "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6"
+    ],
+    "axis": "Z",
+    "lowerLimit": -179.908752,
+    "upperLimit": 179.908752,
+    "local_pos0": [
+     0.0365,
+     0.0,
+     0.048
+    ],
+    "local_pos1": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "drives": {
+     "angular": {
+      "type": "force",
+      "stiffness": 1.745329,
+      "damping": 0.017453,
+      "max_force": 14.0
+     }
+    }
+   },
+   {
+    "path": "/ReBot_Arm_RS/Physics/root_joint",
+    "type": "PhysicsFixedJoint",
+    "body0": [
+     "/ReBot_Arm_RS"
+    ],
+    "body1": [
+     "/ReBot_Arm_RS/Geometry/base_link"
+    ],
+    "local_pos0": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "local_pos1": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  ],
+  "rigid_body_paths": [
+   "/ReBot_Arm_RS/Geometry/base_link",
+   "/ReBot_Arm_RS/Geometry/base_link/link1",
+   "/ReBot_Arm_RS/Geometry/base_link/link1/link2",
+   "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3",
+   "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4",
+   "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5",
+   "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6",
+   "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_left",
+   "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_right"
+  ],
+  "articulation_roots": [
+   "/ReBot_Arm_RS/Geometry"
+  ],
+  "joints_with_limits": 8,
+  "joints_with_drives": 8,
+  "candidate_root_joints": [
+   {
+    "path": "/ReBot_Arm_RS/Physics/root_joint",
+    "type": "PhysicsFixedJoint",
+    "body0": [
+     "/ReBot_Arm_RS"
+    ],
+    "body1": [
+     "/ReBot_Arm_RS/Geometry/base_link"
+    ],
+    "local_pos0": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "local_pos1": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  ]
+ },
+ "findings": [
+  {
+   "question": "C3 single articulation for arm plus chassis",
+   "status": "VERIFIED",
+   "evidence": {
+    "articulation_roots": [
+     "/ReBot_Arm_RS/Geometry"
+    ],
+    "rigid_bodies": 9,
+    "joints": 9
+   },
+   "statement": "the arm already carries an ArticulationRootAPI prim and 9 joints"
+  },
+  {
+   "question": "C4 the arm fixed root joint",
+   "status": "VERIFIED",
+   "evidence": [
+    {
+     "path": "/ReBot_Arm_RS/Physics/root_joint",
+     "type": "PhysicsFixedJoint",
+     "body0": [
+      "/ReBot_Arm_RS"
+     ],
+     "body1": [
+      "/ReBot_Arm_RS/Geometry/base_link"
+     ],
+     "local_pos0": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "local_pos1": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   ],
+   "statement": "the arm hangs from a fixed joint whose body0 is outside the moving chain; mounting it on the chassis means re-targeting that joint to the chassis body"
+  },
+  {
+   "question": "C5 arm-side configuration that must be preserved",
+   "status": "VERIFIED",
+   "evidence": {
+    "joints_with_limits": 8,
+    "joints_with_drives": 8,
+    "joint_count_by_type": {
+     "PhysicsFixedJoint": 1,
+     "PhysicsPrismaticJoint": 2,
+     "PhysicsRevoluteJoint": 6
+    }
+   },
+   "statement": "8 joints carry limits and 8 carry drives; a chassis-side edit must leave these untouched"
+  },
+  {
+   "question": "C6 values that must await real vendor or measurement data",
+   "status": "UNKNOWN",
+   "evidence": {
+    "chassis_mass_api": 0,
+    "chassis_colliders": 0,
+    "arm_mass_api": 9
+   },
+   "statement": "no mass, inertia, friction or mount compliance value exists in either asset; these must come from the vendor or from a weighing measurement"
+  }
+ ]
+}
