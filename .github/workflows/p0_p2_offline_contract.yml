@@ -10,6 +10,7 @@ on:
       - "scripts/simulation/p2_pose_metrics.py"
       - "scripts/simulation/p2_trajectory_gate.py"
       - "tests/simulation/test_p0_subprocess_gate_runner.py"
+      - "tests/simulation/test_p0_gate_unittest.py"
       - "tests/simulation/test_p2_pose_metrics.py"
       - "tests/simulation/test_p2_trajectory_gate.py"
       - ".github/workflows/p0_p2_offline_contract.yml"
@@ -29,7 +30,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Verify P0 subprocess gate
-        run: python -m unittest discover -s tests/simulation -p 'test_p0_subprocess_gate_runner.py' -v
+        run: python -m unittest discover -s tests/simulation -p 'test_p0_gate_unittest.py' -v
       - name: Verify P2 source-aware quaternion math
         run: python -m unittest discover -s tests/simulation -p 'test_p2_pose_metrics.py' -v
       - name: Verify P2 trajectory gate (synthetic contract ONLY)
