@@ -224,3 +224,15 @@ def test_circle_facts_preserves_axis_with_exponential_direction(step_path, tmp_p
     facts = circle_facts(parse_step(changed), 100)
     assert facts["circles"] == 1
     assert facts["dominant_circle_axes"][0][0] == "(0,0,1)"
+
+
+def test_step_direction_axis_bins_canonicalize_negative_zero():
+    """Direction histogram keys must not split on signed IEEE floating-point zero."""
+    variants = (
+        "DIRECTION('',(1.,-4.789422297650225240E-14,-0.))",
+        "DIRECTION('',(1.,0.,0.))",
+        "DIRECTION('',(1.,-4.789422297650225240D-14,-0.))",
+    )
+    results = [_direction_vector(SimpleNamespace(body=body)) for body in variants]
+    assert results == [(1.0, 0.0, 0.0)] * 3
+    assert all("-0" not in "(%g,%g,%g)" % row for row in results)
