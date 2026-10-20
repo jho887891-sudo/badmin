@@ -1,0 +1,52 @@
+{
+ "c3_status": "CANDIDATE",
+ "c3_statement": "the arm already carries an ArticulationRootAPI prim and 9 joints; single mobile-chassis articulation is NOT proven without a PhysX step",
+ "c3_evidence": {
+  "articulation_roots": [
+   "/ReBot_Arm_RS/Geometry"
+  ],
+  "rigid_bodies": 9,
+  "joints": 9
+ },
+ "all_statuses": {
+  "C1": "VERIFIED",
+  "C2": "VERIFIED",
+  "C3": "CANDIDATE",
+  "C4": "VERIFIED",
+  "C5": "VERIFIED",
+  "C6": "UNKNOWN"
+ },
+ "articulation_roots": [
+  "/ReBot_Arm_RS/Geometry"
+ ],
+ "arm_joints": 9,
+ "arm_rigid_bodies": 9,
+ "rotation_sign": {
+  "plus90_of_cad_up": [
+   0.0,
+   0.0,
+   1.0
+  ],
+  "minus90_of_cad_up": [
+   0.0,
+   0.0,
+   -1.0
+  ],
+  "plus90_of_cad_forward_z": [
+   0.0,
+   -1.0,
+   0.0
+  ],
+  "plus90_of_cad_lateral_x": [
+   1.0,
+   0.0,
+   0.0
+  ]
+ },
+ "plus90_maps_cad_y_to_world_z": true,
+ "minus90_maps_cad_y_to_world_minus_z": true,
+ "chassis_sha256_unchanged": true,
+ "arm_sha256_unchanged": true,
+ "arm_sha256": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+ "chassis_sha256": "3b9962913ec517637df2a57df58acb5650fe995b437088539e26f00912af74b7"
+}
