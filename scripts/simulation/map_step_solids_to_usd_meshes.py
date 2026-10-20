@@ -69,14 +69,14 @@ __all__ = [
     "GRADE_UNKNOWN",
 ]
 
-GRADE_VERIFIED = "VERIFIED"
+GRADE_VERIFIED = "VERIFIED"  # reserved for future per-solid source-ID / exact correspondence
+GRADE_STRONG_CANDIDATE = "STRONG_CANDIDATE"
 GRADE_CANDIDATE = "CANDIDATE"
 GRADE_UNKNOWN = "UNKNOWN"
 
-#: Absolute containment tolerance.  It is set by the tessellation chord error of
-#: the conversion (tessLOD = 2), not by the part size: a screw head meshes to
-#: within a couple of millimetres of its analytic surface, which is larger than a
-#: tenth of the screw itself.  The relative term only matters for big parts.
+#: Empirical pairing tolerance for tessLOD=2. It has NOT been calibrated
+#: against a manufacturer's conversion error bound. A pair that passes is a
+#: candidate match, never independently proven source-to-mesh identity.
 CONTAIN_TOL_MM = 2.5
 CONTAIN_TOL_REL = 0.01
 UNNAMED_KEY = "NONE"
@@ -117,10 +117,10 @@ def sandwich(lower_min: Sequence[float], lower_max: Sequence[float],
              mesh_min: Sequence[float], mesh_max: Sequence[float]) -> dict:
     """Check  lower <= mesh <= upper  on every axis.
 
-    A violation below (mesh sits outside the vertex box) is counted separately
-    from a violation above (mesh leaves the control-point box), because they mean
-    different mistakes: the first says the pair is wrong, the second says the
-    upper bound was computed wrongly.
+    The analytic BREP vertex bbox must sit *inside* the tessellated mesh
+    bbox, up to a declared tolerance. The mesh bbox must sit inside the
+    proposed upper bound. Neither test independently certifies CAD identity,
+    and the heuristic tolerance is not a proven tessLOD chord-error bound.
     """
     below = []
     above = []
@@ -131,7 +131,7 @@ def sandwich(lower_min: Sequence[float], lower_max: Sequence[float],
         # mesh_max >= lower_max.  A curved surface may bulge outside the vertex
         # box, so only the reverse direction is a violation.
         below.append(
-            max(0.0, (lower_min[axis] - mesh_min[axis]), (lower_max[axis] - mesh_max[axis]))
+            max(0.0, (mesh_min[axis] - lower_min[axis]), (lower_max[axis] - mesh_max[axis]))
         )
         above.append(
             max(0.0, (upper_min[axis] - mesh_min[axis]), (mesh_max[axis] - upper_max[axis]))
@@ -191,6 +191,7 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
     all_keys = sorted(set(solid_keys) | set(mesh_keys))
     pairs: List[dict] = []
     rejected: List[dict] = []
+    rejected_count = 0
 
     for key in all_keys:
         key_solids = solid_keys.get(key, [])
@@ -215,26 +216,61 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
                                mesh["path"], solid, mesh, result))
         scored.sort(key=lambda item: (item[0], item[1], item[2], item[3]))
 
-        group_size = (len(key_solids), len(key_meshes))
-        taken_solids: set = set()
-        taken_meshes: set = set()
-        for _, _, solid_eid, mesh_path, solid, mesh, result in scored:
-            if solid_eid in taken_solids or mesh_path in taken_meshes:
-                continue
-            if not result["ok"]:
-                rejected.append(
-                    {
-                        "step_eid": solid_eid,
+        # Global greedy selection can strand a constrained solid: A has two
+        # possible partners while B has only one, but greedy may grab B's one.
+        # Use deterministic augmenting paths to maximize valid pair *count*.
+        # This is NOT a globally minimum-cost matching, nor proof of identity.
+        feasible = defaultdict(list)
+
+        for record in scored:
+            _, cost, eid, mesh_path, solid, mesh, result = record
+            if result["ok"]:
+                feasible[eid].append((cost, mesh_path))
+            else:
+                rejected_count += 1
+                if len(rejected) < 50:
+                    rejected.append({
+                        "step_eid": eid,
                         "step_name": solid["name"],
                         "usd_path": mesh_path,
                         "reason": "geometry sandwich fails",
                         "detail": result,
-                    }
-                )
+                    })
+        for options in feasible.values():
+            options.sort(key=lambda pair: (pair[0], pair[1]))
+
+        match_mesh_to_solid = {}
+        def _augment(eid, seen_meshes):
+            for _, mp in feasible[eid]:
+                if mp in seen_meshes:
+                    continue
+                seen_meshes.add(mp)
+                prior = match_mesh_to_solid.get(mp)
+                if prior is None or _augment(prior, seen_meshes):
+                    match_mesh_to_solid[mp] = eid
+                    return True
+            return False
+
+        for solid in sorted(key_solids, key=lambda item:
+                            (len(feasible[item["eid"]]), item["eid"])):
+            _augment(solid["eid"], set())
+
+        chosen_pairs = set((eid, mp) for mp, eid in match_mesh_to_solid.items())
+        group_size = (len(key_solids), len(key_meshes))
+        taken_solids: set = set()
+        taken_meshes: set = set()
+        for _, _, solid_eid, mesh_path, solid, mesh, result in scored:
+            if (solid_eid, mesh_path) not in chosen_pairs:
                 continue
+            if solid_eid in taken_solids or mesh_path in taken_meshes:
+                raise AssertionError("invalid duplicate from bipartite matching")
             unique_in_group = group_size == (1, 1)
             named = bool(key) and key != UNNAMED_KEY
-            grade = GRADE_VERIFIED if (named and unique_in_group) else GRADE_CANDIDATE
+            # A unique normalized name plus a broad geometric bbox is not
+            # a verifiable STEP entity identifier. Never promote to VERIFIED
+            # without independent per-solid provenance or topology validation.
+            grade = (GRADE_STRONG_CANDIDATE if (named and unique_in_group)
+                     else GRADE_CANDIDATE)
             reasons = []
             if named:
                 reasons.append("name key identical on both sides")
@@ -247,7 +283,7 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
                     "%d solids / %d meshes share this key; partner chosen by geometry"
                     % group_size
                 )
-            reasons.append("geometry sandwich holds: vertex bbox <= mesh <= closure bbox")
+            reasons.append("geometry sandwich passes within empirical tolerance; identity NOT proven")
 
             taken_solids.add(solid_eid)
             taken_meshes.add(mesh_path)
@@ -329,6 +365,9 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
         "meshes": len(meshes),
         "pairs": pairs,
         "grade_counts": dict(grades),
+        "grade_policy": ("VERIFIED requires independently traced per-entity source identity; "
+                         "unique normalized name and broad bbox yield STRONG_CANDIDATE only; "
+                         "ambiguous/unnamed matches yield CANDIDATE"),
         "pairs_with_name_evidence": sum(
             1 for pair in pairs if pair["name_key"] != UNNAMED_KEY
         ),
@@ -338,11 +377,11 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
         "unmatched_solids": unmatched_solids,
         "unmatched_meshes": unmatched_meshes,
         "rejected_pairs": rejected[:50],
-        "rejected_pair_count": len(rejected),
-        "bijection_proven": (
-            len(pairs) == len(solids) == len(meshes)
-            and grades.get(GRADE_VERIFIED, 0) == len(pairs)
-        ),
+        "rejected_pair_count": rejected_count,
+        "pairing_algorithm": "deterministic maximum-cardinality augmenting-path (not min-cost)",
+        # This heuristic never establishes a source-ID-level bijection,
+        # even in the degenerate case of one solid and one similarly named mesh.
+        "bijection_proven": False,
         "curved_parts_where_mesh_exceeds_vertex_bbox": sorted(
             [
                 {
@@ -616,7 +655,7 @@ def main(argv=None) -> int:
         "usd": str(Path(args.usd).resolve()),
     }
     result["notes"] = [
-        "VERIFIED requires an identical name key, a unique key group and the geometry sandwich",
+        "STRONG_CANDIDATE uses a unique normalized name key plus approximate bbox evidence; no matches are VERIFIED",
         "282 solids and 282 meshes do not by themselves prove a one-to-one mapping",
         "no part is labelled physically; shapes are never promoted to wheel axes",
     ]

@@ -23,7 +23,7 @@ if str(ROOT) not in sys.path:
 
 from scripts.simulation.map_step_solids_to_usd_meshes import (  # noqa: E402
     GRADE_CANDIDATE,
-    GRADE_VERIFIED,
+    GRADE_STRONG_CANDIDATE,
     match_parts,
     name_key,
     prim_core,
@@ -82,6 +82,28 @@ def test_sandwich_accepts_a_curved_part_bulging_past_the_vertex_box():
     assert max(result["exceeds_vertex_bbox_mm"]) > 40.0
 
 
+def test_sandwich_allows_legitimate_min_side_bulge():
+    # Vertex box must be contained in the mesh, not the other way around.
+    result = sandwich(
+        [10, 10, 10], [20, 20, 20],
+        [0, 0, 0], [30, 30, 30],
+        [5, 5, 5], [25, 25, 25],
+    )
+    assert result["ok"] is True
+    assert result["below_lower_bound_mm"] == [0.0, 0.0, 0.0]
+
+
+def test_sandwich_rejects_missing_the_min_side_of_a_brep_vertex_bbox():
+    # The previous implementation reversed this inequality and accepted it.
+    result = sandwich(
+        [0, 0, 0], [10, 10, 10],
+        [-10, -10, -10], [20, 20, 20],
+        [5, 0, 0], [10, 10, 10],
+    )
+    assert result["ok"] is False
+    assert result["below_lower_bound_mm"][0] == 5
+
+
 def test_sandwich_rejects_a_mesh_that_escapes_the_control_hull():
     result = sandwich([0, 0, 0], [10, 10, 10], [0, 0, 0], [12, 12, 12], [0, 0, 0], [40, 10, 10])
     assert result["ok"] is False
@@ -93,13 +115,14 @@ def test_sandwich_rejects_a_mesh_that_sits_inside_the_lower_bound():
     assert result["ok"] is False
 
 
-def test_unique_key_and_geometry_gives_verified():
+def test_unique_key_and_geometry_are_strong_candidate_not_proven_identity():
     result = match_parts(
         [solid(1, "PART-A-1-solid1", [0, 0, 0], [10, 20, 30])],
         [mesh_row("/p/one/Mesh", "PARTA1solid1", [0, 0, 0], [10, 20, 30])],
     )
-    assert result["grade_counts"] == {GRADE_VERIFIED: 1}
-    assert result["bijection_proven"] is True
+    assert result["grade_counts"] == {GRADE_STRONG_CANDIDATE: 1}
+    assert result["bijection_proven"] is False
+    assert "identity NOT proven" in result["pairs"][0]["reasons"][-1]
 
 
 def test_duplicate_keys_are_candidate_and_paired_by_position():
@@ -148,3 +171,46 @@ def test_geometry_rejection_is_reported_not_silently_dropped():
     assert result["pairs"] == []
     assert result["rejected_pair_count"] >= 1
     assert result["rejected_pairs"][0]["step_eid"] == 4
+
+
+def test_identical_unique_names_do_not_prove_bijection():
+    result = match_parts(
+        [solid(1, "BOLT-1", [0, 0, 0], [4, 4, 4])],
+        [mesh_row("/bolt/Mesh", "BOLT1", [0, 0, 0], [4, 4, 4])],
+    )
+    assert result["grade_counts"] == {GRADE_STRONG_CANDIDATE: 1}
+    assert result["bijection_proven"] is False
+
+
+
+
+def test_matching_maximizes_pairs_instead_of_greedy_lowest_cost(monkeypatch):
+    # S1 has two valid partners; S2 can only use M1. Greedy global
+    # cost picks S1-M1 and strands S2; an augmenting path recovers both.
+    import scripts.simulation.map_step_solids_to_usd_meshes as mapper
+
+    def fake_sandwich(lower_min, lower_max, upper_min, upper_max, mesh_min, mesh_max):
+        eid = int(lower_min[0])
+        mid = int(mesh_min[0])
+        valid = (eid, mid) in {(1, 1), (1, 2), (2, 1)}
+        return {"ok": valid, "exceeds_vertex_bbox_mm": [0, 0, 0],
+                "below_lower_bound_mm": [0, 0, 0],
+                "above_upper_bound_mm": [0, 0, 0], "cost": 0 if valid else 100}
+
+    def fake_cost(lower_min, lower_max, upper_min, upper_max, mesh_min, mesh_max):
+        return {(1, 1): 0.0, (1, 2): 2.0, (2, 1): 1.0, (2, 2): 100.0}[
+            (int(lower_min[0]), int(mesh_min[0]))]
+
+    monkeypatch.setattr(mapper, "sandwich", fake_sandwich)
+    monkeypatch.setattr(mapper, "pair_cost", fake_cost)
+    solids = [solid(1, "DUP", [1, 0, 0], [10, 10, 10]),
+              solid(2, "DUP", [2, 0, 0], [10, 10, 10])]
+    meshes = [mesh_row("/m1", "DUP", [1, 0, 0], [10, 10, 10]),
+              mesh_row("/m2", "DUP", [2, 0, 0], [10, 10, 10])]
+    result = mapper.match_parts(solids, meshes)
+    assert len(result["pairs"]) == 2
+    assert {p["step_eid"]: p["usd_path"] for p in result["pairs"]} == {
+        1: "/m2", 2: "/m1"}
+    assert result["bijection_proven"] is False
+
+

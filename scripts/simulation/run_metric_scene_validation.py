@@ -128,10 +128,13 @@ def main(argv: "Sequence[str] | None" = None) -> int:
             "B_is_thousandth_of_A": ratio == [0.001, 0.001, 0.001],
             "both_have_meshes": report_a.get("mesh_instances", 0) > 0
             and report_b.get("mesh_instances", 0) > 0,
-            "both_free_of_physics_apis": all(
-                value == 0
+            "both_have_valid_scene_checks": all(
+                all(case.get("checks", {}).values())
                 for case in (report_a, report_b)
-                for value in (case.get("physx_apis") or {}).values()
+            ) and bool(report_a.get("checks")) and bool(report_b.get("checks")),
+            "both_free_of_physics_apis": bool(
+                report_a.get("checks", {}).get("no_physics_apis")
+                and report_b.get("checks", {}).get("no_physics_apis")
             ),
         },
         "screenshots": screenshots,
@@ -145,6 +148,7 @@ def main(argv: "Sequence[str] | None" = None) -> int:
         and not bool(payload["verdict"]["A_matches_expected"])
         and bool(payload["verdict"]["B_is_thousandth_of_A"])
         and bool(payload["verdict"]["both_have_meshes"])
+        and bool(payload["verdict"]["both_have_valid_scene_checks"])
         and bool(payload["verdict"]["both_free_of_physics_apis"])
     )
 

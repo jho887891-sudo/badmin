@@ -215,12 +215,17 @@ def write_json(path, payload) -> str:
 def evaluate(report: dict, expected_m: Sequence[float] = DEFAULT_ENVELOPE_M) -> dict:
     """Attach pass/fail decisions to a measurement report."""
     size_m = report.get("world_bbox_from_points_meters")
+    physical_apis = report.get("physx_apis") or {}
+    expected_apis = ("CollisionAPI", "RigidBodyAPI", "MassAPI", "ArticulationRootAPI")
     checks = {
         "opened": bool(report.get("opened")),
+        "stage_in_metres": report.get("stage_meters_per_unit") == 1.0,
+        "z_up": report.get("up_axis") == "Z",
         "bbox_methods_agree": bool(report.get("bbox_methods_agree")),
         "has_meshes": report.get("mesh_instances", 0) > 0,
+        # Missing API audit data must not silently count as zero physical APIs.
         "no_physics_apis": all(
-            value == 0 for value in (report.get("physx_apis") or {}).values()
+            api in physical_apis and physical_apis[api] == 0 for api in expected_apis
         ),
     }
     enriched = dict(report)
