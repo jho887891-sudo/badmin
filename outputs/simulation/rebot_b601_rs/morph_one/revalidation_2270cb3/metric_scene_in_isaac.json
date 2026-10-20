@@ -1,0 +1,52 @@
+{
+ "measured_inside": "isaac sim app (headless)",
+ "visual_usd": "/home/T7/dgut/runs/cad_round3/usd/M1-4WD4S_model2601_round3.usda",
+ "scenes": [
+  {
+   "scene": "/home/T7/dgut/runs/cad_round3/metric_scene/A_no_scale_metre_stage.usda",
+   "opened": true,
+   "stage_meters_per_unit": 1.0,
+   "up_axis": "Z",
+   "content_bbox_stage_units": [
+    580.0,
+    372.995697021,
+    802.851623535
+   ],
+   "content_bbox_meters": [
+    580.0,
+    372.995697021,
+    802.851623535
+   ],
+   "mesh_prims": 282,
+   "physx_apis": {
+    "CollisionAPI": 0,
+    "RigidBodyAPI": 0,
+    "MassAPI": 0,
+    "ArticulationRootAPI": 0
+   }
+  },
+  {
+   "scene": "/home/T7/dgut/runs/cad_round3/metric_scene/B_scale_0.001_metre_stage.usda",
+   "opened": true,
+   "stage_meters_per_unit": 1.0,
+   "up_axis": "Z",
+   "content_bbox_stage_units": [
+    0.580000028,
+    0.372995715,
+    0.802851662
+   ],
+   "content_bbox_meters": [
+    0.580000028,
+    0.372995715,
+    0.802851662
+   ],
+   "mesh_prims": 282,
+   "physx_apis": {
+    "CollisionAPI": 0,
+    "RigidBodyAPI": 0,
+    "MassAPI": 0,
+    "ArticulationRootAPI": 0
+   }
+  }
+ ]
+}

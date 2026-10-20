@@ -1,0 +1,155 @@
+{
+ "visual_usd": "/home/T7/dgut/runs/cad_round3/usd/M1-4WD4S_model2601_round3.usda",
+ "expected_envelope_m": [
+  0.58,
+  0.373,
+  0.803
+ ],
+ "tolerance_ratio": 0.02,
+ "cases": [
+  {
+   "opened": true,
+   "scene": "/home/T7/dgut/runs/cad_round3/metric_scene/A_no_scale_metre_stage.usda",
+   "scene_meters_per_unit": 1.0,
+   "up_axis": "Z",
+   "visual_usd_meters_per_unit": 0.001,
+   "authored_scale_ops": [],
+   "composed_local_to_world_diagonal": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "content_bbox_stage_units": {
+    "min": [
+     -290.0,
+     -346.995697021,
+     -400.0
+    ],
+    "max": [
+     290.0,
+     26.0,
+     402.851623535
+    ],
+    "size": [
+     580.0,
+     372.995697021,
+     802.851623535
+    ]
+   },
+   "content_bbox_meters": [
+    580.0,
+    372.995697021,
+    802.851623535
+   ],
+   "case": "A_no_scale_metre_stage",
+   "requested_stage_meters_per_unit": 1.0,
+   "requested_scale": null,
+   "matches_expected_envelope": false
+  },
+  {
+   "opened": true,
+   "scene": "/home/T7/dgut/runs/cad_round3/metric_scene/B_scale_0.001_metre_stage.usda",
+   "scene_meters_per_unit": 1.0,
+   "up_axis": "Z",
+   "visual_usd_meters_per_unit": 0.001,
+   "authored_scale_ops": [
+    [
+     0.0010000000474974513,
+     0.0010000000474974513,
+     0.0010000000474974513
+    ]
+   ],
+   "composed_local_to_world_diagonal": [
+    0.001,
+    0.001,
+    0.001
+   ],
+   "content_bbox_stage_units": {
+    "min": [
+     -0.290000014,
+     -0.346995714,
+     -0.400000019
+    ],
+    "max": [
+     0.290000014,
+     0.026000001,
+     0.402851643
+    ],
+    "size": [
+     0.580000028,
+     0.372995715,
+     0.802851662
+    ]
+   },
+   "content_bbox_meters": [
+    0.580000028,
+    0.372995715,
+    0.802851662
+   ],
+   "case": "B_scale_0.001_metre_stage",
+   "requested_stage_meters_per_unit": 1.0,
+   "requested_scale": [
+    0.001,
+    0.001,
+    0.001
+   ],
+   "matches_expected_envelope": true
+  },
+  {
+   "opened": true,
+   "scene": "/home/T7/dgut/runs/cad_round3/metric_scene/C_no_scale_millimetre_stage.usda",
+   "scene_meters_per_unit": 0.001,
+   "up_axis": "Z",
+   "visual_usd_meters_per_unit": 0.001,
+   "authored_scale_ops": [],
+   "composed_local_to_world_diagonal": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "content_bbox_stage_units": {
+    "min": [
+     -290.0,
+     -346.995697021,
+     -400.0
+    ],
+    "max": [
+     290.0,
+     26.0,
+     402.851623535
+    ],
+    "size": [
+     580.0,
+     372.995697021,
+     802.851623535
+    ]
+   },
+   "content_bbox_meters": [
+    0.58,
+    0.372995697,
+    0.802851624
+   ],
+   "case": "C_no_scale_millimetre_stage",
+   "requested_stage_meters_per_unit": 0.001,
+   "requested_scale": null,
+   "matches_expected_envelope": true
+  }
+ ],
+ "cases_matching_expected": [
+  "B_scale_0.001_metre_stage",
+  "C_no_scale_millimetre_stage"
+ ],
+ "case_ratio_B_over_A": {
+  "B_over_A": [
+   0.001,
+   0.001,
+   0.001
+  ]
+ },
+ "notes": [
+  "unit conversion only; no collision, mass, joints or arm attachment",
+  "the bounding box is the converted geometry envelope, not a verified chassis dimension",
+  "USD keeps metersPerUnit as metadata and does not rescale referenced coordinates, so case A stays in authored millimetre numbers; the explicit 0.001 scale in case B is what produces a metres-stage envelope of 0.580 x 0.373 x 0.803",
+  "case C matches only because the whole stage is declared in millimetres"
+ ]
+}

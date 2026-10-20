@@ -1,0 +1,8989 @@
+{
+ "points_checked": 469,
+ "legacy_solids": 17,
+ "full_solids": 17,
+ "legacy_histogram": {
+  "894929": 113,
+  "898440": 34,
+  "62326": 34,
+  "185156": 34,
+  "106592": 34,
+  "912621": 26,
+  "551665": 26,
+  "858857": 26,
+  "458838": 26,
+  "787910": 22,
+  "925020": 22,
+  "396729": 22,
+  "190464": 22,
+  "432139": 7,
+  "478417": 7,
+  "782571": 7,
+  "826997": 7
+ },
+ "full_histogram": {
+  "894929": 113,
+  "898440": 34,
+  "62326": 34,
+  "185156": 34,
+  "106592": 34,
+  "912621": 26,
+  "551665": 26,
+  "858857": 26,
+  "458838": 26,
+  "787910": 22,
+  "925020": 22,
+  "396729": 22,
+  "190464": 22,
+  "432139": 7,
+  "478417": 7,
+  "782571": 7,
+  "826997": 7
+ },
+ "points_with_multiple_owner_depths": 0,
+ "points_where_early_stop_would_lose_an_owner": 0,
+ "differences": [],
+ "first_owner_depth_histogram": {
+  "5": 50,
+  "8": 419
+ },
+ "per_point": [
+  {
+   "point_id": 1584,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 2259,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 5881,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 6550,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 7343,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 7911,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 9063,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 9322,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 10866,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 12127,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 15248,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 19288,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 22919,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 24659,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 25226,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 27407,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 29886,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 31097,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 33486,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 33585,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 35081,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 40133,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 40906,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 41413,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 46078,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 49045,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 50561,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 50683,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 52942,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 54089,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 58343,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 61129,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 61585,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 62418,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 65333,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     432139
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    432139
+   ],
+   "full_owners": [
+    432139
+   ]
+  },
+  {
+   "point_id": 65552,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 66760,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 70062,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 73255,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 73425,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 74284,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 77908,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 78411,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 78762,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 82307,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 82586,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 86778,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     478417
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    478417
+   ],
+   "full_owners": [
+    478417
+   ]
+  },
+  {
+   "point_id": 94335,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 94648,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 98922,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 100956,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 102102,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 103215,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 103359,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 103413,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 104472,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     478417
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    478417
+   ],
+   "full_owners": [
+    478417
+   ]
+  },
+  {
+   "point_id": 104720,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 104930,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 105957,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 107914,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 113172,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 115468,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 119472,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 124192,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 126251,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 126589,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     432139
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    432139
+   ],
+   "full_owners": [
+    432139
+   ]
+  },
+  {
+   "point_id": 128067,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 130688,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 135683,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 136267,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 136452,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 137025,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 137085,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 137256,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 137947,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 150773,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 153120,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 153296,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 154065,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 157407,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 163739,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 163783,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 173854,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 174591,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 175456,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 177608,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 178602,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 182070,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 186111,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 186113,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 189215,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 189447,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 191047,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 193161,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 194834,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     478417
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    478417
+   ],
+   "full_owners": [
+    478417
+   ]
+  },
+  {
+   "point_id": 196402,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 197298,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 200642,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 206484,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 207053,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 211984,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 214110,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 216854,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 217620,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 218138,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 219146,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 226895,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 228940,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 229221,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 229551,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 230030,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 231810,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 233052,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 239380,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 246055,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 246307,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     782571
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    782571
+   ],
+   "full_owners": [
+    782571
+   ]
+  },
+  {
+   "point_id": 247828,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 254243,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 255089,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     432139
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    432139
+   ],
+   "full_owners": [
+    432139
+   ]
+  },
+  {
+   "point_id": 256018,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 256269,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 256440,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 257197,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 259276,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 264946,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 266336,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 268456,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 269299,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 269308,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 269388,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 273383,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 278993,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     782571
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    782571
+   ],
+   "full_owners": [
+    782571
+   ]
+  },
+  {
+   "point_id": 284259,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 285056,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     826997
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    826997
+   ],
+   "full_owners": [
+    826997
+   ]
+  },
+  {
+   "point_id": 286720,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 289262,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 295660,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 297913,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 299122,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 299193,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 308007,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 310476,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 313577,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     432139
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    432139
+   ],
+   "full_owners": [
+    432139
+   ]
+  },
+  {
+   "point_id": 313762,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 314448,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 330579,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 332075,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 333100,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 334214,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 334515,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 336421,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 337088,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 342746,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 345817,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 347597,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 352366,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     826997
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    826997
+   ],
+   "full_owners": [
+    826997
+   ]
+  },
+  {
+   "point_id": 352789,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 354583,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 355477,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 356217,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 356714,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 358968,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 361396,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 363000,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     432139
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    432139
+   ],
+   "full_owners": [
+    432139
+   ]
+  },
+  {
+   "point_id": 364912,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 365763,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 367480,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 369202,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 369647,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 371318,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 373456,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     432139
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    432139
+   ],
+   "full_owners": [
+    432139
+   ]
+  },
+  {
+   "point_id": 374392,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 377660,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     826997
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    826997
+   ],
+   "full_owners": [
+    826997
+   ]
+  },
+  {
+   "point_id": 382464,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 382543,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 382828,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 383261,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 384613,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 385274,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 388036,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 390456,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 392390,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 395695,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 398364,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 403846,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 406142,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 407635,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 408551,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 408864,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 413812,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 417047,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 417533,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 420021,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 423000,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 424127,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 426426,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 427849,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 431949,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 433357,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 435431,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 435932,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 436187,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 436864,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 436952,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 438133,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     826997
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    826997
+   ],
+   "full_owners": [
+    826997
+   ]
+  },
+  {
+   "point_id": 438858,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 438950,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 442988,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 443415,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 443715,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 450082,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 450521,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 453557,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 460122,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 460594,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 464075,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 464157,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 464492,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     478417
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    478417
+   ],
+   "full_owners": [
+    478417
+   ]
+  },
+  {
+   "point_id": 469071,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 471954,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 472564,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 473302,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 473898,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 474366,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 476442,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 477043,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 478212,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 479461,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 482411,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 483286,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 496189,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 500045,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 508193,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 512092,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 513580,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 514214,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 515091,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 515665,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 517360,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 517491,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 519907,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 520741,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 522230,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 522632,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 524854,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 527855,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     782571
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    782571
+   ],
+   "full_owners": [
+    782571
+   ]
+  },
+  {
+   "point_id": 529714,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 530920,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 532422,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 538707,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 541427,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 542547,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 544707,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 545494,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 547935,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 551112,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 551421,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 553974,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 555246,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 556515,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 557131,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 560160,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 560960,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 564842,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 567361,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 571519,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 571921,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 575627,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 576778,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 577666,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 578696,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 579214,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 581478,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 583884,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 588062,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 589601,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 590380,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     826997
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    826997
+   ],
+   "full_owners": [
+    826997
+   ]
+  },
+  {
+   "point_id": 590748,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 592780,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 595725,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 601596,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 601905,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 604678,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 605128,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 605299,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 605778,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 606868,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 609601,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 615900,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 617668,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 623159,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 623247,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 624317,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     826997
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    826997
+   ],
+   "full_owners": [
+    826997
+   ]
+  },
+  {
+   "point_id": 624638,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 627490,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 628295,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 631379,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 631662,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 631919,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 634784,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 636222,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 636989,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 638709,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 642888,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 643690,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 644091,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 647308,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 650780,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 653035,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 659736,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 663030,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 667880,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 675029,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 678334,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 683435,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 685258,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 690199,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 690929,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 693103,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 693245,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 694428,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 695414,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     478417
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    478417
+   ],
+   "full_owners": [
+    478417
+   ]
+  },
+  {
+   "point_id": 696695,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 697423,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 700851,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 701853,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 702303,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 703932,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 708509,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 711047,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 719023,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 722074,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 722584,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 725682,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 732713,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 739205,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 741457,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     478417
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    478417
+   ],
+   "full_owners": [
+    478417
+   ]
+  },
+  {
+   "point_id": 744528,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     432139
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    432139
+   ],
+   "full_owners": [
+    432139
+   ]
+  },
+  {
+   "point_id": 744536,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 746703,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 747207,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 751654,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 751731,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 752093,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 757833,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 760790,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 762324,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 762444,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 762463,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 769125,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 769591,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 770224,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 770790,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 772917,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 775704,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 778708,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 780464,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 780906,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 785297,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     782571
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    782571
+   ],
+   "full_owners": [
+    782571
+   ]
+  },
+  {
+   "point_id": 789222,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 791884,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 796539,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 801471,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 808275,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 813019,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 813914,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 819920,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 822215,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 823704,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 829064,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 829638,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 830150,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 833688,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 835226,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 838402,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 839348,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 839403,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 840269,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 844551,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 844959,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 845103,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 845262,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 847865,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 863963,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 865434,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 865850,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 875404,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 879922,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 880837,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 881478,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 881978,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 882048,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 883181,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 885349,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 888846,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 893826,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 894190,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 894869,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 895927,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 897731,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 898341,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 899639,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 907458,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     782571
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    782571
+   ],
+   "full_owners": [
+    782571
+   ]
+  },
+  {
+   "point_id": 907661,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 908052,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 910392,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 915563,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 916112,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 918546,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 919054,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 927435,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 929248,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 929456,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 934314,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 940645,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 940733,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 940881,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 942905,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 945314,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 948133,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 949182,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     190464
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    190464
+   ],
+   "full_owners": [
+    190464
+   ]
+  },
+  {
+   "point_id": 949221,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 949520,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 951769,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 960264,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     826997
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    826997
+   ],
+   "full_owners": [
+    826997
+   ]
+  },
+  {
+   "point_id": 964857,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 965059,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 973172,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 973746,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 974279,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 974456,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 974586,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 978452,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 979001,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 981721,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     782571
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    782571
+   ],
+   "full_owners": [
+    782571
+   ]
+  },
+  {
+   "point_id": 984538,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 986454,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     787910
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    787910
+   ],
+   "full_owners": [
+    787910
+   ]
+  },
+  {
+   "point_id": 986710,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 989004,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     458838
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    458838
+   ],
+   "full_owners": [
+    458838
+   ]
+  },
+  {
+   "point_id": 991627,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 992335,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 1000594,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 1007285,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 1009173,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     396729
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    396729
+   ],
+   "full_owners": [
+    396729
+   ]
+  },
+  {
+   "point_id": 1010810,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 1013123,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 1017449,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 1017460,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     858857
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    858857
+   ],
+   "full_owners": [
+    858857
+   ]
+  },
+  {
+   "point_id": 1019731,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 1025525,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 1026770,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 1029964,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     782571
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    782571
+   ],
+   "full_owners": [
+    782571
+   ]
+  },
+  {
+   "point_id": 1030927,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 1038701,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     478417
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    478417
+   ],
+   "full_owners": [
+    478417
+   ]
+  },
+  {
+   "point_id": 1043375,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     912621
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    912621
+   ],
+   "full_owners": [
+    912621
+   ]
+  },
+  {
+   "point_id": 1047458,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 1049286,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 1050835,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 1052698,
+   "depths_with_owners": [
+    5
+   ],
+   "owners_by_depth": {
+    "5": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 1054700,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 1060617,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  },
+  {
+   "point_id": 1060862,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 1062806,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     185156
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    185156
+   ],
+   "full_owners": [
+    185156
+   ]
+  },
+  {
+   "point_id": 1063346,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     106592
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    106592
+   ],
+   "full_owners": [
+    106592
+   ]
+  },
+  {
+   "point_id": 1064186,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     925020
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    925020
+   ],
+   "full_owners": [
+    925020
+   ]
+  },
+  {
+   "point_id": 1064568,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     551665
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    551665
+   ],
+   "full_owners": [
+    551665
+   ]
+  },
+  {
+   "point_id": 1065868,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     62326
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    62326
+   ],
+   "full_owners": [
+    62326
+   ]
+  },
+  {
+   "point_id": 1066373,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     898440
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    898440
+   ],
+   "full_owners": [
+    898440
+   ]
+  },
+  {
+   "point_id": 1070210,
+   "depths_with_owners": [
+    8
+   ],
+   "owners_by_depth": {
+    "8": [
+     894929
+    ]
+   },
+   "legacy_owner_count": 1,
+   "full_owner_count": 1,
+   "legacy_owners": [
+    894929
+   ],
+   "full_owners": [
+    894929
+   ]
+  }
+ ],
+ "solid_names": {
+  "894929": "NONE",
+  "898440": "NONE",
+  "62326": "NONE",
+  "185156": "NONE",
+  "106592": "NONE",
+  "912621": "NONE",
+  "551665": "NONE",
+  "858857": "NONE",
+  "458838": "NONE",
+  "787910": "NONE",
+  "925020": "NONE",
+  "396729": "NONE",
+  "190464": "NONE",
+  "432139": "NONE",
+  "478417": "NONE",
+  "782571": "NONE",
+  "826997": "NONE"
+ },
+ "comparison_with_previous_run": {
+  "previous_solids": 17,
+  "current_full_solids": 17,
+  "histograms_equal": true,
+  "only_in_previous": [],
+  "only_in_current": []
+ }
+}

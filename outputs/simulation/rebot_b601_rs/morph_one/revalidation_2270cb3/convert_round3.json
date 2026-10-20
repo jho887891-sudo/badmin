@@ -1,0 +1,83 @@
+{
+  "input": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/morph_one/cad/M1-4WD4S_model2601.step",
+  "output": "/home/T7/dgut/runs/cad_round3/usd/M1-4WD4S_model2601_round3.usda",
+  "isaac_sim_version": "unknown",
+  "input_sha256": "388cb3653a864066a35a54065f71938635c7e9a221cb4b897b31fbd44ff266c5",
+  "input_bytes": 115496178,
+  "extensions": {
+    "omni.kit.converter.cad": true,
+    "omni.kit.converter.hoops": true,
+    "omni.kit.converter.hoops_core": true
+  },
+  "options": {
+    "tessLOD": 2,
+    "useMaterials": true,
+    "useNormals": true,
+    "dedup": true,
+    "instancing": true
+  },
+  "file_format_args": {
+    "tessLOD": "2",
+    "useMaterials": "true",
+    "useNormals": "true",
+    "dedup": "true",
+    "instancing": "true"
+  },
+  "conversion": {
+    "completed": true,
+    "error": null,
+    "elapsed_seconds": 37.85,
+    "output_url": "/home/T7/dgut/runs/cad_round3/usd/M1-4WD4S_model2601_round3.usda",
+    "status_error_code": 0,
+    "status_error_msg": ""
+  },
+  "output_bytes": 58660611,
+  "output_sha256": "181cd7957910a6059d6f4309e73193707e3fc6c1121aec4e82ac5e9578de9db7",
+  "usd": {
+    "opened": true,
+    "default_prim": "/tn__M14WD4S_model2601_round3_gZ0",
+    "meters_per_unit": 0.001,
+    "up_axis": "Z",
+    "prim_count": 574,
+    "abstract_prim_count": 569,
+    "instanceable_prim_count": 1,
+    "mesh_count": 282,
+    "total_mesh_points": 455255,
+    "total_mesh_faces": 535464,
+    "rendered_mesh_instances": 282,
+    "rendered_mesh_points": 455255,
+    "prim_type_counts": {
+      "Xform": 285,
+      "Mesh": 282,
+      "Scope": 3,
+      "Material": 2,
+      "Shader": 2
+    },
+    "world_bbox": {
+      "min": [
+        -290.0,
+        -346.9956970214844,
+        -400.0
+      ],
+      "max": [
+        290.0,
+        26.0,
+        402.85162353515625
+      ],
+      "size": [
+        580.0,
+        372.9956970214844,
+        802.8516235351562
+      ]
+    }
+  },
+  "verification_checks": {
+    "has_nonempty_meshes": true,
+    "expected_prototype_mesh_count": true,
+    "expected_rendered_instance_count": true,
+    "expected_meters_per_unit": true,
+    "expected_up_axis": true
+  },
+  "verdict": "converted and verified: 282 prototype meshes / 455255 points, 282 rendered mesh instances, bbox size [580.0, 373.0, 802.85]",
+  "exit_code": 0
+}
