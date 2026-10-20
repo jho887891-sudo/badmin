@@ -1,0 +1,37 @@
+name: P0-P2 Offline Contract
+
+on:
+  push:
+    branches:
+      - chatgpt/full-execution-spec-p2-20261021
+  pull_request:
+    paths:
+      - "scripts/simulation/p0_subprocess_gate_runner.py"
+      - "scripts/simulation/p2_pose_metrics.py"
+      - "scripts/simulation/p2_trajectory_gate.py"
+      - "tests/simulation/test_p0_subprocess_gate_runner.py"
+      - "tests/simulation/test_p0_gate_unittest.py"
+      - "tests/simulation/test_p2_pose_metrics.py"
+      - "tests/simulation/test_p2_trajectory_gate.py"
+      - ".github/workflows/p0_p2_offline_contract.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-contract:
+    name: Standard-library unit tests (no Isaac)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify P0 subprocess gate
+        run: python -m unittest discover -s tests/simulation -p 'test_p0_gate_unittest.py' -v
+      - name: Verify P2 source-aware quaternion math
+        run: python -m unittest discover -s tests/simulation -p 'test_p2_pose_metrics.py' -v
+      - name: Verify P2 trajectory gate (synthetic contract ONLY)
+        run: python -m unittest discover -s tests/simulation -p 'test_p2_trajectory_gate.py' -v
