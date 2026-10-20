@@ -1,0 +1,25 @@
+WHEELS_EXIT=0
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:32.38
+	Maximum resident set size (kbytes): 1254012
+{
+ "json": "/home/dgut/runs/wheels/out/wheel_kinematics.json",
+ "parts_csv": "/home/dgut/runs/wheels/out/wheel_parts.csv",
+ "axes_csv": "/home/dgut/runs/wheels/out/wheel_axis_candidates.csv",
+ "solids": 282,
+ "modules": [
+  "M1.2.2-00V3 舵轮前组件-1",
+  "M1.2.2-00V3 舵轮前组件-2",
+  "M1.1-00V3 主体模块-1",
+  "UNKNOWN"
+ ],
+ "up_axis": "y",
+ "up_axis_method": "smallest_overall_extent",
+ "clusters": 2224,
+ "segments": 2755,
+ "roles": {
+  "steering_candidate_vertical": 551,
+  "drive_candidate_horizontal": 1158,
+  "oblique_or_other": 515
+ },
+ "high_confidence": 73,
+ "corners_with_steering_candidate": 4,
