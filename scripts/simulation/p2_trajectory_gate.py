@@ -67,10 +67,14 @@ def audit(manifest: dict, trajectory: list[dict]) -> dict:
         mount = manifest["expected_mount"]
         expected_bodies = tuple(authored.keys())
         expected_joints = tuple(manifest["joint_names"])
+        mount_base = mount.get("base_body_name", "Arm/base_link")
+        if not isinstance(mount_base, str) or not mount_base.strip():
+            raise InvalidEvidence("expected_mount.base_body_name must be nonempty")
         if not (0 < dt <= 1 and 1 <= count <= 100000):
             raise InvalidEvidence("Invalid dt or number of steps")
-        if "Chassis" not in expected_bodies or "Arm/base_link" not in expected_bodies:
-            raise InvalidEvidence("Required Chassis and Arm/base_link missing")
+        if "Chassis" not in expected_bodies or mount_base not in expected_bodies:
+            raise InvalidEvidence(
+                "Expected mount bodies Chassis and %s missing" % mount_base)
         if count != manifest.get("settle_steps", 60):
             raise InvalidEvidence("settle_steps must be an integer")
         # Do not silently accept anonymous evidence without a reproducible source.
@@ -143,7 +147,7 @@ def audit(manifest: dict, trajectory: list[dict]) -> dict:
         world_p.append(errors["world_position_error_m"])
         world_r.append(errors["world_rotation_error_rad"])
     t0_chassis = body_pose(frames[0]["bodies"]["Chassis"])
-    t0_base = body_pose(frames[0]["bodies"]["Arm/base_link"])
+    t0_base = body_pose(frames[0]["bodies"][mount_base])
     local = mount_pose_error(t0_chassis, t0_base,
                              mount["position_m"], mount["quat_wxyz"])
 
