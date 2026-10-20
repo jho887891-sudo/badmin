@@ -39,6 +39,11 @@ PARSER.add_argument("--run-id", required=True)
 PARSER.add_argument("--out-dir", required=True)
 PARSER.add_argument("--steps", type=int, default=STEPS)
 PARSER.add_argument("--include-ground", action="store_true")
+PARSER.add_argument("--root-api", choices=["chassis", "xform", "none"], default="chassis",
+                    help="SPEC C3: where ArticulationRootAPI is applied")
+PARSER.add_argument("--joints", type=int, choices=[0, 1, 2], default=0,
+                    help="SPEC C4/C5: number of revolute joints in the chain")
+PARSER.add_argument("--variant", default="C0")
 PARSER.add_argument("--write-data", action="store_true",
                     help="call write_data_to_sim every step (SPEC C6/C7 factor)")
 AppLauncher.add_app_launcher_args(PARSER)
@@ -51,11 +56,18 @@ from isaaclab.assets import Articulation, ArticulationCfg  # noqa: E402
 from isaaclab_physx.physics import PhysxCfg  # noqa: E402
 from pxr import Gf, Sdf, Usd, UsdGeom, UsdPhysics  # noqa: E402
 
+def _np(values):
+    """CUDA tensors must be moved to CPU before numpy; np.asarray raises otherwise."""
+    if hasattr(values, "detach"):
+        values = values.detach().cpu().numpy()
+    return np.asarray(values)
+
+
 USD_SOURCE = "usd_gf_quat_wxyz"
 RUNTIME_SOURCE = "isaaclab_body_quat_raw"
 
 
-def author(path):
+def author(path, root_api="chassis", joints=0):
     stage = Usd.Stage.CreateNew(path)
     UsdGeom.SetStageMetersPerUnit(stage, 1.0)
     UsdGeom.SetStageUpAxis(stage, UsdGeom.Tokens.z)
@@ -88,11 +100,46 @@ def author(path):
     joint.CreateLocalRot0Attr().Set(Gf.Quatf(1.0, 0.0, 0.0, 0.0))
     joint.CreateLocalPos1Attr().Set(Gf.Vec3f(0.0, 0.0, 0.0))
     joint.CreateLocalRot1Attr().Set(Gf.Quatf(1.0, 0.0, 0.0, 0.0))
-    # C0 baseline: root API on the chassis rigid body (a legal placement), no drives.
-    UsdPhysics.ArticulationRootAPI.Apply(chassis.GetPrim())
+    targets = []
+    if joints >= 1:
+        link1 = box("/C0/Link1", (0.12, 0.02, 0.02),
+                    (MOUNT_OFFSET[0] + 0.13, MOUNT_OFFSET[1], MOUNT_OFFSET[2]), 1.0)
+        targets.append((payload, link1, (0.08, 0.0, 0.0)))
+    if joints >= 2:
+        link2 = box("/C0/Link2", (0.09, 0.018, 0.018),
+                    (MOUNT_OFFSET[0] + 0.36, MOUNT_OFFSET[1], MOUNT_OFFSET[2]), 0.5)
+        targets.append((link1, link2, (0.24, 0.0, 0.0)))
+    for index, (parent, child, anchor) in enumerate(targets, start=1):
+        joint = UsdPhysics.RevoluteJoint.Define(stage, "/C0/joint%d" % index)
+        joint.CreateBody0Rel().SetTargets([parent.GetPath()])
+        joint.CreateBody1Rel().SetTargets([child.GetPath()])
+        joint.CreateAxisAttr("Y")
+        joint.CreateLowerLimitAttr(-90.0)
+        joint.CreateUpperLimitAttr(90.0)
+        joint.CreateLocalPos0Attr().Set(Gf.Vec3f(*anchor))
+        joint.CreateLocalPos1Attr().Set(Gf.Vec3f(0.0, 0.0, 0.0))
+        joint.CreateLocalRot0Attr().Set(Gf.Quatf(1.0, 0.0, 0.0, 0.0))
+        joint.CreateLocalRot1Attr().Set(Gf.Quatf(1.0, 0.0, 0.0, 0.0))
+        drive = UsdPhysics.DriveAPI.Apply(joint.GetPrim(), "angular")
+        drive.CreateTypeAttr("force")
+        drive.CreateStiffnessAttr(50.0)
+        drive.CreateDampingAttr(5.0)
+        drive.CreateMaxForceAttr(100.0)
+
+    if root_api == "chassis":
+        UsdPhysics.ArticulationRootAPI.Apply(chassis.GetPrim())
+        root_target = str(chassis.GetPath())
+    elif root_api == "xform":
+        UsdPhysics.ArticulationRootAPI.Apply(root.GetPrim())
+        root_target = str(root.GetPath())
+    else:
+        root_target = None
+    if root_api == "none":
+        root_target = None
     stage.GetRootLayer().Save()
-    return {"usd": os.path.abspath(path), "root_api_target": str(chassis.GetPath()),
-            "mount_offset_m": list(MOUNT_OFFSET)}
+    return {"usd": os.path.abspath(path), "root_api_target": root_target,
+            "mount_offset_m": list(MOUNT_OFFSET), "joints": joints,
+            "root_api_mode": root_api}
 
 
 def read_authored_world(usd_path):
@@ -148,7 +195,8 @@ def angle_between(a_wxyz, b_wxyz):
 def main():
     out_dir = os.path.abspath(ARGS.out_dir)
     os.makedirs(out_dir, exist_ok=True)
-    authored_layer = author(os.path.join(out_dir, "authored_proxy.usda"))
+    authored_layer = author(os.path.join(out_dir, "authored_proxy.usda"),
+                            root_api=ARGS.root_api, joints=ARGS.joints)
     authored = read_authored_world(authored_layer["usd"])
 
     physics = PhysxCfg(solver_type=1, enable_external_forces_every_iteration=True)
@@ -163,9 +211,15 @@ def main():
     # C0 has NO joints, so the default ".*": 0.0 init-state regex cannot match anything and
     # Isaac Lab raises before the first step.  Empty joint dicts are the correct authoring for
     # a two-body, one-FixedJoint articulation.
-    robot = Articulation(ArticulationCfg(
-        prim_path="/World/C0", spawn=None, actuators={},
-        init_state=ArticulationCfg.InitState(joint_pos={}, joint_vel={})))
+    cfg = ArticulationCfg(prim_path="/World/C0", spawn=None, actuators={})
+    # Version-agnostic: clear the default {".*": 0.0} init-state patterns, which cannot match
+    # an articulation that has no joints at all.
+    for field in ("joint_pos", "joint_vel"):
+        try:
+            setattr(cfg.init_state, field, {})
+        except Exception as exc:  # pragma: no cover
+            print("init_state.%s override failed: %s" % (field, exc), flush=True)
+    robot = Articulation(cfg)
     sim.reset()
 
     body_names = list(robot.body_names)
@@ -177,10 +231,10 @@ def main():
     def capture(tag, step):
         row = {"run_id": ARGS.run_id, "tag": tag, "step": step, "t_s": round(step * DT, 9),
                "bodies": {}}
-        root_pos = [float(v) for v in np.asarray(robot.data.root_pos_w[0]).reshape(-1)[:3]]
-        root_raw = [float(v) for v in np.asarray(robot.data.root_quat_w[0]).reshape(-1)[:4]]
-        root_lin = [float(v) for v in np.asarray(robot.data.root_lin_vel_w[0]).reshape(-1)[:3]]
-        root_ang = [float(v) for v in np.asarray(robot.data.root_ang_vel_w[0]).reshape(-1)[:3]]
+        root_pos = [float(v) for v in _np(robot.data.root_pos_w[0]).reshape(-1)[:3]]
+        root_raw = [float(v) for v in _np(robot.data.root_quat_w[0]).reshape(-1)[:4]]
+        root_lin = [float(v) for v in _np(robot.data.root_lin_vel_w[0]).reshape(-1)[:3]]
+        root_ang = [float(v) for v in _np(robot.data.root_ang_vel_w[0]).reshape(-1)[:3]]
         row["root"] = {
             "pos": [round(v, 12) for v in root_pos],
             "raw_quat": [round(v, 12) for v in root_raw],
@@ -189,22 +243,22 @@ def main():
             "lin_vel": [round(v, 12) for v in root_lin],
             "ang_vel": [round(v, 12) for v in root_ang],
         }
-        for name in ("Chassis", "Payload"):
+        for name in body_names:
             if name not in index_of:
                 row["bodies"][name] = {"found": False}
                 continue
             index = index_of[name]
-            raw = [float(v) for v in np.asarray(robot.data.body_quat_w[0, index]).reshape(-1)[:4]]
+            raw = [float(v) for v in _np(robot.data.body_quat_w[0, index]).reshape(-1)[:4]]
             row["bodies"][name] = {
                 "pos": [round(float(v), 12) for v in
-                        np.asarray(robot.data.body_pos_w[0, index]).reshape(-1)[:3]],
+                        _np(robot.data.body_pos_w[0, index]).reshape(-1)[:3]],
                 "raw_quat": [round(v, 12) for v in raw],
                 "normalized_quat_wxyz": [round(v, 12) for v in raw_to_wxyz(raw)],
                 "quat_source": RUNTIME_SOURCE,
                 "lin_vel": [round(float(v), 12) for v in
-                            np.asarray(robot.data.body_lin_vel_w[0, index]).reshape(-1)[:3]],
+                            _np(robot.data.body_lin_vel_w[0, index]).reshape(-1)[:3]],
                 "ang_vel": [round(float(v), 12) for v in
-                            np.asarray(robot.data.body_ang_vel_w[0, index]).reshape(-1)[:3]],
+                            _np(robot.data.body_ang_vel_w[0, index]).reshape(-1)[:3]],
             }
         row["finite"] = all(
             math.isfinite(v)
