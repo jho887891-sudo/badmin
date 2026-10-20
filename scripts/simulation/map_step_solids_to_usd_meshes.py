@@ -653,7 +653,7 @@ def main(argv=None) -> int:
         "usd": str(Path(args.usd).resolve()),
     }
     result["notes"] = [
-        "VERIFIED requires an identical name key, a unique key group and the geometry sandwich",
+        "STRONG_CANDIDATE uses a unique normalized name key plus approximate bbox evidence; no matches are VERIFIED",
         "282 solids and 282 meshes do not by themselves prove a one-to-one mapping",
         "no part is labelled physically; shapes are never promoted to wheel axes",
     ]
