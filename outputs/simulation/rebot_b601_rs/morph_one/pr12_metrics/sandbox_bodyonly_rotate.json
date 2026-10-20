@@ -1,0 +1,401 @@
+{
+ "label": "TEST_PROXY mount-metric sandbox; not Morph One hardware",
+ "mode": "rotate",
+ "twist_command": {
+  "linear_x_m_s": 0.0,
+  "angular_z_rad_s": 0.0
+ },
+ "gravity_on": false,
+ "solver": "TGS + external forces every iteration",
+ "physics_dt": 0.008333333333333333,
+ "settle_steps": 60,
+ "drive_steps": 180,
+ "authored": {
+  "usd": "/home/dgut/runs/b12/out/sandbox_bodyonly_rotate.usda",
+  "mount_offset_m": [
+   0.12,
+   -0.05,
+   0.2
+  ],
+  "mount_authoring": "body-only",
+  "articulation_root": "/Sandbox"
+ },
+ "body_names": [
+  "base_link",
+  "link1",
+  "Chassis",
+  "link2"
+ ],
+ "joint_names": [
+  "joint1",
+  "joint2"
+ ],
+ "num_bodies_physx": 4,
+ "num_joints_physx": 2,
+ "dofs_physx": 2,
+ "chassis_in_articulation": true,
+ "initial_state": {
+  "chassis_pos_w": [
+   0.120119608938694,
+   -0.05000000074505806,
+   0.20066891610622406
+  ],
+  "chassis_quat_wxyz": [
+   1.2650224201493643e-09,
+   -0.007130657788366079,
+   1.2978220720327727e-09,
+   0.9999745488166809
+  ],
+  "arm_base_pos_w": [
+   0.120119608938694,
+   -0.05000000074505806,
+   0.20066891610622406
+  ],
+  "arm_base_quat_wxyz": [
+   1.2650224201493643e-09,
+   -0.007130657788366079,
+   1.2978220720327727e-09,
+   0.9999745488166809
+  ],
+  "relative_position_m": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "relative_quaternion_wxyz": [
+   1.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "authored_mount_offset_m": [
+   0.12,
+   -0.05,
+   0.2
+  ],
+  "ground_clearance_m": 0.200669
+ },
+ "setup_mount_offset_error_m": 0.238537209,
+ "setup_mount_rotation_error_rad": 0.0,
+ "twist_written": true,
+ "twist_write_error": null,
+ "settle": {
+  "chassis_world_drift_m": 0.006808588,
+  "max_mount_pos_error_m": 0.0,
+  "max_mount_rot_error_rad": 0.0
+ },
+ "drive": {
+  "chassis_translation_m": 0.191893,
+  "chassis_horizontal_m": 0.049178,
+  "net_vertical_displacement_m": 0.185484827,
+  "vertical_span_m": 0.185359076,
+  "max_mount_pos_error_m": 0.0,
+  "max_mount_rot_error_rad": 4.2e-08,
+  "max_abs_joint_vel_rad_s": 15.1807,
+  "chassis_yaw_change_rad": 2.171532,
+  "root_yaw_change_rad": 2.171532,
+  "non_finite_samples": 0
+ },
+ "effective_joint_gains": {
+  "status": "READ_FROM_ARTICULATION_DATA",
+  "source": "robot.data.joint_*",
+  "joint_names": [
+   "joint1",
+   "joint2"
+  ],
+  "stiffness": [
+   300.0,
+   300.0
+  ],
+  "damping": [
+   20.0,
+   20.0
+  ]
+ },
+ "interpretation_limits": [
+  "root-velocity injection is not wheel drive: no tyre contact, no friction",
+  "nothing here is a four-wheel-drive or four-wheel-steer success rate",
+  "proxy masses and inertias are arbitrary test values"
+ ],
+ "samples": [
+  {
+   "step": 1,
+   "chassis_pos": [
+    0.12160903215408325,
+    -0.04973478987812996,
+    0.19415943324565887
+   ],
+   "chassis_yaw_rad": -2.958532017313923,
+   "root_yaw_rad": -2.958532017313923,
+   "root_z": 0.19415943324565887,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "joint_pos": [
+    0.5105509161949158,
+    -0.45035961270332336
+   ],
+   "joint_vel": [
+    -4.674533843994141,
+    12.769455909729004
+   ]
+  },
+  {
+   "step": 19,
+   "chassis_pos": [
+    0.12058097869157791,
+    -0.04985310509800911,
+    0.1979328989982605
+   ],
+   "chassis_yaw_rad": -3.0108920873104403,
+   "root_yaw_rad": -3.0108920873104403,
+   "root_z": 0.1979328989982605,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "joint_pos": [
+    0.5098891258239746,
+    -0.4557981491088867
+   ],
+   "joint_vel": [
+    -4.847255706787109,
+    14.515547752380371
+   ]
+  },
+  {
+   "step": 37,
+   "chassis_pos": [
+    0.11886175721883774,
+    -0.050532445311546326,
+    0.20387472212314606
+   ],
+   "chassis_yaw_rad": 3.1403974315571537,
+   "root_yaw_rad": 3.1403974315571537,
+   "root_z": 0.20387472212314606,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "joint_pos": [
+    0.5099090337753296,
+    -0.45282402634620667
+   ],
+   "joint_vel": [
+    -4.256472110748291,
+    11.804173469543457
+   ]
+  },
+  {
+   "step": 55,
+   "chassis_pos": [
+    0.11265244334936142,
+    -0.051391102373600006,
+    0.22081531584262848
+   ],
+   "chassis_yaw_rad": 3.140063778795857,
+   "root_yaw_rad": 3.140063778795857,
+   "root_z": 0.22081531584262848,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "joint_pos": [
+    0.5098329782485962,
+    -0.45219334959983826
+   ],
+   "joint_vel": [
+    -4.2351861000061035,
+    11.976283073425293
+   ]
+  },
+  {
+   "step": 73,
+   "chassis_pos": [
+    0.10609293729066849,
+    -0.05149509757757187,
+    0.240473672747612
+   ],
+   "chassis_yaw_rad": 3.134246085024087,
+   "root_yaw_rad": 3.134246085024087,
+   "root_z": 0.240473672747612,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "joint_pos": [
+    0.5097547769546509,
+    -0.4511594772338867
+   ],
+   "joint_vel": [
+    -4.182661056518555,
+    12.041797637939453
+   ]
+  },
+  {
+   "step": 91,
+   "chassis_pos": [
+    0.100602887570858,
+    -0.05121176689863205,
+    0.2606060206890106
+   ],
+   "chassis_yaw_rad": -3.122601585872706,
+   "root_yaw_rad": -3.122601585872706,
+   "root_z": 0.2606060206890106,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "joint_pos": [
+    0.5097262859344482,
+    -0.4497115910053253
+   ],
+   "joint_vel": [
+    -4.200959205627441,
+    12.28603744506836
+   ]
+  },
+  {
+   "step": 109,
+   "chassis_pos": [
+    0.0960986316204071,
+    -0.05024956911802292,
+    0.28164198994636536
+   ],
+   "chassis_yaw_rad": -0.6717979011198508,
+   "root_yaw_rad": -0.6717979011198508,
+   "root_z": 0.28164198994636536,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "joint_pos": [
+    0.5097610950469971,
+    -0.44842657446861267
+   ],
+   "joint_vel": [
+    -4.335753917694092,
+    12.719768524169922
+   ]
+  },
+  {
+   "step": 127,
+   "chassis_pos": [
+    0.09186065196990967,
+    -0.04848730191588402,
+    0.3042156994342804
+   ],
+   "chassis_yaw_rad": -0.5565852808868766,
+   "root_yaw_rad": -0.5565852808868766,
+   "root_z": 0.3042156994342804,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "joint_pos": [
+    0.509778618812561,
+    -0.4476626217365265
+   ],
+   "joint_vel": [
+    -4.454033851623535,
+    13.040409088134766
+   ]
+  },
+  {
+   "step": 145,
+   "chassis_pos": [
+    0.08698777854442596,
+    -0.046142950654029846,
+    0.32851579785346985
+   ],
+   "chassis_yaw_rad": -0.6398631571602985,
+   "root_yaw_rad": -0.6398631571602985,
+   "root_z": 0.32851579785346985,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "joint_pos": [
+    0.5097590088844299,
+    -0.4475562572479248
+   ],
+   "joint_vel": [
+    -4.541790962219238,
+    13.2841215133667
+   ]
+  },
+  {
+   "step": 163,
+   "chassis_pos": [
+    0.0807388573884964,
+    -0.04363292455673218,
+    0.35429465770721436
+   ],
+   "chassis_yaw_rad": -0.7192418182646897,
+   "root_yaw_rad": -0.7192418182646897,
+   "root_z": 0.35429465770721436,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "joint_pos": [
+    0.5097230076789856,
+    -0.4476306140422821
+   ],
+   "joint_vel": [
+    -4.597431659698486,
+    13.455804824829102
+   ]
+  }
+ ],
+ "settle_samples": [
+  {
+   "step": 1,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "chassis_pos": [
+    0.12021230906248093,
+    -0.05000000074505806,
+    0.20087134838104248
+   ]
+  },
+  {
+   "step": 11,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "chassis_pos": [
+    0.12033258378505707,
+    -0.049994662404060364,
+    0.20091474056243896
+   ]
+  },
+  {
+   "step": 21,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "chassis_pos": [
+    0.12030385434627533,
+    -0.049955133348703384,
+    0.20017364621162415
+   ]
+  },
+  {
+   "step": 31,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "chassis_pos": [
+    0.12034576386213303,
+    -0.04987756535410881,
+    0.19890788197517395
+   ]
+  },
+  {
+   "step": 41,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "chassis_pos": [
+    0.12058204412460327,
+    -0.049789756536483765,
+    0.1972227245569229
+   ]
+  },
+  {
+   "step": 51,
+   "mount_pos_error_m": 0.0,
+   "mount_rot_error_rad": 0.0,
+   "chassis_pos": [
+    0.12113519012928009,
+    -0.0497322715818882,
+    0.19524796307086945
+   ]
+  }
+ ],
+ "acceptance": {
+  "setup_offset_matches_authored_m": false,
+  "no_initial_penetration_drift": false,
+  "rigid_mount_position_holds_m": true,
+  "rigid_mount_orientation_holds_rad": true,
+  "no_non_finite": true
+ }
+}

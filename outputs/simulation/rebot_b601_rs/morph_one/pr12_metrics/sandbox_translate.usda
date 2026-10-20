@@ -1,0 +1,160 @@
+#usda 1.0
+(
+    defaultPrim = "Sandbox"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Sandbox" (
+    prepend apiSchemas = ["PhysicsArticulationRootAPI"]
+    customData = {
+        string label = "TEST_PROXY mount-metric sandbox"
+    }
+)
+{
+    def Xform "Chassis" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+        customData = {
+            string label = "TEST_PROXY chassis body (collision cube below the mount plane)"
+        }
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float physics:mass = 15
+
+        def Cube "geometry" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        )
+        {
+            double size = 1
+            float3 xformOp:scale = (0.5, 0.35, 0.08)
+            double3 xformOp:translate = (0, 0, 0.05999999865889549)
+            uniform token[] xformOpOrder = ["xformOp:scale", "xformOp:translate"]
+        }
+    }
+
+    def "Arm"
+    {
+        def Xform "base_link" (
+            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+            customData = {
+                string label = "TEST_PROXY arm base body at the mount offset"
+            }
+        )
+        {
+            point3f physics:centerOfMass = (0, 0, 0)
+            float physics:mass = 2
+            double3 xformOp:translate = (0.11999999731779099, -0.05000000074505806, 0.20000000298023224)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "geometry" (
+                prepend apiSchemas = ["PhysicsCollisionAPI"]
+            )
+            {
+                double size = 1
+                float3 xformOp:scale = (0.08, 0.08, 0.08)
+                double3 xformOp:translate = (0, 0, 0)
+                uniform token[] xformOpOrder = ["xformOp:scale", "xformOp:translate"]
+            }
+        }
+
+        def Xform "link1" (
+            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+            customData = {
+                string label = "TEST_PROXY upper link"
+            }
+        )
+        {
+            point3f physics:centerOfMass = (0, 0, 0)
+            float physics:mass = 1
+            double3 xformOp:translate = (0.25999999046325684, -0.05000000074505806, 0.20000000298023224)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "geometry" (
+                prepend apiSchemas = ["PhysicsCollisionAPI"]
+            )
+            {
+                double size = 1
+                float3 xformOp:scale = (0.28, 0.05, 0.05)
+                double3 xformOp:translate = (0, 0, 0)
+                uniform token[] xformOpOrder = ["xformOp:scale", "xformOp:translate"]
+            }
+        }
+
+        def Xform "link2" (
+            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+            customData = {
+                string label = "TEST_PROXY forearm"
+            }
+        )
+        {
+            point3f physics:centerOfMass = (0, 0, 0)
+            float physics:mass = 0.5
+            double3 xformOp:translate = (0.3700000047683716, -0.05000000074505806, 0.20000000298023224)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "geometry" (
+                prepend apiSchemas = ["PhysicsCollisionAPI"]
+            )
+            {
+                double size = 1
+                float3 xformOp:scale = (0.22, 0.04, 0.04)
+                double3 xformOp:translate = (0, 0, 0)
+                uniform token[] xformOpOrder = ["xformOp:scale", "xformOp:translate"]
+            }
+        }
+
+        def PhysicsRevoluteJoint "joint1" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular"]
+        )
+        {
+            float drive:angular:physics:damping = 5
+            float drive:angular:physics:maxForce = 100
+            float drive:angular:physics:stiffness = 50
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "Y"
+            rel physics:body0 = </Sandbox/Arm/base_link>
+            rel physics:body1 = </Sandbox/Arm/link1>
+            point3f physics:localPos0 = (0.14, 0, 0)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -90
+            float physics:upperLimit = 90
+        }
+
+        def PhysicsRevoluteJoint "joint2" (
+            prepend apiSchemas = ["PhysicsDriveAPI:angular"]
+        )
+        {
+            float drive:angular:physics:damping = 5
+            float drive:angular:physics:maxForce = 100
+            float drive:angular:physics:stiffness = 50
+            uniform token drive:angular:physics:type = "force"
+            uniform token physics:axis = "Y"
+            rel physics:body0 = </Sandbox/Arm/link1>
+            rel physics:body1 = </Sandbox/Arm/link2>
+            point3f physics:localPos0 = (0.11, 0, 0)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+            float physics:lowerLimit = -120
+            float physics:upperLimit = 120
+        }
+    }
+
+    def PhysicsFixedJoint "mount_fixed" (
+        customData = {
+            string label = "rigid mount at a NON-ZERO offset"
+        }
+    )
+    {
+        rel physics:body0 = </Sandbox/Chassis>
+        rel physics:body1 = </Sandbox/Arm/base_link>
+        point3f physics:localPos0 = (0.12, -0.05, 0.2)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+    }
+}
+
