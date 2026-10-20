@@ -215,23 +215,53 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
                                mesh["path"], solid, mesh, result))
         scored.sort(key=lambda item: (item[0], item[1], item[2], item[3]))
 
+        # Global greedy selection can strand a constrained solid: A has two
+        # possible partners while B has only one, but greedy may grab B's one.
+        # Use deterministic augmenting paths to maximize valid pair *count*.
+        # This is NOT a globally minimum-cost matching, nor proof of identity.
+        feasible = defaultdict(list)
+        scored_by_pair = {}
+        for record in scored:
+            _, cost, eid, mesh_path, solid, mesh, result = record
+            if result["ok"]:
+                feasible[eid].append((cost, mesh_path))
+                scored_by_pair[(eid, mesh_path)] = record
+            elif len(rejected) < 50:
+                rejected.append({
+                    "step_eid": eid,
+                    "step_name": solid["name"],
+                    "usd_path": mesh_path,
+                    "reason": "geometry sandwich fails",
+                    "detail": result,
+                })
+        for options in feasible.values():
+            options.sort(key=lambda pair: (pair[0], pair[1]))
+
+        match_mesh_to_solid = {}
+        def _augment(eid, seen_meshes):
+            for _, mp in feasible[eid]:
+                if mp in seen_meshes:
+                    continue
+                seen_meshes.add(mp)
+                prior = match_mesh_to_solid.get(mp)
+                if prior is None or _augment(prior, seen_meshes):
+                    match_mesh_to_solid[mp] = eid
+                    return True
+            return False
+
+        for solid in sorted(key_solids, key=lambda item:
+                            (len(feasible[item["eid"]]), item["eid"])):
+            _augment(solid["eid"], set())
+
+        chosen_pairs = set((eid, mp) for mp, eid in match_mesh_to_solid.items())
         group_size = (len(key_solids), len(key_meshes))
         taken_solids: set = set()
         taken_meshes: set = set()
         for _, _, solid_eid, mesh_path, solid, mesh, result in scored:
+            if (solid_eid, mesh_path) not in chosen_pairs:
+                continue
             if solid_eid in taken_solids or mesh_path in taken_meshes:
-                continue
-            if not result["ok"]:
-                rejected.append(
-                    {
-                        "step_eid": solid_eid,
-                        "step_name": solid["name"],
-                        "usd_path": mesh_path,
-                        "reason": "geometry sandwich fails",
-                        "detail": result,
-                    }
-                )
-                continue
+                raise AssertionError("invalid duplicate from bipartite matching")
             unique_in_group = group_size == (1, 1)
             named = bool(key) and key != UNNAMED_KEY
             # A unique normalized name plus a broad geometric bbox is not
@@ -346,6 +376,7 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
         "unmatched_meshes": unmatched_meshes,
         "rejected_pairs": rejected[:50],
         "rejected_pair_count": len(rejected),
+        "pairing_algorithm": "deterministic maximum-cardinality augmenting-path (not min-cost)",
         # This heuristic never establishes a source-ID-level bijection,
         # even in the degenerate case of one solid and one similarly named mesh.
         "bijection_proven": False,
