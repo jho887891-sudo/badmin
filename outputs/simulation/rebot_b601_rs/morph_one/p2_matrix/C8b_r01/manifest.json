@@ -1,0 +1,28 @@
+{
+ "stage": "P2",
+ "run_id": "C8b_r01",
+ "scene_variant": "C0",
+ "commit": "UNKNOWN",
+ "base_commit": "UNKNOWN",
+ "asset_hashes": {
+  "authored_proxy.usda": "TEST_PROXY"
+ },
+ "python_version": "3.12.13",
+ "isaac_sim_version": "UNKNOWN",
+ "physics_dt_s": 0.008333333333333333,
+ "gravity_m_s2": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "root_api_target": "/C0/Chassis",
+ "include_ground": false,
+ "lift_m": 0.0,
+ "gains_mode": "verified",
+ "collision_mode": "default",
+ "drive_mode": "none",
+ "write_data_to_sim": true,
+ "steps": 60,
+ "command": "/home/dgut/runs/p2/morph_one_p2_c0_minimal.py --run-id C8b_r01 --out-dir /home/dgut/runs/p2/C8b_r01 --variant C8b --joints 2 --write-data --gains verified",
+ "seed": "n/a (no randomness)"
+}

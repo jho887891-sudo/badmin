@@ -1,0 +1,20 @@
+{
+ "run_id": "C7_r01",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/p2/morph_one_p2_c0_minimal.py --run-id C7_r01 --out-dir /home/dgut/runs/p2/C7_r01 --variant C7 --joints 2 --write-data",
+ "child_returncode": 0,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "t0_world_position_error_m": 7.451e-09,
+  "t0_world_rotation_error_rad": 0.0,
+  "t0_mount_position_error_m": 4.078e-09,
+  "t0_mount_rotation_error_rad": 0.0,
+  "settle_60_step_chassis_drift_m": 0.0
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 37.405,
+ "child_stdout_log": "/home/dgut/runs/p2/C7_r01/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/p2/C7_r01/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}

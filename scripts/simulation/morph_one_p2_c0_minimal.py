@@ -44,6 +44,8 @@ PARSER.add_argument("--root-api", choices=["chassis", "xform", "none"], default=
 PARSER.add_argument("--joints", type=int, choices=[0, 1, 2], default=0,
                     help="SPEC C4/C5: number of revolute joints in the chain")
 PARSER.add_argument("--variant", default="C0")
+PARSER.add_argument("--gains", choices=["none", "verified"], default="none",
+                    help="SPEC C8: 'verified' applies stiffness 300 / damping 20 to the chain")
 PARSER.add_argument("--lift", type=float, default=0.0,
                     help="raise every body by this many metres (isolates ground penetration)")
 PARSER.add_argument("--write-data", action="store_true",
@@ -55,6 +57,7 @@ SIMULATION_APP = LAUNCHER.app
 
 import isaaclab.sim as sim_utils  # noqa: E402
 from isaaclab.assets import Articulation, ArticulationCfg  # noqa: E402
+from isaaclab.actuators import ImplicitActuatorCfg  # noqa: E402
 from isaaclab_physx.physics import PhysxCfg  # noqa: E402
 from pxr import Gf, Sdf, Usd, UsdGeom, UsdPhysics  # noqa: E402
 
@@ -217,7 +220,11 @@ def main():
     # C0 has NO joints, so the default ".*": 0.0 init-state regex cannot match anything and
     # Isaac Lab raises before the first step.  Empty joint dicts are the correct authoring for
     # a two-body, one-FixedJoint articulation.
-    cfg = ArticulationCfg(prim_path="/World/C0", spawn=None, actuators={})
+    actuators = {}
+    if ARGS.gains == "verified":
+        actuators = {"all": ImplicitActuatorCfg(joint_names_expr=[".*"], stiffness=300.0,
+                                                damping=20.0)}
+    cfg = ArticulationCfg(prim_path="/World/C0", spawn=None, actuators=actuators)
     # Version-agnostic: clear the default {".*": 0.0} init-state patterns, which cannot match
     # an articulation that has no joints at all.
     for field in ("joint_pos", "joint_vel"):
@@ -344,6 +351,7 @@ def main():
         "root_api_target": authored_layer["root_api_target"],
         "include_ground": bool(ARGS.include_ground),
         "lift_m": float(ARGS.lift),
+        "gains_mode": ARGS.gains,
         "collision_mode": "default",
         "drive_mode": "none",
         "write_data_to_sim": bool(ARGS.write_data),
