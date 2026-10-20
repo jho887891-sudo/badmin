@@ -157,3 +157,63 @@ def test_measurement_reports_no_physics_apis(tmp_path, fixture_visual_usd):
     scene = build_metric_scene(tmp_path / "C.usda", fixture_visual_usd, scale=(0.001,) * 3)
     report = measure_scene(scene)
     assert all(value == 0 for value in report["physx_apis"].values())
+
+
+# --------------------------------------------------------- acceptance regressions
+
+
+def _audit_scene_case(*, mesh_instances=282, bbox_agree=True, scale_case=True):
+    return {
+        "opened": True, "bbox_methods_agree": bbox_agree,
+        "mesh_instances": mesh_instances, "stage_meters_per_unit": 1.0,
+        "up_axis": "Z",
+        "matches_expected_envelope": scale_case,
+        "physx_apis": {"CollisionAPI": 0, "RigidBodyAPI": 0,
+                       "MassAPI": 0, "ArticulationRootAPI": 0},
+    }
+
+
+def test_acceptance_requires_all_282_meshes_not_just_global_envelope():
+    from scripts.simulation.run_metric_scene_validation import acceptance_checks
+
+    a = _audit_scene_case(scale_case=False)
+    b = _audit_scene_case(scale_case=True)
+    assert acceptance_checks(a, b, [0.001] * 3)["ok"] is True
+
+    b["mesh_instances"] = 1
+    verdict = acceptance_checks(a, b, [0.001] * 3)
+    assert verdict["ok"] is False
+    assert verdict["both_have_expected_mesh_instances"] is False
+
+
+def test_acceptance_rejects_disagreeing_bbox_methods():
+    from scripts.simulation.run_metric_scene_validation import acceptance_checks
+
+    a = _audit_scene_case(scale_case=False)
+    b = _audit_scene_case(scale_case=True, bbox_agree=False)
+    verdict = acceptance_checks(a, b, [0.001] * 3)
+    assert verdict["ok"] is False
+    assert verdict["both_world_bbox_methods_agree"] is False
+
+
+def test_acceptance_checks_reference_stage_units_axis_and_complete_api_keys():
+    from scripts.simulation.run_metric_scene_validation import acceptance_checks
+
+    a = _audit_scene_case(scale_case=False)
+    b = _audit_scene_case(scale_case=True)
+    b["stage_meters_per_unit"] = 0.001
+    assert not acceptance_checks(a, b, [0.001] * 3)["ok"]
+    b["stage_meters_per_unit"] = 1.0
+    b["up_axis"] = "Y"
+    assert not acceptance_checks(a, b, [0.001] * 3)["ok"]
+    b["up_axis"] = "Z"
+    b["physx_apis"].pop("MassAPI")
+    assert not acceptance_checks(a, b, [0.001] * 3)["ok"]
+
+
+def test_acceptance_rejects_reference_scale_error():
+    from scripts.simulation.run_metric_scene_validation import acceptance_checks
+
+    a = _audit_scene_case(scale_case=False)
+    b = _audit_scene_case(scale_case=True)
+    assert not acceptance_checks(a, b, [0.001, 0.001, 0.002])["ok"]

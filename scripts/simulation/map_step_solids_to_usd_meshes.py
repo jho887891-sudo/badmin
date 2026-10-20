@@ -119,8 +119,8 @@ def sandwich(lower_min: Sequence[float], lower_max: Sequence[float],
 
     A violation below (mesh sits outside the vertex box) is counted separately
     from a violation above (mesh leaves the control-point box), because they mean
-    different mistakes: the first says the pair is wrong, the second says the
-    upper bound was computed wrongly.
+    different mistakes. Both can also result from inaccurate bounds,
+    coordinate frames, or candidate mismatches; do not infer cause from them.
     """
     below = []
     above = []
@@ -131,18 +131,14 @@ def sandwich(lower_min: Sequence[float], lower_max: Sequence[float],
         # mesh_max >= lower_max.  A curved surface may bulge outside the vertex
         # box, so only the reverse direction is a violation.
         below.append(
-            max(0.0, (lower_min[axis] - mesh_min[axis]), (lower_max[axis] - mesh_max[axis]))
+            max(0.0, (mesh_min[axis] - lower_min[axis]), (lower_max[axis] - mesh_max[axis]))
         )
         above.append(
             max(0.0, (upper_min[axis] - mesh_min[axis]), (mesh_max[axis] - upper_max[axis]))
         )
-        if below[-1] > tolerance:
-            below[-1] = below[-1]
-        else:
+        if below[-1] <= tolerance:
             below[-1] = 0.0
-        if above[-1] > tolerance:
-            above[-1] = above[-1]
-        else:
+        if above[-1] <= tolerance:
             above[-1] = 0.0
 
     bulge = [
@@ -179,8 +175,38 @@ def pair_cost(lower_min, lower_max, upper_min, upper_max, mesh_min, mesh_max) ->
     return round(total, 6)
 
 
+def _maximum_cardinality_edges(scored: Sequence[tuple]) -> set:
+    """Compute maximum number of geometrically admissible pairs per name key.
+
+    Augmenting paths prevent a greedy first pick from stealing the only
+    compatible mesh of another solid. Costs order preferences but do not
+    establish globally minimum cost or genuine CAD part identity.
+    """
+    adjacency: Dict[int, List[tuple]] = defaultdict(list)
+    for item in scored:
+        if item[6]["ok"]:
+            adjacency[item[2]].append(item)
+    owners: Dict[str, tuple] = {}
+
+    def augment(solid_id: int, seen: set) -> bool:
+        for item in adjacency.get(solid_id, []):
+            path = item[3]
+            if path in seen:
+                continue
+            seen.add(path)
+            previous = owners.get(path)
+            if previous is None or augment(previous[2], seen):
+                owners[path] = item
+                return True
+        return False
+
+    for sid in sorted(adjacency, key=lambda k: (len(adjacency[k]), k)):
+        augment(sid, set())
+    return {(item[2], item[3]) for item in owners.values()}
+
+
 def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
-    """Pair solids with meshes by name key, then by the geometry sandwich."""
+    """Pair same-key STEP/USD elements with maximum admissible cardinality."""
     solid_keys: Dict[str, List[dict]] = defaultdict(list)
     for solid in solids:
         solid_keys[name_key(solid["name"])].append(solid)
@@ -216,11 +242,8 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
         scored.sort(key=lambda item: (item[0], item[1], item[2], item[3]))
 
         group_size = (len(key_solids), len(key_meshes))
-        taken_solids: set = set()
-        taken_meshes: set = set()
+        matching = _maximum_cardinality_edges(scored)
         for _, _, solid_eid, mesh_path, solid, mesh, result in scored:
-            if solid_eid in taken_solids or mesh_path in taken_meshes:
-                continue
             if not result["ok"]:
                 rejected.append(
                     {
@@ -231,6 +254,8 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
                         "detail": result,
                     }
                 )
+                continue
+            if (solid_eid, mesh_path) not in matching:
                 continue
             unique_in_group = group_size == (1, 1)
             named = bool(key) and key != UNNAMED_KEY
@@ -244,13 +269,12 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
                 reasons.append("unique in its name-key group")
             else:
                 reasons.append(
-                    "%d solids / %d meshes share this key; partner chosen by geometry"
+                    "%d solids / %d meshes share this key; maximum-cardinality "
+                    "assignment with heuristic cost preference, not proven identity"
                     % group_size
                 )
             reasons.append("geometry sandwich holds: vertex bbox <= mesh <= closure bbox")
 
-            taken_solids.add(solid_eid)
-            taken_meshes.add(mesh_path)
             pairs.append(
                 {
                     "step_eid": solid_eid,
@@ -296,8 +320,24 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
             if ratio > closest_ratio:
                 closest_ratio = ratio
                 closest_key = name_key(mesh["core"])
+        candidates = mesh_keys.get(key, [])
+        admissible = [
+            mesh for mesh in candidates
+            if sandwich(solid["lower_min"], solid["lower_max"],
+                        solid["upper_min"], solid["upper_max"],
+                        mesh["min"], mesh["max"])["ok"]
+        ]
+        if not candidates:
+            unmatched_reason = "no mesh shares the normalized name key"
+        elif not admissible:
+            unmatched_reason = "no same-key mesh passes corrected geometry sandwich"
+        else:
+            unmatched_reason = "admissible same-key meshes assigned to other solids"
         unmatched_solids.append(
             {
+                "unmatched_reason": unmatched_reason,
+                "same_key_candidates": len(candidates),
+                "admissible_same_key_candidates": len(admissible),
                 "eid": solid["eid"],
                 "name": solid["name"],
                 "name_key": key,
@@ -339,6 +379,8 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
         "unmatched_meshes": unmatched_meshes,
         "rejected_pairs": rejected[:50],
         "rejected_pair_count": len(rejected),
+        "rejected_pairs_sample_limit": 50,
+        "rejected_pairs_truncated": len(rejected) > 50,
         "bijection_proven": (
             len(pairs) == len(solids) == len(meshes)
             and grades.get(GRADE_VERIFIED, 0) == len(pairs)
