@@ -33,6 +33,47 @@ __all__ = ["main"]
 
 SCALE = (0.001, 0.001, 0.001)
 
+_PHYSICS_KEYS = ("CollisionAPI", "RigidBodyAPI", "MassAPI", "ArticulationRootAPI")
+
+
+def acceptance_checks(case_a: dict, case_b: dict, ratio: list,
+                      expect_meshes: int = 282) -> dict:
+    """Pure headless scene gates; complete geometry and metadata required.
+
+    Matches expected envelope and scale AND validates actual instance counts,
+    world-bbox cross-check, stage units, up-axis and the four inspected
+    UsdPhysics APIs. These gates do not certify the absence of other
+    PhysX-specific APIs or dynamic simulation readiness.
+    """
+    cases = (case_a, case_b)
+    checks = {
+        "A_matches_expected": bool(case_a.get("matches_expected_envelope")),
+        "B_matches_expected": bool(case_b.get("matches_expected_envelope")),
+        "B_is_thousandth_of_A": ratio == [0.001, 0.001, 0.001],
+        "both_have_expected_mesh_instances": all(
+            c.get("mesh_instances") == expect_meshes for c in cases
+        ),
+        "both_world_bbox_methods_agree": all(
+            c.get("bbox_methods_agree") is True for c in cases
+        ),
+        "both_opened": all(c.get("opened") is True for c in cases),
+        "both_metre_stage": all(
+            c.get("stage_meters_per_unit") == 1.0 for c in cases
+        ),
+        "both_up_axis_Z": all(c.get("up_axis") == "Z" for c in cases),
+        "both_free_of_four_usd_physics_apis": all(
+            isinstance(c.get("physx_apis"), dict)
+            and all(c["physx_apis"].get(api) == 0 for api in _PHYSICS_KEYS)
+            for c in cases
+        ),
+    }
+    checks["ok"] = (
+        not checks["A_matches_expected"]
+        and all(value for key, value in checks.items()
+                if key not in ("A_matches_expected", "ok"))
+    )
+    return checks
+
 
 def _attempt_screenshot(scene_path: Path, png_path: Path, budget_seconds: float = 45.0):
     started = time.time()
@@ -71,6 +112,7 @@ def main(argv: "Sequence[str] | None" = None) -> int:
     parser.add_argument("--expected-m", type=float, nargs=3, default=[0.580, 0.373, 0.803])
     parser.add_argument("--screenshot", action="store_true", help="best-effort viewport capture")
     parser.add_argument("--prim-sample", type=int, default=5)
+    parser.add_argument("--expect-meshes", type=int, default=282)
 
     from isaaclab.app import AppLauncher
 
@@ -122,32 +164,13 @@ def main(argv: "Sequence[str] | None" = None) -> int:
             "B_scale_0.001": report_b,
         },
         "ratio_B_over_A": ratio,
-        "verdict": {
-            "A_matches_expected": report_a.get("matches_expected_envelope"),
-            "B_matches_expected": report_b.get("matches_expected_envelope"),
-            "B_is_thousandth_of_A": ratio == [0.001, 0.001, 0.001],
-            "both_have_meshes": report_a.get("mesh_instances", 0) > 0
-            and report_b.get("mesh_instances", 0) > 0,
-            "both_free_of_physics_apis": all(
-                value == 0
-                for case in (report_a, report_b)
-                for value in (case.get("physx_apis") or {}).values()
-            ),
-        },
+        "verdict": acceptance_checks(report_a, report_b, ratio, args_cli.expect_meshes),
         "screenshots": screenshots,
         "notes": [
             "unit and composition test only: no collider, mass, joint or arm attachment",
             "the measured envelope is conversion geometry, not a verified chassis dimension",
         ],
     }
-    payload["verdict"]["ok"] = (
-        bool(payload["verdict"]["B_matches_expected"])
-        and not bool(payload["verdict"]["A_matches_expected"])
-        and bool(payload["verdict"]["B_is_thousandth_of_A"])
-        and bool(payload["verdict"]["both_have_meshes"])
-        and bool(payload["verdict"]["both_free_of_physics_apis"])
-    )
-
     write_json(args_cli.report, payload)
     print(json.dumps(payload, ensure_ascii=False, indent=1), flush=True)
     simulation_app.close()
