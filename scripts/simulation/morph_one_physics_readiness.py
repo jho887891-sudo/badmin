@@ -305,14 +305,18 @@ def build_findings(chassis, arm):
     if arm:
         findings.append({
             "question": "C3 single articulation for arm plus chassis",
-            "status": "VERIFIED" if arm["articulation_roots"] else "UNKNOWN",
+            # A pre-existing arm articulation root is a static USD fact; it does NOT
+            # establish that a newly connected chassis belongs to one PhysX
+            # articulation after stepping.
+            "status": "CANDIDATE" if arm["articulation_roots"] else "UNKNOWN",
             "evidence": {
                 "articulation_roots": arm["articulation_roots"],
                 "rigid_bodies": len(arm["rigid_body_paths"]),
                 "joints": arm["physics"].get("joints", 0),
             },
             "statement": (
-                "the arm already carries an ArticulationRootAPI prim and %d joints"
+                "the arm already carries an ArticulationRootAPI prim and %d joints; "
+                "single mobile-chassis articulation is NOT proven without a PhysX step"
                 % arm["physics"].get("joints", 0)
             ),
         })
