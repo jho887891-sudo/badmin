@@ -81,7 +81,11 @@ def _direction_vector(entity: Entity) -> "Tuple[float, float, float] | None":
     scale = max(abs(v) for v in values)
     if scale == 0:
         return None
-    return tuple(round(v / scale, 3) for v in values)  # type: ignore[return-value]
+    # Rounding tiny negative STEP components yields -0.0, which formats as
+    # "-0" and splits identical axis bins in dominant_circle_axes statistics.
+    # Adding +0.0 canonically removes the negative-zero sign without affecting
+    # any nonzero, rounded direction component.
+    return tuple(round(v / scale, 3) + 0.0 for v in values)  # type: ignore[return-value]
 
 
 def _last_float(body: str) -> "float | None":
