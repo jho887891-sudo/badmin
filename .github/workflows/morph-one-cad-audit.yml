@@ -28,6 +28,9 @@ jobs:
           python -m py_compile scripts/simulation/map_step_solids_to_usd_meshes.py
           python -m py_compile scripts/simulation/morph_one_metric_scene.py
           python -m py_compile scripts/simulation/run_metric_scene_validation.py
+          python -m py_compile scripts/simulation/audit_archived_step_usd_mapping.py
       - name: Test matching and metric stage (pxr tests skip outside Isaac)
         run: |
           python -m pytest -q tests/simulation/cad/test_step_to_usd_mapping.py tests/simulation/cad/test_morph_one_metric_scene.py
+      - name: Recompute all 224 archived pair containment results
+        run: python scripts/simulation/audit_archived_step_usd_mapping.py
