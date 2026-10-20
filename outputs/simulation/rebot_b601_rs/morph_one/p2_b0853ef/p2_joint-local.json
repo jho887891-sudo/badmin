@@ -1,0 +1,654 @@
+{
+ "label": "TEST_PROXY P2 initialisation diagnostics",
+ "variant": "joint-local",
+ "physics_dt": 0.008333333333333333,
+ "gravity": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "solver": "TGS + external forces every iteration",
+ "thresholds": {
+  "position_m": 0.001,
+  "rotation_rad": 0.001
+ },
+ "authored_usd": {
+  "usd": "/home/dgut/runs/p2/out/p2_joint-local.usda",
+  "variant": "joint-local",
+  "mount_offset_m": [
+   0.12,
+   -0.05,
+   0.2
+  ]
+ },
+ "body_names_physx": [
+  "base_link",
+  "link1",
+  "Chassis",
+  "link2"
+ ],
+ "joint_names_physx": [
+  "joint1",
+  "joint2"
+ ],
+ "dofs_physx": 2,
+ "authored_poses": {
+  "Chassis": {
+   "found": true,
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "quat_wxyz": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "Arm/base_link": {
+   "found": true,
+   "pos": [
+    0.119999997,
+    -0.050000001,
+    0.200000003
+   ],
+   "quat_wxyz": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "Arm/link1": {
+   "found": true,
+   "pos": [
+    0.165000007,
+    -0.050000001,
+    0.200000003
+   ],
+   "quat_wxyz": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "Arm/link2": {
+   "found": true,
+   "pos": [
+    0.444999993,
+    -0.050000001,
+    0.200000003
+   ],
+   "quat_wxyz": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "authored_joint_anchors": {
+  "found": true,
+  "body0": [
+   "/Sandbox/Chassis"
+  ],
+  "body1": [
+   "/Sandbox/Arm/base_link"
+  ],
+  "localPos0": [
+   0.119999997,
+   -0.050000001,
+   0.200000003
+  ],
+  "localPos1": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "localRot0": "(1, 0, 0, 0)",
+  "localRot1": "(1, 0, 0, 0)"
+ },
+ "spawned_poses": {
+  "Chassis": {
+   "found": true,
+   "pos": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "quat_wxyz": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "Arm/base_link": {
+   "found": true,
+   "pos": [
+    0.119999997,
+    -0.050000001,
+    0.200000003
+   ],
+   "quat_wxyz": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "Arm/link1": {
+   "found": true,
+   "pos": [
+    0.165000007,
+    -0.050000001,
+    0.200000003
+   ],
+   "quat_wxyz": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "Arm/link2": {
+   "found": true,
+   "pos": [
+    0.444999993,
+    -0.050000001,
+    0.200000003
+   ],
+   "quat_wxyz": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "live_joint_anchors": {
+  "found": true,
+  "body0": [
+   "/World/P2/Chassis"
+  ],
+  "body1": [
+   "/World/P2/Arm/base_link"
+  ],
+  "localPos0": [
+   0.119999997,
+   -0.050000001,
+   0.200000003
+  ],
+  "localPos1": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "localRot0": "(1, 0, 0, 0)",
+  "localRot1": "(1, 0, 0, 0)"
+ },
+ "reset0_poses": {
+  "Chassis": {
+   "found": true,
+   "pos": [
+    4.4573e-05,
+    0.000191213,
+    0.037923977
+   ],
+   "quat_wxyz": [
+    0.007430156,
+    -0.000311807,
+    0.00041042,
+    0.999972224
+   ]
+  },
+  "Arm/base_link": {
+   "found": true,
+   "pos": [
+    0.11996226,
+    -0.052677333,
+    0.237234399
+   ],
+   "quat_wxyz": [
+    0.007430156,
+    -0.000311807,
+    0.00041042,
+    0.999972224
+   ]
+  },
+  "Arm/link1": {
+   "found": true,
+   "pos": [
+    0.164962232,
+    -0.052640606,
+    0.237262741
+   ],
+   "quat_wxyz": [
+    0.007430132,
+    -0.000253196,
+    0.000410848,
+    0.999972224
+   ]
+  },
+  "Arm/link2": {
+   "found": true,
+   "pos": [
+    0.444962025,
+    -0.05241159,
+    0.237406239
+   ],
+   "quat_wxyz": [
+    0.007430132,
+    -0.000252447,
+    0.000410846,
+    0.999972284
+   ]
+  }
+ },
+ "root_reset0": {
+  "pos": [
+   0.11996226,
+   -0.052677333,
+   0.237234399
+  ],
+  "quat_wxyz": [
+   0.007430156,
+   -0.000311807,
+   0.00041042,
+   0.999972224
+  ]
+ },
+ "reset1_poses": {
+  "Chassis": {
+   "found": true,
+   "pos": [
+    0.000172708,
+    0.000600949,
+    0.043473817
+   ],
+   "quat_wxyz": [
+    0.022117157,
+    -0.001118554,
+    0.001288923,
+    0.999753833
+   ]
+  },
+  "Arm/base_link": {
+   "found": true,
+   "pos": [
+    0.119867384,
+    -0.057891883,
+    0.24134177
+   ],
+   "quat_wxyz": [
+    0.022117157,
+    -0.001118554,
+    0.001288923,
+    0.999753833
+   ]
+  },
+  "Arm/link1": {
+   "found": true,
+   "pos": [
+    0.164867133,
+    -0.057778135,
+    0.241444975
+   ],
+   "quat_wxyz": [
+    0.022117143,
+    -0.00110676,
+    0.001289176,
+    0.999753952
+   ]
+  },
+  "Arm/link2": {
+   "found": true,
+   "pos": [
+    0.444865406,
+    -0.05707008,
+    0.242080569
+   ],
+   "quat_wxyz": [
+    0.02211714,
+    -0.001106011,
+    0.001289185,
+    0.999753892
+   ]
+  }
+ },
+ "comparisons": {
+  "authored_vs_spawned": {
+   "wxyz": {
+    "convention": "wxyz",
+    "mount_position_error_m": 4e-09,
+    "mount_relative_position_m": [
+     0.119999997,
+     -0.050000001,
+     0.200000003
+    ],
+    "mount_rotation_error_rad": 0.0
+   },
+   "xyzw": {
+    "convention": "xyzw",
+    "mount_position_error_m": 0.412310566,
+    "mount_relative_position_m": [
+     0.119999997,
+     0.050000001,
+     -0.200000003
+    ],
+    "mount_rotation_error_rad": 0.0
+   }
+  },
+  "authored_vs_reset0": {
+   "wxyz": {
+    "convention": "wxyz",
+    "mount_position_error_m": 0.2612336,
+    "mount_relative_position_m": [
+     -0.120815536,
+     0.051243369,
+     0.199192627
+    ],
+    "mount_rotation_error_rad": 0.0
+   },
+   "xyzw": {
+    "convention": "xyzw",
+    "mount_position_error_m": 4.4e-08,
+    "mount_relative_position_m": [
+     0.119999978,
+     -0.049999995,
+     0.199999962
+    ],
+    "mount_rotation_error_rad": 0.0
+   }
+  },
+  "authored_vs_reset1": {
+   "wxyz": {
+    "convention": "wxyz",
+    "mount_position_error_m": 0.263839872,
+    "mount_relative_position_m": [
+     -0.122617684,
+     0.053641915,
+     0.197452278
+    ],
+    "mount_rotation_error_rad": 0.0
+   },
+   "xyzw": {
+    "convention": "xyzw",
+    "mount_position_error_m": 9.7e-08,
+    "mount_relative_position_m": [
+     0.119999949,
+     -0.049999983,
+     0.199999919
+    ],
+    "mount_rotation_error_rad": 0.0
+   }
+  }
+ },
+ "chassis_checks": {
+  "spawned": {
+   "wxyz": {
+    "position_delta_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "position_norm_m": 0.0,
+    "rotation_angle_rad": 0.0
+   },
+   "xyzw": {
+    "position_delta_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "position_norm_m": 0.0,
+    "rotation_angle_rad": 0.0
+   }
+  },
+  "reset0": {
+   "wxyz": {
+    "position_delta_m": [
+     4.4573e-05,
+     0.000191213,
+     0.037923977
+    ],
+    "position_norm_m": 0.037924485,
+    "rotation_angle_rad": 3.126732204
+   },
+   "xyzw": {
+    "position_delta_m": [
+     4.4573e-05,
+     0.000191213,
+     0.037923977
+    ],
+    "position_norm_m": 0.037924485,
+    "rotation_angle_rad": 3.126732204
+   }
+  },
+  "reset1": {
+   "wxyz": {
+    "position_delta_m": [
+     0.000172708,
+     0.000600949,
+     0.043473817
+    ],
+    "position_norm_m": 0.043478313,
+    "rotation_angle_rad": 3.097354728
+   },
+   "xyzw": {
+    "position_delta_m": [
+     0.000172708,
+     0.000600949,
+     0.043473817
+    ],
+    "position_norm_m": 0.043478313,
+    "rotation_angle_rad": 3.097354728
+   }
+  }
+ },
+ "settle_drift_m": 0.369020227,
+ "settle_mount_residual": {
+  "wxyz": {
+   "convention": "wxyz",
+   "mount_position_error_m": 0.436599113,
+   "mount_relative_position_m": [
+    -0.165852572,
+    -0.119926886,
+    -0.122517168
+   ],
+   "mount_rotation_error_rad": 2.1e-08
+  },
+  "xyzw": {
+   "convention": "xyzw",
+   "mount_position_error_m": 3.2e-08,
+   "mount_relative_position_m": [
+    0.119999976,
+    -0.050000014,
+    0.199999985
+   ],
+   "mount_rotation_error_rad": 0.0
+  }
+ },
+ "non_finite_total": 0,
+ "self_consistent_convention": "xyzw",
+ "gates": {
+  "t0_mount_position_within_tol": true,
+  "t0_mount_rotation_within_tol": true,
+  "settle_drift_within_tol": false,
+  "no_non_finite": true
+ },
+ "gate_result": "FAIL",
+ "settle_samples": [
+  {
+   "step": 2,
+   "chassis_pos": [
+    0.000304367,
+    0.001007054,
+    0.049045213
+   ],
+   "mount_wxyz": {
+    "convention": "wxyz",
+    "mount_position_error_m": 0.266650234,
+    "mount_relative_position_m": [
+     -0.124661783,
+     0.055938381,
+     0.195525773
+    ],
+    "mount_rotation_error_rad": 0.0
+   },
+   "mount_xyzw": {
+    "convention": "xyzw",
+    "mount_position_error_m": 2e-08,
+    "mount_relative_position_m": [
+     0.119999988,
+     -0.049999994,
+     0.199999985
+    ],
+    "mount_rotation_error_rad": 0.0
+   }
+  },
+  {
+   "step": 12,
+   "chassis_pos": [
+    0.001742095,
+    0.004477147,
+    0.106145456
+   ],
+   "mount_wxyz": {
+    "convention": "wxyz",
+    "mount_position_error_m": 0.302538995,
+    "mount_relative_position_m": [
+     -0.155838751,
+     0.069697375,
+     0.16660291
+    ],
+    "mount_rotation_error_rad": 0.0
+   },
+   "mount_xyzw": {
+    "convention": "xyzw",
+    "mount_position_error_m": 6.4e-08,
+    "mount_relative_position_m": [
+     0.11999997,
+     -0.049999995,
+     0.199999944
+    ],
+    "mount_rotation_error_rad": 0.0
+   }
+  },
+  {
+   "step": 22,
+   "chassis_pos": [
+    0.003344934,
+    0.006427864,
+    0.165468737
+   ],
+   "mount_wxyz": {
+    "convention": "wxyz",
+    "mount_position_error_m": 0.343839899,
+    "mount_relative_position_m": [
+     -0.196267049,
+     0.059830792,
+     0.121653164
+    ],
+    "mount_rotation_error_rad": 0.0
+   },
+   "mount_xyzw": {
+    "convention": "xyzw",
+    "mount_position_error_m": 6.3e-08,
+    "mount_relative_position_m": [
+     0.119999967,
+     -0.049999996,
+     0.199999947
+    ],
+    "mount_rotation_error_rad": 0.0
+   }
+  },
+  {
+   "step": 32,
+   "chassis_pos": [
+    0.005015664,
+    0.006356668,
+    0.226463825
+   ],
+   "mount_wxyz": {
+    "convention": "wxyz",
+    "mount_position_error_m": 0.381369462,
+    "mount_relative_position_m": [
+     -0.228459216,
+     0.02447673,
+     0.064088051
+    ],
+    "mount_rotation_error_rad": 0.0
+   },
+   "mount_xyzw": {
+    "convention": "xyzw",
+    "mount_position_error_m": 2.5e-08,
+    "mount_relative_position_m": [
+     0.120000012,
+     -0.049999979,
+     0.200000003
+    ],
+    "mount_rotation_error_rad": 0.0
+   }
+  },
+  {
+   "step": 42,
+   "chassis_pos": [
+    0.006644007,
+    0.003967635,
+    0.288482338
+   ],
+   "mount_wxyz": {
+    "convention": "wxyz",
+    "mount_position_error_m": 0.4102132,
+    "mount_relative_position_m": [
+     -0.236879202,
+     -0.028054756,
+     -0.001073396
+    ],
+    "mount_rotation_error_rad": 0.0
+   },
+   "mount_xyzw": {
+    "convention": "xyzw",
+    "mount_position_error_m": 5.1e-08,
+    "mount_relative_position_m": [
+     0.119999963,
+     -0.050000006,
+     0.199999965
+    ],
+    "mount_rotation_error_rad": 0.0
+   }
+  },
+  {
+   "step": 52,
+   "chassis_pos": [
+    0.008119877,
+    -0.00082285,
+    0.35085094
+   ],
+   "mount_wxyz": {
+    "convention": "wxyz",
+    "mount_position_error_m": 0.428631318,
+    "mount_relative_position_m": [
+     -0.213344919,
+     -0.08265522,
+     -0.067468893
+    ],
+    "mount_rotation_error_rad": 2.1e-08
+   },
+   "mount_xyzw": {
+    "convention": "xyzw",
+    "mount_position_error_m": 1.9e-08,
+    "mount_relative_position_m": [
+     0.119999988,
+     -0.049999992,
+     0.199999987
+    ],
+    "mount_rotation_error_rad": 0.0
+   }
+  }
+ ]
+}

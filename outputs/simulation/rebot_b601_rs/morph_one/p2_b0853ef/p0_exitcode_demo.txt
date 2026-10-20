@@ -1,0 +1,5 @@
+some log
+masked_exit=0
+pipestatus0=1
+redirect_exit=1
+redirect_exit_ok=0
