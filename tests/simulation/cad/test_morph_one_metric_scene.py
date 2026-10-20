@@ -56,14 +56,34 @@ def test_ratio_between_reports_the_scale_factor():
 def test_evaluate_marks_a_good_measurement_as_passing():
     report = {
         "opened": True,
+        "stage_meters_per_unit": 1.0,
+        "up_axis": "Z",
         "bbox_methods_agree": True,
         "mesh_instances": 282,
-        "physx_apis": {"CollisionAPI": 0, "RigidBodyAPI": 0, "MassAPI": 0},
+        "physx_apis": {
+            "CollisionAPI": 0, "RigidBodyAPI": 0,
+            "MassAPI": 0, "ArticulationRootAPI": 0,
+        },
         "world_bbox_from_points_meters": [0.580, 0.373, 0.803],
     }
     result = evaluate(report, DEFAULT_ENVELOPE_M)
     assert result["matches_expected_envelope"] is True
     assert all(result["checks"].values())
+
+
+def test_evaluate_rejects_missing_metric_and_physics_audit():
+    # A plausible bbox alone is not an acceptance certificate.
+    report = {
+        "opened": True,
+        "bbox_methods_agree": True,
+        "mesh_instances": 282,
+        "physx_apis": {},
+        "world_bbox_from_points_meters": [0.580, 0.373, 0.803],
+    }
+    checks = evaluate(report, DEFAULT_ENVELOPE_M)["checks"]
+    assert not checks["stage_in_metres"]
+    assert not checks["z_up"]
+    assert not checks["no_physics_apis"]
 
 
 def test_evaluate_rejects_a_scene_that_kept_physics_apis():
