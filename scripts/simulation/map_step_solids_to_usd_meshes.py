@@ -191,6 +191,7 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
     all_keys = sorted(set(solid_keys) | set(mesh_keys))
     pairs: List[dict] = []
     rejected: List[dict] = []
+    rejected_count = 0
 
     for key in all_keys:
         key_solids = solid_keys.get(key, [])
@@ -226,8 +227,10 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
             if result["ok"]:
                 feasible[eid].append((cost, mesh_path))
                 scored_by_pair[(eid, mesh_path)] = record
-            elif len(rejected) < 50:
-                rejected.append({
+            else:
+                rejected_count += 1
+                if len(rejected) < 50:
+                    rejected.append({
                     "step_eid": eid,
                     "step_name": solid["name"],
                     "usd_path": mesh_path,
@@ -375,7 +378,7 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
         "unmatched_solids": unmatched_solids,
         "unmatched_meshes": unmatched_meshes,
         "rejected_pairs": rejected[:50],
-        "rejected_pair_count": len(rejected),
+        "rejected_pair_count": rejected_count,
         "pairing_algorithm": "deterministic maximum-cardinality augmenting-path (not min-cost)",
         # This heuristic never establishes a source-ID-level bijection,
         # even in the degenerate case of one solid and one similarly named mesh.
