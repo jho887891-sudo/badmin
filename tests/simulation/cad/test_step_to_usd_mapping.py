@@ -182,3 +182,35 @@ def test_identical_unique_names_do_not_prove_bijection():
     assert result["bijection_proven"] is False
 
 
+
+
+def test_matching_maximizes_pairs_instead_of_greedy_lowest_cost(monkeypatch):
+    # S1 has two valid partners; S2 can only use M1. Greedy global
+    # cost picks S1-M1 and strands S2; an augmenting path recovers both.
+    import scripts.simulation.map_step_solids_to_usd_meshes as mapper
+
+    def fake_sandwich(lower_min, lower_max, upper_min, upper_max, mesh_min, mesh_max):
+        eid = int(lower_min[0])
+        mid = int(mesh_min[0])
+        valid = (eid, mid) in {(1, 1), (1, 2), (2, 1)}
+        return {"ok": valid, "exceeds_vertex_bbox_mm": [0, 0, 0],
+                "below_lower_bound_mm": [0, 0, 0],
+                "above_upper_bound_mm": [0, 0, 0], "cost": 0 if valid else 100}
+
+    def fake_cost(lower_min, lower_max, upper_min, upper_max, mesh_min, mesh_max):
+        return {(1, 1): 0.0, (1, 2): 2.0, (2, 1): 1.0, (2, 2): 100.0}[
+            (int(lower_min[0]), int(mesh_min[0]))]
+
+    monkeypatch.setattr(mapper, "sandwich", fake_sandwich)
+    monkeypatch.setattr(mapper, "pair_cost", fake_cost)
+    solids = [solid(1, "DUP", [1, 0, 0], [10, 10, 10]),
+              solid(2, "DUP", [2, 0, 0], [10, 10, 10])]
+    meshes = [mesh_row("/m1", "DUP", [1, 0, 0], [10, 10, 10]),
+              mesh_row("/m2", "DUP", [2, 0, 0], [10, 10, 10])]
+    result = mapper.match_parts(solids, meshes)
+    assert len(result["pairs"]) == 2
+    assert {p["step_eid"]: p["usd_path"] for p in result["pairs"]} == {
+        1: "/m2", 2: "/m1"}
+    assert result["bijection_proven"] is False
+
+
