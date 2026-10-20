@@ -221,22 +221,21 @@ def match_parts(solids: Sequence[dict], meshes: Sequence[dict]) -> dict:
         # Use deterministic augmenting paths to maximize valid pair *count*.
         # This is NOT a globally minimum-cost matching, nor proof of identity.
         feasible = defaultdict(list)
-        scored_by_pair = {}
+
         for record in scored:
             _, cost, eid, mesh_path, solid, mesh, result = record
             if result["ok"]:
                 feasible[eid].append((cost, mesh_path))
-                scored_by_pair[(eid, mesh_path)] = record
             else:
                 rejected_count += 1
                 if len(rejected) < 50:
                     rejected.append({
-                    "step_eid": eid,
-                    "step_name": solid["name"],
-                    "usd_path": mesh_path,
-                    "reason": "geometry sandwich fails",
-                    "detail": result,
-                })
+                        "step_eid": eid,
+                        "step_name": solid["name"],
+                        "usd_path": mesh_path,
+                        "reason": "geometry sandwich fails",
+                        "detail": result,
+                    })
         for options in feasible.values():
             options.sort(key=lambda pair: (pair[0], pair[1]))
 
