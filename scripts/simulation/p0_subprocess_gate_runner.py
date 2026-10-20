@@ -91,12 +91,10 @@ def main(argv: list[str] | None = None) -> int:
     # Fail instead of deleting or overwriting any previous experiment/evidence.
     output_dir = args.output_dir.resolve()
     report = args.report.resolve()
-    if report.exists() or any((output_dir / file).exists()
-                              for file in ("child.stdout.log", "child.stderr.log",
-                                           "gate_runner_summary.json")):
+    if report.exists() or output_dir.exists():
         parser.error("Existing evidence detected; select a fresh report/output directory")
 
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=False)
     report.parent.mkdir(parents=True, exist_ok=True)
     stdout_path = output_dir / "child.stdout.log"
     stderr_path = output_dir / "child.stderr.log"
@@ -106,8 +104,8 @@ def main(argv: list[str] | None = None) -> int:
     child_exit = None
     timed_out = False
     spawn_error = None
-    with stdout_path.open("w", encoding="utf-8") as out, \
-         stderr_path.open("w", encoding="utf-8") as err:
+    with stdout_path.open("x", encoding="utf-8") as out, \
+         stderr_path.open("x", encoding="utf-8") as err:
         try:
             proc = subprocess.Popen(command, stdout=out, stderr=err,
                                     start_new_session=(os.name == "posix"))
@@ -136,8 +134,8 @@ def main(argv: list[str] | None = None) -> int:
         "started_utc": started,
         "finished_utc": datetime.now(timezone.utc).isoformat(),
     }
-    summary_path.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n",
-                            encoding="utf-8")
+    with summary_path.open("x", encoding="utf-8") as handle:
+        handle.write(json.dumps(summary, indent=2, ensure_ascii=False) + "\n")
     print(json.dumps(summary, indent=2, ensure_ascii=False), flush=True)
     return outer_exit
 
