@@ -55,6 +55,23 @@ class TelemetryContractTest(unittest.TestCase):
         self.assertTrue(all(result["gates"].values()))
         self.assertEqual(result["metrics"]["step_count"], 60)
 
+    def test_c0_payload_name_in_manifest_is_accepted_without_alias(self):
+        m, f = fixture()
+        m["authored_world"]["Payload"] = m["authored_world"].pop("Arm/base_link")
+        m["expected_mount"]["base_body_name"] = "Payload"
+        for row in f:
+            row["bodies"]["Payload"] = row["bodies"].pop("Arm/base_link")
+            row["bodies"]["Payload"]["source_prim_path"] = "/World/C0/Payload"
+        result = audit(m, f)
+        self.assertEqual(result["gate_result"], "PASS")
+        self.assertAlmostEqual(result["metrics"]["t0_mount_position_error_m"], 0)
+
+    def test_c0_bad_payload_label_fails_not_silently_alias(self):
+        m, f = fixture()
+        m["expected_mount"]["base_body_name"] = "Payload"
+        with self.assertRaises(ValueError):
+            audit(m, f)
+
     def test_world_t0_shift_fails_while_local_mount_passes(self):
         m, f = fixture()
         for rec in f:
