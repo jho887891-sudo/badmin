@@ -1,0 +1,93 @@
+#usda 1.0
+(
+    defaultPrim = "RC"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "RC" (
+    customData = {
+        string label = "TEST_PROXY chassis collision from measured Morph One geometry"
+    }
+)
+{
+    def Xform "Chassis" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float physics:mass = 20
+        double3 xformOp:translate = (0, -0.002400000113993883, 0.2596000134944916)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "geometry" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        )
+        {
+            double size = 1
+            float3 xformOp:scale = (0.396, 0.8, 0.132)
+            uniform token[] xformOpOrder = ["xformOp:scale"]
+        }
+
+        def Xform "wheel1"
+        {
+            double3 xformOp:translate = (0.2500019967556, -0.296999990940094, 0.0560000017285347)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "geometry" (
+                prepend apiSchemas = ["PhysicsCollisionAPI"]
+            )
+            {
+                double size = 1
+                float3 xformOp:scale = (0.0486, 0.1578, 0.18)
+                uniform token[] xformOpOrder = ["xformOp:scale"]
+            }
+        }
+
+        def Xform "wheel2"
+        {
+            double3 xformOp:translate = (0.2500019967556, 0.296999990940094, 0.0560000017285347)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "geometry" (
+                prepend apiSchemas = ["PhysicsCollisionAPI"]
+            )
+            {
+                double size = 1
+                float3 xformOp:scale = (0.0486, 0.1578, 0.18)
+                uniform token[] xformOpOrder = ["xformOp:scale"]
+            }
+        }
+
+        def Xform "wheel3"
+        {
+            double3 xformOp:translate = (-0.2500019967556, -0.296999990940094, 0.0560000017285347)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "geometry" (
+                prepend apiSchemas = ["PhysicsCollisionAPI"]
+            )
+            {
+                double size = 1
+                float3 xformOp:scale = (0.0486, 0.1578, 0.18)
+                uniform token[] xformOpOrder = ["xformOp:scale"]
+            }
+        }
+
+        def Xform "wheel4"
+        {
+            double3 xformOp:translate = (-0.2500019967556, 0.296999990940094, 0.0560000017285347)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "geometry" (
+                prepend apiSchemas = ["PhysicsCollisionAPI"]
+            )
+            {
+                double size = 1
+                float3 xformOp:scale = (0.0486, 0.1578, 0.18)
+                uniform token[] xformOpOrder = ["xformOp:scale"]
+            }
+        }
+    }
+}
+
