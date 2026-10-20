@@ -148,3 +148,69 @@ def test_geometry_rejection_is_reported_not_silently_dropped():
     assert result["pairs"] == []
     assert result["rejected_pair_count"] >= 1
     assert result["rejected_pairs"][0]["step_eid"] == 4
+
+
+# ---------------------------------------------------------- audit regressions
+
+
+def test_mesh_extending_below_vertex_min_is_legal_inside_upper_envelope():
+    # The STEP vertex is at x=0, but the tessellated surface can extend to -5.
+    # Original sign bug incorrectly rejected this legal enlargement.
+    result = sandwich(
+        [0, 0, 0], [10, 10, 10], [-10, 0, 0], [20, 10, 10],
+        [-5, 0, 0], [10, 10, 10],
+    )
+    assert result["ok"] is True, result
+    assert result["below_lower_bound_mm"] == [0.0, 0.0, 0.0]
+
+
+def test_mesh_not_reaching_vertex_min_must_be_rejected_even_if_max_is_correct():
+    # The old code accepted this: its min-side subtraction was reversed.
+    result = sandwich(
+        [0, 0, 0], [10, 10, 10], [-10, 0, 0], [20, 10, 10],
+        [5, 0, 0], [10, 10, 10],
+    )
+    assert result["ok"] is False, result
+    assert result["below_lower_bound_mm"][0] == 5.0
+
+
+def test_boundary_tolerance_is_absolute_2p5mm_for_small_parts():
+    low, high = [0, 0, 0], [10, 10, 10]
+    upper_low, upper_high = [-10, 0, 0], [20, 10, 10]
+    good = sandwich(low, high, upper_low, upper_high, [2.49, 0, 0], high)
+    bad = sandwich(low, high, upper_low, upper_high, [2.51, 0, 0], high)
+    assert good["ok"] is True
+    assert bad["ok"] is False
+
+
+def test_ambiguous_group_maximum_matching_prevents_greedy_stealing_unique_mesh():
+    # Flexible solid can match X or Y. Restrictive solid only matches X.
+    # Greedy cheapest-first would claim flexible->X and leave Y unmatched;
+    # augmenting paths must assign restrictive->X, flexible->Y.
+    solids = [
+        solid(1, "DUP", [0, 0, 0], [10, 10, 10], [-10, 0, 0], [20, 10, 10]),
+        solid(2, "DUP", [0, 0, 0], [10, 10, 10], [0, 0, 0], [10, 10, 10]),
+    ]
+    meshes = [
+        mesh_row("/X", "DUP", [0, 0, 0], [10, 10, 10]),
+        mesh_row("/Y", "DUP", [-5, 0, 0], [10, 10, 10]),
+    ]
+    result = match_parts(solids, meshes)
+    assert len(result["pairs"]) == 2, result
+    by_eid = {p["step_eid"]: p for p in result["pairs"]}
+    assert by_eid[1]["usd_path"] == "/Y"
+    assert by_eid[2]["usd_path"] == "/X"
+    assert result["grade_counts"] == {GRADE_CANDIDATE: 2}
+    assert result["bijection_proven"] is False
+
+
+def test_matching_does_not_claim_unique_identity_for_duplicated_names():
+    a = solid(1, "DUP", [0, 0, 0], [10, 10, 10])
+    b = solid(2, "DUP", [0, 0, 0], [10, 10, 10])
+    result = match_parts([a, b], [
+        mesh_row("/X", "DUP", [0, 0, 0], [10, 10, 10]),
+        mesh_row("/Y", "DUP", [0, 0, 0], [10, 10, 10]),
+    ])
+    assert len(result["pairs"]) == 2
+    assert all(p["grade"] == GRADE_CANDIDATE for p in result["pairs"])
+    assert result["bijection_proven"] is False
