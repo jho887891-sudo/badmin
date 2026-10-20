@@ -51,9 +51,12 @@ __all__ = [
 ]
 
 _FLOAT_RE = re.compile(r"[-+]?(?:[0-9]+\.?[0-9]*|\.[0-9]+)(?:[EeDd][-+]?[0-9]+)?")
+# Reuse the STEP numeric token (including E/D scientific notation) for ALL
+# three vector components.  Otherwise SolidWorks DIRECTION values with a
+# near-zero component such as -4.789422297650225240E-14 silently disappear.
 _TRIPLE_RE = re.compile(
-    r"\(\s*([-+]?(?:[0-9]+\.?[0-9]*|\.[0-9]+))\s*,\s*([-+]?(?:[0-9]+\.?[0-9]*|\.[0-9]+))"
-    r"\s*,\s*([-+]?(?:[0-9]+\.?[0-9]*|\.[0-9]+))\s*\)"
+    r"\(\s*(" + _FLOAT_RE.pattern + r")\s*,\s*("
+    + _FLOAT_RE.pattern + r")\s*,\s*(" + _FLOAT_RE.pattern + r")\s*\)"
 )
 
 SHAPE_DISC = "disc_like"
