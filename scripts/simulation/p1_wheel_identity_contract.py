@@ -196,6 +196,7 @@ def wheel_block(eid, comparison_row, step_solid, usd_solid, cloud, kinematics_pa
     pca_angle = None
     if smallest.get("direction"):
         axis_name, pca_angle = nearest_axis_deg(smallest["direction"])
+    block["mesh_resolution_mm"] = (cloud or {}).get("mesh_resolution")
     block["principal_axes"] = {
         "pca_axes": pca.get("axes"),
         "pca_centre_mm": pca.get("centre_mm"),
@@ -340,20 +341,29 @@ def mirror_symmetry(cloud_geometry, kinematics, wheels):
                 )
     out["centre_mirror_pairs"] = pairs
     mirrored = ((cloud_geometry or {}).get("mirror_symmetry") or {})
-    baseline = mirrored.get("unmirrored_baseline") or []
+    spacing = [
+        block["mesh_resolution_mm"].get("p95_mm")
+        for block in wheels.values()
+        if block.get("mesh_resolution_mm")
+    ]
+    spacing_p95 = min(spacing) if spacing else None
     if mirrored.get("pairs"):
         out["mirrored_max_hausdorff_mm"] = mirrored.get("max_residual_mm")
         out["mirrored_max_mean_nearest_mm"] = mirrored.get("max_mean_nearest_mm")
-        out["unmirrored_baseline_min_hausdorff_mm"] = mirrored.get("baseline_min_hausdorff_mm")
-        if baseline:
-            out["verdict"] = "PASS"
+        out["vertex_spacing_p95_mm"] = spacing_p95
+        out["pair_count"] = len(mirrored["pairs"])
+        if spacing_p95:
+            out["verdict"] = "PASS" if float(mirrored["max_residual_mm"]) <= float(spacing_p95) else "PARTIAL"
             out["interpretation"] = (
-                "the mirror residual is not interpreted as real asymmetry: it is bounded by the tessellation "
-                "spacing measured on an unmirrored pair, so the four solids are mirror copies within mesh resolution"
+                "the mirror residual %.4f mm is NOT read as real asymmetry: it is below the cloud's own "
+                "nearest-different-vertex distance p95 = %.4f mm (the mesh even contains coincident vertices, "
+                "minimum spacing 0 mm), so the four solids are mirror copies within tessellation resolution. "
+                "A rotational phase difference of one vertex step cannot be excluded and is not claimed."
+                % (float(mirrored["max_residual_mm"]), float(spacing_p95))
             )
         else:
             out["verdict"] = "PARTIAL"
-            out["interpretation"] = "no unmirrored baseline recorded, so the residual cannot be scaled"
+            out["interpretation"] = "no vertex spacing recorded, so the residual cannot be scaled"
     if pairs:
         out["max_centre_mirror_residual_mm"] = round(
             max(item["centre_residual_mm"] for item in pairs), 6

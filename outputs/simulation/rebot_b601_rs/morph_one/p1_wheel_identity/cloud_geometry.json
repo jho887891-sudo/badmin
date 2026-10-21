@@ -151,6 +151,12 @@
      "method": "covariance eigenvector with the smallest eigenvalue"
     }
    },
+   "mesh_resolution": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
    "axis_search": {
     "method": "minimum projected extent over 4001 Fibonacci directions + 3 local refinements",
     "min_extent_mm": 49.2491,
@@ -525,6 +531,12 @@
      "angle_to_nearest_cad_axis_deg": 0.004288,
      "method": "covariance eigenvector with the smallest eigenvalue"
     }
+   },
+   "mesh_resolution": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
    },
    "axis_search": {
     "method": "minimum projected extent over 4001 Fibonacci directions + 3 local refinements",
@@ -901,6 +913,12 @@
      "method": "covariance eigenvector with the smallest eigenvalue"
     }
    },
+   "mesh_resolution": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
    "axis_search": {
     "method": "minimum projected extent over 4001 Fibonacci directions + 3 local refinements",
     "min_extent_mm": 49.2479,
@@ -1275,6 +1293,12 @@
      "angle_to_nearest_cad_axis_deg": 0.004288,
      "method": "covariance eigenvector with the smallest eigenvalue"
     }
+   },
+   "mesh_resolution": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
    },
    "axis_search": {
     "method": "minimum projected extent over 4001 Fibonacci directions + 3 local refinements",

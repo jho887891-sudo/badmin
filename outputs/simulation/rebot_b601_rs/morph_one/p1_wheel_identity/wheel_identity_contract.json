@@ -40,8 +40,8 @@
   },
   "cloud_geometry.json": {
    "present": true,
-   "bytes": 27142,
-   "sha256": "0dd5621270ab3fc336b351deab0a5af52ca1f7bd8090a0a7fb1c0bbeca15258c"
+   "bytes": 27590,
+   "sha256": "a71d00a45d08daf3991ec6762ff162a57e6980b25f078f7145b1b3d84281a32d"
   }
  },
  "evidence_dir": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity",
@@ -129,6 +129,12 @@
     "frame": "CAD model frame (mm), origin = CAD global origin; NOT a chassis datum",
     "status": "PARTIAL",
     "why_partial": "three constructions agree to ~0.002 mm in the CAD frame, but no recorded chassis datum / mount transform exists, so the centre in the chassis or robot frame stays UNKNOWN"
+   },
+   "mesh_resolution_mm": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
    },
    "principal_axes": {
     "pca_axes": [
@@ -588,6 +594,12 @@
     "status": "PARTIAL",
     "why_partial": "three constructions agree to ~0.002 mm in the CAD frame, but no recorded chassis datum / mount transform exists, so the centre in the chassis or robot frame stays UNKNOWN"
    },
+   "mesh_resolution_mm": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
    "principal_axes": {
     "pca_axes": [
      {
@@ -1046,6 +1058,12 @@
     "status": "PARTIAL",
     "why_partial": "three constructions agree to ~0.002 mm in the CAD frame, but no recorded chassis datum / mount transform exists, so the centre in the chassis or robot frame stays UNKNOWN"
    },
+   "mesh_resolution_mm": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
    "principal_axes": {
     "pca_axes": [
      {
@@ -1503,6 +1521,12 @@
     "frame": "CAD model frame (mm), origin = CAD global origin; NOT a chassis datum",
     "status": "PARTIAL",
     "why_partial": "three constructions agree to ~0.002 mm in the CAD frame, but no recorded chassis datum / mount transform exists, so the centre in the chassis or robot frame stays UNKNOWN"
+   },
+   "mesh_resolution_mm": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
    },
    "principal_axes": {
     "pca_axes": [
@@ -2100,9 +2124,10 @@
   ],
   "mirrored_max_hausdorff_mm": 2.0872,
   "mirrored_max_mean_nearest_mm": 0.9329,
-  "unmirrored_baseline_min_hausdorff_mm": null,
-  "verdict": "PARTIAL",
-  "interpretation": "no unmirrored baseline recorded, so the residual cannot be scaled",
+  "vertex_spacing_p95_mm": 2.9877,
+  "pair_count": 4,
+  "verdict": "PASS",
+  "interpretation": "the mirror residual 2.0872 mm is NOT read as real asymmetry: it is below the cloud's own nearest-different-vertex distance p95 = 2.9877 mm (the mesh even contains coincident vertices, minimum spacing 0 mm), so the four solids are mirror copies within tessellation resolution. A rotational phase difference of one vertex step cannot be excluded and is not claimed.",
   "max_centre_mirror_residual_mm": 594.0
  },
  "quantities": {

@@ -189,6 +189,29 @@ def nearest_cad_axis_deg(vector):
     return best[0], best[1]
 
 
+def self_spacing_mm(points, chunk=512):
+    """Nearest-neighbour distance to a DIFFERENT vertex, i.e. the mesh resolution.
+
+    Any mirror residual smaller than this is not evidence of asymmetry.
+    """
+    worst = 0.0
+    nearest_all = np.empty(points.shape[0], dtype=float)
+    for start in range(0, points.shape[0], chunk):
+        block = points[start : start + chunk]
+        distances = np.linalg.norm(block[:, None, :] - points[None, :, :], axis=2)
+        rows = np.arange(block.shape[0])
+        distances[rows, start + rows] = np.inf
+        values = distances.min(axis=1)
+        nearest_all[start : start + chunk] = values
+        worst = max(worst, float(values.max()))
+    return {
+        "min_mm": round(float(nearest_all.min()), 4),
+        "median_mm": round(float(np.median(nearest_all)), 4),
+        "p95_mm": round(float(np.percentile(nearest_all, 95)), 4),
+        "max_mm": round(worst, 4),
+    }
+
+
 def hausdorff_mm(source, target, chunk=256):
     """Symmetric nearest-neighbour distance between two point sets (mm).
 
@@ -242,6 +265,7 @@ def analyse(points_mm, axis=None, centre=None):
         "method": "covariance eigenvector with the smallest eigenvalue",
     }
     result["principal_axes"] = pca
+    result["mesh_resolution"] = self_spacing_mm(points)
 
     if axis is None:
         axis, extent, _, grid_extents = min_extent_axis(points)
