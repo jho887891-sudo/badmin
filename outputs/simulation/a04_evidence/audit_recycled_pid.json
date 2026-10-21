@@ -1,0 +1,45 @@
+{
+  "checked_at": "2026-10-21T18:28:49.682184+00:00",
+  "host": "abc123456",
+  "kills_performed": 0,
+  "marker": "isaac",
+  "note": "PID 66476 died with the crashed holder and was REUSED by the OS; the audit still reported SURVIVORS (fail-closed). Kept as PID-recycling evidence.",
+  "os": "nt",
+  "pid_count": 1,
+  "pids": [
+    {
+      "alive": true,
+      "classification": "SURVIVOR_UNVERIFIABLE",
+      "cmdline": null,
+      "cmdline_probe": "wmic process where processid=66476 get commandline /value",
+      "liveness_probe": "tasklist /FI \"PID eq 66476\" /FO CSV /NH",
+      "marker_found": null,
+      "pid": 66476,
+      "records": [
+        {
+          "path": "descendant_kill.child_pid",
+          "source": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_clean\\gate_runner_summary.json"
+        },
+        {
+          "path": "descendant_kill.killed_pids",
+          "source": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_clean\\gate_runner_summary.json"
+        }
+      ]
+    }
+  ],
+  "run_dir": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_clean",
+  "schema_version": 1,
+  "sources": [
+    "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_clean\\gate_runner_summary.json"
+  ],
+  "survivor_count": 1,
+  "survivors": [
+    {
+      "classification": "SURVIVOR_UNVERIFIABLE",
+      "liveness_probe": "tasklist /FI \"PID eq 66476\" /FO CSV /NH",
+      "pid": 66476
+    }
+  ],
+  "tool": "kit_descendant_audit",
+  "verdict": "SURVIVORS"
+}

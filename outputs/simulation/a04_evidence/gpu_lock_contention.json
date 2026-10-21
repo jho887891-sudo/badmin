@@ -1,0 +1,191 @@
+{
+  "exit_codes": {
+    "acquired": 0,
+    "error": 1,
+    "refused_live_holder": 2,
+    "release_not_owner": 3
+  },
+  "host": "abc123456",
+  "python": "3.11.9",
+  "steps": [
+    {
+      "holder_pid": 66108,
+      "lock_exists": true,
+      "lock_record": {
+        "acquired_at": "2026-10-21T18:28:27.922044+00:00",
+        "expected_marker": "isaac",
+        "heartbeat_at": "2026-10-21T18:28:27.922044+00:00",
+        "heartbeat_timeout_s": 30.0,
+        "history": [],
+        "host": "abc123456",
+        "pid": 65808,
+        "pid_start_time": null,
+        "run_id": "A04-HOLDER",
+        "schema_version": 1,
+        "token": "eaa530618c9444cfb35e516d08ab27a6"
+      },
+      "step": "1-holder-acquires"
+    },
+    {
+      "argv": [
+        "python",
+        "tools/simulation/gpu_lock.py",
+        "--lock-path",
+        "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\isaac_gpu0.lock",
+        "--run-id",
+        "A04-CONTENDER",
+        "--marker",
+        "isaac"
+      ],
+      "returncode": 2,
+      "stderr": "",
+      "stdout": {
+        "action": "REFUSE",
+        "checks": {
+          "alive": true,
+          "cmdline": "\"C:\\Users\\abcd1\\AppData\\Local\\Programs\\Python\\Python311\\python.exe\" E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\tools\\simulation\\gpu_lock.py --lock-path E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\isaac_gpu0.lock --run-id A04-HOLDER --marker isaac --hold-seconds 6",
+          "cmdline_probe": "wmic process where processid=65808 get commandline /value",
+          "current_start_time": null,
+          "heartbeat_age_s": 0.601576,
+          "heartbeat_stale": false,
+          "heartbeat_timeout_s": 30.0,
+          "host": "abc123456",
+          "liveness_probe": "tasklist /FI \"PID eq 65808\" /FO CSV /NH",
+          "marker_found": true,
+          "pid": 65808,
+          "recorded_start_time": null,
+          "run_id": "A04-HOLDER",
+          "start_time_mismatch": false
+        },
+        "dry_run": false,
+        "holder": {
+          "acquired_at": "2026-10-21T18:28:27.922044+00:00",
+          "heartbeat_at": "2026-10-21T18:28:27.922044+00:00",
+          "host": "abc123456",
+          "pid": 65808,
+          "pid_start_time": null,
+          "run_id": "A04-HOLDER",
+          "token": "eaa530618c9444cfb35e516d08ab27a6"
+        },
+        "holder_alive": true,
+        "holder_cmdline_marker_found": true,
+        "holder_heartbeat_age_s": 0.601576,
+        "host": "abc123456",
+        "lock_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\isaac_gpu0.lock",
+        "marker": "isaac",
+        "now": "2026-10-21T18:28:28.523620+00:00",
+        "reason": "LIVE_HOLDER",
+        "run_id": "A04-CONTENDER"
+      },
+      "step": "2-second-process-refused"
+    },
+    {
+      "holder_stdout": {
+        "action": "ACQUIRE",
+        "checks": {},
+        "dry_run": false,
+        "holder": null,
+        "host": "abc123456",
+        "lock_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\isaac_gpu0.lock",
+        "marker": "isaac",
+        "now": "2026-10-21T18:28:27.922044+00:00",
+        "reason": "NO_LOCK",
+        "record": {
+          "acquired_at": "2026-10-21T18:28:27.922044+00:00",
+          "expected_marker": "isaac",
+          "heartbeat_at": "2026-10-21T18:28:27.922044+00:00",
+          "heartbeat_timeout_s": 30.0,
+          "history": [],
+          "host": "abc123456",
+          "pid": 65808,
+          "pid_start_time": null,
+          "run_id": "A04-HOLDER",
+          "schema_version": 1,
+          "token": "eaa530618c9444cfb35e516d08ab27a6"
+        },
+        "run_id": "A04-HOLDER",
+        "token": "eaa530618c9444cfb35e516d08ab27a6"
+      },
+      "lock_exists_after": false,
+      "returncode": 0,
+      "step": "3-holder-exits"
+    },
+    {
+      "lock_exists_after": false,
+      "returncode": 0,
+      "stdout": {
+        "action": "ACQUIRE",
+        "checks": {},
+        "dry_run": true,
+        "holder": null,
+        "host": "abc123456",
+        "lock_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\isaac_gpu0.lock",
+        "marker": "isaac",
+        "now": "2026-10-21T18:28:34.545967+00:00",
+        "reason": "NO_LOCK",
+        "run_id": "A04-DRY"
+      },
+      "step": "4-dry-run"
+    },
+    {
+      "crashed_pid": 66476,
+      "lock_exists_after_crash": true,
+      "lock_record": {
+        "acquired_at": "2026-10-21T18:28:35.147231+00:00",
+        "expected_marker": "isaac",
+        "heartbeat_at": "2026-10-21T18:28:35.147231+00:00",
+        "heartbeat_timeout_s": 30.0,
+        "history": [],
+        "host": "abc123456",
+        "pid": 66476,
+        "pid_start_time": null,
+        "run_id": "A04-CRASH",
+        "schema_version": 1,
+        "token": "b97db69aac5b4109ad2d446ec05447a8"
+      },
+      "returncode": 9,
+      "step": "5-crashed-holder"
+    },
+    {
+      "record_on_disk": {
+        "acquired_at": "2026-10-21T18:28:36.545151+00:00",
+        "expected_marker": "isaac",
+        "heartbeat_at": "2026-10-21T18:28:36.545151+00:00",
+        "heartbeat_timeout_s": 30.0,
+        "history": [
+          {
+            "by_pid": 63000,
+            "by_run_id": "A04-RECOVER",
+            "checks": {
+              "alive": false,
+              "heartbeat_age_s": 0.743822,
+              "heartbeat_stale": false,
+              "liveness_probe": "tasklist /FI \"PID eq 66476\" /FO CSV /NH",
+              "marker_found": null,
+              "start_time_mismatch": false
+            },
+            "note": "takeover never signals the previous holder",
+            "prior": {
+              "acquired_at": "2026-10-21T18:28:35.147231+00:00",
+              "heartbeat_at": "2026-10-21T18:28:35.147231+00:00",
+              "host": "abc123456",
+              "pid": 66476,
+              "pid_start_time": null,
+              "run_id": "A04-CRASH",
+              "token": "b97db69aac5b4109ad2d446ec05447a8"
+            },
+            "reason": "HOLDER_DEAD",
+            "taken_over_at": "2026-10-21T18:28:36.545151+00:00"
+          }
+        ],
+        "host": "abc123456",
+        "pid": 63000,
+        "pid_start_time": null,
+        "run_id": "A04-RECOVER",
+        "schema_version": 1,
+        "token": "91c95d54e65a4529806c94bcc43e2812"
+      },
+      "step": "6-takeover-after-crash"
+    }
+  ]
+}

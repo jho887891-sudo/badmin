@@ -1,0 +1,17 @@
+{
+  "checked_at": "2026-10-21T18:28:56.114987+00:00",
+  "host": "abc123456",
+  "kills_performed": 0,
+  "marker": "isaac",
+  "note": "read-only audit: no process was signalled; a live survivor needs a human decision because the audit must not kill another user's process",
+  "os": "nt",
+  "pid_count": 0,
+  "pids": [],
+  "run_dir": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_unknown",
+  "schema_version": 1,
+  "sources": [],
+  "survivor_count": 0,
+  "survivors": [],
+  "tool": "kit_descendant_audit",
+  "verdict": "NO_PID_RECORDS"
+}
