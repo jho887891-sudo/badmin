@@ -1,0 +1,39 @@
+{
+  "checked_at": "2026-10-21T18:29:20.636113+00:00",
+  "host": "abc123456",
+  "kills_performed": 0,
+  "marker": "isaac",
+  "note": "read-only audit: no process was signalled; a live survivor needs a human decision because the audit must not kill another user's process",
+  "os": "nt",
+  "pid_count": 1,
+  "pids": [
+    {
+      "alive": false,
+      "classification": "DEAD",
+      "cmdline": null,
+      "cmdline_probe": "wmic process where processid=64912 get commandline /value",
+      "liveness_probe": "tasklist /FI \"PID eq 64912\" /FO CSV /NH",
+      "marker_found": null,
+      "pid": 64912,
+      "records": [
+        {
+          "path": "descendant_kill.child_pid",
+          "source": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_clean\\gate_runner_summary.json"
+        },
+        {
+          "path": "descendant_kill.killed_pids",
+          "source": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_clean\\gate_runner_summary.json"
+        }
+      ]
+    }
+  ],
+  "run_dir": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_clean",
+  "schema_version": 1,
+  "sources": [
+    "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_clean\\gate_runner_summary.json"
+  ],
+  "survivor_count": 0,
+  "survivors": [],
+  "tool": "kit_descendant_audit",
+  "verdict": "CLEAN"
+}

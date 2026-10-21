@@ -1,0 +1,41 @@
+{
+  "checked_at": "2026-10-21T18:28:54.080680+00:00",
+  "host": "abc123456",
+  "kills_performed": 0,
+  "marker": "isaac",
+  "note": "read-only audit: no process was signalled; a live survivor needs a human decision because the audit must not kill another user's process",
+  "os": "nt",
+  "pid_count": 1,
+  "pids": [
+    {
+      "alive": true,
+      "classification": "SURVIVOR_OURS",
+      "cmdline": "C:\\Users\\abcd1\\AppData\\Local\\hermes\\hermes-agent\\venv\\Scripts\\python.exe -c \"import time; time.sleep(45)\" isaac",
+      "cmdline_probe": "wmic process where processid=67120 get commandline /value",
+      "liveness_probe": "tasklist /FI \"PID eq 67120\" /FO CSV /NH",
+      "marker_found": true,
+      "pid": 67120,
+      "records": [
+        {
+          "path": "grandchild_pids",
+          "source": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_leak\\recorded_descendants.json"
+        }
+      ]
+    }
+  ],
+  "run_dir": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_leak",
+  "schema_version": 1,
+  "sources": [
+    "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_a04\\outputs\\simulation\\a04_evidence\\audit_demo_leak\\recorded_descendants.json"
+  ],
+  "survivor_count": 1,
+  "survivors": [
+    {
+      "classification": "SURVIVOR_OURS",
+      "liveness_probe": "tasklist /FI \"PID eq 67120\" /FO CSV /NH",
+      "pid": 67120
+    }
+  ],
+  "tool": "kit_descendant_audit",
+  "verdict": "SURVIVORS"
+}

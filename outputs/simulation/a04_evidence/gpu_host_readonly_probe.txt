@@ -1,0 +1,23 @@
+A04 read-only probe of the shared GPU host (dgut@172.31.68.251), captured 2026-10-22T02:31Z.
+Commands (all read-only; nothing was started, signalled, written or killed):
+
+  ssh -o BatchMode=yes -o ConnectTimeout=8 -o StrictHostKeyChecking=accept-new \
+      dgut@172.31.68.251 'hostname; pgrep -af isaac | head -5; \
+      nvidia-smi --query-gpu=index,name,memory.used --format=csv,noheader'
+
+Exit status: SSH_EXIT=0
+
+Output (verbatim):
+jxxy
+3111578 /bin/sh /isaac-sim/runheadless.sh sleep infinity
+3111650 /isaac-sim/kit/kit /isaac-sim/apps/isaacsim.exp.full.streaming.kit --no-window --/persistent/isaac/asset_root/default=https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/5.1 --merge-config=/isaac-sim/config/open_endpoint.toml --allow-root sleep infinity
+3187145 /home/T7/ojh/robot_sim/env_isaaclab/bin/python tools/p2_gate_runner.py --script scripts/simulation/p4_proxy_wheel_drive.py --run-id P4V_050_r07 --out-dir /home/dgut/runs/g/P4V_050_r07 --timeout 1500 -- --profile velocity_control --read-contacts --velocity-cmd 0.50 --speed-limit 0.50
+3187160 /home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p4_proxy_wheel_drive.py --run-id P4V_050_r07 --out-dir /home/dgut/runs/g/P4V_050_r07 --profile velocity_control --read-contacts --velocity-cmd 0.50 --speed-limit 0.50
+3187423 bash -c hostname; pgrep -af isaac | head -5; nvidia-smi --query-gpu=index,name,memory.used --format=csv,noheader
+0, NVIDIA RTX A6000, 18729 MiB
+
+Interpretation: at capture time ONE Isaac Kit instance (kit pid 3111650, parent runheadless.sh pid
+3111578) was live together with an unrelated P4 run (pids 3187145/3187160), and GPU 0 carried
+18729 MiB. A lock acquire at that moment would be REFUSED (LIVE_HOLDER) because the recorded
+holder's cmdline contains "isaac" and its PID is alive and on the same host. That is the
+contract: the lock never kills, it refuses. No Isaac instance was started by this slice.
