@@ -330,8 +330,11 @@ def main():
             # gain -K on the previous measured speed and its stable-looking fixed point was
             # 3x the command: P4V_030_r05 sat at 0.913 m/s for a 0.30 m/s command.
             omega_ff = -vy_target / float(ARGS.nominal_radius)
-            trim_integral += float(ARGS.velocity_kp) * DT * (vy_meas - vy_target)
-            trim_limit = max(0.2 * abs(omega_ff), 0.5)
+            if step == ramp_steps:
+                trim_integral = 0.0            # restart the trim when the hold phase begins
+            # slow trim: +Kp*dt*(vy_meas - vy_target) reduces omega when too fast
+            trim_integral += 0.5 * float(ARGS.velocity_kp) * DT * (vy_meas - vy_target)
+            trim_limit = max(0.05 * abs(omega_ff), 0.05)
             trim_integral = max(-trim_limit, min(trim_limit, trim_integral))
             wheel_speed = omega_ff + trim_integral
             wheel_speed = max(-50.0, min(50.0, wheel_speed))
