@@ -53,6 +53,7 @@ import isaaclab.sim as sim_utils  # noqa: E402
 from isaaclab.assets import Articulation, ArticulationCfg  # noqa: E402
 from isaaclab_physx.physics import PhysxCfg  # noqa: E402
 from pxr import Gf, Sdf, Usd, UsdGeom, UsdPhysics  # noqa: E402
+from p2_chassis_frame_math import wheel_bottom_world_z  # noqa: E402
 
 
 def _np(values):
@@ -142,7 +143,7 @@ def author(path, lift):
             wheel_prim).ExtractTranslation()[2])
         wheel_world_bottoms.append(world_z - WHEEL_HALF[2])
     actual_min_bottom = min(wheel_world_bottoms)
-    expected_min_bottom = float(lift) + MEASURED_WHEEL_BOTTOM_Z_M
+    expected_min_bottom = wheel_bottom_world_z(float(lift), WHEEL_CENTRES[0][2], WHEEL_HALF[2])
     if abs(actual_min_bottom - expected_min_bottom) > 1e-5:
         raise ValueError(
             "Nested wheel frame mismatch: authored world bottom %.9f, "
@@ -255,7 +256,7 @@ def main():
     # A negative nominal clearance is a collision-probe condition.  No solver
     # motion AND no observed contact impulse means this probe was NOT verified;
     # it must never be reported as a complete collision PASS.
-    nominal_clearance = float(ARGS.lift) + MEASURED_WHEEL_BOTTOM_Z_M
+    nominal_clearance = wheel_bottom_world_z(float(ARGS.lift), WHEEL_CENTRES[0][2], WHEEL_HALF[2])
     force_history = [frame["max_contact_force_n"] for frame in frames
                      if frame["max_contact_force_n"] is not None]
     peak_contact_force = max(force_history) if force_history else None
