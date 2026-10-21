@@ -229,19 +229,30 @@ def main():
     base_root_pos = [float(v) for v in _np(robot.data.root_pos_w[0]).reshape(-1)[:3]]
     base_root_quat = raw_to_wxyz(_np(robot.data.root_quat_w[0]).reshape(-1)[:4])
     base_root_yaw = yaw_of(base_root_quat)
+    base_chassis_pos = [float(v) for v in
+                        _np(robot.data.body_pos_w[0, chassis_index]).reshape(-1)[:3]]
+    # The chassis is a CHILD body of the articulation root, so the two frames differ by a
+    # constant offset (~0.208 m here).  A root-pose command is therefore NOT a chassis
+    # command: P3_compound_r09 realized only 0.1812 m of a commanded 0.25 m because the yaw
+    # arc partly cancelled the translation.  The offset is expressed in the ROOT frame and
+    # subtracted when commanding, so the CHASSIS lands where the gate expects it.
+    offset_world = np.array(base_chassis_pos) - np.array(base_root_pos)
+    base_rotation = rotation_matrix(base_root_quat)
+    offset_root_frame = base_rotation.T @ offset_world
 
     def write_pose(pos_cmd, yaw_cmd):
-        """pos_cmd/yaw_cmd are absolute CHASSIS commands; applied as a delta on the root."""
-        delta = [float(pos_cmd[0]), float(pos_cmd[1]), float(pos_cmd[2]) - LIFT]
-        pos = [base_root_pos[0] + delta[0], base_root_pos[1] + delta[1],
-               base_root_pos[2] + delta[2]]
+        """pos_cmd/yaw_cmd are absolute CHASSIS commands; converted to a root pose."""
         yaw = base_root_yaw + float(yaw_cmd)
         half = 0.5 * yaw
         if quat_order["value"] == "wxyz":
             quat = [math.cos(half), 0.0, 0.0, math.sin(half)]
         else:
             quat = [0.0, 0.0, math.sin(half), math.cos(half)]
-        pose = [float(pos[0]), float(pos[1]), float(pos[2])] + [float(v) for v in quat]
+        rotation = rotation_matrix([math.cos(0.5 * yaw), 0.0, 0.0, math.sin(0.5 * yaw)])
+        chassis_cmd = np.array([float(pos_cmd[0]), float(pos_cmd[1]), float(pos_cmd[2])])
+        root_pos = chassis_cmd - rotation @ offset_root_frame
+        pos = [float(root_pos[0]), float(root_pos[1]), float(root_pos[2])]
+        pose = [pos[0], pos[1], pos[2]] + [float(v) for v in quat]
         robot.write_root_pose_to_sim(
             torch.tensor([pose], dtype=torch.float32, device=robot.device))
         # A teleport without clearing the velocity leaves residual linear/angular velocity in
@@ -453,6 +464,10 @@ def main():
         "diagnostics": {
             "quat_order_for_write_root_pose": quat_order,
             "t0_pose_write_error_m": round(start_error, 12),
+            "root_to_chassis_offset_m": round(float(np.linalg.norm(offset_world)), 9),
+            "root_to_chassis_offset_root_frame_m": [round(float(v), 9)
+                                                    for v in offset_root_frame],
+            "root_pose_is_offset_compensated": True,
             "joint_targets_set_each_step": True,
             "root_velocity_zeroed_with_each_teleport": True,
             "contact_api": contact_api,
