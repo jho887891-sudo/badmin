@@ -1,0 +1,1431 @@
+{
+ "schema": "badmin.morph_one.wheel_geometry_v2/1",
+ "generated_by": "scripts/simulation/p1_wheel_axle_geometry.py",
+ "task_ids": [
+  "P1-Rnext-6",
+  "P1-Rnext-7"
+ ],
+ "status_policy": "a candidate is never promoted to a frozen parameter; UNKNOWN carries the concrete missing measurement",
+ "units": {
+  "length": "mm",
+  "length_chassis": "m",
+  "angle": "deg",
+  "area": "mm^2"
+ },
+ "frames": {
+  "cad": "CAD model frame, millimetres, as recorded by the STEP/USD measurement tools",
+  "chassis": "chassis body frame = R_x(90 deg) . (0.001 * CAD mm); origin = CAD global origin, which is NOT a calibrated chassis datum",
+  "chassis_mapping_evidence": "scripts/simulation/morph_one_orientation_probe.py (applied by p2_chassis_frame_math.py consumers)",
+  "up_axis_note": "the mapping sends the geometric vertical (CAD y) to chassis z, which agrees with the USD stage upAxis = Z; this RESOLVES the PR #25 up-axis conflict as a candidate, and still is not a vendor statement"
+ },
+ "sources": {
+  "contract": {
+   "path": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
+   "sha256": "ac3f7ee668ba797fe86c2e289d0270b8849dbe45581f3a5293d1edfe94b2ff04"
+  },
+  "brep_faces_v2": {
+   "path": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_brep_faces_v2.json",
+   "sha256": "53f562f193fccaf99d9ba25658d519a9cbe34c47a78064e705003ebf2aa93c88"
+  },
+  "centres_cad_mm": {
+   "path": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_centres_cad_mm.json",
+   "sha256": "f8db545173df52f86ba3963acc699490eaa51d3ebc0d99c7698d472fe0cb39af"
+  },
+  "step_remeasure_recorded": {
+   "present": true,
+   "bytes": 16042,
+   "sha256": "6750479609955ed7f8a5da78e45b685a054ca09d30f271c598c9ee595342dddb"
+  }
+ },
+ "wheels": {
+  "435700": {
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_15/Mesh",
+   "axle_line_cad": {
+    "point_mm": [
+     250.002,
+     -244.0,
+     -297.0
+    ],
+    "direction_unit": [
+     1.0,
+     -0.0,
+     -0.0
+    ],
+    "line_form": "point + t * direction, t in millimetres, unrestricted",
+    "verdict": "candidate",
+    "why": "direction is measured three independent ways; the point is a measured wheel centre, but the CAD global origin is not a chassis datum",
+    "unit": "mm",
+    "frame": "CAD model frame (global origin, +x = spin axis family)",
+    "residual": {
+     "centre_vs_step_analytic_circle_mm": [
+      0.002,
+      0.0,
+      0.0
+     ],
+     "centre_norm_mm": 0.002,
+     "axis_angle_pca_vs_step_deg": 0.0,
+     "axis_angle_minscan_vs_step_deg": 0.1626
+    },
+    "stored_brep_axis_sign": 1.0,
+    "sign_note": "the stored CIRCLE placement axis is (+1,0,0) on the +x wheels and (-1,0,0) on the -x wheels: an axle line is unsigned, and the flip is itself mirror evidence, never a spin direction",
+    "source": {
+     "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
+     "sha256": "ac3f7ee668ba797fe86c2e289d0270b8849dbe45581f3a5293d1edfe94b2ff04",
+     "locator": "wheels.435700.centre_mm/principal_axes"
+    }
+   },
+   "axle_line_chassis": {
+    "point_m": [
+     0.250002,
+     0.297,
+     -0.244
+    ],
+    "direction_unit": [
+     1.0,
+     0.0,
+     -0.0
+    ],
+    "verdict": "candidate",
+    "why": "the CAD->USD mapping (0.001 scale + 90 deg about x) is documented and applied, but the chassis frame origin/up axis are not vendor-authorized, so chassis-frame values stay candidates",
+    "unit": "m",
+    "frame": "chassis body frame = R_x(90 deg) . (0.001 * CAD mm), Z-up",
+    "residual": {
+     "transform_roundtrip_mm": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "path_residual_mm": 0.002,
+     "note": "the mapping is a similarity (orthogonal + uniform 0.001), so it cannot change the path residual: the two paths differ by the CAD-frame 0.002 mm centre offset, which is 2e-06 m after the transform"
+    },
+    "source": {
+     "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
+     "sha256": "ac3f7ee668ba797fe86c2e289d0270b8849dbe45581f3a5293d1edfe94b2ff04",
+     "locator": "frames.chassis_frame = NOT FROZEN + documented mapping"
+    }
+   },
+   "outward_axle_direction": {
+    "direction_unit_chassis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "side": "right (+x)",
+    "spin_sign": 1,
+    "spin_convention": "omega_vector = spin_sign * (v_roll / r) * x_hat gives a wheel rolling with +v_roll along chassis -y; the forward direction itself is UNKNOWN",
+    "verdict": "candidate",
+    "unit": "unit vector",
+    "frame": "chassis body frame",
+    "residual": {
+     "angle_to_measured_pca_axis_deg": 0.0,
+     "stored_axis_parallel_vs_outward_deg": 0.0,
+     "mirror_residual_deg": 0.0,
+     "note": "all four solids are parallel to chassis x to 0.0043 deg (PCA) / 0.165 deg (min-span scan); the outward sign is assigned exactly by the sign of the measured chassis x of the centre"
+    }
+   },
+   "rolling_surface": {
+    "verdict": "verified",
+    "unit": "surface type / mm / mm^2",
+    "frame": "CAD BREP analytic surfaces (no tessellation)",
+    "residual": {
+     "equator_vs_measured_circle_mm": -0.0,
+     "max_cylinder_radius_in_solid_mm": 68.49999999999999,
+     "note": "the surface type is analytic, so there is no tessellation residual; the only residual is between the torus equator and the independently measured circle"
+    },
+    "classification": {
+     "value": "TOROIDAL_SURFACE crowned tread band (two torus faces per axial half, 180 deg major each)",
+     "verdict": "verified",
+     "why": "every face bounding the 103 mm edge circle is an analytic TOROIDAL_SURFACE with major radius 77.738 mm and minor radius 25.262 mm; no cylindrical face of that radius exists in the solid",
+     "unit": "surface type",
+     "frame": "CAD BREP (analytic surface entities, no tessellation involved)",
+     "residual": {
+      "equator_recompute_mm": 103.0,
+      "equator_measured_circle_radius_mm": 103.0,
+      "equator_residual_mm": -0.0,
+      "max_cylinder_radius_in_solid_mm": 68.49999999999999,
+      "cylinder_minus_103_mm": -34.5
+     },
+     "source": {
+      "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_brep_faces_v2.json",
+      "sha256": "53f562f193fccaf99d9ba25658d519a9cbe34c47a78064e705003ebf2aa93c88",
+      "locator": "solids[*].groups (touches_r103_circle)"
+     }
+    },
+    "tread_geometry": {
+     "major_radius_mm": 77.738095,
+     "minor_radius_mm": 25.261905,
+     "radial_band_mm": [
+      92.5,
+      103.0
+     ],
+     "axial_band_mm": [
+      -20.502,
+      20.498
+     ],
+     "axial_band_width_mm": 41.0,
+     "minor_parameter_band_rad": [
+      -0.946712,
+      0.946712
+     ],
+     "minor_parameter_band_deg": [
+      -54.2426,
+      54.2426
+     ],
+     "area_mm2": 29870.6896,
+     "face_count": 4,
+     "verdict": "verified",
+     "unit": "mm / rad / mm^2",
+     "frame": "CAD model frame, axial band along the wheel spin axis through the wheel centre",
+     "residual": {
+      "area_method": "torus integral r*[R*dtheta_minor + r*sin] * dtheta_major, dtheta from the face's own circular edges",
+      "area_method_limit": "the major-angle coverage comes from circle-arc sums; a face trimmed by a spline rather than circles would be under-counted"
+     },
+     "source": {
+      "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_brep_faces_v2.json",
+      "sha256": "53f562f193fccaf99d9ba25658d519a9cbe34c47a78064e705003ebf2aa93c88",
+      "locator": "solids[0].faces (TOROIDAL_SURFACE, touches_r103_circle)"
+     }
+    },
+    "face_group_table_mm2": [
+     {
+      "group": "CYLINDRICAL_SURFACE|r=6.5",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 6.499999999999998,
+      "face_count": 118,
+      "area_mm2": 42701.3353,
+      "area_unknown_faces": 6,
+      "axial_band_mm": [
+       -24.386016,
+       24.266671
+      ],
+      "axial_width_mm": 48.652687,
+      "radial_band_mm": [
+       72.704254,
+       83.100365
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "TOROIDAL_SURFACE|r=77.738",
+      "surface_type": "TOROIDAL_SURFACE",
+      "radius_mm": 77.73809523809999,
+      "face_count": 4,
+      "area_mm2": 29870.6896,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -20.502,
+       20.498
+      ],
+      "axial_width_mm": 41.0,
+      "radial_band_mm": [
+       92.5,
+       103.0
+      ],
+      "touches_r103_circle": true
+     },
+     {
+      "group": "TOROIDAL_SURFACE|r=80.819",
+      "surface_type": "TOROIDAL_SURFACE",
+      "radius_mm": 80.81884523500001,
+      "face_count": 4,
+      "area_mm2": 26151.3196,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -24.386016,
+       24.266671
+      ],
+      "axial_width_mm": 48.652687,
+      "radial_band_mm": [
+       68.5,
+       92.5
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "CYLINDRICAL_SURFACE|r=63.0",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 63.00000000000001,
+      "face_count": 2,
+      "area_mm2": 6328.4626,
+      "area_unknown_faces": 1,
+      "axial_band_mm": [
+       -15.989399,
+       15.985399
+      ],
+      "axial_width_mm": 31.974798,
+      "radial_band_mm": [
+       63.0,
+       63.0
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "CYLINDRICAL_SURFACE|r=68.5",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 68.49999999999999,
+      "face_count": 4,
+      "area_mm2": 3454.0328,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -20.002,
+       19.998
+      ],
+      "axial_width_mm": 40.0,
+      "radial_band_mm": [
+       68.5,
+       68.5
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "PLANE|r=none",
+      "surface_type": "PLANE",
+      "radius_mm": null,
+      "face_count": 58,
+      "area_mm2": 1883.1852,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -15.989399,
+       15.985399
+      ],
+      "axial_width_mm": 31.974798,
+      "radial_band_mm": [
+       63.0,
+       78.944549
+      ],
+      "touches_r103_circle": false
+     }
+    ],
+    "rejected_hypotheses": [
+     {
+      "hypothesis": "the rolling surface is the 103 mm edge's adjacent cylinder",
+      "verdict": "rejected",
+      "evidence": "the largest cylindrical face radius in each wheel solid is 68.5 mm; there is no cylinder at 92.5 mm or 103 mm"
+     },
+     {
+      "hypothesis": "the rolling surface is a 49 mm wide flat cylindrical tread",
+      "verdict": "rejected",
+      "evidence": "the 103 mm circle is the equator of a torus; the tread band spans a 41.0 mm axial band but the radius drops to 92.5 mm at its edges"
+     },
+     {
+      "hypothesis": "the wheel is a plain disc with a 206 mm flange",
+      "verdict": "rejected",
+      "evidence": "radial band 92.5 -> 103.0 mm on a 41 mm wide torus; the flange hypothesis predicted a planar annulus, and the total planar area per wheel is only 1883.2 mm^2"
+     }
+    ]
+   }
+  },
+  "759491": {
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_23/Mesh",
+   "axle_line_cad": {
+    "point_mm": [
+     250.002,
+     -244.0,
+     297.0
+    ],
+    "direction_unit": [
+     1.0,
+     -0.0,
+     0.0
+    ],
+    "line_form": "point + t * direction, t in millimetres, unrestricted",
+    "verdict": "candidate",
+    "why": "direction is measured three independent ways; the point is a measured wheel centre, but the CAD global origin is not a chassis datum",
+    "unit": "mm",
+    "frame": "CAD model frame (global origin, +x = spin axis family)",
+    "residual": {
+     "centre_vs_step_analytic_circle_mm": [
+      0.002,
+      0.0,
+      0.0
+     ],
+     "centre_norm_mm": 0.002,
+     "axis_angle_pca_vs_step_deg": 0.0,
+     "axis_angle_minscan_vs_step_deg": 0.1626
+    },
+    "stored_brep_axis_sign": 1.0,
+    "sign_note": "the stored CIRCLE placement axis is (+1,0,0) on the +x wheels and (-1,0,0) on the -x wheels: an axle line is unsigned, and the flip is itself mirror evidence, never a spin direction",
+    "source": {
+     "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
+     "sha256": "ac3f7ee668ba797fe86c2e289d0270b8849dbe45581f3a5293d1edfe94b2ff04",
+     "locator": "wheels.759491.centre_mm/principal_axes"
+    }
+   },
+   "axle_line_chassis": {
+    "point_m": [
+     0.250002,
+     -0.297,
+     -0.244
+    ],
+    "direction_unit": [
+     1.0,
+     -0.0,
+     0.0
+    ],
+    "verdict": "candidate",
+    "why": "the CAD->USD mapping (0.001 scale + 90 deg about x) is documented and applied, but the chassis frame origin/up axis are not vendor-authorized, so chassis-frame values stay candidates",
+    "unit": "m",
+    "frame": "chassis body frame = R_x(90 deg) . (0.001 * CAD mm), Z-up",
+    "residual": {
+     "transform_roundtrip_mm": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "path_residual_mm": 0.002,
+     "note": "the mapping is a similarity (orthogonal + uniform 0.001), so it cannot change the path residual: the two paths differ by the CAD-frame 0.002 mm centre offset, which is 2e-06 m after the transform"
+    },
+    "source": {
+     "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
+     "sha256": "ac3f7ee668ba797fe86c2e289d0270b8849dbe45581f3a5293d1edfe94b2ff04",
+     "locator": "frames.chassis_frame = NOT FROZEN + documented mapping"
+    }
+   },
+   "outward_axle_direction": {
+    "direction_unit_chassis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "side": "right (+x)",
+    "spin_sign": 1,
+    "spin_convention": "omega_vector = spin_sign * (v_roll / r) * x_hat gives a wheel rolling with +v_roll along chassis -y; the forward direction itself is UNKNOWN",
+    "verdict": "candidate",
+    "unit": "unit vector",
+    "frame": "chassis body frame",
+    "residual": {
+     "angle_to_measured_pca_axis_deg": 0.0,
+     "stored_axis_parallel_vs_outward_deg": 0.0,
+     "mirror_residual_deg": 0.0,
+     "note": "all four solids are parallel to chassis x to 0.0043 deg (PCA) / 0.165 deg (min-span scan); the outward sign is assigned exactly by the sign of the measured chassis x of the centre"
+    }
+   },
+   "rolling_surface": {
+    "verdict": "verified",
+    "unit": "surface type / mm / mm^2",
+    "frame": "CAD BREP analytic surfaces (no tessellation)",
+    "residual": {
+     "equator_vs_measured_circle_mm": -0.0,
+     "max_cylinder_radius_in_solid_mm": 68.50000000000001,
+     "note": "the surface type is analytic, so there is no tessellation residual; the only residual is between the torus equator and the independently measured circle"
+    },
+    "classification": {
+     "value": "TOROIDAL_SURFACE crowned tread band (two torus faces per axial half, 180 deg major each)",
+     "verdict": "verified",
+     "why": "every face bounding the 103 mm edge circle is an analytic TOROIDAL_SURFACE with major radius 77.738 mm and minor radius 25.262 mm; no cylindrical face of that radius exists in the solid",
+     "unit": "surface type",
+     "frame": "CAD BREP (analytic surface entities, no tessellation involved)",
+     "residual": {
+      "equator_recompute_mm": 103.0,
+      "equator_measured_circle_radius_mm": 103.0,
+      "equator_residual_mm": -0.0,
+      "max_cylinder_radius_in_solid_mm": 68.50000000000001,
+      "cylinder_minus_103_mm": -34.5
+     },
+     "source": {
+      "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_brep_faces_v2.json",
+      "sha256": "53f562f193fccaf99d9ba25658d519a9cbe34c47a78064e705003ebf2aa93c88",
+      "locator": "solids[*].groups (touches_r103_circle)"
+     }
+    },
+    "tread_geometry": {
+     "major_radius_mm": 77.738095,
+     "minor_radius_mm": 25.261905,
+     "radial_band_mm": [
+      92.5,
+      103.0
+     ],
+     "axial_band_mm": [
+      -20.502,
+      20.498
+     ],
+     "axial_band_width_mm": 41.0,
+     "minor_parameter_band_rad": [
+      -0.946712,
+      0.946712
+     ],
+     "minor_parameter_band_deg": [
+      -54.2426,
+      54.2426
+     ],
+     "area_mm2": 29870.6896,
+     "face_count": 4,
+     "verdict": "verified",
+     "unit": "mm / rad / mm^2",
+     "frame": "CAD model frame, axial band along the wheel spin axis through the wheel centre",
+     "residual": {
+      "area_method": "torus integral r*[R*dtheta_minor + r*sin] * dtheta_major, dtheta from the face's own circular edges",
+      "area_method_limit": "the major-angle coverage comes from circle-arc sums; a face trimmed by a spline rather than circles would be under-counted"
+     },
+     "source": {
+      "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_brep_faces_v2.json",
+      "sha256": "53f562f193fccaf99d9ba25658d519a9cbe34c47a78064e705003ebf2aa93c88",
+      "locator": "solids[0].faces (TOROIDAL_SURFACE, touches_r103_circle)"
+     }
+    },
+    "face_group_table_mm2": [
+     {
+      "group": "CYLINDRICAL_SURFACE|r=6.5",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 6.500000000000005,
+      "face_count": 118,
+      "area_mm2": 42701.3353,
+      "area_unknown_faces": 6,
+      "axial_band_mm": [
+       -24.386016,
+       24.266671
+      ],
+      "axial_width_mm": 48.652687,
+      "radial_band_mm": [
+       72.704254,
+       83.100365
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "TOROIDAL_SURFACE|r=77.738",
+      "surface_type": "TOROIDAL_SURFACE",
+      "radius_mm": 77.73809523809999,
+      "face_count": 4,
+      "area_mm2": 29870.6896,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -20.502,
+       20.498
+      ],
+      "axial_width_mm": 41.0,
+      "radial_band_mm": [
+       92.5,
+       103.0
+      ],
+      "touches_r103_circle": true
+     },
+     {
+      "group": "TOROIDAL_SURFACE|r=80.819",
+      "surface_type": "TOROIDAL_SURFACE",
+      "radius_mm": 80.81884523500001,
+      "face_count": 4,
+      "area_mm2": 26151.3196,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -24.386016,
+       24.266671
+      ],
+      "axial_width_mm": 48.652687,
+      "radial_band_mm": [
+       68.5,
+       92.5
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "CYLINDRICAL_SURFACE|r=63.0",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 63.00000000000001,
+      "face_count": 2,
+      "area_mm2": 6328.4626,
+      "area_unknown_faces": 1,
+      "axial_band_mm": [
+       -15.989399,
+       15.985399
+      ],
+      "axial_width_mm": 31.974798,
+      "radial_band_mm": [
+       63.0,
+       63.0
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "CYLINDRICAL_SURFACE|r=68.5",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 68.50000000000001,
+      "face_count": 4,
+      "area_mm2": 3454.0328,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -20.002,
+       19.998
+      ],
+      "axial_width_mm": 40.0,
+      "radial_band_mm": [
+       68.5,
+       68.5
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "PLANE|r=none",
+      "surface_type": "PLANE",
+      "radius_mm": null,
+      "face_count": 58,
+      "area_mm2": 2141.8792,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -15.989399,
+       15.985399
+      ],
+      "axial_width_mm": 31.974798,
+      "radial_band_mm": [
+       63.0,
+       78.944549
+      ],
+      "touches_r103_circle": false
+     }
+    ],
+    "rejected_hypotheses": [
+     {
+      "hypothesis": "the rolling surface is the 103 mm edge's adjacent cylinder",
+      "verdict": "rejected",
+      "evidence": "the largest cylindrical face radius in each wheel solid is 68.5 mm; there is no cylinder at 92.5 mm or 103 mm"
+     },
+     {
+      "hypothesis": "the rolling surface is a 49 mm wide flat cylindrical tread",
+      "verdict": "rejected",
+      "evidence": "the 103 mm circle is the equator of a torus; the tread band spans a 41.0 mm axial band but the radius drops to 92.5 mm at its edges"
+     },
+     {
+      "hypothesis": "the wheel is a plain disc with a 206 mm flange",
+      "verdict": "rejected",
+      "evidence": "radial band 92.5 -> 103.0 mm on a 41 mm wide torus; the flange hypothesis predicted a planar annulus, and the total planar area per wheel is only 1883.2 mm^2"
+     }
+    ]
+   }
+  },
+  "773650": {
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_7/Mesh",
+   "axle_line_cad": {
+    "point_mm": [
+     -250.002,
+     -244.0,
+     -297.0
+    ],
+    "direction_unit": [
+     -1.0,
+     -0.0,
+     -0.0
+    ],
+    "line_form": "point + t * direction, t in millimetres, unrestricted",
+    "verdict": "candidate",
+    "why": "direction is measured three independent ways; the point is a measured wheel centre, but the CAD global origin is not a chassis datum",
+    "unit": "mm",
+    "frame": "CAD model frame (global origin, +x = spin axis family)",
+    "residual": {
+     "centre_vs_step_analytic_circle_mm": [
+      -0.002,
+      0.0,
+      0.0
+     ],
+     "centre_norm_mm": 0.002,
+     "axis_angle_pca_vs_step_deg": 180.0,
+     "axis_angle_minscan_vs_step_deg": 179.8374
+    },
+    "stored_brep_axis_sign": -1.0,
+    "sign_note": "the stored CIRCLE placement axis is (+1,0,0) on the +x wheels and (-1,0,0) on the -x wheels: an axle line is unsigned, and the flip is itself mirror evidence, never a spin direction",
+    "source": {
+     "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
+     "sha256": "ac3f7ee668ba797fe86c2e289d0270b8849dbe45581f3a5293d1edfe94b2ff04",
+     "locator": "wheels.773650.centre_mm/principal_axes"
+    }
+   },
+   "axle_line_chassis": {
+    "point_m": [
+     -0.250002,
+     0.297,
+     -0.244
+    ],
+    "direction_unit": [
+     -1.0,
+     0.0,
+     -0.0
+    ],
+    "verdict": "candidate",
+    "why": "the CAD->USD mapping (0.001 scale + 90 deg about x) is documented and applied, but the chassis frame origin/up axis are not vendor-authorized, so chassis-frame values stay candidates",
+    "unit": "m",
+    "frame": "chassis body frame = R_x(90 deg) . (0.001 * CAD mm), Z-up",
+    "residual": {
+     "transform_roundtrip_mm": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "path_residual_mm": 0.002,
+     "note": "the mapping is a similarity (orthogonal + uniform 0.001), so it cannot change the path residual: the two paths differ by the CAD-frame 0.002 mm centre offset, which is 2e-06 m after the transform"
+    },
+    "source": {
+     "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
+     "sha256": "ac3f7ee668ba797fe86c2e289d0270b8849dbe45581f3a5293d1edfe94b2ff04",
+     "locator": "frames.chassis_frame = NOT FROZEN + documented mapping"
+    }
+   },
+   "outward_axle_direction": {
+    "direction_unit_chassis": [
+     -1.0,
+     0.0,
+     0.0
+    ],
+    "side": "left (-x)",
+    "spin_sign": -1,
+    "spin_convention": "omega_vector = spin_sign * (v_roll / r) * x_hat gives a wheel rolling with +v_roll along chassis -y; the forward direction itself is UNKNOWN",
+    "verdict": "candidate",
+    "unit": "unit vector",
+    "frame": "chassis body frame",
+    "residual": {
+     "angle_to_measured_pca_axis_deg": 180.0,
+     "stored_axis_parallel_vs_outward_deg": 0.0,
+     "mirror_residual_deg": 0.0,
+     "note": "all four solids are parallel to chassis x to 0.0043 deg (PCA) / 0.165 deg (min-span scan); the outward sign is assigned exactly by the sign of the measured chassis x of the centre"
+    }
+   },
+   "rolling_surface": {
+    "verdict": "verified",
+    "unit": "surface type / mm / mm^2",
+    "frame": "CAD BREP analytic surfaces (no tessellation)",
+    "residual": {
+     "equator_vs_measured_circle_mm": -0.0,
+     "max_cylinder_radius_in_solid_mm": 68.50000000000001,
+     "note": "the surface type is analytic, so there is no tessellation residual; the only residual is between the torus equator and the independently measured circle"
+    },
+    "classification": {
+     "value": "TOROIDAL_SURFACE crowned tread band (two torus faces per axial half, 180 deg major each)",
+     "verdict": "verified",
+     "why": "every face bounding the 103 mm edge circle is an analytic TOROIDAL_SURFACE with major radius 77.738 mm and minor radius 25.262 mm; no cylindrical face of that radius exists in the solid",
+     "unit": "surface type",
+     "frame": "CAD BREP (analytic surface entities, no tessellation involved)",
+     "residual": {
+      "equator_recompute_mm": 103.0,
+      "equator_measured_circle_radius_mm": 103.0,
+      "equator_residual_mm": -0.0,
+      "max_cylinder_radius_in_solid_mm": 68.50000000000001,
+      "cylinder_minus_103_mm": -34.5
+     },
+     "source": {
+      "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_brep_faces_v2.json",
+      "sha256": "53f562f193fccaf99d9ba25658d519a9cbe34c47a78064e705003ebf2aa93c88",
+      "locator": "solids[*].groups (touches_r103_circle)"
+     }
+    },
+    "tread_geometry": {
+     "major_radius_mm": 77.738095,
+     "minor_radius_mm": 25.261905,
+     "radial_band_mm": [
+      92.5,
+      103.0
+     ],
+     "axial_band_mm": [
+      -20.498,
+      20.502
+     ],
+     "axial_band_width_mm": 41.0,
+     "minor_parameter_band_rad": [
+      -0.946712,
+      0.946712
+     ],
+     "minor_parameter_band_deg": [
+      -54.2426,
+      54.2426
+     ],
+     "area_mm2": 29870.6896,
+     "face_count": 4,
+     "verdict": "verified",
+     "unit": "mm / rad / mm^2",
+     "frame": "CAD model frame, axial band along the wheel spin axis through the wheel centre",
+     "residual": {
+      "area_method": "torus integral r*[R*dtheta_minor + r*sin] * dtheta_major, dtheta from the face's own circular edges",
+      "area_method_limit": "the major-angle coverage comes from circle-arc sums; a face trimmed by a spline rather than circles would be under-counted"
+     },
+     "source": {
+      "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_brep_faces_v2.json",
+      "sha256": "53f562f193fccaf99d9ba25658d519a9cbe34c47a78064e705003ebf2aa93c88",
+      "locator": "solids[0].faces (TOROIDAL_SURFACE, touches_r103_circle)"
+     }
+    },
+    "face_group_table_mm2": [
+     {
+      "group": "CYLINDRICAL_SURFACE|r=6.5",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 6.49999999999998,
+      "face_count": 118,
+      "area_mm2": 42701.3353,
+      "area_unknown_faces": 6,
+      "axial_band_mm": [
+       -24.266671,
+       24.386016
+      ],
+      "axial_width_mm": 48.652687,
+      "radial_band_mm": [
+       72.704254,
+       83.100365
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "TOROIDAL_SURFACE|r=77.738",
+      "surface_type": "TOROIDAL_SURFACE",
+      "radius_mm": 77.73809523809999,
+      "face_count": 4,
+      "area_mm2": 29870.6896,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -20.498,
+       20.502
+      ],
+      "axial_width_mm": 41.0,
+      "radial_band_mm": [
+       92.5,
+       103.0
+      ],
+      "touches_r103_circle": true
+     },
+     {
+      "group": "TOROIDAL_SURFACE|r=80.819",
+      "surface_type": "TOROIDAL_SURFACE",
+      "radius_mm": 80.81884523500001,
+      "face_count": 4,
+      "area_mm2": 26151.3196,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -24.266671,
+       24.386016
+      ],
+      "axial_width_mm": 48.652687,
+      "radial_band_mm": [
+       68.5,
+       92.5
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "PLANE|r=none",
+      "surface_type": "PLANE",
+      "radius_mm": null,
+      "face_count": 58,
+      "area_mm2": 14292.8435,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -15.985399,
+       15.989399
+      ],
+      "axial_width_mm": 31.974798,
+      "radial_band_mm": [
+       63.0,
+       78.944549
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "CYLINDRICAL_SURFACE|r=63.0",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 62.999999999999986,
+      "face_count": 2,
+      "area_mm2": 6328.4626,
+      "area_unknown_faces": 1,
+      "axial_band_mm": [
+       -15.985399,
+       15.989399
+      ],
+      "axial_width_mm": 31.974798,
+      "radial_band_mm": [
+       63.0,
+       63.0
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "CYLINDRICAL_SURFACE|r=68.5",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 68.50000000000001,
+      "face_count": 4,
+      "area_mm2": 3454.0328,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -19.998,
+       20.002
+      ],
+      "axial_width_mm": 40.0,
+      "radial_band_mm": [
+       68.5,
+       68.5
+      ],
+      "touches_r103_circle": false
+     }
+    ],
+    "rejected_hypotheses": [
+     {
+      "hypothesis": "the rolling surface is the 103 mm edge's adjacent cylinder",
+      "verdict": "rejected",
+      "evidence": "the largest cylindrical face radius in each wheel solid is 68.5 mm; there is no cylinder at 92.5 mm or 103 mm"
+     },
+     {
+      "hypothesis": "the rolling surface is a 49 mm wide flat cylindrical tread",
+      "verdict": "rejected",
+      "evidence": "the 103 mm circle is the equator of a torus; the tread band spans a 41.0 mm axial band but the radius drops to 92.5 mm at its edges"
+     },
+     {
+      "hypothesis": "the wheel is a plain disc with a 206 mm flange",
+      "verdict": "rejected",
+      "evidence": "radial band 92.5 -> 103.0 mm on a 41 mm wide torus; the flange hypothesis predicted a planar annulus, and the total planar area per wheel is only 1883.2 mm^2"
+     }
+    ]
+   }
+  },
+  "871375": {
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_31/Mesh",
+   "axle_line_cad": {
+    "point_mm": [
+     -250.002,
+     -244.0,
+     297.0
+    ],
+    "direction_unit": [
+     -1.0,
+     0.0,
+     0.0
+    ],
+    "line_form": "point + t * direction, t in millimetres, unrestricted",
+    "verdict": "candidate",
+    "why": "direction is measured three independent ways; the point is a measured wheel centre, but the CAD global origin is not a chassis datum",
+    "unit": "mm",
+    "frame": "CAD model frame (global origin, +x = spin axis family)",
+    "residual": {
+     "centre_vs_step_analytic_circle_mm": [
+      -0.002,
+      0.0,
+      0.0
+     ],
+     "centre_norm_mm": 0.002,
+     "axis_angle_pca_vs_step_deg": 180.0,
+     "axis_angle_minscan_vs_step_deg": 179.8374
+    },
+    "stored_brep_axis_sign": -1.0,
+    "sign_note": "the stored CIRCLE placement axis is (+1,0,0) on the +x wheels and (-1,0,0) on the -x wheels: an axle line is unsigned, and the flip is itself mirror evidence, never a spin direction",
+    "source": {
+     "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
+     "sha256": "ac3f7ee668ba797fe86c2e289d0270b8849dbe45581f3a5293d1edfe94b2ff04",
+     "locator": "wheels.871375.centre_mm/principal_axes"
+    }
+   },
+   "axle_line_chassis": {
+    "point_m": [
+     -0.250002,
+     -0.297,
+     -0.244
+    ],
+    "direction_unit": [
+     -1.0,
+     0.0,
+     0.0
+    ],
+    "verdict": "candidate",
+    "why": "the CAD->USD mapping (0.001 scale + 90 deg about x) is documented and applied, but the chassis frame origin/up axis are not vendor-authorized, so chassis-frame values stay candidates",
+    "unit": "m",
+    "frame": "chassis body frame = R_x(90 deg) . (0.001 * CAD mm), Z-up",
+    "residual": {
+     "transform_roundtrip_mm": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "path_residual_mm": 0.002,
+     "note": "the mapping is a similarity (orthogonal + uniform 0.001), so it cannot change the path residual: the two paths differ by the CAD-frame 0.002 mm centre offset, which is 2e-06 m after the transform"
+    },
+    "source": {
+     "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
+     "sha256": "ac3f7ee668ba797fe86c2e289d0270b8849dbe45581f3a5293d1edfe94b2ff04",
+     "locator": "frames.chassis_frame = NOT FROZEN + documented mapping"
+    }
+   },
+   "outward_axle_direction": {
+    "direction_unit_chassis": [
+     -1.0,
+     0.0,
+     0.0
+    ],
+    "side": "left (-x)",
+    "spin_sign": -1,
+    "spin_convention": "omega_vector = spin_sign * (v_roll / r) * x_hat gives a wheel rolling with +v_roll along chassis -y; the forward direction itself is UNKNOWN",
+    "verdict": "candidate",
+    "unit": "unit vector",
+    "frame": "chassis body frame",
+    "residual": {
+     "angle_to_measured_pca_axis_deg": 180.0,
+     "stored_axis_parallel_vs_outward_deg": 0.0,
+     "mirror_residual_deg": 0.0,
+     "note": "all four solids are parallel to chassis x to 0.0043 deg (PCA) / 0.165 deg (min-span scan); the outward sign is assigned exactly by the sign of the measured chassis x of the centre"
+    }
+   },
+   "rolling_surface": {
+    "verdict": "verified",
+    "unit": "surface type / mm / mm^2",
+    "frame": "CAD BREP analytic surfaces (no tessellation)",
+    "residual": {
+     "equator_vs_measured_circle_mm": -0.0,
+     "max_cylinder_radius_in_solid_mm": 68.49999999999999,
+     "note": "the surface type is analytic, so there is no tessellation residual; the only residual is between the torus equator and the independently measured circle"
+    },
+    "classification": {
+     "value": "TOROIDAL_SURFACE crowned tread band (two torus faces per axial half, 180 deg major each)",
+     "verdict": "verified",
+     "why": "every face bounding the 103 mm edge circle is an analytic TOROIDAL_SURFACE with major radius 77.738 mm and minor radius 25.262 mm; no cylindrical face of that radius exists in the solid",
+     "unit": "surface type",
+     "frame": "CAD BREP (analytic surface entities, no tessellation involved)",
+     "residual": {
+      "equator_recompute_mm": 103.0,
+      "equator_measured_circle_radius_mm": 103.0,
+      "equator_residual_mm": -0.0,
+      "max_cylinder_radius_in_solid_mm": 68.49999999999999,
+      "cylinder_minus_103_mm": -34.5
+     },
+     "source": {
+      "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_brep_faces_v2.json",
+      "sha256": "53f562f193fccaf99d9ba25658d519a9cbe34c47a78064e705003ebf2aa93c88",
+      "locator": "solids[*].groups (touches_r103_circle)"
+     }
+    },
+    "tread_geometry": {
+     "major_radius_mm": 77.738095,
+     "minor_radius_mm": 25.261905,
+     "radial_band_mm": [
+      92.5,
+      103.0
+     ],
+     "axial_band_mm": [
+      -20.498,
+      20.502
+     ],
+     "axial_band_width_mm": 41.0,
+     "minor_parameter_band_rad": [
+      -0.946712,
+      0.946712
+     ],
+     "minor_parameter_band_deg": [
+      -54.2426,
+      54.2426
+     ],
+     "area_mm2": 29870.6896,
+     "face_count": 4,
+     "verdict": "verified",
+     "unit": "mm / rad / mm^2",
+     "frame": "CAD model frame, axial band along the wheel spin axis through the wheel centre",
+     "residual": {
+      "area_method": "torus integral r*[R*dtheta_minor + r*sin] * dtheta_major, dtheta from the face's own circular edges",
+      "area_method_limit": "the major-angle coverage comes from circle-arc sums; a face trimmed by a spline rather than circles would be under-counted"
+     },
+     "source": {
+      "file": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_brep_faces_v2.json",
+      "sha256": "53f562f193fccaf99d9ba25658d519a9cbe34c47a78064e705003ebf2aa93c88",
+      "locator": "solids[0].faces (TOROIDAL_SURFACE, touches_r103_circle)"
+     }
+    },
+    "face_group_table_mm2": [
+     {
+      "group": "CYLINDRICAL_SURFACE|r=6.5",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 6.500000000000001,
+      "face_count": 118,
+      "area_mm2": 42701.3353,
+      "area_unknown_faces": 6,
+      "axial_band_mm": [
+       -24.266671,
+       24.386016
+      ],
+      "axial_width_mm": 48.652687,
+      "radial_band_mm": [
+       72.704254,
+       83.100365
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "TOROIDAL_SURFACE|r=77.738",
+      "surface_type": "TOROIDAL_SURFACE",
+      "radius_mm": 77.73809523809999,
+      "face_count": 4,
+      "area_mm2": 29870.6896,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -20.498,
+       20.502
+      ],
+      "axial_width_mm": 41.0,
+      "radial_band_mm": [
+       92.5,
+       103.0
+      ],
+      "touches_r103_circle": true
+     },
+     {
+      "group": "TOROIDAL_SURFACE|r=80.819",
+      "surface_type": "TOROIDAL_SURFACE",
+      "radius_mm": 80.81884523500001,
+      "face_count": 4,
+      "area_mm2": 26151.3196,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -24.266671,
+       24.386016
+      ],
+      "axial_width_mm": 48.652687,
+      "radial_band_mm": [
+       68.5,
+       92.5
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "CYLINDRICAL_SURFACE|r=63.0",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 63.00000000000001,
+      "face_count": 2,
+      "area_mm2": 6328.4626,
+      "area_unknown_faces": 1,
+      "axial_band_mm": [
+       -15.985399,
+       15.989399
+      ],
+      "axial_width_mm": 31.974798,
+      "radial_band_mm": [
+       63.0,
+       63.0
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "CYLINDRICAL_SURFACE|r=68.5",
+      "surface_type": "CYLINDRICAL_SURFACE",
+      "radius_mm": 68.49999999999999,
+      "face_count": 4,
+      "area_mm2": 3454.0328,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -19.998,
+       20.002
+      ],
+      "axial_width_mm": 40.0,
+      "radial_band_mm": [
+       68.5,
+       68.5
+      ],
+      "touches_r103_circle": false
+     },
+     {
+      "group": "PLANE|r=none",
+      "surface_type": "PLANE",
+      "radius_mm": null,
+      "face_count": 58,
+      "area_mm2": 2400.5732,
+      "area_unknown_faces": 0,
+      "axial_band_mm": [
+       -15.985399,
+       15.989399
+      ],
+      "axial_width_mm": 31.974798,
+      "radial_band_mm": [
+       63.0,
+       78.944549
+      ],
+      "touches_r103_circle": false
+     }
+    ],
+    "rejected_hypotheses": [
+     {
+      "hypothesis": "the rolling surface is the 103 mm edge's adjacent cylinder",
+      "verdict": "rejected",
+      "evidence": "the largest cylindrical face radius in each wheel solid is 68.5 mm; there is no cylinder at 92.5 mm or 103 mm"
+     },
+     {
+      "hypothesis": "the rolling surface is a 49 mm wide flat cylindrical tread",
+      "verdict": "rejected",
+      "evidence": "the 103 mm circle is the equator of a torus; the tread band spans a 41.0 mm axial band but the radius drops to 92.5 mm at its edges"
+     },
+     {
+      "hypothesis": "the wheel is a plain disc with a 206 mm flange",
+      "verdict": "rejected",
+      "evidence": "radial band 92.5 -> 103.0 mm on a 41 mm wide torus; the flange hypothesis predicted a planar annulus, and the total planar area per wheel is only 1883.2 mm^2"
+     }
+    ]
+   }
+  }
+ },
+ "chassis_aggregates": {
+  "track_width": {
+   "value_m": 0.500004,
+   "verdict": "candidate",
+   "why": "measured relative geometry in the chassis frame; the frame origin and the steering pose remain unauthorised",
+   "uncertainty_m": 4e-06,
+   "unit": "m",
+   "frame": "chassis body frame, lateral = chassis x (CAD x)",
+   "residual": {
+    "cad_x_span_mm": 500.004,
+    "centre_fit_residual_mm": 0.002
+   },
+   "source": {
+    "file": "contract + v2",
+    "locator": "wheels[*].axle_line_chassis.point_m"
+   }
+  },
+  "wheelbase": {
+   "value_m": 0.594,
+   "verdict": "candidate",
+   "why": "same as track_width; note the wheelbase is along chassis y, which is CAD z, not chassis z",
+   "uncertainty_m": 4e-06,
+   "unit": "m",
+   "frame": "chassis body frame, fore-aft = chassis y (CAD z)",
+   "residual": {
+    "cad_z_span_mm": 594.0,
+    "centre_fit_residual_mm": 0.002
+   },
+   "source": {
+    "file": "contract + v2",
+    "locator": "wheels[*].axle_line_chassis.point_m"
+   }
+  },
+  "wheel_centre_plane_spread": {
+   "value_m": 0.0,
+   "verdict": "verified",
+   "why": "all four measured wheel centres share one chassis z plane to the measurement resolution; this is what lets a single lift constant be well defined",
+   "unit": "m",
+   "frame": "chassis body frame",
+   "residual": {
+    "spread_m": 0.0
+   }
+  },
+  "unloaded_rolling_height_from_geometry": {
+   "value_m": 0.347,
+   "verdict": "candidate",
+   "why": "chassis z of the wheel centre plus the 103 mm unloaded equatorial radius; the loaded rolling radius stays UNKNOWN",
+   "unit": "m",
+   "frame": "chassis body frame",
+   "residual": {
+    "proxy_half_height_m": 0.09,
+    "proxy_lift_m": 0.334,
+    "difference_m": 0.013
+   }
+  }
+ },
+ "part_identity": {
+  "verdict": "mirrored pairs (left / right), not four identical parts",
+  "status": "verified at the BREP face-signature level, candidate for the physical part number",
+  "why": "the tread torus is split into two 180 deg faces whose axial bands are [-20.502, -0.002] and [-0.002, 20.498] mm on the +x wheels and sign-flipped on the -x wheels, so the solids are mirror placements, not the same orientation",
+  "max_mirror_band_residual_mm": 0.0,
+  "mesh_resolution_limit_mm": 2.9877,
+  "why_not_four_identical": "identical parts would show identical axial-band signs in the same CAD frame; they do not",
+  "per_wheel": {
+   "435700": {
+    "tread_torus_face_count": 4,
+    "tread_axial_bands_mm": [
+     [
+      -20.502,
+      -0.002
+     ],
+     [
+      -20.502,
+      -0.002
+     ],
+     [
+      -0.002,
+      20.498
+     ],
+     [
+      -0.002,
+      20.498
+     ]
+    ],
+    "tread_major_radii_mm": [
+     77.738095,
+     77.738095,
+     77.738095,
+     77.738095
+    ],
+    "tread_area_mm2": 29870.6896,
+    "face_count": 190
+   },
+   "759491": {
+    "tread_torus_face_count": 4,
+    "tread_axial_bands_mm": [
+     [
+      -20.502,
+      -0.002
+     ],
+     [
+      -20.502,
+      -0.002
+     ],
+     [
+      -0.002,
+      20.498
+     ],
+     [
+      -0.002,
+      20.498
+     ]
+    ],
+    "tread_major_radii_mm": [
+     77.738095,
+     77.738095,
+     77.738095,
+     77.738095
+    ],
+    "tread_area_mm2": 29870.6896,
+    "face_count": 190
+   },
+   "773650": {
+    "tread_torus_face_count": 4,
+    "tread_axial_bands_mm": [
+     [
+      -20.498,
+      0.002
+     ],
+     [
+      -20.498,
+      0.002
+     ],
+     [
+      0.002,
+      20.502
+     ],
+     [
+      0.002,
+      20.502
+     ]
+    ],
+    "tread_major_radii_mm": [
+     77.738095,
+     77.738095,
+     77.738095,
+     77.738095
+    ],
+    "tread_area_mm2": 29870.6896,
+    "face_count": 190
+   },
+   "871375": {
+    "tread_torus_face_count": 4,
+    "tread_axial_bands_mm": [
+     [
+      -20.498,
+      0.002
+     ],
+     [
+      -20.498,
+      0.002
+     ],
+     [
+      0.002,
+      20.502
+     ],
+     [
+      0.002,
+      20.502
+     ]
+    ],
+    "tread_major_radii_mm": [
+     77.738095,
+     77.738095,
+     77.738095,
+     77.738095
+    ],
+    "tread_area_mm2": 29870.6896,
+    "face_count": 190
+   }
+  },
+  "cross_checks": {
+   "pr25_hausdorff_mm": 2.0872,
+   "pr25_mesh_p95_mm": 2.9877,
+   "pr25_verdict": "within mesh resolution: no real asymmetry provable from the cloud",
+   "v2_adds": "analytic face-level sign flip, which the cloud could not resolve"
+  }
+ },
+ "p4_consumption_contract_v2": {
+  "may_use_as_TEST_PROXY_parameters": [
+   {
+    "id": "wheel_axle_direction_chassis",
+    "value": "(1,0,0) unit, sign per side from outward_axle_direction.spin_sign",
+    "verdict": "candidate",
+    "constraint": "direction only; use spin_sign, never a hard-coded +/-"
+   },
+   {
+    "id": "wheel_centre_chassis",
+    "value": "(+/-0.250002, +/-0.297000, -0.244000) m",
+    "verdict": "candidate",
+    "constraint": "relative geometry only; do not treat the origin as a chassis datum"
+   },
+   {
+    "id": "track_width",
+    "value": "0.500004 m",
+    "verdict": "candidate",
+    "constraint": "relative geometry only, in the documented chassis mapping"
+   },
+   {
+    "id": "wheelbase",
+    "value": "0.594000 m",
+    "verdict": "candidate",
+    "constraint": "relative geometry only; the wheelbase runs along chassis y"
+   },
+   {
+    "id": "wheel_unloaded_radius",
+    "value": "0.103 m (torus equator R+r)",
+    "verdict": "candidate",
+    "constraint": "TEST_PROXY only; a loaded rolling radius is UNKNOWN"
+   },
+   {
+    "id": "tread_axial_band",
+    "value": "0.041 m wide, centred on the wheel plane",
+    "verdict": "candidate",
+    "constraint": "drives contact-patch width proxies; not a tyre model"
+   },
+   {
+    "id": "wheel_spin_sign",
+    "value": "spin_sign = +1 on +x wheels, -1 on -x wheels",
+    "verdict": "candidate",
+    "constraint": "sign convention relative to the outward axle; the forward direction remains UNKNOWN"
+   }
+  ],
+  "forbidden_as_real_values": [
+   "wheel_radius as a frozen physical parameter (0.103 m stays a TEST_PROXY)",
+   "loaded_rolling_height / any tyre deflection or contact-patch length",
+   "lift = 0.334 m (it is 13 mm below the geometric 0.347 m and was never measured)",
+   "the 0.090 m proxy collision half-height as a real tread half-width",
+   "wheel mass, inertia tensor, friction coefficients, tread compliance",
+   "chassis-frame origin as a calibrated datum, or chassis z as an authorised gravity axis",
+   "any axle joint axis / motor channel inferred from the axis-cluster recording",
+   "steering freedom, steering range or steering-axis position",
+   "the toroidal tread as proof of the tyre material or of a real contact model"
+  ],
+  "gates_for_p4": [
+   "read a field's verdict before using it; UNKNOWN must fail closed",
+   "every candidate consumed must be an explicit parameter with a sensitivity sweep",
+   "the spin sign must come from outward_axle_direction.spin_sign, not from a constant",
+   "no number in this file may be cited as a measured physical wheel property"
+  ]
+ },
+ "unknowns": [
+  {
+   "quantity": "loaded_rolling_radius",
+   "missing_measurement": "a loaded contact test (or tyre stiffness + vehicle load) to convert the 103 mm unloaded equator into a rolling radius"
+  },
+  {
+   "quantity": "contact_patch_geometry",
+   "missing_measurement": "the torus only gives the unloaded crown; patch size needs a contact/deflection measurement"
+  },
+  {
+   "quantity": "chassis_frame_datum",
+   "missing_measurement": "a vendor chassis frame declaration or a physical datum calibration (origin + authorised up axis)"
+  },
+  {
+   "quantity": "forward_direction",
+   "missing_measurement": "which chassis y sign is the front of the vehicle"
+  },
+  {
+   "quantity": "steering_axis_position_and_range",
+   "missing_measurement": "a joint definition or a measured steering pose sweep"
+  },
+  {
+   "quantity": "wheel_mass_inertia_friction",
+   "missing_measurement": "vendor data or a measured part"
+  },
+  {
+   "quantity": "tyre_material",
+   "missing_measurement": "material specification; the BREP carries no material"
+  }
+ ]
+}
