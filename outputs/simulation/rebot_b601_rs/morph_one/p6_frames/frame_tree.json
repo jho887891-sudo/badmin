@@ -1,0 +1,753 @@
+{
+  "schema": "p6_frame_tree/1",
+  "generated_by": "tools/p6_frames/build_p6_frame_contract.py",
+  "scope": "world -> chassis -> arm base -> arm links (by name, from the shipped USD) -> end link -> racket mount -> racket",
+  "conventions": {
+    "length_unit": "metre",
+    "handedness": "right-handed",
+    "up_axis_of_source_assets": "Z (both the RS USD and the racket USD) - no axis swap is applied anywhere in this contract",
+    "quaternion_order_by_source": {
+      "usd_physics_and_usdgeom": "wxyz",
+      "gltf_glb_json": "xyzw",
+      "isaac_body_quat_w": "xyzw",
+      "configs/racket.yaml:mount_transform.quaternion_xyzw": "xyzw"
+    },
+    "quaternion_rule": "SOURCE-TAGGED. Every rotation in this file is written as {order, values} and the order is decoded by a dedicated function per source. USD wxyz and Isaac xyzw must never share one decoder or one helper.",
+    "degree_radian_rule": "USD Physics revolute limits are authored in DEGREES; both the authored value and the radian value are recorded per joint."
+  },
+  "nodes": [
+    {
+      "node": "world",
+      "definition": "right-handed, Z up, origin at the court net centre on the floor plane (simulation/badminton_scene/scene_layout.py:16-20)"
+    },
+    {
+      "node": "chassis_morph_one",
+      "definition": "Morph One chassis body frame, Z up, +X forward"
+    },
+    {
+      "node": "arm_root_prim",
+      "definition": "the defaultPrim /ReBot_Arm_RS of the shipped RS USD (the stage root the arm is referenced at)"
+    },
+    {
+      "node": "arm_base_link",
+      "definition": "/ReBot_Arm_RS/Geometry/base_link in the shipped RS USD"
+    },
+    {
+      "node": "link1",
+      "definition": "/ReBot_Arm_RS/Geometry/base_link/link1"
+    },
+    {
+      "node": "link2",
+      "definition": "/ReBot_Arm_RS/Geometry/base_link/link1/link2"
+    },
+    {
+      "node": "link3",
+      "definition": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3"
+    },
+    {
+      "node": "link4",
+      "definition": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4"
+    },
+    {
+      "node": "link5",
+      "definition": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5"
+    },
+    {
+      "node": "link6",
+      "definition": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6"
+    },
+    {
+      "node": "gripper_left",
+      "definition": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_left"
+    },
+    {
+      "node": "gripper_right",
+      "definition": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_right"
+    },
+    {
+      "node": "gripper_end",
+      "definition": "geometric frame under link6, translate (0,0,0.16621) m"
+    },
+    {
+      "node": "racket_mount",
+      "definition": "flange mating face / handle clamp axis - position UNKNOWN"
+    },
+    {
+      "node": "racket_root",
+      "definition": "/RacketVisual in assets/third_party/racket_visual.usd: +Z handle->head, +X face normal toward the opponent, +Y = Z x X, origin at the handle butt"
+    },
+    {
+      "node": "racket_contact_frame",
+      "definition": "centre of the racket face - position UNKNOWN"
+    }
+  ],
+  "edges": [
+    {
+      "edge": 1,
+      "from": "world",
+      "to": "chassis_morph_one",
+      "edge_kind": "pose",
+      "status": "UNKNOWN",
+      "translation_m": null,
+      "rotation_quat": null,
+      "rotation_matrix": null,
+      "missing_datum": "the Morph One chassis world pose (x, y, yaw) for the actual deployment",
+      "would_come_from": "a metrology record of the robot's placement on the court, or the runtime odometry plus the court registration procedure; neither is committed",
+      "note": "simulation/badminton_scene/scene_layout.py ROBOT world_pos=(-1.60,0.00,0.00) is an ENGINEERING_V0_1 scene placeholder, not a measurement of the real rig."
+    },
+    {
+      "edge": 2,
+      "from": "chassis_morph_one",
+      "to": "arm_base_link",
+      "edge_kind": "mount",
+      "status": "UNKNOWN",
+      "translation_m": null,
+      "rotation_quat": null,
+      "rotation_matrix": null,
+      "missing_datum": "T_chassis_armbase: the bolt-pattern offset and yaw of the B601-RS base on the Morph One top plate",
+      "would_come_from": "a CAD or hand-measured mount record for THIS chassis + THIS arm; management/morph_one_rs/ holds the chassis CAD provenance but no arm mount transform",
+      "note": "scene_layout.py PIPER mount_rel=(0,0,0.30) belongs to the PiPER arm and must not be reused here."
+    },
+    {
+      "edge": 3,
+      "from": "arm_root_prim",
+      "to": "arm_base_link",
+      "edge_kind": "root_joint_identity",
+      "joint_name": "root_joint",
+      "status": "ASSERTED_BY_ASSET",
+      "translation_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_quat": {
+        "order": "wxyz",
+        "values": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "rotation_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source": {
+        "file": "payloads/Physics/physics.usda",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "locator": "root_joint / physics:localPos0 + physics:localRot0"
+      },
+      "note": "fixed joint /ReBot_Arm_RS -> base_link, identity; establishes that the arm root prim IS the base_link frame, so no naming gap exists at the arm boundary."
+    },
+    {
+      "edge": 4,
+      "from": "base_link",
+      "to": "link1",
+      "edge_kind": "revolute_joint",
+      "joint_name": "joint1",
+      "joint_axis_in_child": "Z",
+      "joint_limits_rad": [
+        -2.7999999539821165,
+        2.7999999539821165
+      ],
+      "joint_limits_as_authored_deg": [
+        -160.42818,
+        160.42818
+      ],
+      "link_prim_path": "/ReBot_Arm_RS/Geometry/base_link/link1",
+      "status": "ASSERTED_BY_ASSET",
+      "translation_m": [
+        -0.00034283,
+        -0.00098683,
+        0.075
+      ],
+      "rotation_quat": {
+        "order": "wxyz",
+        "values": [
+          0.0,
+          -1.0,
+          0.0,
+          0.0
+        ]
+      },
+      "rotation_matrix": [
+        [
+          1.0,
+          -0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          -0.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "source": {
+        "file": "payloads/Physics/physics.usda",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "locator": "joint1 / physics:localPos0 + physics:localRot0"
+      },
+      "note": "authored joint frame: child pose with joint coordinate = 0"
+    },
+    {
+      "edge": 5,
+      "from": "link1",
+      "to": "link2",
+      "edge_kind": "revolute_joint",
+      "joint_name": "joint2",
+      "joint_axis_in_child": "Z",
+      "joint_limits_rad": [
+        0.0,
+        3.1400000406473483
+      ],
+      "joint_limits_as_authored_deg": [
+        0.0,
+        179.90875
+      ],
+      "link_prim_path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2",
+      "status": "ASSERTED_BY_ASSET",
+      "translation_m": [
+        0.020343,
+        0.027237,
+        0.07
+      ],
+      "rotation_quat": {
+        "order": "wxyz",
+        "values": [
+          -0.70710546,
+          0.7071081,
+          0.0,
+          0.0
+        ]
+      },
+      "rotation_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -3.7335238112223834e-06,
+          0.9999999999930305
+        ],
+        [
+          0.0,
+          -0.9999999999930305,
+          -3.7335238112223834e-06
+        ]
+      ],
+      "source": {
+        "file": "payloads/Physics/physics.usda",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "locator": "joint2 / physics:localPos0 + physics:localRot0"
+      },
+      "note": "authored joint frame: child pose with joint coordinate = 0"
+    },
+    {
+      "edge": 6,
+      "from": "link2",
+      "to": "link3",
+      "edge_kind": "revolute_joint",
+      "joint_name": "joint3",
+      "joint_axis_in_child": "Z",
+      "joint_limits_rad": [
+        0.0,
+        3.1400000406473483
+      ],
+      "joint_limits_as_authored_deg": [
+        0.0,
+        179.90875
+      ],
+      "link_prim_path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3",
+      "status": "ASSERTED_BY_ASSET",
+      "translation_m": [
+        -0.236,
+        2.7755576e-17,
+        0.0
+      ],
+      "rotation_quat": {
+        "order": "wxyz",
+        "values": [
+          0.0,
+          -1.0,
+          0.0,
+          0.0
+        ]
+      },
+      "rotation_matrix": [
+        [
+          1.0,
+          -0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          -0.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "source": {
+        "file": "payloads/Physics/physics.usda",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "locator": "joint3 / physics:localPos0 + physics:localRot0"
+      },
+      "note": "authored joint frame: child pose with joint coordinate = 0"
+    },
+    {
+      "edge": 7,
+      "from": "link3",
+      "to": "link4",
+      "edge_kind": "revolute_joint",
+      "joint_name": "joint4",
+      "joint_axis_in_child": "Z",
+      "joint_limits_rad": [
+        -1.5700001075901369,
+        1.5700001075901369
+      ],
+      "joint_limits_as_authored_deg": [
+        -89.95438,
+        89.95438
+      ],
+      "link_prim_path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4",
+      "status": "ASSERTED_BY_ASSET",
+      "translation_m": [
+        0.228,
+        -0.072746,
+        0.0045
+      ],
+      "rotation_quat": {
+        "order": "wxyz",
+        "values": [
+          0.0,
+          -1.0,
+          0.0,
+          0.0
+        ]
+      },
+      "rotation_matrix": [
+        [
+          1.0,
+          -0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          -0.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "source": {
+        "file": "payloads/Physics/physics.usda",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "locator": "joint4 / physics:localPos0 + physics:localRot0"
+      },
+      "note": "authored joint frame: child pose with joint coordinate = 0"
+    },
+    {
+      "edge": 8,
+      "from": "link4",
+      "to": "link5",
+      "edge_kind": "revolute_joint",
+      "joint_name": "joint5",
+      "joint_axis_in_child": "Z",
+      "joint_limits_rad": [
+        -1.5700001075901369,
+        1.5700001075901369
+      ],
+      "joint_limits_as_authored_deg": [
+        -89.95438,
+        89.95438
+      ],
+      "link_prim_path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5",
+      "status": "ASSERTED_BY_ASSET",
+      "translation_m": [
+        0.087,
+        -0.048,
+        -0.03075
+      ],
+      "rotation_quat": {
+        "order": "wxyz",
+        "values": [
+          -0.7071081,
+          -0.70710546,
+          0.0,
+          -0.0
+        ]
+      },
+      "rotation_matrix": [
+        [
+          1.0,
+          -0.0,
+          0.0
+        ],
+        [
+          0.0,
+          3.7335238108893165e-06,
+          -0.9999999999930305
+        ],
+        [
+          0.0,
+          0.9999999999930305,
+          3.7335238108893165e-06
+        ]
+      ],
+      "source": {
+        "file": "payloads/Physics/physics.usda",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "locator": "joint5 / physics:localPos0 + physics:localRot0"
+      },
+      "note": "authored joint frame: child pose with joint coordinate = 0"
+    },
+    {
+      "edge": 9,
+      "from": "link5",
+      "to": "link6",
+      "edge_kind": "revolute_joint",
+      "joint_name": "joint6",
+      "joint_axis_in_child": "Z",
+      "joint_limits_rad": [
+        -3.1400000406473483,
+        3.1400000406473483
+      ],
+      "joint_limits_as_authored_deg": [
+        -179.90875,
+        179.90875
+      ],
+      "link_prim_path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6",
+      "status": "ASSERTED_BY_ASSET",
+      "translation_m": [
+        0.0365,
+        2.1175824e-22,
+        0.048
+      ],
+      "rotation_quat": {
+        "order": "wxyz",
+        "values": [
+          -3.3148634e-17,
+          -0.70710546,
+          -3.7116984e-17,
+          0.7071081
+        ]
+      },
+      "rotation_matrix": [
+        [
+          -3.7335238112223834e-06,
+          9.937057963408373e-17,
+          -0.9999999999930305
+        ],
+        [
+          5.6119088984088475e-18,
+          -1.0000000000000004,
+          -9.937060058697182e-17
+        ],
+        [
+          -0.9999999999930305,
+          -5.61227990087314e-18,
+          3.7335238108893165e-06
+        ]
+      ],
+      "source": {
+        "file": "payloads/Physics/physics.usda",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "locator": "joint6 / physics:localPos0 + physics:localRot0"
+      },
+      "note": "authored joint frame: child pose with joint coordinate = 0"
+    },
+    {
+      "edge": 10,
+      "from": "link6",
+      "to": "gripper_left",
+      "edge_kind": "prismatic_jaw",
+      "joint_name": "gripper_joint1",
+      "joint_limits_as_authored_m": [
+        0.0,
+        0.05
+      ],
+      "mount_allowed": false,
+      "mount_rejection": "the jaws slide (0..0.05 m on gripper_joint1), so a racket clamped by them is not a fixed tool; src/simulation/rebot_b601dm/racket.py:LOCKED_JOINTS already refuses them",
+      "status": "ASSERTED_BY_ASSET",
+      "translation_m": [
+        1.5351144e-07,
+        7.3385e-05,
+        0.124271
+      ],
+      "rotation_quat": {
+        "order": "wxyz",
+        "values": [
+          0.7071081,
+          -0.70710546,
+          -2.5973434e-06,
+          2.597353e-06
+        ]
+      },
+      "rotation_matrix": [
+        [
+          0.9999999999730151,
+          -2.7290448763664377e-11,
+          -7.346410113468136e-06
+        ],
+        [
+          7.346410113518824e-06,
+          3.733523810778294e-06,
+          0.9999999999660456
+        ],
+        [
+          1.3754832039322902e-13,
+          -0.9999999999930305,
+          3.7335238108893165e-06
+        ]
+      ],
+      "source": {
+        "file": "payloads/Physics/physics.usda",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "locator": "gripper_joint1 / physics:localPos0 + physics:localRot0"
+      },
+      "note": ""
+    },
+    {
+      "edge": 11,
+      "from": "link6",
+      "to": "gripper_right",
+      "edge_kind": "prismatic_jaw",
+      "joint_name": "gripper_joint2",
+      "joint_limits_as_authored_m": [
+        0.0,
+        0.0715
+      ],
+      "mount_allowed": false,
+      "mount_rejection": "the jaws slide (0..0.0715 m on gripper_joint2), so a racket clamped by them is not a fixed tool; src/simulation/rebot_b601dm/racket.py:LOCKED_JOINTS already refuses them",
+      "status": "ASSERTED_BY_ASSET",
+      "translation_m": [
+        1.5458967e-07,
+        -7.3385e-05,
+        0.124271
+      ],
+      "rotation_quat": {
+        "order": "wxyz",
+        "values": [
+          0.7071081,
+          0.70710546,
+          2.5973434e-06,
+          2.597353e-06
+        ]
+      },
+      "rotation_matrix": [
+        [
+          0.9999999999730151,
+          -2.7290448763664377e-11,
+          7.346410113468136e-06
+        ],
+        [
+          7.346410113518824e-06,
+          3.733523810778294e-06,
+          -0.9999999999660456
+        ],
+        [
+          -1.3754832039322902e-13,
+          0.9999999999930305,
+          3.7335238108893165e-06
+        ]
+      ],
+      "source": {
+        "file": "payloads/Physics/physics.usda",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "locator": "gripper_joint2 / physics:localPos0 + physics:localRot0"
+      },
+      "note": ""
+    },
+    {
+      "edge": 12,
+      "from": "link6",
+      "to": "gripper_end",
+      "edge_kind": "authored_frame",
+      "rigid_body": false,
+      "physical_meaning": "an instanceable Xform child of link6 with no rigid body and no joint: it is a GEOMETRIC frame (0.16621 m down link6 +Z), not a physics link. Using it as a body in a dynamics graph would silently create a static child; the dynamics body stays link6.",
+      "status": "ASSERTED_BY_ASSET",
+      "translation_m": [
+        0.0,
+        0.0,
+        0.16621
+      ],
+      "rotation_quat": {
+        "order": "wxyz",
+        "values": [
+          2.597488447e-06,
+          -0.7071054578,
+          -2.597497996e-06,
+          -0.7071080804
+        ]
+      },
+      "rotation_matrix": [
+        [
+          -3.708916551881103e-06,
+          7.346820409464419e-06,
+          0.9999999999661339
+        ],
+        [
+          -1.2004637337157905e-13,
+          -0.9999999999730118,
+          7.346820409514506e-06
+        ],
+        [
+          0.9999999999931218,
+          2.7128697448773663e-11,
+          3.7089165521031475e-06
+        ]
+      ],
+      "source": {
+        "file": "payloads/base.usda",
+        "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+        "locator": "def Xform \"gripper_end\" / xformOp:translate + xformOp:orient"
+      },
+      "note": ""
+    },
+    {
+      "edge": 13,
+      "from": "gripper_end",
+      "to": "racket_mount",
+      "edge_kind": "tool_mount",
+      "status": "UNKNOWN",
+      "translation_m": null,
+      "rotation_quat": null,
+      "rotation_matrix": null,
+      "missing_datum": "T_flange_tcp (a.k.a. T_link6_tcp): where the racket handle axis leaves the flange and how it is clocked about that axis",
+      "would_come_from": "configs/racket.yaml piper_attachment.mount_transform.translation_m / quaternion_xyzw, which are null and carry status REQUIRES_MEASUREMENT; filling them needs a physical measurement of the printed adapter on the installed tool, plus docs/RACKET.md:117 T_link6_tcp procedure",
+      "note": "the arm side of this edge is asserted (link6/gripper_end); the tool side is the gap."
+    },
+    {
+      "edge": 14,
+      "from": "racket_mount",
+      "to": "racket_root",
+      "edge_kind": "asset_placement",
+      "status": "UNKNOWN",
+      "translation_m": null,
+      "rotation_quat": null,
+      "rotation_matrix": null,
+      "missing_datum": "how deep the handle butt sits inside the mount, and the clocking of the racket's +X face normal about the handle axis",
+      "would_come_from": "a measurement of the physical assembly (handle insertion depth + face normal direction). The asset cannot answer it: /RacketVisual origin is the handle butt at z=0, which is a point on the tool, not the mating face",
+      "note": "assets/third_party/racket_visual.usd has no mount prim, no joint and no flange geometry (evidence/racket_usd_audit.json flange_or_end_link_in_asset=false)."
+    },
+    {
+      "edge": 15,
+      "from": "racket_root",
+      "to": "racket_contact_frame",
+      "edge_kind": "derived_frame",
+      "status": "UNKNOWN",
+      "translation_m": null,
+      "rotation_quat": null,
+      "rotation_matrix": null,
+      "missing_datum": "the measured head centre / sweet-spot centre in racket-root coordinates",
+      "would_come_from": "geometry measured on the real strung racket, or a fitted ellipse centre on the collision proxy; simulation/badminton_scene/racket_cfg.py head_center_from_tcp=0.50 is explicitly labelled approx and configs/racket.yaml measured_unit is REQUIRES_MEASUREMENT",
+      "note": "a value CAN be read off the visual mesh (string-bed bbox z 0.44391..0.67526 m), but the visual is 682.7 mm long versus 675 mm for the real racket, so that centre is not the real racket's centre and is not asserted here."
+    }
+  ],
+  "summary": {
+    "edges_total": 15,
+    "asserted_by_asset": 10,
+    "assumptions_or_unknown": 5,
+    "unknown_edge_ids": [
+      1,
+      2,
+      13,
+      14,
+      15
+    ],
+    "unknown_edge_list": [
+      {
+        "edge": 1,
+        "from": "world",
+        "to": "chassis_morph_one",
+        "missing_datum": "the Morph One chassis world pose (x, y, yaw) for the actual deployment"
+      },
+      {
+        "edge": 2,
+        "from": "chassis_morph_one",
+        "to": "arm_base_link",
+        "missing_datum": "T_chassis_armbase: the bolt-pattern offset and yaw of the B601-RS base on the Morph One top plate"
+      },
+      {
+        "edge": 13,
+        "from": "gripper_end",
+        "to": "racket_mount",
+        "missing_datum": "T_flange_tcp (a.k.a. T_link6_tcp): where the racket handle axis leaves the flange and how it is clocked about that axis"
+      },
+      {
+        "edge": 14,
+        "from": "racket_mount",
+        "to": "racket_root",
+        "missing_datum": "how deep the handle butt sits inside the mount, and the clocking of the racket's +X face normal about the handle axis"
+      },
+      {
+        "edge": 15,
+        "from": "racket_root",
+        "to": "racket_contact_frame",
+        "missing_datum": "the measured head centre / sweet-spot centre in racket-root coordinates"
+      }
+    ],
+    "verdict": "PASS for the arm chain (base_link..link6 + gripper_end, by name, from sha256-pinned USD); UNKNOWN for every transform that crosses a mount or a tool boundary"
+  },
+  "evidence": {
+    "robot_usd": {
+      "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/robot_usd_joint_chain.json",
+      "layers": {
+        "ReBot_Arm_RS.usda": {
+          "remote_relative_path": "ReBot_Arm_RS.usda",
+          "sha256": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+          "local_bytes": 1251
+        },
+        "payloads/base.usda": {
+          "remote_relative_path": "payloads/base.usda",
+          "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+          "local_bytes": 28045
+        },
+        "payloads/Physics/physics.usda": {
+          "remote_relative_path": "payloads/Physics/physics.usda",
+          "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+          "local_bytes": 15832
+        }
+      },
+      "metersPerUnit": 1.0,
+      "kilogramsPerUnit": 1.0,
+      "upAxis": "Z",
+      "remote_root": "/home/T7/dgut/robot_sim/packages/badminton_b601_rs_asset_v1/usd/rebot_b601_rs.usd/ReBot_Arm_RS"
+    },
+    "racket_usd": {
+      "file": "assets/third_party/racket_visual.usd",
+      "sha256": "643fb67003c6429f98ec132d2db056c83ed02811b594ad27904b618bf7c1ec29",
+      "metersPerUnit": 1.0,
+      "upAxis": "Z",
+      "collision_count": 0,
+      "audit": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/racket_usd_audit.json"
+    }
+  }
+}
