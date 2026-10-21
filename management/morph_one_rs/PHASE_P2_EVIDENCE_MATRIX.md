@@ -55,7 +55,8 @@
 | G7B_static_r01/r02 | 真实臂 + 四轮 compound，g=0 | **FAIL 建场**（漏 scp `p2_landing_gates.py` → ModuleNotFoundError），证据保留 |
 | G7B_static_r03/r04 | 同上，修 import 后 | **FAIL 建场**：两个 `ArticulationRootAPI`（`/World/RW/Chassis` 与 `/World/RW/Arm/Geometry`）→ PhysX 拒绝；证据保留 |
 | G7B_static_r05 / G7B_grav_r01/r02 | 同上，去掉第二 root | **BLOCKED（环境）**：宿主被其他用户占用（`load average 13–18`、`%st 32.6`、swap 已用 7.4 GB、他人 Isaac full app 223% CPU + 训练 189%），Kit 单次启动从 ~40 s 退化到 **5–20 min 且多次停滞**（`omni.kit.extension.log` 长时间无新事件）；run 被主动 kill 并保留日志 |
-| G7B_grav_r07 | 单跑重试 | 见 `G7B_grav_r07/result.json`（本文件写作时仍在启动中；若完成则为唯一一次真实臂 + 四轮 + 重力证据） |
+| **G7B_grav_r07** | 单跑（真实臂 + 四轮 + g=-9.81，360 步） | **FAIL（判定有效，原因是我方测量缺陷）**：10 刚体 / **8 DOF**、总质量 **26.008504 kg**（Chassis 20 + 臂 6.0085，无重复计质量）、臂 sha256 未变、**相对安装漂移 2.98e-08 m / 0.0 rad**、`arm_does_not_touch_ground` true、`settles` true、末态 z **0.333999723**（下落 64.6 mm 后停在轮底接触高度）、末 30 步 z 跨度 1.19e-07 → **轮子确实挡住了整机**；但 `contact_detected` false（峰値 0 N）——原因是**脚本每个物理步未调用 `ContactSensor.update()`**，读到的是初始化零值。已修（每个 step update）并重跑 `G7B_grav_r08` |
+| G7B_grav_r08 | 修 sensor.update 后重跑 | 见 `G7B_grav_r08/result.json`（收尾时仍在运行） |
 
 **P2-07/P2-08 结论**：真实臂与修正四轮 compound 的**同场景重力承重尚未取得可判定的 PASS/FAIL 证据**，
 当前状态 **BLOCKED（环境资源竞争）**，脚本与预注册已入库，宿主空闲后可直接重跑。
@@ -71,7 +72,9 @@
 
 ## 7. 解除依赖条件（写清楚，避免下轮重新推理）
 
-- **P2-10 自身**：待 `G7B_grav_r07` 出结果后，把第 5 节最后一行替换为真实 PASS/FAIL；在此之前 P2-10 = **PARTIAL**。
+- **P2-10 自身**：待 `G7B_grav_r08`（修 sensor.update 后）出结果确认接触力后即可定 PASS/FAIL；在此之前 P2-10 = **PARTIAL**。
+- **教训（必须记入坑列表）**：`ContactSensor` 不调用 `update()` 时返回**初始化零值**，看起来像"没有接触"。
+  判定接触必须同时看 (a) 传感器非零、(b) 位姿/速度响应；`G7B_grav_r07` 正是只有 (b) 没有 (a) 的例子。
 - **P3 解锁**：P2-10 DONE 后立即解锁；`p3_dynamic_mount.py` 与 `PHASE_P3_DYNAMIC_MOUNT_GATE.md` 已入库待跑。
 - **P4 解锁**：仍阻断于 P1-09（轮径/轴心/轮距 UNKNOWN），不可用 `lift 0.334`、`206 mm`、`0.090 m 盒` 当真实轮参数。
 - **P6/P7 静态项解锁**：队列模型把 P6-01/P6-05 挂在 P2-10 上，P2-10 完成后自动变 READY/DONE。

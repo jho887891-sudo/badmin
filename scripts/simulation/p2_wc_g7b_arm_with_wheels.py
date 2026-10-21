@@ -293,11 +293,23 @@ def main():
         jsonl.flush()
         frames.append(row)
 
+    def update_sensors():
+        for sensor in sensors.values():
+            try:
+                sensor.update(DT)
+            except Exception:
+                pass
+
+    update_sensors()
     capture("after_reset_step0", 0)
     for step in range(1, ARGS.steps + 1):
         robot.write_data_to_sim()
         sim.step()
         robot.update(sim.get_physics_dt())
+        # A ContactSensor returns its initial zeros until update() is called; G7B_grav_r07
+        # reported 0 N for that reason alone while the chassis still settled at the wheel
+        # contact height (z=0.333999723 after a 64.6 mm fall).  Update every step.
+        update_sensors()
         capture("settle", step)
     jsonl.close()
 
