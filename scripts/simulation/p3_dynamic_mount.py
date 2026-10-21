@@ -63,6 +63,7 @@ from isaaclab.assets import Articulation, ArticulationCfg  # noqa: E402
 from isaaclab.actuators import ImplicitActuatorCfg  # noqa: E402
 from isaaclab_physx.physics import PhysxCfg  # noqa: E402
 from pxr import Gf, Sdf, Usd, UsdGeom, UsdPhysics  # noqa: E402
+from p3_motion_gate import directional_displacement_gate  # noqa: E402
 
 
 def _np(values):
@@ -317,12 +318,9 @@ def main():
                                        device=robot.device)
 
     def set_joint_targets():
-        # The P3 joint_hold gate asks whether the IMPLICIT drive holds the target while the
-        # root is driven, so the target must be commanded explicitly every step.
-        try:
-            robot.set_joint_position_target(joint_target_tensor)
-        except Exception:
-            pass
+        # Fail closed. Previously exceptions here were silently swallowed,
+        # allowing "joint_hold PASS" when no joint target had been submitted.
+        robot.set_joint_position_target(joint_target_tensor)
 
     def capture(tag, step, commanded_pos, commanded_yaw, smooth):
         row = {"run_id": ARGS.run_id, "profile": ARGS.profile, "tag": tag, "step": step,
@@ -425,10 +423,13 @@ def main():
                              and mount_rot_max <= thresholds["mount_rot_rad"]),
         "joint_hold": bool(joint_dev <= thresholds["joint_hold_rad"]),
     }
-    translation_amplitude = math.hypot(spec["x"], spec["y"])
-    if translation_amplitude > 1e-9:
-        gates["translation_actually_measured"] = bool(
-            realized_translation >= thresholds["motion_ratio"] * translation_amplitude)
+    # P3 v1.1: include Z and require directed displacement, not arbitrary
+    # same-magnitude motion. The old hypot(x,y) skipped translate_z entirely.
+    directed = directional_displacement_gate(
+        [spec["x"], spec["y"], spec["z"]], chassis_pos[0], chassis_pos[-1],
+        thresholds["motion_ratio"])
+    if directed is not None:
+        gates["translation_actually_measured"] = directed["pass"]
     if abs(spec["yaw"]) > 1e-9:
         gates["yaw_actually_measured"] = bool(
             realized_yaw >= thresholds["motion_ratio"] * abs(spec["yaw"]))
@@ -445,6 +446,7 @@ def main():
             "command_amplitude": {"x_m": spec["x"], "y_m": spec["y"], "z_m": spec["z"],
                                   "yaw_rad": spec["yaw"], "ramp_s": spec["ramp_s"]},
             "realized_translation_max_m": round(realized_translation, 9),
+            "directed_translation": directed,
             "realized_yaw_max_rad": round(realized_yaw, 9),
             "tracking_position_error_max_m": round(tracking_pos_max, 9),
             "tracking_yaw_error_max_rad": round(tracking_yaw_max, 9),
