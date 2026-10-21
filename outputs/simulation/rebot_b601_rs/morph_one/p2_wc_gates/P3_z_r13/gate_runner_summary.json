@@ -1,0 +1,48 @@
+{
+ "run_id": "P3_z_r13",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_z_r13 --out-dir /home/dgut/runs/g/P3_z_r13 --profile translate_z --steps 360 --read-contacts --freeze-axis none",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1500.0,
+ "quarantined_stale_result": null,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "command_amplitude": {
+   "x_m": 0.0,
+   "y_m": 0.0,
+   "z_m": 0.1,
+   "yaw_rad": 0.0,
+   "ramp_s": 1.0
+  },
+  "realized_translation_max_m": 0.097578079,
+  "directed_translation": {
+   "commanded_displacement_m": 0.1,
+   "achieved_along_command_max_m": 0.097577899694,
+   "achieved_along_command_final_m": 0.097577899694,
+   "best_frame": 120,
+   "achieved_ratio": 0.97577899694,
+   "final_ratio": 0.97577899694,
+   "cross_track_m": 0.00018700181500686146,
+   "pass": true
+  },
+  "realized_yaw_max_rad": 0.001288154,
+  "tracking_position_error_max_m": 0.002437215,
+  "tracking_yaw_error_max_rad": 0.001285872,
+  "t0_mount_position_error_m": 9.314e-09,
+  "mount_position_deviation_max_m": 5.589e-09,
+  "mount_rotation_deviation_max_rad": 8.4294e-08,
+  "joint_deviation_max_rad": 0.012584523,
+  "peak_lin_speed_m_s": 0.014280305,
+  "peak_ang_speed_rad_s": 0.036065492,
+  "peak_jerk_m_s3": 212.339294,
+  "arm_peak_contact_n": 0.0,
+  "steps": 360
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 164.806,
+ "child_stdout_log": "/home/dgut/runs/g/P3_z_r13/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P3_z_r13/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}
