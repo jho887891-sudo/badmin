@@ -23,7 +23,7 @@ python tools/queue/run_cpu_checks.py
 
 ```
 python -m pytest tests/queue -q
-# 59 passed in 56.03s        exit 0
+# 60 passed in 57.45s        exit 0
 
 python tools/queue/queue_state.py --validate
 # state OK: 96 slots, schema 1.0          exit 0
