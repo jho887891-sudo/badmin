@@ -692,12 +692,12 @@
       "dependencies": [
         "P2-10"
       ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
+      "status": "PARTIAL",
+      "owner": "main",
+      "head_sha": "d75e246",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_compound_r11/result.json",
+      "latest_run_id": "P3_compound_r11",
+      "next_action": "joint deviation 0.0179-0.0347 rad under motion; no self-collision or limit violation observed; contact sensors report 0 N",
       "blocker": null,
       "last_error": null
     },
