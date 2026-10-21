@@ -1,0 +1,19 @@
+{
+ "run_id": "G4_r02",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p2_wc_g4_contact_control.py --run-id G4_r02 --out-dir /home/dgut/runs/g/G4_r02",
+ "child_returncode": 0,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "max_contact_force_n": 200.911575,
+  "first_contact_step": 19,
+  "final_z_m": 0.049999736,
+  "drop_height_m": 0.2
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 22.903,
+ "child_stdout_log": "/home/dgut/runs/g/G4_r02/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/G4_r02/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}

@@ -1,0 +1,38 @@
+{
+ "run_id": "G3_r01",
+ "scene_variant": "REAL_CHASSIS_SIMPLIFIED",
+ "gate_result": "FAIL",
+ "metrics": {
+  "t0_world_position_error_m": 0.037400197351,
+  "t0_world_rotation_error_rad": 0.007981763721,
+  "settle_60_step_chassis_drift_m": 0.404264995007
+ },
+ "thresholds": {
+  "position_m": 0.001,
+  "rotation_rad": 0.001,
+  "settle_drift_m": 0.001
+ },
+ "gates": {
+  "t0_world_position_within_tol": false,
+  "t0_world_rotation_within_tol": false,
+  "settle_drift_within_tol": false,
+  "all_finite": true,
+  "penetration_response_observed": true
+ },
+ "diagnostics": {
+  "lift_m": 0.3,
+  "measured_wheel_bottom_z_m": -0.334,
+  "clearance_m": -0.034,
+  "clearance_basis": "authored wheel world-bottom after single parent lift",
+  "usd_authoring_wheel_world_bottom_z_m": -0.0339999908208847,
+  "penetration_trial": true,
+  "penetration_response_observed": true,
+  "root_lin_speed_at_step0_m_s": 0.808530507244,
+  "contact_api": "isaaclab.sensors.ContactSensor",
+  "max_contact_force_step0_n": 64.077667236,
+  "max_contact_force_settle_n": 0.0,
+  "bodies": [
+   "Chassis"
+  ]
+ }
+}
