@@ -102,8 +102,8 @@
 | P2-03 G5 落地门禁预注册 | DONE | `PHASE_P2_G5_LANDING_GATE.md`、`p2_landing_gates.py`、9 单测 exit 0 |
 | P2-01 G2 重复 | DONE | `G2_r02` PASS（1.1184e-07 / 1.55365e-07） |
 | P2-05/P2-06 G6 + 分通道碰撞证明 | DONE | G6A/B/C 各 2 run、`g6_summary.json` |
-| P2-07/P2-08 真实臂 + 四轮同场景 | **BLOCKED（环境）→ 重试中** | `G7B_static_r01..r05`（两个真实建场缺陷已修）、`G7B_grav_r07` |
-| P2-10 证据矩阵 | PARTIAL（等 G7B） | `PHASE_P2_EVIDENCE_MATRIX.md` |
+| P2-07/P2-08 真实臂 + 四轮同场景 | **PASS** | `G7B_grav_r08`：峰值 3567.69 N、稳态支撑 **255.144983 N = mg**（误差 6.1e-06）、安装漂移 **2.98e-08 m**、10 刚体/8 DOF、臂 sha256 未变 |
+| P2-10 证据矩阵 | **DONE** | `PHASE_P2_EVIDENCE_MATRIX.md`（含 G7B_grav_r08 PASS） |
 | P3 动态挂载 | 脚本+预注册已入库，未跑 | `p3_dynamic_mount.py`、`PHASE_P3_DYNAMIC_MOUNT_GATE.md` |
 | P0-02..P0-06 | DONE（子代理） | `test/p0-gate-runner-strict-outdir` @ `ce278c2`，92 passed |
 | P5-02 reset 越限修复 | DONE（子代理） | `p5/rs-reset-pose` @ `6672306`，52 passed |
@@ -115,4 +115,6 @@
 **环境观测（写报告时必须带上）**：本轮宿主被其他用户占用，`load average` 峰值 13–18、`%st` 32.6%、
 swap 已用 7.4 GB；他人 `isaacsim.exp.full.streaming.kit` 223% CPU + 训练任务 189% CPU。
 Kit 单次启动从 ~40 s 退化到 **5–20 min 并多次停滞**（`omni.kit.extension.log` 长时间无新事件）。
-G6 全部 8 个 run 在此之前完成（每 run ~55 s），因此 G6 结论不受影响；G7B 受影响。
+G6 全部 8 个 run 在此之前完成（每 run ~55 s），因此 G6 结论不受影响；G7B 组受影响（单次启动 6–12 min），
+但最终仍取得 `G7B_grav_r08` PASS。**新坑 #12**：`ContactSensor` 不调用 `update()` 时返回初始化零值，
+看起来像"没有接触"——`G7B_grav_r07` 因此误报 0 N，而位姿证据显示轮子确实挡住了整机。
