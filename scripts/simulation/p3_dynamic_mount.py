@@ -220,7 +220,22 @@ def main():
 
     quat_order = {"value": "wxyz", "reason": "probe matched the first convention tried"}
 
-    def write_pose(pos, yaw):
+    # The articulation ROOT is the arm's own root prim, whose authored world pose is NOT
+    # (0,0,LIFT) with identity orientation: the referenced asset carries its own base
+    # transform.  Writing an absolute "identity at (0,0,LIFT)" therefore teleports the root
+    # somewhere the chassis does not follow exactly, which is why P3_static_r05/r07 reported
+    # t0_pose_write_error_m = 0.2615 m while mount_stable stayed at 3e-8.  The command is
+    # therefore applied as a DELTA on top of the root pose measured right after reset.
+    base_root_pos = [float(v) for v in _np(robot.data.root_pos_w[0]).reshape(-1)[:3]]
+    base_root_quat = raw_to_wxyz(_np(robot.data.root_quat_w[0]).reshape(-1)[:4])
+    base_root_yaw = yaw_of(base_root_quat)
+
+    def write_pose(pos_cmd, yaw_cmd):
+        """pos_cmd/yaw_cmd are absolute CHASSIS commands; applied as a delta on the root."""
+        delta = [float(pos_cmd[0]), float(pos_cmd[1]), float(pos_cmd[2]) - LIFT]
+        pos = [base_root_pos[0] + delta[0], base_root_pos[1] + delta[1],
+               base_root_pos[2] + delta[2]]
+        yaw = base_root_yaw + float(yaw_cmd)
         half = 0.5 * yaw
         if quat_order["value"] == "wxyz":
             quat = [math.cos(half), 0.0, 0.0, math.sin(half)]
@@ -258,11 +273,12 @@ def main():
         sim.forward()
         robot.update(DT)
         _, probe_quat = read_chassis()
-        measured = yaw_of(probe_quat)
+        measured = yaw_of(probe_quat) - base_chassis_yaw   # delta, not absolute
         quat_order["value"] = saved
         return float(measured)
 
     sim.reset()
+    base_chassis_yaw = yaw_of(read_chassis()[1])
     probe_results = {"wxyz": probe_order("wxyz"), "xyzw": probe_order("xyzw")}
     sim.reset()
     best = min(probe_results, key=lambda name: abs(probe_results[name] - 0.2))
