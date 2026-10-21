@@ -109,12 +109,13 @@ def author(path, lift):
         UsdGeom.Xformable(body).AddTranslateOp().Set(Gf.Vec3f(*centre))
         cube = UsdGeom.Cube.Define(stage, Sdf.Path(path).AppendChild("geometry"))
         cube.CreateSizeAttr(1.0)
-        UsdGeom.Xformable(cube.GetPrim()).AddScaleOp().Set(
-            Gf.Vec3f(2 * half[0], 2 * half[1], 2 * half[2]))
         if geometry_local_offset is not None:
-            # Main body bounding-box is offset from the chassis CAD origin.
+            # USD xformOpOrder should be translate, scale: the CAD bbox centre
+            # must not be multiplied by the geometry box's scale.
             UsdGeom.Xformable(cube.GetPrim()).AddTranslateOp().Set(
                 Gf.Vec3f(*geometry_local_offset))
+        UsdGeom.Xformable(cube.GetPrim()).AddScaleOp().Set(
+            Gf.Vec3f(2 * half[0], 2 * half[1], 2 * half[2]))
         UsdPhysics.CollisionAPI.Apply(cube.GetPrim())
         prim = body.GetPrim()
         if mass is not None:
