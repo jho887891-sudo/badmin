@@ -1,0 +1,21 @@
+{
+  "accepted_env_steps": 200,
+  "env_count": 1,
+  "env_steps": 200,
+  "env_steps_per_second": 437.5,
+  "gpu_memory": "UNKNOWN - no GPU was used or queried",
+  "host": {
+    "machine": "AMD64",
+    "platform": "Windows-10-10.0.26100-SP0",
+    "python": "3.11.9"
+  },
+  "isaac_throughput": "UNKNOWN - no Isaac run was made, on any GPU, at any env count",
+  "label": "OFFLINE-MOCK \u2014 not Isaac throughput",
+  "peak_python_bytes": 144456,
+  "peak_python_mib": 0.138,
+  "python_allocated_bytes_during_run": 144456,
+  "steps_per_env": 200,
+  "steps_per_second_per_env": 437.5,
+  "wall_seconds": 0.457129,
+  "what_is_measured": "the OFFLINE mock harness (python bookkeeping + P5-05 validation); no Isaac Sim, no PhysX, no GPU was involved"
+}
