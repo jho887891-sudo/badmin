@@ -1,0 +1,921 @@
+{
+ "preregistration": "management/morph_one_rs/PHASE_P4_08_PREREG.md",
+ "runs_root": "E:\\具身智能\\badmin_wt_p3g\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p2_wc_gates",
+ "run_count": 18,
+ "runs": [
+  {
+   "run_id": "P4L_0_r01",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000196701,
+    -1.215435386,
+    -0.018616438
+   ],
+   "yaw_change_rad": 8.2577e-05,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.997465531,
+    "wheel2": 3.994519627,
+    "wheel3": 3.99829301,
+    "wheel4": 3.994050602
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000633617,
+    "wheel2": 0.001370093,
+    "wheel3": 0.000426748,
+    "wheel4": 0.001487349
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101535,
+    "wheel2": 0.101363,
+    "wheel3": 0.101579,
+    "wheel4": 0.101357
+   },
+   "measured_rolling_radius_rel_error": [
+    0.014223,
+    0.015893,
+    0.013796,
+    0.015951
+   ],
+   "peak_contact_force_n": 624.854919434,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4L_0_r02",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000196701,
+    -1.215435386,
+    -0.018616438
+   ],
+   "yaw_change_rad": 8.2577e-05,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.997465531,
+    "wheel2": 3.994519627,
+    "wheel3": 3.99829301,
+    "wheel4": 3.994050602
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000633617,
+    "wheel2": 0.001370093,
+    "wheel3": 0.000426748,
+    "wheel4": 0.001487349
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101535,
+    "wheel2": 0.101363,
+    "wheel3": 0.101579,
+    "wheel4": 0.101357
+   },
+   "measured_rolling_radius_rel_error": [
+    0.014223,
+    0.015893,
+    0.013796,
+    0.015951
+   ],
+   "peak_contact_force_n": 624.854919434,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4L_10_r01",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000229956,
+    -1.214778543,
+    -0.018616527
+   ],
+   "yaw_change_rad": 0.000100817,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.997447912,
+    "wheel2": 3.993045652,
+    "wheel3": 3.998582665,
+    "wheel4": 3.991879539
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000638022,
+    "wheel2": 0.001738587,
+    "wheel3": 0.000354334,
+    "wheel4": 0.002030115
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101592,
+    "wheel2": 0.101336,
+    "wheel3": 0.101586,
+    "wheel4": 0.101402
+   },
+   "measured_rolling_radius_rel_error": [
+    0.01367,
+    0.016155,
+    0.013728,
+    0.015515
+   ],
+   "peak_contact_force_n": 973.993286133,
+   "friction": 0.8,
+   "payload_kg": 10.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4L_10_r02",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000229956,
+    -1.214778543,
+    -0.018616527
+   ],
+   "yaw_change_rad": 0.000100817,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.997447912,
+    "wheel2": 3.993045652,
+    "wheel3": 3.998582665,
+    "wheel4": 3.991879539
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000638022,
+    "wheel2": 0.001738587,
+    "wheel3": 0.000354334,
+    "wheel4": 0.002030115
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101592,
+    "wheel2": 0.101336,
+    "wheel3": 0.101586,
+    "wheel4": 0.101402
+   },
+   "measured_rolling_radius_rel_error": [
+    0.01367,
+    0.016155,
+    0.013728,
+    0.015515
+   ],
+   "peak_contact_force_n": 973.993286133,
+   "friction": 0.8,
+   "payload_kg": 10.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4N_still_r01",
+   "profile": "hold_still",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    7.4e-08,
+    0.000301458,
+    -0.018616408
+   ],
+   "yaw_change_rad": 1.02e-07,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": -0.002624373,
+    "wheel2": -0.005393286,
+    "wheel3": -0.001871316,
+    "wheel4": -0.005993324
+   },
+   "wheel_targets_rad_s": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": null,
+    "wheel2": null,
+    "wheel3": null,
+    "wheel4": null
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": null,
+    "wheel2": null,
+    "wheel3": null,
+    "wheel4": null
+   },
+   "measured_rolling_radius_rel_error": [],
+   "peak_contact_force_n": 430.733123779,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4N_still_r02",
+   "profile": "hold_still",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    7.4e-08,
+    0.000301458,
+    -0.018616408
+   ],
+   "yaw_change_rad": 1.02e-07,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": -0.002624373,
+    "wheel2": -0.005393286,
+    "wheel3": -0.001871316,
+    "wheel4": -0.005993324
+   },
+   "wheel_targets_rad_s": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": null,
+    "wheel2": null,
+    "wheel3": null,
+    "wheel4": null
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": null,
+    "wheel2": null,
+    "wheel3": null,
+    "wheel4": null
+   },
+   "measured_rolling_radius_rel_error": [],
+   "peak_contact_force_n": 430.733123779,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4R_pos_r01",
+   "profile": "roll_pos_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000177057,
+    1.216358423,
+    -0.018616438
+   ],
+   "yaw_change_rad": 7.85e-05,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": -4.001947196,
+    "wheel2": -4.004984967,
+    "wheel3": -4.001451453,
+    "wheel4": -4.005573408
+   },
+   "wheel_targets_rad_s": [
+    -4.0,
+    -4.0,
+    -4.0,
+    -4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000486799,
+    "wheel2": 0.001246242,
+    "wheel3": 0.000362863,
+    "wheel4": 0.001393352
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101361,
+    "wheel2": 0.101538,
+    "wheel3": 0.101361,
+    "wheel4": 0.101586
+   },
+   "measured_rolling_radius_rel_error": [
+    0.015913,
+    0.014194,
+    0.015913,
+    0.013728
+   ],
+   "peak_contact_force_n": 645.847961426,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4R_pos_r02",
+   "profile": "roll_pos_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000177057,
+    1.216358423,
+    -0.018616438
+   ],
+   "yaw_change_rad": 7.85e-05,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": -4.001947196,
+    "wheel2": -4.004984967,
+    "wheel3": -4.001451453,
+    "wheel4": -4.005573408
+   },
+   "wheel_targets_rad_s": [
+    -4.0,
+    -4.0,
+    -4.0,
+    -4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000486799,
+    "wheel2": 0.001246242,
+    "wheel3": 0.000362863,
+    "wheel4": 0.001393352
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101361,
+    "wheel2": 0.101538,
+    "wheel3": 0.101361,
+    "wheel4": 0.101586
+   },
+   "measured_rolling_radius_rel_error": [
+    0.015913,
+    0.014194,
+    0.015913,
+    0.013728
+   ],
+   "peak_contact_force_n": 645.847961426,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4S_1_r01",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    1.899e-05,
+    -0.303993493,
+    -0.018616349
+   ],
+   "yaw_change_rad": 1.231e-06,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 0.99753248,
+    "wheel2": 0.994734806,
+    "wheel3": 0.998782177,
+    "wheel4": 0.994496936
+   },
+   "wheel_targets_rad_s": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.00246752,
+    "wheel2": 0.005265194,
+    "wheel3": 0.001217823,
+    "wheel4": 0.005503064
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101612,
+    "wheel2": 0.101612,
+    "wheel3": 0.101612,
+    "wheel4": 0.10161
+   },
+   "measured_rolling_radius_rel_error": [
+    0.013476,
+    0.013476,
+    0.013476,
+    0.013495
+   ],
+   "peak_contact_force_n": 523.062683105,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4S_1_r02",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    1.899e-05,
+    -0.303993493,
+    -0.018616349
+   ],
+   "yaw_change_rad": 1.231e-06,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 0.99753248,
+    "wheel2": 0.994734806,
+    "wheel3": 0.998782177,
+    "wheel4": 0.994496936
+   },
+   "wheel_targets_rad_s": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.00246752,
+    "wheel2": 0.005265194,
+    "wheel3": 0.001217823,
+    "wheel4": 0.005503064
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101612,
+    "wheel2": 0.101612,
+    "wheel3": 0.101612,
+    "wheel4": 0.10161
+   },
+   "measured_rolling_radius_rel_error": [
+    0.013476,
+    0.013476,
+    0.013476,
+    0.013495
+   ],
+   "peak_contact_force_n": 523.062683105,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4S_4_r01",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000196701,
+    -1.215435386,
+    -0.018616438
+   ],
+   "yaw_change_rad": 8.2577e-05,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.997465531,
+    "wheel2": 3.994519627,
+    "wheel3": 3.99829301,
+    "wheel4": 3.994050602
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000633617,
+    "wheel2": 0.001370093,
+    "wheel3": 0.000426748,
+    "wheel4": 0.001487349
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101535,
+    "wheel2": 0.101363,
+    "wheel3": 0.101579,
+    "wheel4": 0.101357
+   },
+   "measured_rolling_radius_rel_error": [
+    0.014223,
+    0.015893,
+    0.013796,
+    0.015951
+   ],
+   "peak_contact_force_n": 624.854919434,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4S_4_r02",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000196701,
+    -1.215435386,
+    -0.018616438
+   ],
+   "yaw_change_rad": 8.2577e-05,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.997465531,
+    "wheel2": 3.994519627,
+    "wheel3": 3.99829301,
+    "wheel4": 3.994050602
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000633617,
+    "wheel2": 0.001370093,
+    "wheel3": 0.000426748,
+    "wheel4": 0.001487349
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101535,
+    "wheel2": 0.101363,
+    "wheel3": 0.101579,
+    "wheel4": 0.101357
+   },
+   "measured_rolling_radius_rel_error": [
+    0.014223,
+    0.015893,
+    0.013796,
+    0.015951
+   ],
+   "peak_contact_force_n": 624.854919434,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4f_base_r01",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000196701,
+    -1.215435386,
+    -0.018616438
+   ],
+   "yaw_change_rad": 8.2577e-05,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.997465531,
+    "wheel2": 3.994519627,
+    "wheel3": 3.99829301,
+    "wheel4": 3.994050602
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000633617,
+    "wheel2": 0.001370093,
+    "wheel3": 0.000426748,
+    "wheel4": 0.001487349
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101535,
+    "wheel2": 0.101363,
+    "wheel3": 0.101579,
+    "wheel4": 0.101357
+   },
+   "measured_rolling_radius_rel_error": [
+    0.014223,
+    0.015893,
+    0.013796,
+    0.015951
+   ],
+   "peak_contact_force_n": 624.854919434,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4f_base_r02",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000196701,
+    -1.215435386,
+    -0.018616438
+   ],
+   "yaw_change_rad": 8.2577e-05,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.997465531,
+    "wheel2": 3.994519627,
+    "wheel3": 3.99829301,
+    "wheel4": 3.994050602
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000633617,
+    "wheel2": 0.001370093,
+    "wheel3": 0.000426748,
+    "wheel4": 0.001487349
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101535,
+    "wheel2": 0.101363,
+    "wheel3": 0.101579,
+    "wheel4": 0.101357
+   },
+   "measured_rolling_radius_rel_error": [
+    0.014223,
+    0.015893,
+    0.013796,
+    0.015951
+   ],
+   "peak_contact_force_n": 624.854919434,
+   "friction": 0.8,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4f_high_r01",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    2.7582e-05,
+    -1.21579361,
+    -0.018616408
+   ],
+   "yaw_change_rad": 1.696e-05,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.99771235,
+    "wheel2": 3.994773297,
+    "wheel3": 3.998554691,
+    "wheel4": 3.994368931
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000571912,
+    "wheel2": 0.001306676,
+    "wheel3": 0.000361327,
+    "wheel4": 0.001407767
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101598,
+    "wheel2": 0.101375,
+    "wheel3": 0.101598,
+    "wheel4": 0.101374
+   },
+   "measured_rolling_radius_rel_error": [
+    0.013612,
+    0.015777,
+    0.013612,
+    0.015786
+   ],
+   "peak_contact_force_n": 645.546081543,
+   "friction": 1.4,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4f_high_r02",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    2.7582e-05,
+    -1.21579361,
+    -0.018616408
+   ],
+   "yaw_change_rad": 1.696e-05,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.99771235,
+    "wheel2": 3.994773297,
+    "wheel3": 3.998554691,
+    "wheel4": 3.994368931
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000571912,
+    "wheel2": 0.001306676,
+    "wheel3": 0.000361327,
+    "wheel4": 0.001407767
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101598,
+    "wheel2": 0.101375,
+    "wheel3": 0.101598,
+    "wheel4": 0.101374
+   },
+   "measured_rolling_radius_rel_error": [
+    0.013612,
+    0.015777,
+    0.013612,
+    0.015786
+   ],
+   "peak_contact_force_n": 645.546081543,
+   "friction": 1.4,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4f_low_r01",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000285255,
+    -1.210260153,
+    -0.018616498
+   ],
+   "yaw_change_rad": 0.000142561,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.997242367,
+    "wheel2": 3.994410002,
+    "wheel3": 3.997843941,
+    "wheel4": 3.993867127
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000689408,
+    "wheel2": 0.0013975,
+    "wheel3": 0.000539015,
+    "wheel4": 0.001533218
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101091,
+    "wheel2": 0.100947,
+    "wheel3": 0.101068,
+    "wheel4": 0.101014
+   },
+   "measured_rolling_radius_rel_error": [
+    0.018534,
+    0.019932,
+    0.018757,
+    0.019282
+   ],
+   "peak_contact_force_n": 561.07635498,
+   "friction": 0.2,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  },
+  {
+   "run_id": "P4f_low_r02",
+   "profile": "roll_neg_y",
+   "gate_result": "PASS",
+   "failing_gates": [],
+   "displacement_m": [
+    0.000285255,
+    -1.210260153,
+    -0.018616498
+   ],
+   "yaw_change_rad": 0.000142561,
+   "tail_wheel_omega_rad_s": {
+    "wheel1": 3.997242367,
+    "wheel2": 3.994410002,
+    "wheel3": 3.997843941,
+    "wheel4": 3.993867127
+   },
+   "wheel_targets_rad_s": [
+    4.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "wheel_speed_relative_error": {
+    "wheel1": 0.000689408,
+    "wheel2": 0.0013975,
+    "wheel3": 0.000539015,
+    "wheel4": 0.001533218
+   },
+   "measured_rolling_radius_m": {
+    "wheel1": 0.101091,
+    "wheel2": 0.100947,
+    "wheel3": 0.101068,
+    "wheel4": 0.101014
+   },
+   "measured_rolling_radius_rel_error": [
+    0.018534,
+    0.019932,
+    0.018757,
+    0.019282
+   ],
+   "peak_contact_force_n": 561.07635498,
+   "friction": 0.2,
+   "payload_kg": 0.0,
+   "root_writes": 0,
+   "negative_control": null
+  }
+ ],
+ "measured_rolling_radius": {
+  "P4L_0_r01": {
+   "mean": 0.101459,
+   "max_rel_error": 0.015951
+  },
+  "P4L_0_r02": {
+   "mean": 0.101459,
+   "max_rel_error": 0.015951
+  },
+  "P4L_10_r01": {
+   "mean": 0.101479,
+   "max_rel_error": 0.016155
+  },
+  "P4L_10_r02": {
+   "mean": 0.101479,
+   "max_rel_error": 0.016155
+  },
+  "P4R_pos_r01": {
+   "mean": 0.101461,
+   "max_rel_error": 0.015913
+  },
+  "P4R_pos_r02": {
+   "mean": 0.101461,
+   "max_rel_error": 0.015913
+  },
+  "P4S_1_r01": {
+   "mean": 0.101611,
+   "max_rel_error": 0.013495
+  },
+  "P4S_1_r02": {
+   "mean": 0.101611,
+   "max_rel_error": 0.013495
+  },
+  "P4S_4_r01": {
+   "mean": 0.101459,
+   "max_rel_error": 0.015951
+  },
+  "P4S_4_r02": {
+   "mean": 0.101459,
+   "max_rel_error": 0.015951
+  },
+  "P4f_base_r01": {
+   "mean": 0.101459,
+   "max_rel_error": 0.015951
+  },
+  "P4f_base_r02": {
+   "mean": 0.101459,
+   "max_rel_error": 0.015951
+  },
+  "P4f_high_r01": {
+   "mean": 0.101486,
+   "max_rel_error": 0.015786
+  },
+  "P4f_high_r02": {
+   "mean": 0.101486,
+   "max_rel_error": 0.015786
+  },
+  "P4f_low_r01": {
+   "mean": 0.10103,
+   "max_rel_error": 0.019932
+  },
+  "P4f_low_r02": {
+   "mean": 0.10103,
+   "max_rel_error": 0.019932
+  }
+ },
+ "single_factor_problems": [],
+ "controls": {
+  "hold_still": [
+   "P4N_still_r01",
+   "P4N_still_r02"
+  ],
+  "reverse": [
+   "P4R_pos_r01",
+   "P4R_pos_r02"
+  ]
+ },
+ "verdict": "CONSISTENT"
+}

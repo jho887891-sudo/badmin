@@ -40,6 +40,7 @@ def summarise(result):
         "displacement_m": metrics.get("chassis_displacement_m"),
         "yaw_change_rad": metrics.get("yaw_change_rad"),
         "tail_wheel_omega_rad_s": metrics.get("tail_wheel_omega_rad_s"),
+        "wheel_targets_rad_s": metrics.get("wheel_targets_rad_s_per_wheel"),
         "wheel_speed_relative_error": metrics.get("wheel_speed_relative_error"),
         "measured_rolling_radius_m": metrics.get("measured_rolling_radius_m"),
         "measured_rolling_radius_rel_error": metrics.get("measured_rolling_radius_rel_error"),
@@ -97,6 +98,17 @@ def single_factor_audit(entries):
 
 
 def _wheel_speed(entry):
+    """The COMMANDED wheel speed magnitude is the knob.
+
+    Using the MEASURED tail omega here was wrong: measured speed is an outcome of friction
+    and load, so the single-factor audit flagged friction/payload groups as if they had also
+    changed the speed. The commanded target is what distinguishes the runs.
+    """
+    targets = entry.get("wheel_targets_rad_s")
+    if targets:
+        values = [abs(float(v)) for v in targets if v is not None]
+        if values:
+            return round(max(values), 3)
     omegas = entry.get("tail_wheel_omega_rad_s") or {}
     values = [abs(v) for v in omegas.values() if v is not None]
     return round(max(values), 3) if values else None

@@ -1,0 +1,158 @@
+{
+ "source": "PhysX runtime (root_physx_view) read from diagnostics.body_audit",
+ "run_id": "P4L_10_r02",
+ "configuration_warning": "proxy masses only; the real B601-RS 26.0085 kg gravity scene is a DIFFERENT configuration and must not be compared",
+ "masses_kg": [
+  16.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  10.0
+ ],
+ "expected_masses_kg": [
+  16.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  10.0
+ ],
+ "total_mass_kg": 30.0,
+ "payload_kg": 10.0,
+ "com": [
+  {
+   "body": "Chassis",
+   "com_offset_m": 0.0
+  },
+  {
+   "body": "wheel1",
+   "com_offset_m": 0.0
+  },
+  {
+   "body": "wheel2",
+   "com_offset_m": 0.0
+  },
+  {
+   "body": "wheel3",
+   "com_offset_m": 0.0
+  },
+  {
+   "body": "wheel4",
+   "com_offset_m": 0.0
+  },
+  {
+   "body": "payload",
+   "com_offset_m": 0.0
+  }
+ ],
+ "inertia": [
+  {
+   "body": "Chassis",
+   "symmetric": true,
+   "minors": [
+    0.9027721285820007,
+    0.23330754823347988,
+    0.24789032352081516
+   ],
+   "positive_definite": true,
+   "triangle_inequality": true
+  },
+  {
+   "body": "wheel1",
+   "symmetric": true,
+   "minors": [
+    0.00530449952930212,
+    1.5112944230718638e-05,
+    4.30579891767586e-08
+   ],
+   "positive_definite": true,
+   "triangle_inequality": true,
+   "ixx": 0.0053045,
+   "iyy": 0.00284908,
+   "izz": 0.00284908,
+   "analytic_axis": 0.0053045,
+   "analytic_transverse": 0.00284908,
+   "axis_rel_error": 8.9e-08,
+   "transverse_rel_error": 4.7e-08
+  },
+  {
+   "body": "wheel2",
+   "symmetric": true,
+   "minors": [
+    0.00530449952930212,
+    1.5112944230718638e-05,
+    4.30579891767586e-08
+   ],
+   "positive_definite": true,
+   "triangle_inequality": true,
+   "ixx": 0.0053045,
+   "iyy": 0.00284908,
+   "izz": 0.00284908,
+   "analytic_axis": 0.0053045,
+   "analytic_transverse": 0.00284908,
+   "axis_rel_error": 8.9e-08,
+   "transverse_rel_error": 4.7e-08
+  },
+  {
+   "body": "wheel3",
+   "symmetric": true,
+   "minors": [
+    0.00530449952930212,
+    1.5112944230718638e-05,
+    4.30579891767586e-08
+   ],
+   "positive_definite": true,
+   "triangle_inequality": true,
+   "ixx": 0.0053045,
+   "iyy": 0.00284908,
+   "izz": 0.00284908,
+   "analytic_axis": 0.0053045,
+   "analytic_transverse": 0.00284908,
+   "axis_rel_error": 8.9e-08,
+   "transverse_rel_error": 4.7e-08
+  },
+  {
+   "body": "wheel4",
+   "symmetric": true,
+   "minors": [
+    0.00530449952930212,
+    1.5112944230718638e-05,
+    4.30579891767586e-08
+   ],
+   "positive_definite": true,
+   "triangle_inequality": true,
+   "ixx": 0.0053045,
+   "iyy": 0.00284908,
+   "izz": 0.00284908,
+   "analytic_axis": 0.0053045,
+   "analytic_transverse": 0.00284908,
+   "axis_rel_error": 8.9e-08,
+   "transverse_rel_error": 4.7e-08
+  },
+  {
+   "body": "payload",
+   "symmetric": true,
+   "minors": [
+    0.07083334028720856,
+    0.006640626179675313,
+    0.00084391299609304
+   ],
+   "positive_definite": true,
+   "triangle_inequality": true
+  }
+ ],
+ "analytic_wheel_cylinder": {
+  "i_axis": 0.0053045,
+  "i_transverse": 0.00284908,
+  "radius_m": 0.103,
+  "half_width_m": 0.0243
+ },
+ "tolerances": {
+  "mass_kg": 1e-06,
+  "com_m": 1e-06,
+  "inertia_rel": 0.01
+ },
+ "findings": [],
+ "audit": "PASS"
+}

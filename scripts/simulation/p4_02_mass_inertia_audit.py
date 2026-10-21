@@ -40,18 +40,28 @@ def flatten_masses(block):
     return [float(v) for v in masses] if isinstance(masses, list) else None
 
 
-def flatten_inertias(block):
-    values = block.get("available", {}).get("inertias")
-    if not isinstance(values, list) or len(values) != 5:
+def _rows(block, field):
+    """PhysX reports one row per body; a payload body makes the count 6, not 5."""
+    values = block.get("available", {}).get(field)
+    if not isinstance(values, list) or not values:
+        return None
+    if not all(isinstance(row, list) for row in values):
         return None
     return [[float(v) for v in row] for row in values]
+
+
+def flatten_inertias(block):
+    rows = _rows(block, "inertias")
+    if rows is None or any(len(row) != 9 for row in rows):
+        return None
+    return rows
 
 
 def flatten_coms(block):
-    values = block.get("available", {}).get("coms")
-    if not isinstance(values, list) or len(values) != 5:
+    rows = _rows(block, "coms")
+    if rows is None or any(len(row) < 3 for row in rows):
         return None
-    return [[float(v) for v in row] for row in values]
+    return rows
 
 
 def symmetric_and_pd(tensor):
