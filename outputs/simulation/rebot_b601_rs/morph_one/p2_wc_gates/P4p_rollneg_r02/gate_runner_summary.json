@@ -1,0 +1,51 @@
+{
+ "run_id": "P4p_rollneg_r02",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p4_proxy_wheel_drive.py --run-id P4p_rollneg_r02 --out-dir /home/dgut/runs/g/P4p_rollneg_r02 --profile roll_neg_y --read-contacts",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1500.0,
+ "quarantined_stale_result": null,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "wheel_targets_rad_s_per_wheel": [
+   4.0,
+   4.0,
+   4.0,
+   4.0
+  ],
+  "tail_wheel_omega_rad_s": {
+   "wheel1": 3.99775821,
+   "wheel2": 3.994806651,
+   "wheel3": 3.998611657,
+   "wheel4": 3.994412363
+  },
+  "wheel_speed_relative_error": {
+   "wheel1": 0.000560447,
+   "wheel2": 0.001298337,
+   "wheel3": 0.000347086,
+   "wheel4": 0.001396909
+  },
+  "chassis_displacement_m": [
+   0.00026632,
+   -1.2147367,
+   -0.018616468
+  ],
+  "tail_chassis_speed_m_s": 0.411787044,
+  "yaw_change_rad": 0.000128912,
+  "peak_contact_force_n": 608.495239258,
+  "distance_per_wheel_revolution_m": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "steps": 360
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 63.705,
+ "child_stdout_log": "/home/dgut/runs/g/P4p_rollneg_r02/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P4p_rollneg_r02/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}

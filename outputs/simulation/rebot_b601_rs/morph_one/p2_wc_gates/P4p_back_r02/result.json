@@ -1,0 +1,120 @@
+{
+ "run_id": "P4p_back_r02",
+ "scene_variant": "P4_PROXY_WHEEL_DRIVE",
+ "profile": "backward",
+ "profile_description": "all four reversed, -x expected",
+ "gate_result": "FAIL",
+ "proxy_parameters": {
+  "wheel_radius_m": 0.103,
+  "wheel_radius_source": "P1 v2 torus equator R+r = 103.000000 mm (geometric unloaded); NOT a loaded radius",
+  "wheel_collision_shape": "CYLINDER (TEST_PROXY simplification of the toroidal tread)",
+  "wheel_half_width_m": 0.0243,
+  "wheel_mass_kg": 1.0,
+  "chassis_mass_kg": 16.0,
+  "total_mass_kg": 20.0,
+  "mass_source": "TEST_PROXY, no vendor mass data",
+  "ground_clearance_m": 0.02,
+  "lift_m": 0.367,
+  "axle_positions_m": [
+   [
+    0.250002,
+    0.297,
+    -0.244
+   ],
+   [
+    0.250002,
+    -0.297,
+    -0.244
+   ],
+   [
+    -0.250002,
+    0.297,
+    -0.244
+   ],
+   [
+    -0.250002,
+    -0.297,
+    -0.244
+   ]
+  ],
+  "spin_signs": [
+   1.0,
+   1.0,
+   -1.0,
+   -1.0
+  ]
+ },
+ "metrics": {
+  "wheel_targets_rad_s_per_wheel": [
+   -4.0,
+   -4.0,
+   -4.0,
+   -4.0
+  ],
+  "tail_wheel_omega_rad_s": {
+   "wheel1": -3.86135871,
+   "wheel2": -3.8956351,
+   "wheel3": 3.872632869,
+   "wheel4": 3.839508887
+  },
+  "wheel_speed_relative_error": {
+   "wheel1": 0.034660322,
+   "wheel2": 0.026091225,
+   "wheel3": 0.031841783,
+   "wheel4": 0.040122778
+  },
+  "chassis_displacement_m": [
+   -0.001021768,
+   -0.002361839,
+   -0.018611938
+  ],
+  "tail_chassis_speed_m_s": 0.000338446,
+  "yaw_change_rad": 1.91617133,
+  "peak_contact_force_n": 479.140563965,
+  "distance_per_wheel_revolution_m": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "steps": 360
+ },
+ "thresholds": {
+  "speed_tracking_rel": 0.2,
+  "min_displacement_m": 0.01,
+  "contact_force_n": 1.0,
+  "tail_speed_max_m_s": 5.0
+ },
+ "gates": {
+  "all_finite": true,
+  "no_root_pose_write": true,
+  "wheel_speed_tracks_target": true,
+  "contact_detected": true,
+  "chassis_displaced_along_command": false
+ },
+ "diagnostics": {
+  "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+  "root_writes": 0,
+  "contact_api": "isaaclab.sensors.ContactSensor(chassis,wheels)",
+  "body_names": [
+   "Chassis",
+   "wheel1",
+   "wheel2",
+   "wheel3",
+   "wheel4"
+  ],
+  "joint_names": [
+   "joint_wheel1",
+   "joint_wheel2",
+   "joint_wheel3",
+   "joint_wheel4"
+  ],
+  "dofs": 4,
+  "gravity_m_s2": [
+   0.0,
+   0.0,
+   -9.81
+  ],
+  "note": "P4_PROXY only: verified axle/radius geometry with a CYLINDER tread proxy and proxy masses. Not P4_REAL, not the vendor physical model."
+ }
+}
