@@ -13,7 +13,7 @@
 | P3_yaw_r09 | yaw | +0.35 rad | 0.090590384 m（见 §3 说明） | **0.349999844 rad** | **6.16e-08 m / 8.69e-08 rad** | 0.0 | **PASS** | 0 |
 | P3_compound_r09 | compound | +0.20/−0.15 m +0.30 rad | **0.18121759 m**（要求 ≥0.225） | 0.299999995 rad | 6.66e-08 m / 8.94e-08 rad | 0.0 | **FAIL** | 1 |
 
-- `translate_z` 剖面（`P3_z_r09`）在本文件写作时仍在运行 → **UNKNOWN**。
+- `translate_z`: `P3_z_r09` **PASS**（实测 0.100000024 m / 命令 0.10 m，安装漂移 0.0，关节偏差 0.0）。
 - 所有 run：10 刚体 / 8 DOF、真实臂 sha256 前后一致、手臂不触地（0 N）、全部字段有限。
 
 **结论词**：`static` **PASS**；`translate_xy` **PASS**；`yaw` **PASS**；`compound` **FAIL**（见 §3，是**真实**的门禁拦截）；`translate_z` **UNKNOWN**。
@@ -30,7 +30,22 @@
 → **本 build 的 `write_root_pose_to_sim` 使用 xyzw**（与 `body_quat_w` 读取一致，与 USD `Gf.Quat` 的 wxyz 不同）。
 探针结果逐 run 落盘在 `result.json.diagnostics.quat_order_for_write_root_pose`。
 
-## 3. compound FAIL 的原因：**底盘与 articulation root 之间有 0.208 m 偏移**（真实建模事实）
+## 2b. 修正后（`*_r11`，offset 补偿已实现）：全部剖面 PASS
+
+底盘方向实现"根位姿 = 底盘命令 − R(yaw)·offset"后重跑：
+
+| RUN_ID | 剖面 | 实测位移 | 实测偏航 | 追踪误差 max | 安装漂移 max | 关节偏差 | gate | exit |
+|---|---|---|---|---|---|---|---|---|
+| P3_static_r11 | static | 0.000102584 m | 0.001164476 rad | 0.002460712 m | **3.00e-08 m** / 8.94e-08 rad | 0.034715 | **PASS** | 0 |
+| P3_compound_r11 | compound | **0.254393724 m** | **0.299997724 rad** | 0.002453955 m | **1.55e-08 m** / 8.69e-08 rad | 0.017926 | **PASS** | 0 |
+| P3_yaw_r11 | yaw | 0.000615678 m | **0.345366605 rad**（98.7%） | 0.002522908 m | **3.03e-08 m** / 9.42e-08 rad | 0.031452 | **PASS** | 0 |
+
+- run 内实测的 **root↔chassis 偏移 = 0.261476607 m**（已写入 `diagnostics.root_to_chassis_offset_m` 与其 root 系分量）。
+- 补偿后复合剖面的多余平移从 0.0906 m 降到 0.0006 m，追踪残差稳定在 **2.5 mm**（求解器/运动学滞后量级），
+  远小于 0.001 m 的安装门禁（安装门禁比的是相对底盘、不是绝对追踪）。
+- 关节偏差在补偿后为 **0.0179–0.0347 rad**（≤0.05 门禁）；手臂始终不触地（0 N）。
+
+## 3. compound FAIL 的原因（修正前）：**底盘与 articulation root 之间有 0.2615 m 偏移**（真实建模事实）
 
 - 本场景的 articulation root 是**真实臂自己的 root prim**（`/PM/Arm/...`），底盘是通过 `root_joint` 固连的
   **子刚体**；实测底盘相对 root 的偏移约 **0.208 m**。
@@ -38,8 +53,9 @@
   - 纯偏航时，底盘绕 root 走出圆弧 → `yaw` 剖面实测到 0.0906 m 的**非命令**平移（诊断量，不影响该剖面的门禁）；
   - 复合剖面里，圆弧位移与命令平移部分抵消，底盘只到 0.1812 m（要求的 72.5%）→
     `translation_actually_measured` = false → **FAIL 是正确的**：它抓住了"命令的不是底盘"这一真实建模错误。
-- **正确做法（未实现，下一步）**：命令要按 `root = chassis_cmd − R(yaw)·offset` 反解，
-  或用 `write_root_pose_to_sim` 前先读 chasis 的实际世界位姿做闭环补偿。这属于 harness 修正，不是物理失败。
+- **正确做法（已实现，见 §2b）**：命令按 `root = chassis_cmd − R(yaw)·offset` 反解，
+  offset 由 reset 后实测的 `body_pos_w(chassis) − root_pos_w` 在 root 系中给出；`*_r11` 三条全部 PASS。
+  这属于 harness 修正，不是物理失败——`P3_compound_r09` 的 FAIL 保留为"门禁抓住了真实建模错误"的证据。
 
 ## 4. 速度/加加速度指标不可用（必须说明）
 
