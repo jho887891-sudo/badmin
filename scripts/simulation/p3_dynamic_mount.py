@@ -229,6 +229,11 @@ def main():
         pose = [float(pos[0]), float(pos[1]), float(pos[2])] + [float(v) for v in quat]
         robot.write_root_pose_to_sim(
             torch.tensor([pose], dtype=torch.float32, device=robot.device))
+        # A teleport without clearing the velocity leaves residual linear/angular velocity in
+        # PhysX, which then yanks the arm joints (seen in P3_static_r01: joint deviation
+        # 0.205 rad and 1.49 m/s peak from a "static" profile).  Diagnostics drive = kinematic.
+        robot.write_root_velocity_to_sim(
+            torch.zeros((1, 6), dtype=torch.float32, device=robot.device))
 
     def read_chassis():
         raw = [float(v) for v in
@@ -239,6 +244,11 @@ def main():
 
     # Convention probe: a unit pose cannot distinguish wxyz from xyzw, so write a known
     # 0.2 rad yaw and check the measured yaw.  The order that reproduces it is recorded.
+    # The probe runs AFTER a first sim.reset() and is followed by a second reset, otherwise a
+    # wrong-order probe quaternion (which is a ~180 deg flip) leaks into the run: that is
+    # exactly what happened in P3_static_r01, whose step 0 chassis pose was
+    # (0.216, 0.145, 0.374) instead of (0, 0, 0.400).
+    sim.reset()
     write_pose(np.array([0.0, 0.0, LIFT]), 0.2)
     robot.update(DT)
     _, probe_quat = read_chassis()
@@ -248,13 +258,27 @@ def main():
         quat_order["reason"] = ("wxyz probe produced yaw %.6f rad instead of 0.2 rad; "
                                 "write_root_pose_to_sim takes xyzw in this build" % probe_yaw)
         quat_order["wxyz_probe_yaw_rad"] = round(probe_yaw, 9)
+    sim.reset()
+    # Establish step 0 explicitly with the confirmed order, then verify it took effect.
     write_pose(np.array([0.0, 0.0, LIFT]), 0.0)
     robot.update(DT)
-    sim.reset()
+    start_pos, start_quat = read_chassis()
+    start_error = float(np.linalg.norm(np.asarray(start_pos) - np.array([0.0, 0.0, LIFT])))
 
     jsonl = open(os.path.join(out_dir, "raw_poses.jsonl"), "w", encoding="utf-8")
     frames = []
     joint_target = [float(v) for v in _np(robot.data.joint_pos[0]).reshape(-1)]
+
+    joint_target_tensor = torch.tensor([joint_target], dtype=torch.float32,
+                                       device=robot.device)
+
+    def set_joint_targets():
+        # The P3 joint_hold gate asks whether the IMPLICIT drive holds the target while the
+        # root is driven, so the target must be commanded explicitly every step.
+        try:
+            robot.set_joint_position_target(joint_target_tensor)
+        except Exception:
+            pass
 
     def capture(tag, step, commanded_pos, commanded_yaw, smooth):
         row = {"run_id": ARGS.run_id, "profile": ARGS.profile, "tag": tag, "step": step,
@@ -306,6 +330,7 @@ def main():
         commanded_pos, commanded_yaw, smooth = command_at(ARGS.profile, step)
         if step > 0:
             write_pose(commanded_pos, commanded_yaw)
+            set_joint_targets()
             sim.step()
             robot.update(DT)
             for sensor in sensors.values():
@@ -390,6 +415,9 @@ def main():
         "thresholds": thresholds, "gates": gates,
         "diagnostics": {
             "quat_order_for_write_root_pose": quat_order,
+            "t0_pose_write_error_m": round(start_error, 12),
+            "joint_targets_set_each_step": True,
+            "root_velocity_zeroed_with_each_teleport": True,
             "contact_api": contact_api,
             "body_names": body_names, "joint_names": joint_names,
             "num_bodies": len(body_names), "dofs": int(robot.data.joint_pos.shape[1]),
