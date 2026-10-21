@@ -1,0 +1,856 @@
+{
+  "schema": "p5.arm_joint_facts.v1",
+  "generated_by": "scripts/simulation/p5_arm_static_facts.py",
+  "tool": {
+    "python": "3.12.13",
+    "pxr_dir": "/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/pxr",
+    "usd_version": "0.25.11",
+    "gpu_used": false,
+    "note": "pxr static read only: no Isaac Sim, no torch, no cuda",
+    "non_finite_encoding": "non-finite floats are stored as the strings 'Infinity'/'-Infinity'/'NaN' so that the file stays strict JSON"
+  },
+  "asset": {
+    "usda_path": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+    "usda_sha256_before": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+    "usda_sha256_after": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+    "root_layer_identifier": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+    "defaultPrim": "ReBot_Arm_RS",
+    "upAxis": "Z",
+    "metersPerUnit": 1.0,
+    "kilogramsPerUnit": 1.0,
+    "variant_selection": {
+      "/ReBot_Arm_RS|Physics": "physx"
+    },
+    "note": "",
+    "unmodified": true
+  },
+  "counts": {
+    "joints": 9,
+    "by_type": {
+      "PhysicsPrismaticJoint": 2,
+      "PhysicsRevoluteJoint": 6,
+      "PhysicsFixedJoint": 1
+    },
+    "rigid_bodies": 9,
+    "articulation_roots": 1
+  },
+  "articulation_root_prims": [
+    "/ReBot_Arm_RS/Geometry"
+  ],
+  "stage_traversal_order": [
+    "joint6",
+    "gripper_joint1",
+    "gripper_joint2",
+    "joint5",
+    "joint4",
+    "joint3",
+    "joint2",
+    "joint1",
+    "root_joint"
+  ],
+  "joints": [
+    {
+      "path": "/ReBot_Arm_RS/Physics/gripper_joint1",
+      "name": "gripper_joint1",
+      "typeName": "PhysicsPrismaticJoint",
+      "body0": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6"
+      ],
+      "body1": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_left"
+      ],
+      "drives": {
+        "linear": {
+          "stiffness": 100.0,
+          "damping": 1.0,
+          "maxForce": 500.0,
+          "targetPosition": 0.0,
+          "targetVelocity": 0.0,
+          "type": "force"
+        }
+      },
+      "authored_attrs": {
+        "drive:linear:physics:damping": 1.0,
+        "drive:linear:physics:maxForce": 500.0,
+        "drive:linear:physics:stiffness": 100.0,
+        "drive:linear:physics:targetPosition": 0.0,
+        "drive:linear:physics:targetVelocity": 0.0,
+        "drive:linear:physics:type": "force",
+        "physics:axis": "Z",
+        "physics:breakForce": "Infinity",
+        "physics:breakTorque": "Infinity",
+        "physics:collisionEnabled": false,
+        "physics:excludeFromArticulation": false,
+        "physics:jointEnabled": true,
+        "physics:localPos0": [
+          1.5351143645148113e-07,
+          7.338500290643424e-05,
+          0.12427099794149399
+        ],
+        "physics:localPos1": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:localRot0": "(0.7071081, -0.70710546, -0.0000025973434, 0.000002597353)",
+        "physics:localRot1": "(1, 0, 0, 0)",
+        "physics:lowerLimit": 0.0,
+        "physics:upperLimit": 0.05000000074505806
+      },
+      "axis": "Z",
+      "limits": {
+        "lower": 0.0,
+        "upper": 0.05000000074505806,
+        "unit": "meter",
+        "lower_m": 0.0,
+        "upper_m": 0.05000000074505806
+      }
+    },
+    {
+      "path": "/ReBot_Arm_RS/Physics/gripper_joint2",
+      "name": "gripper_joint2",
+      "typeName": "PhysicsPrismaticJoint",
+      "body0": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6"
+      ],
+      "body1": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_right"
+      ],
+      "drives": {
+        "linear": {
+          "stiffness": 100.0,
+          "damping": 1.0,
+          "maxForce": 500.0,
+          "targetPosition": 0.0,
+          "targetVelocity": 0.0,
+          "type": "force"
+        }
+      },
+      "authored_attrs": {
+        "drive:linear:physics:damping": 1.0,
+        "drive:linear:physics:maxForce": 500.0,
+        "drive:linear:physics:stiffness": 100.0,
+        "drive:linear:physics:targetPosition": 0.0,
+        "drive:linear:physics:targetVelocity": 0.0,
+        "drive:linear:physics:type": "force",
+        "physics:axis": "Z",
+        "physics:breakForce": "Infinity",
+        "physics:breakTorque": "Infinity",
+        "physics:collisionEnabled": false,
+        "physics:excludeFromArticulation": false,
+        "physics:jointEnabled": true,
+        "physics:localPos0": [
+          1.5458967084214237e-07,
+          -7.338500290643424e-05,
+          0.12427099794149399
+        ],
+        "physics:localPos1": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:localRot0": "(0.7071081, 0.70710546, 0.0000025973434, 0.000002597353)",
+        "physics:localRot1": "(1, 0, 0, 0)",
+        "physics:lowerLimit": 0.0,
+        "physics:upperLimit": 0.07150000333786011
+      },
+      "axis": "Z",
+      "limits": {
+        "lower": 0.0,
+        "upper": 0.07150000333786011,
+        "unit": "meter",
+        "lower_m": 0.0,
+        "upper_m": 0.07150000333786011
+      }
+    },
+    {
+      "path": "/ReBot_Arm_RS/Physics/joint1",
+      "name": "joint1",
+      "typeName": "PhysicsRevoluteJoint",
+      "body0": [
+        "/ReBot_Arm_RS/Geometry/base_link"
+      ],
+      "body1": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1"
+      ],
+      "drives": {
+        "angular": {
+          "stiffness": 1.7453292608261108,
+          "damping": 0.01745329238474369,
+          "maxForce": 36.0,
+          "targetPosition": 0.0,
+          "targetVelocity": 0.0,
+          "type": "force"
+        }
+      },
+      "authored_attrs": {
+        "drive:angular:physics:damping": 0.01745329238474369,
+        "drive:angular:physics:maxForce": 36.0,
+        "drive:angular:physics:stiffness": 1.7453292608261108,
+        "drive:angular:physics:targetPosition": 0.0,
+        "drive:angular:physics:targetVelocity": 0.0,
+        "drive:angular:physics:type": "force",
+        "physics:axis": "Z",
+        "physics:breakForce": "Infinity",
+        "physics:breakTorque": "Infinity",
+        "physics:collisionEnabled": false,
+        "physics:excludeFromArticulation": false,
+        "physics:jointEnabled": true,
+        "physics:localPos0": [
+          -0.00034282999695278704,
+          -0.0009868299821391702,
+          0.07500000298023224
+        ],
+        "physics:localPos1": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:localRot0": "(0, -1, 0, 0)",
+        "physics:localRot1": "(0, -1, 0, 0)",
+        "physics:lowerLimit": -160.4281768798828,
+        "physics:upperLimit": 160.4281768798828
+      },
+      "axis": "Z",
+      "limits": {
+        "lower": -160.4281768798828,
+        "upper": 160.4281768798828,
+        "unit": "degree",
+        "lower_deg": -160.4281768798828,
+        "upper_deg": 160.4281768798828,
+        "lower_rad": -2.7999998995257984,
+        "upper_rad": 2.7999998995257984
+      }
+    },
+    {
+      "path": "/ReBot_Arm_RS/Physics/joint2",
+      "name": "joint2",
+      "typeName": "PhysicsRevoluteJoint",
+      "body0": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1"
+      ],
+      "body1": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2"
+      ],
+      "drives": {
+        "angular": {
+          "stiffness": 1.7453292608261108,
+          "damping": 0.01745329238474369,
+          "maxForce": 36.0,
+          "targetPosition": 0.0,
+          "targetVelocity": 0.0,
+          "type": "force"
+        }
+      },
+      "authored_attrs": {
+        "drive:angular:physics:damping": 0.01745329238474369,
+        "drive:angular:physics:maxForce": 36.0,
+        "drive:angular:physics:stiffness": 1.7453292608261108,
+        "drive:angular:physics:targetPosition": 0.0,
+        "drive:angular:physics:targetVelocity": 0.0,
+        "drive:angular:physics:type": "force",
+        "physics:axis": "Z",
+        "physics:breakForce": "Infinity",
+        "physics:breakTorque": "Infinity",
+        "physics:collisionEnabled": false,
+        "physics:excludeFromArticulation": false,
+        "physics:jointEnabled": true,
+        "physics:localPos0": [
+          0.020343000069260597,
+          0.027236999943852425,
+          0.07000000029802322
+        ],
+        "physics:localPos1": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:localRot0": "(-0.70710546, 0.7071081, 0, 0)",
+        "physics:localRot1": "(1, 0, 0, 0)",
+        "physics:lowerLimit": 0.0,
+        "physics:upperLimit": 179.90875244140625
+      },
+      "axis": "Z",
+      "limits": {
+        "lower": 0.0,
+        "upper": 179.90875244140625,
+        "unit": "degree",
+        "lower_deg": 0.0,
+        "upper_deg": 179.90875244140625,
+        "lower_rad": 0.0,
+        "upper_rad": 3.1400000832579256
+      }
+    },
+    {
+      "path": "/ReBot_Arm_RS/Physics/joint3",
+      "name": "joint3",
+      "typeName": "PhysicsRevoluteJoint",
+      "body0": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2"
+      ],
+      "body1": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3"
+      ],
+      "drives": {
+        "angular": {
+          "stiffness": 1.7453292608261108,
+          "damping": 0.01745329238474369,
+          "maxForce": 36.0,
+          "targetPosition": 0.0,
+          "targetVelocity": 0.0,
+          "type": "force"
+        }
+      },
+      "authored_attrs": {
+        "drive:angular:physics:damping": 0.01745329238474369,
+        "drive:angular:physics:maxForce": 36.0,
+        "drive:angular:physics:stiffness": 1.7453292608261108,
+        "drive:angular:physics:targetPosition": 0.0,
+        "drive:angular:physics:targetVelocity": 0.0,
+        "drive:angular:physics:type": "force",
+        "physics:axis": "Z",
+        "physics:breakForce": "Infinity",
+        "physics:breakTorque": "Infinity",
+        "physics:collisionEnabled": false,
+        "physics:excludeFromArticulation": false,
+        "physics:jointEnabled": true,
+        "physics:localPos0": [
+          -0.23600000143051147,
+          2.7755575615628914e-17,
+          0.0
+        ],
+        "physics:localPos1": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:localRot0": "(0, -1, 0, 0)",
+        "physics:localRot1": "(0, -1, 0, 0)",
+        "physics:lowerLimit": 0.0,
+        "physics:upperLimit": 179.90875244140625
+      },
+      "axis": "Z",
+      "limits": {
+        "lower": 0.0,
+        "upper": 179.90875244140625,
+        "unit": "degree",
+        "lower_deg": 0.0,
+        "upper_deg": 179.90875244140625,
+        "lower_rad": 0.0,
+        "upper_rad": 3.1400000832579256
+      }
+    },
+    {
+      "path": "/ReBot_Arm_RS/Physics/joint4",
+      "name": "joint4",
+      "typeName": "PhysicsRevoluteJoint",
+      "body0": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3"
+      ],
+      "body1": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4"
+      ],
+      "drives": {
+        "angular": {
+          "stiffness": 1.7453292608261108,
+          "damping": 0.01745329238474369,
+          "maxForce": 14.0,
+          "targetPosition": 0.0,
+          "targetVelocity": 0.0,
+          "type": "force"
+        }
+      },
+      "authored_attrs": {
+        "drive:angular:physics:damping": 0.01745329238474369,
+        "drive:angular:physics:maxForce": 14.0,
+        "drive:angular:physics:stiffness": 1.7453292608261108,
+        "drive:angular:physics:targetPosition": 0.0,
+        "drive:angular:physics:targetVelocity": 0.0,
+        "drive:angular:physics:type": "force",
+        "physics:axis": "Z",
+        "physics:breakForce": "Infinity",
+        "physics:breakTorque": "Infinity",
+        "physics:collisionEnabled": false,
+        "physics:excludeFromArticulation": false,
+        "physics:jointEnabled": true,
+        "physics:localPos0": [
+          0.2280000001192093,
+          -0.07274600118398666,
+          0.0044999998062849045
+        ],
+        "physics:localPos1": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:localRot0": "(0, -1, 0, 0)",
+        "physics:localRot1": "(0, -1, 0, 0)",
+        "physics:lowerLimit": -89.95437622070312,
+        "physics:upperLimit": 89.95437622070312
+      },
+      "axis": "Z",
+      "limits": {
+        "lower": -89.95437622070312,
+        "upper": 89.95437622070312,
+        "unit": "degree",
+        "lower_deg": -89.95437622070312,
+        "upper_deg": 89.95437622070312,
+        "lower_rad": -1.5700000416289628,
+        "upper_rad": 1.5700000416289628
+      }
+    },
+    {
+      "path": "/ReBot_Arm_RS/Physics/joint5",
+      "name": "joint5",
+      "typeName": "PhysicsRevoluteJoint",
+      "body0": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4"
+      ],
+      "body1": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5"
+      ],
+      "drives": {
+        "angular": {
+          "stiffness": 1.7453292608261108,
+          "damping": 0.01745329238474369,
+          "maxForce": 14.0,
+          "targetPosition": 0.0,
+          "targetVelocity": 0.0,
+          "type": "force"
+        }
+      },
+      "authored_attrs": {
+        "drive:angular:physics:damping": 0.01745329238474369,
+        "drive:angular:physics:maxForce": 14.0,
+        "drive:angular:physics:stiffness": 1.7453292608261108,
+        "drive:angular:physics:targetPosition": 0.0,
+        "drive:angular:physics:targetVelocity": 0.0,
+        "drive:angular:physics:type": "force",
+        "physics:axis": "Z",
+        "physics:breakForce": "Infinity",
+        "physics:breakTorque": "Infinity",
+        "physics:collisionEnabled": false,
+        "physics:excludeFromArticulation": false,
+        "physics:jointEnabled": true,
+        "physics:localPos0": [
+          0.08699999749660492,
+          -0.04800000041723251,
+          -0.030750000849366188
+        ],
+        "physics:localPos1": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:localRot0": "(-0.7071081, -0.70710546, 0, -0)",
+        "physics:localRot1": "(0, -1, 0, 0)",
+        "physics:lowerLimit": -89.95437622070312,
+        "physics:upperLimit": 89.95437622070312
+      },
+      "axis": "Z",
+      "limits": {
+        "lower": -89.95437622070312,
+        "upper": 89.95437622070312,
+        "unit": "degree",
+        "lower_deg": -89.95437622070312,
+        "upper_deg": 89.95437622070312,
+        "lower_rad": -1.5700000416289628,
+        "upper_rad": 1.5700000416289628
+      }
+    },
+    {
+      "path": "/ReBot_Arm_RS/Physics/joint6",
+      "name": "joint6",
+      "typeName": "PhysicsRevoluteJoint",
+      "body0": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5"
+      ],
+      "body1": [
+        "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6"
+      ],
+      "drives": {
+        "angular": {
+          "stiffness": 1.7453292608261108,
+          "damping": 0.01745329238474369,
+          "maxForce": 14.0,
+          "targetPosition": 0.0,
+          "targetVelocity": 0.0,
+          "type": "force"
+        }
+      },
+      "authored_attrs": {
+        "drive:angular:physics:damping": 0.01745329238474369,
+        "drive:angular:physics:maxForce": 14.0,
+        "drive:angular:physics:stiffness": 1.7453292608261108,
+        "drive:angular:physics:targetPosition": 0.0,
+        "drive:angular:physics:targetVelocity": 0.0,
+        "drive:angular:physics:type": "force",
+        "physics:axis": "Z",
+        "physics:breakForce": "Infinity",
+        "physics:breakTorque": "Infinity",
+        "physics:collisionEnabled": false,
+        "physics:excludeFromArticulation": false,
+        "physics:jointEnabled": true,
+        "physics:localPos0": [
+          0.0364999994635582,
+          2.117582368135751e-22,
+          0.04800000041723251
+        ],
+        "physics:localPos1": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:localRot0": "(-3.3148634e-17, -0.70710546, -3.7116984e-17, 0.7071081)",
+        "physics:localRot1": "(0, -1, 0, 0)",
+        "physics:lowerLimit": -179.90875244140625,
+        "physics:upperLimit": 179.90875244140625
+      },
+      "axis": "Z",
+      "limits": {
+        "lower": -179.90875244140625,
+        "upper": 179.90875244140625,
+        "unit": "degree",
+        "lower_deg": -179.90875244140625,
+        "upper_deg": 179.90875244140625,
+        "lower_rad": -3.1400000832579256,
+        "upper_rad": 3.1400000832579256
+      }
+    },
+    {
+      "path": "/ReBot_Arm_RS/Physics/root_joint",
+      "name": "root_joint",
+      "typeName": "PhysicsFixedJoint",
+      "body0": [
+        "/ReBot_Arm_RS"
+      ],
+      "body1": [
+        "/ReBot_Arm_RS/Geometry/base_link"
+      ],
+      "drives": {},
+      "authored_attrs": {
+        "physics:breakForce": "Infinity",
+        "physics:breakTorque": "Infinity",
+        "physics:collisionEnabled": false,
+        "physics:excludeFromArticulation": false,
+        "physics:jointEnabled": true,
+        "physics:localPos0": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:localPos1": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:localRot0": "(1, 0, 0, 0)",
+        "physics:localRot1": "(1, 0, 0, 0)"
+      },
+      "axis": null,
+      "limits": {
+        "lower": null,
+        "upper": null
+      }
+    }
+  ],
+  "rigid_bodies": [
+    {
+      "path": "/ReBot_Arm_RS/Geometry/base_link",
+      "typeName": "Xform",
+      "physics": {
+        "physics:angularVelocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:centerOfMass": [
+          2.876418875530362e-06,
+          -0.0001223024883074686,
+          0.024337612092494965
+        ],
+        "physics:density": 0.0,
+        "physics:diagonalInertia": [
+          0.0013304000021889806,
+          0.0021311899181455374,
+          0.002758770016953349
+        ],
+        "physics:kinematicEnabled": false,
+        "physics:mass": 1.17739999294281,
+        "physics:principalAxes": "(1, 0, -0, 0.0000062438353)",
+        "physics:rigidBodyEnabled": true,
+        "physics:startsAsleep": false,
+        "physics:velocity": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "mass_kg": 1.17739999294281
+    },
+    {
+      "path": "/ReBot_Arm_RS/Geometry/base_link/link1",
+      "typeName": "Xform",
+      "physics": {
+        "physics:angularVelocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:centerOfMass": [
+          0.008176523260772228,
+          0.0012258421629667282,
+          0.03314196690917015
+        ],
+        "physics:density": 0.0,
+        "physics:diagonalInertia": [
+          0.0001546400017105043,
+          0.00021341290266718715,
+          0.000272817094810307
+        ],
+        "physics:kinematicEnabled": false,
+        "physics:mass": 0.46549999713897705,
+        "physics:principalAxes": "(-0.31977478, 0.63066953, 0.63066953, 0.31977478)",
+        "physics:rigidBodyEnabled": true,
+        "physics:startsAsleep": false,
+        "physics:velocity": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "mass_kg": 0.46549999713897705
+    },
+    {
+      "path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2",
+      "typeName": "Xform",
+      "physics": {
+        "physics:angularVelocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:centerOfMass": [
+          -0.11786480993032455,
+          -0.0034222642425447702,
+          -0.02715519443154335
+        ],
+        "physics:density": 0.0,
+        "physics:diagonalInertia": [
+          0.0007337339920923114,
+          0.012559863738715649,
+          0.012813882902264595
+        ],
+        "physics:kinematicEnabled": false,
+        "physics:mass": 1.5520000457763672,
+        "physics:principalAxes": "(0.9999968, 0.0025189344, -0.00035218598, -0.000019105386)",
+        "physics:rigidBodyEnabled": true,
+        "physics:startsAsleep": false,
+        "physics:velocity": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "mass_kg": 1.5520000457763672
+    },
+    {
+      "path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3",
+      "typeName": "Xform",
+      "physics": {
+        "physics:angularVelocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:centerOfMass": [
+          0.10342715680599213,
+          -0.06641378998756409,
+          -0.027106868103146553
+        ],
+        "physics:density": 0.0,
+        "physics:diagonalInertia": [
+          0.000467564444988966,
+          0.00632715318351984,
+          0.006482512224465609
+        ],
+        "physics:kinematicEnabled": false,
+        "physics:mass": 1.2519999742507935,
+        "physics:principalAxes": "(0.9999889, 0.0009913049, 0.0035441353, -0.0029454725)",
+        "physics:rigidBodyEnabled": true,
+        "physics:startsAsleep": false,
+        "physics:velocity": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "mass_kg": 1.2519999742507935
+    },
+    {
+      "path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4",
+      "typeName": "Xform",
+      "physics": {
+        "physics:angularVelocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:centerOfMass": [
+          0.04755445569753647,
+          -0.04411134868860245,
+          -0.03141119331121445
+        ],
+        "physics:density": 0.0,
+        "physics:diagonalInertia": [
+          0.00032324076164513826,
+          0.000667419983074069,
+          0.0008891992038115859
+        ],
+        "physics:kinematicEnabled": false,
+        "physics:mass": 0.46000000834465027,
+        "physics:principalAxes": "(-0.6839188, 0.6839188, -0.17959702, -0.17959702)",
+        "physics:rigidBodyEnabled": true,
+        "physics:startsAsleep": false,
+        "physics:velocity": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "mass_kg": 0.46000000834465027
+    },
+    {
+      "path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5",
+      "typeName": "Xform",
+      "physics": {
+        "physics:angularVelocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:centerOfMass": [
+          0.011440061964094639,
+          4.79077380077797e-06,
+          0.038048747926950455
+        ],
+        "physics:density": 0.0,
+        "physics:diagonalInertia": [
+          5.2955958381062374e-05,
+          5.515394514077343e-05,
+          7.345979247475043e-05
+        ],
+        "physics:kinematicEnabled": false,
+        "physics:mass": 0.2012045681476593,
+        "physics:principalAxes": "(0.7217615, 0.0017204558, 0.6921357, -0.0023510843)",
+        "physics:rigidBodyEnabled": true,
+        "physics:startsAsleep": false,
+        "physics:velocity": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "mass_kg": 0.2012045681476593
+    },
+    {
+      "path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6",
+      "typeName": "Xform",
+      "physics": {
+        "physics:angularVelocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:centerOfMass": [
+          -2.2001843262842158e-06,
+          -0.00011131405335618183,
+          0.046910274773836136
+        ],
+        "physics:density": 0.0,
+        "physics:diagonalInertia": [
+          0.0003716129285749048,
+          0.0003821253194473684,
+          0.0006670205038972199
+        ],
+        "physics:kinematicEnabled": false,
+        "physics:mass": 0.75,
+        "physics:principalAxes": "(0.5189527, -0.48644412, -0.51218486, -0.48138016)",
+        "physics:rigidBodyEnabled": true,
+        "physics:startsAsleep": false,
+        "physics:velocity": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "mass_kg": 0.75
+    },
+    {
+      "path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_left",
+      "typeName": "Xform",
+      "physics": {
+        "physics:angularVelocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:centerOfMass": [
+          -0.002180087147280574,
+          0.018709035590291023,
+          0.009321886114776134
+        ],
+        "physics:density": 0.0,
+        "physics:diagonalInertia": [
+          9.307799700764008e-06,
+          9.501460226601921e-06,
+          1.0987796486006118e-05
+        ],
+        "physics:kinematicEnabled": false,
+        "physics:mass": 0.07519999891519547,
+        "physics:principalAxes": "(0.70710677, 0, 0.70710677, 0)",
+        "physics:rigidBodyEnabled": true,
+        "physics:startsAsleep": false,
+        "physics:velocity": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "mass_kg": 0.07519999891519547
+    },
+    {
+      "path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_right",
+      "typeName": "Xform",
+      "physics": {
+        "physics:angularVelocity": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "physics:centerOfMass": [
+          0.002180087147280574,
+          -0.018709035590291023,
+          0.009321886114776134
+        ],
+        "physics:density": 0.0,
+        "physics:diagonalInertia": [
+          9.307799700764008e-06,
+          9.501460226601921e-06,
+          1.0987796486006118e-05
+        ],
+        "physics:kinematicEnabled": false,
+        "physics:mass": 0.07519999891519547,
+        "physics:principalAxes": "(0.70710677, 0, 0.70710677, 0)",
+        "physics:rigidBodyEnabled": true,
+        "physics:startsAsleep": false,
+        "physics:velocity": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "mass_kg": 0.07519999891519547
+    }
+  ]
+}
