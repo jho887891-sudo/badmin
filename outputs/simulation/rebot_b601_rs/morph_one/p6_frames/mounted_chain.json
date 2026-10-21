@@ -1,0 +1,480 @@
+{
+  "schema": "p6_mounted_chain/1",
+  "task": "P6-02",
+  "title": "ONE chain of record: world -> chassis -> arm_base -> base_link -> link1..link6 -> gripper_end -> racket_mount -> racket_root -> racket_contact_frame",
+  "rule": "no measured number is stored twice: every numeric edge is a pointer (file + sha256 + JSON pointer) into the committed evidence, and every edge that the assets cannot answer is UNKNOWN with no numeric payload",
+  "generated_by": "tools/p6_frames/merge_mount_chain.py",
+  "units": {
+    "length": "metre",
+    "angle": "radian",
+    "quaternion": "wxyz (USD convention)",
+    "source_note": "the source USD declares metersPerUnit=1.0 (both assets); the merge applies no scale factor"
+  },
+  "sources": [
+    {
+      "role": "P6 frame tree (arm edges, 5 UNKNOWN boundaries)",
+      "ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json",
+        "sha256": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": ""
+      },
+      "sha256_file": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+      "generated_by": "tools/p6_frames/build_p6_frame_contract.py"
+    },
+    {
+      "role": "P3-01 mount anchor, pinned copy of the delivered branch",
+      "ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/p3_mount_frame_tree_at_0bbed19.json",
+        "sha256": "96366ec79a684e24bf3f3b67deefef29faf798f694cf8d290ecf41a1f7343e9c",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": ""
+      },
+      "sha256_file": "96366ec79a684e24bf3f3b67deefef29faf798f694cf8d290ecf41a1f7343e9c",
+      "p3_commit": "0bbed19",
+      "p3_branch": "p3/mount-frame-tree",
+      "how_pinned": "git show origin/p3/mount-frame-tree:outputs/simulation/rebot_b601_rs/morph_one/p3_mount/mount_frame_tree.json > evidence/p3_mount_frame_tree_at_0bbed19.json (bytes unmodified)"
+    }
+  ],
+  "chain_order": [
+    "world",
+    "chassis",
+    "arm_base",
+    "base_link",
+    "link1",
+    "link2",
+    "link3",
+    "link4",
+    "link5",
+    "link6",
+    "gripper_end",
+    "racket_mount",
+    "racket_root",
+    "racket_contact_frame"
+  ],
+  "node_names": {
+    "world": "Isaac stage /world (right-handed, Z up)",
+    "chassis": "Morph One chassis body frame (P3: /RW/Chassis proxy body)",
+    "arm_base": "P3: /ReBot_Arm_RS defaultPrim == body0 of root_joint; P6 calls the same prim arm_root_prim",
+    "base_link": "/ReBot_Arm_RS/Geometry/base_link",
+    "racket_root": "/RacketVisual in assets/third_party/racket_visual.usd; +Z handle butt -> head, +X face normal; origin at the handle BUTT",
+    "racket_contact_frame": "centre of the racket face - position UNKNOWN"
+  },
+  "naming_reconciliation": {
+    "p6_arm_root_prim == p3_arm_base": "P6 edge 3 asserts arm_root_prim -> arm_base_link with the identity root_joint, and P3 names the same prim 'arm_base'; this merge keeps ONE node name (arm_base) for that frame and records the alias instead of forking the chain",
+    "p6_chassis_morph_one == p3_chassis": "same body frame, same name kept: chassis"
+  },
+  "edges": [
+    {
+      "edge": 1,
+      "from": "world",
+      "to": "chassis_morph_one",
+      "edge_kind": "pose",
+      "status": "UNKNOWN",
+      "value_ref": null,
+      "missing_datum": "the Morph One chassis world pose (x, y, yaw) for the actual deployment",
+      "would_come_from": "a metrology record of the robot's placement on the court, or the runtime odometry plus the court registration procedure; neither is committed",
+      "unknown_guard": "UNKNOWN: no numeric datum may be added without a new measurement"
+    },
+    {
+      "edge": 2,
+      "from": "chassis_morph_one",
+      "to": "arm_base_link",
+      "edge_kind": "mount",
+      "status": "UNKNOWN",
+      "value_ref": null,
+      "missing_datum": "T_chassis_armbase: the bolt-pattern offset and yaw of the B601-RS base on the Morph One top plate",
+      "would_come_from": "a CAD or hand-measured mount record for THIS chassis + THIS arm; management/morph_one_rs/ holds the chassis CAD provenance but no arm mount transform",
+      "unknown_guard": "UNKNOWN: no numeric datum may be added without a new measurement",
+      "p3_01_anchor": {
+        "status": "SIM_AUTHORED_IDENTITY (not a measurement of the physical mount)",
+        "value_ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/p3_mount_frame_tree_at_0bbed19.json",
+          "sha256": "96366ec79a684e24bf3f3b67deefef29faf798f694cf8d290ecf41a1f7343e9c",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/chassis_to_arm_base_transform"
+        },
+        "anchor_ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/p3_mount_frame_tree_at_0bbed19.json",
+          "sha256": "96366ec79a684e24bf3f3b67deefef29faf798f694cf8d290ecf41a1f7343e9c",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/frame_tree/edges/1/anchor"
+        },
+        "p3_commit": "0bbed19",
+        "p3_branch": "p3/mount-frame-tree",
+        "depth_of_evidence": "payloads/Physics/physics.usda root_joint: physics:localPos0=localPos1=0 and physics:localRot0=localRot1=identity (sha256 8d18a8c9...), so the authored chassis frame and the arm base frame COINCIDE",
+        "authoring_consequence": "the sim composes chassis==arm_base; the PHYSICAL bolt-pattern offset on the Morph One top plate is still unmeasured, so this edge's status stays UNKNOWN and no mount offset is invented",
+        "verified_in_this_merge": {
+          "local_rot0_equals_local_rot1": true,
+          "translation_from_anchor_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "matches_p3_derived_transform": true
+        }
+      }
+    },
+    {
+      "edge": 3,
+      "from": "arm_root_prim",
+      "to": "arm_base_link",
+      "edge_kind": "root_joint_identity",
+      "status": "ASSERTED_BY_ASSET",
+      "value_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json",
+        "sha256": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/edges/2"
+      },
+      "asserted_by": "P6 asset evidence (sha256-pinned USD layer), unchanged by this merge",
+      "arm_boundary_note": "arm-internal: identical to P6 frame_tree.json, not restated here"
+    },
+    {
+      "edge": 4,
+      "from": "base_link",
+      "to": "link1",
+      "edge_kind": "revolute_joint",
+      "status": "ASSERTED_BY_ASSET",
+      "value_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json",
+        "sha256": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/edges/3"
+      },
+      "asserted_by": "P6 asset evidence (sha256-pinned USD layer), unchanged by this merge",
+      "arm_boundary_note": "arm-internal: identical to P6 frame_tree.json, not restated here"
+    },
+    {
+      "edge": 5,
+      "from": "link1",
+      "to": "link2",
+      "edge_kind": "revolute_joint",
+      "status": "ASSERTED_BY_ASSET",
+      "value_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json",
+        "sha256": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/edges/4"
+      },
+      "asserted_by": "P6 asset evidence (sha256-pinned USD layer), unchanged by this merge",
+      "arm_boundary_note": "arm-internal: identical to P6 frame_tree.json, not restated here"
+    },
+    {
+      "edge": 6,
+      "from": "link2",
+      "to": "link3",
+      "edge_kind": "revolute_joint",
+      "status": "ASSERTED_BY_ASSET",
+      "value_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json",
+        "sha256": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/edges/5"
+      },
+      "asserted_by": "P6 asset evidence (sha256-pinned USD layer), unchanged by this merge",
+      "arm_boundary_note": "arm-internal: identical to P6 frame_tree.json, not restated here"
+    },
+    {
+      "edge": 7,
+      "from": "link3",
+      "to": "link4",
+      "edge_kind": "revolute_joint",
+      "status": "ASSERTED_BY_ASSET",
+      "value_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json",
+        "sha256": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/edges/6"
+      },
+      "asserted_by": "P6 asset evidence (sha256-pinned USD layer), unchanged by this merge",
+      "arm_boundary_note": "arm-internal: identical to P6 frame_tree.json, not restated here"
+    },
+    {
+      "edge": 8,
+      "from": "link4",
+      "to": "link5",
+      "edge_kind": "revolute_joint",
+      "status": "ASSERTED_BY_ASSET",
+      "value_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json",
+        "sha256": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/edges/7"
+      },
+      "asserted_by": "P6 asset evidence (sha256-pinned USD layer), unchanged by this merge",
+      "arm_boundary_note": "arm-internal: identical to P6 frame_tree.json, not restated here"
+    },
+    {
+      "edge": 9,
+      "from": "link5",
+      "to": "link6",
+      "edge_kind": "revolute_joint",
+      "status": "ASSERTED_BY_ASSET",
+      "value_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json",
+        "sha256": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/edges/8"
+      },
+      "asserted_by": "P6 asset evidence (sha256-pinned USD layer), unchanged by this merge",
+      "arm_boundary_note": "arm-internal: identical to P6 frame_tree.json, not restated here"
+    },
+    {
+      "edge": 10,
+      "from": "link6",
+      "to": "gripper_left",
+      "edge_kind": "prismatic_jaw",
+      "status": "ASSERTED_BY_ASSET",
+      "value_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json",
+        "sha256": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/edges/9"
+      },
+      "asserted_by": "P6 asset evidence (sha256-pinned USD layer), unchanged by this merge",
+      "arm_boundary_note": "arm-internal: identical to P6 frame_tree.json, not restated here"
+    },
+    {
+      "edge": 11,
+      "from": "link6",
+      "to": "gripper_right",
+      "edge_kind": "prismatic_jaw",
+      "status": "ASSERTED_BY_ASSET",
+      "value_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json",
+        "sha256": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/edges/10"
+      },
+      "asserted_by": "P6 asset evidence (sha256-pinned USD layer), unchanged by this merge",
+      "arm_boundary_note": "arm-internal: identical to P6 frame_tree.json, not restated here"
+    },
+    {
+      "edge": 12,
+      "from": "link6",
+      "to": "gripper_end",
+      "edge_kind": "authored_frame",
+      "status": "ASSERTED_BY_ASSET",
+      "value_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json",
+        "sha256": "7764d0d1a78430f7c3505301afa4e49f4ab83ec2b31ec7fa28ae5ca2d04443bf",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/edges/11"
+      },
+      "asserted_by": "P6 asset evidence (sha256-pinned USD layer), unchanged by this merge",
+      "arm_boundary_note": "arm-internal: identical to P6 frame_tree.json, not restated here"
+    },
+    {
+      "edge": 13,
+      "from": "gripper_end",
+      "to": "racket_mount",
+      "edge_kind": "tool_mount",
+      "status": "UNKNOWN",
+      "value_ref": null,
+      "missing_datum": "T_flange_tcp (a.k.a. T_link6_tcp): where the racket handle axis leaves the flange and how it is clocked about that axis",
+      "would_come_from": "configs/racket.yaml piper_attachment.mount_transform.translation_m / quaternion_xyzw, which are null and carry status REQUIRES_MEASUREMENT; filling them needs a physical measurement of the printed adapter on the installed tool, plus docs/RACKET.md:117 T_link6_tcp procedure",
+      "unknown_guard": "UNKNOWN: no numeric datum may be added without a new measurement"
+    },
+    {
+      "edge": 14,
+      "from": "racket_mount",
+      "to": "racket_root",
+      "edge_kind": "asset_placement",
+      "status": "UNKNOWN",
+      "value_ref": null,
+      "missing_datum": "how deep the handle butt sits inside the mount, and the clocking of the racket's +X face normal about the handle axis",
+      "would_come_from": "a measurement of the physical assembly (handle insertion depth + face normal direction). The asset cannot answer it: /RacketVisual origin is the handle butt at z=0, which is a point on the tool, not the mating face",
+      "unknown_guard": "UNKNOWN: no numeric datum may be added without a new measurement"
+    },
+    {
+      "edge": 15,
+      "from": "racket_root",
+      "to": "racket_contact_frame",
+      "edge_kind": "derived_frame",
+      "status": "UNKNOWN",
+      "value_ref": null,
+      "missing_datum": "the measured head centre / sweet-spot centre in racket-root coordinates",
+      "would_come_from": "geometry measured on the real strung racket, or a fitted ellipse centre on the collision proxy; simulation/badminton_scene/racket_cfg.py head_center_from_tcp=0.50 is explicitly labelled approx and configs/racket.yaml measured_unit is REQUIRES_MEASUREMENT",
+      "unknown_guard": "UNKNOWN: no numeric datum may be added without a new measurement"
+    }
+  ],
+  "summary": {
+    "edges_total": 15,
+    "asserted": 10,
+    "unknown": 5,
+    "unknown_edge_ids": [
+      1,
+      2,
+      13,
+      14,
+      15
+    ],
+    "numeric_edges_are_pointers_only": true
+  },
+  "composition": {
+    "A_usdgeom_xformops_authoritative": {
+      "what": "chassis -> arm_base -> base_link -> link1..link6 -> gripper_end composed from the P3-01 UsdGeom xformOp hops (pxr-verified slice)",
+      "hops_used": 9,
+      "hops_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/p3_mount_frame_tree_at_0bbed19.json",
+        "sha256": "96366ec79a684e24bf3f3b67deefef29faf798f694cf8d290ecf41a1f7343e9c",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/arm_chain_rest_pose/hops"
+      },
+      "T": [
+        [
+          1.0,
+          0.0,
+          -3.4231e-08,
+          0.301710169999
+        ],
+        [
+          -0.0,
+          1.0,
+          1.39475e-07,
+          2.62633e-07
+        ],
+        [
+          3.4231e-08,
+          -1.39475e-07,
+          1.0,
+          0.217746720407
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R": 1.0,
+      "R_orthonormal_max_error": 0.0,
+      "vs_pxr_end_pose": {
+        "p3_gripper_end_world_rest_pose_ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/p3_mount_frame_tree_at_0bbed19.json",
+          "sha256": "96366ec79a684e24bf3f3b67deefef29faf798f694cf8d290ecf41a1f7343e9c",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/arm_chain_rest_pose/gripper_end_world_rest_pose"
+        },
+        "position_delta_m": [
+          -0.0,
+          -0.0,
+          -0.0
+        ],
+        "max_abs_delta_m": 0.0
+      }
+    },
+    "B_p6_physics_joint_anchors": {
+      "what": "chassis -> arm_base -> base_link -> link1..link6 -> gripper_end composed from the P6 joint anchors (physics:localPos0 + physics:localRot0)",
+      "edges_used": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        12
+      ],
+      "T": [
+        [
+          -0.999999999972,
+          -5.5e-11,
+          -7.44244e-06,
+          -0.030709829999
+        ],
+        [
+          -5.6e-11,
+          -0.99999999989,
+          1.4813868e-05,
+          0.007025903967
+        ],
+        [
+          -7.44244e-06,
+          1.4813868e-05,
+          0.999999999863,
+          -0.018254752155
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R": 1.0,
+      "R_orthonormal_max_error": 0.0,
+      "vs_A": {
+        "position_delta_m": [
+          -0.33242,
+          0.007025641,
+          -0.236001473
+        ],
+        "max_abs_delta_m": 0.33242
+      }
+    },
+    "open_issue": {
+      "id": "P6-02-OI-1",
+      "status": "OPEN",
+      "finding": "composing the P6 revolute edges as child-link poses does NOT reproduce the pxr-composed gripper_end pose: the USD joint frame of a body carries TWO local poses (physics:localPos0/localRot0 on body0 and physics:localPos1/localRot1 on body1), and the P6 frame tree records only the body0 side. Both compositions are proper rotations (det R = +1), so neither is a handedness bug - the gap is a missing localPos1/localRot1 per joint, not a wrong number.",
+      "max_abs_delta_m": 0.33242,
+      "consequence_for_this_merge": "the merged chain uses composition A (UsdGeom xformOps) as the chain of record; the P6 layer is kept for its per-edge provenance and joint limits, and its revolute edge numbers are NOT reinterpreted as child-link poses",
+      "next_action": "extract physics:localPos1/localRot1 for joints 1..6 from the read-only arm USD and re-check A vs B; until then B stays a diagnostic, not a datum"
+    }
+  },
+  "guards": [
+    {
+      "guard": "no_duplicate_numbers",
+      "rule": "a numeric edge carries value_ref only; tests fail if a translation_m / rotation_quat payload is added next to the pointer"
+    },
+    {
+      "guard": "unknown_stays_unknown",
+      "rule": "edges 1, 2, 13, 14, 15 must keep translation_m/rotation_quat absent; a test fails if anyone silently fills the mount with a guess"
+    },
+    {
+      "guard": "edge2_is_sim_authored",
+      "rule": "the P3 identity is attached to edge 2 as p3_01_anchor and never changes the physical status: the mount offset stays unmeasured"
+    }
+  ],
+  "unknown": [
+    {
+      "edge": 1,
+      "from": "world",
+      "to": "chassis_morph_one",
+      "missing_datum": "the Morph One chassis world pose (x, y, yaw) for the actual deployment"
+    },
+    {
+      "edge": 2,
+      "from": "chassis_morph_one",
+      "to": "arm_base_link",
+      "missing_datum": "T_chassis_armbase: the bolt-pattern offset and yaw of the B601-RS base on the Morph One top plate"
+    },
+    {
+      "edge": 13,
+      "from": "gripper_end",
+      "to": "racket_mount",
+      "missing_datum": "T_flange_tcp (a.k.a. T_link6_tcp): where the racket handle axis leaves the flange and how it is clocked about that axis"
+    },
+    {
+      "edge": 14,
+      "from": "racket_mount",
+      "to": "racket_root",
+      "missing_datum": "how deep the handle butt sits inside the mount, and the clocking of the racket's +X face normal about the handle axis"
+    },
+    {
+      "edge": 15,
+      "from": "racket_root",
+      "to": "racket_contact_frame",
+      "missing_datum": "the measured head centre / sweet-spot centre in racket-root coordinates"
+    }
+  ],
+  "provenance": {
+    "pxr_used": false,
+    "isaac_sim_used": false,
+    "gpu_used": false,
+    "assets_modified": false,
+    "deterministic": true,
+    "command": "python tools/p6_frames/merge_mount_chain.py"
+  }
+}

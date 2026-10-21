@@ -1,0 +1,1655 @@
+{
+  "schema": "p6_racket_collision_proxy/1",
+  "task": "P6-07",
+  "title": "racket collision proxy, fitted to the visual mesh",
+  "kind": "ENGINEERING_PROXY — NOT a manufacturer collision model",
+  "generated_by": "tools/p6_frames/build_racket_collision_proxy.py",
+  "units": {
+    "length": "metre",
+    "verified": "the source USD declares metersPerUnit=1.0 and upAxis=Z (evidence/racket_usd_audit.json), and every dimension below is a coordinate read straight out of that stage - no 0.001/1000 factor is applied",
+    "volume": "cubic metre"
+  },
+  "root_frame": {
+    "name": "racket_root",
+    "prim_path": "/RacketVisual",
+    "definition": "+Z = handle butt -> head tip, +X = face normal, +Y = Z x X, origin = handle butt",
+    "mesh_local_to_world": "identity (verified for both meshes while fitting; a non-identity xform aborts the build)",
+    "convention_note": "the same racket_root frame as outputs/simulation/rebot_b601_rs/morph_one/p6_frames/frame_tree.json (node racket_root, edge 14 target)"
+  },
+  "source_meshes": [
+    {
+      "mesh_prim_path": "/RacketVisual/Obj_Racket_0",
+      "role": "frame + handle + shaft (visual only)",
+      "points": 1632,
+      "triangles": 828,
+      "bbox_min_m": [
+        -0.01584,
+        -0.10797,
+        0.0
+      ],
+      "bbox_max_m": [
+        0.01584,
+        0.10797,
+        0.6827
+      ],
+      "collision_api": false,
+      "source_file": "assets/third_party/racket_visual.usd",
+      "sha256": "643fb67003c6429f98ec132d2db056c83ed02811b594ad27904b618bf7c1ec29"
+    },
+    {
+      "mesh_prim_path": "/RacketVisual/Obj_Strings_0",
+      "role": "string bed (visual only)",
+      "points": 44,
+      "triangles": 40,
+      "bbox_min_m": [
+        -0.001,
+        -0.10073,
+        0.44391
+      ],
+      "bbox_max_m": [
+        0.001,
+        0.10073,
+        0.67526
+      ],
+      "collision_api": false,
+      "source_file": "assets/third_party/racket_visual.usd",
+      "sha256": "643fb67003c6429f98ec132d2db056c83ed02811b594ad27904b618bf7c1ec29"
+    }
+  ],
+  "visual_bbox_m": {
+    "min": [
+      -0.01584,
+      -0.10797,
+      0.0
+    ],
+    "max": [
+      0.01584,
+      0.10797,
+      0.6827
+    ],
+    "size": [
+      0.03168,
+      0.21594,
+      0.6827
+    ],
+    "volume_m3": 0.00467
+  },
+  "segmentation_measured": {
+    "grip_radius_m": 0.015845,
+    "shaft_radius_m": 0.003896,
+    "handle_top_z_m": 0.15669,
+    "throat_start_z_m": 0.43728,
+    "hoop_bottom_z_m": 0.44418,
+    "rackettip_z_m": 0.6827,
+    "hoop_tube_radius_m": 0.007121,
+    "head_outline_rings_used": 13,
+    "method": "quantiles/breakpoints read off the authored vertex rings of Obj_Racket_0; no dimension is taken from a datasheet"
+  },
+  "primitive_count": 43,
+  "primitives": [
+    {
+      "id": "racket_handle",
+      "order": 1,
+      "role": "handle",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "axis_end_m": [
+          0.0,
+          0.0,
+          0.15669
+        ],
+        "radius_m": 0.015845
+      },
+      "dimension_derivation": "axis = the grip centreline (racket_root +Z, origin at the handle butt per evidence/racket_usd_audit.json flange_note); radius = max radial distance of the Obj_Racket_0 vertices with z < 0.444180 m; length = the last authored vertex ring whose radial distance still exceeds 0.009870 m",
+      "measured_extent_m": {
+        "z_min": 0.0,
+        "z_max": 0.15669,
+        "max_radial_m": 0.015845
+      },
+      "volume_m3": 0.00014
+    },
+    {
+      "id": "racket_grip_taper_01",
+      "order": 1.5,
+      "role": "handle",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.0,
+          0.15669
+        ],
+        "axis_end_m": [
+          0.0,
+          0.0,
+          0.170823
+        ],
+        "radius_m": 0.015845
+      },
+      "dimension_derivation": "step 1/3 of the measured grip->shaft taper between the authored rings z=0.156690 m (r=0.015845 m) and z=0.199090 m (r=0.003896 m); each capsule takes the wider end radius of its step",
+      "measured_extent_m": {
+        "z_min": 0.15669,
+        "z_max": 0.170823,
+        "radius_m": 0.015845
+      },
+      "volume_m3": 2.8e-05
+    },
+    {
+      "id": "racket_grip_taper_02",
+      "order": 1.5,
+      "role": "handle",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.0,
+          0.170823
+        ],
+        "axis_end_m": [
+          0.0,
+          0.0,
+          0.184957
+        ],
+        "radius_m": 0.011862
+      },
+      "dimension_derivation": "step 2/3 of the measured grip->shaft taper between the authored rings z=0.156690 m (r=0.015845 m) and z=0.199090 m (r=0.003896 m); each capsule takes the wider end radius of its step",
+      "measured_extent_m": {
+        "z_min": 0.170823,
+        "z_max": 0.184957,
+        "radius_m": 0.011862
+      },
+      "volume_m3": 1.3e-05
+    },
+    {
+      "id": "racket_grip_taper_03",
+      "order": 1.5,
+      "role": "handle",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.0,
+          0.184957
+        ],
+        "axis_end_m": [
+          0.0,
+          0.0,
+          0.19909
+        ],
+        "radius_m": 0.007879
+      },
+      "dimension_derivation": "step 3/3 of the measured grip->shaft taper between the authored rings z=0.156690 m (r=0.015845 m) and z=0.199090 m (r=0.003896 m); each capsule takes the wider end radius of its step",
+      "measured_extent_m": {
+        "z_min": 0.184957,
+        "z_max": 0.19909,
+        "radius_m": 0.007879
+      },
+      "volume_m3": 5e-06
+    },
+    {
+      "id": "racket_shaft",
+      "order": 2,
+      "role": "shaft",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.0,
+          0.15669
+        ],
+        "axis_end_m": [
+          0.0,
+          0.0,
+          0.43728
+        ],
+        "radius_m": 0.003896
+      },
+      "dimension_derivation": "radius = max radial distance of the vertices in the shaft band 0.244299 < z < 0.444180 m; the capsule spans the grip top ring to the first authored ring wider than 0.007792 m (the throat fork)",
+      "measured_extent_m": {
+        "z_min": 0.15669,
+        "z_max": 0.43728,
+        "max_radial_m": 0.003896
+      },
+      "volume_m3": 1.4e-05
+    },
+    {
+      "id": "racket_frame_fork_n",
+      "order": 2.5,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.000779,
+          0.43728
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.067083,
+          0.457267
+        ],
+        "radius_m": 0.00595
+      },
+      "dimension_derivation": "from the shaft axis at the first fork ring (z=0.437280 m) out to the measured tube centreline at the head bottom (z=0.457267 m, |y|=0.067083 m); radius = the measured hoop tube radius",
+      "measured_extent_m": {
+        "z_from": 0.43728,
+        "z_to": 0.457267,
+        "out_y_from_m": 0.000779,
+        "out_y_to_m": 0.067083
+      },
+      "volume_m3": 9e-06
+    },
+    {
+      "id": "racket_frame_fork_p",
+      "order": 2.5,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.000779,
+          0.43728
+        ],
+        "axis_end_m": [
+          0.0,
+          0.067083,
+          0.457267
+        ],
+        "radius_m": 0.005554
+      },
+      "dimension_derivation": "from the shaft axis at the first fork ring (z=0.437280 m) out to the measured tube centreline at the head bottom (z=0.457267 m, |y|=0.067083 m); radius = the measured hoop tube radius",
+      "measured_extent_m": {
+        "z_from": 0.43728,
+        "z_to": 0.457267,
+        "out_y_from_m": 0.000779,
+        "out_y_to_m": 0.067083
+      },
+      "volume_m3": 7e-06
+    },
+    {
+      "id": "racket_frame_rim_n13",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.01883,
+          0.43728
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.067083,
+          0.457267
+        ],
+        "radius_m": 0.003896
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.43728,
+        "z_to": 0.457267,
+        "tube_axis_half_width_from_m": 0.01883,
+        "tube_axis_half_width_to_m": 0.067083
+      },
+      "volume_m3": 3e-06
+    },
+    {
+      "id": "racket_frame_rim_n14",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.067083,
+          0.457267
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.092003,
+          0.477253
+        ],
+        "radius_m": 0.00546
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.457267,
+        "z_to": 0.477253,
+        "tube_axis_half_width_from_m": 0.067083,
+        "tube_axis_half_width_to_m": 0.092003
+      },
+      "volume_m3": 4e-06
+    },
+    {
+      "id": "racket_frame_rim_n15",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.092003,
+          0.477253
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.098913,
+          0.49724
+        ],
+        "radius_m": 0.004996
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.477253,
+        "z_to": 0.49724,
+        "tube_axis_half_width_from_m": 0.092003,
+        "tube_axis_half_width_to_m": 0.098913
+      },
+      "volume_m3": 2e-06
+    },
+    {
+      "id": "racket_frame_rim_n16",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.098913,
+          0.49724
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.100999,
+          0.517227
+        ],
+        "radius_m": 0.007121
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.49724,
+        "z_to": 0.517227,
+        "tube_axis_half_width_from_m": 0.098913,
+        "tube_axis_half_width_to_m": 0.100999
+      },
+      "volume_m3": 5e-06
+    },
+    {
+      "id": "racket_frame_rim_n17",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.100999,
+          0.517227
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.102964,
+          0.537213
+        ],
+        "radius_m": 0.006427
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.517227,
+        "z_to": 0.537213,
+        "tube_axis_half_width_from_m": 0.100999,
+        "tube_axis_half_width_to_m": 0.102964
+      },
+      "volume_m3": 4e-06
+    },
+    {
+      "id": "racket_frame_rim_n18",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.102964,
+          0.537213
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.102741,
+          0.5572
+        ],
+        "radius_m": 0.005178
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.537213,
+        "z_to": 0.5572,
+        "tube_axis_half_width_from_m": 0.102964,
+        "tube_axis_half_width_to_m": 0.102741
+      },
+      "volume_m3": 2e-06
+    },
+    {
+      "id": "racket_frame_rim_n19",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.102741,
+          0.5572
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.097282,
+          0.577187
+        ],
+        "radius_m": 0.006035
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.5572,
+        "z_to": 0.577187,
+        "tube_axis_half_width_from_m": 0.102741,
+        "tube_axis_half_width_to_m": 0.097282
+      },
+      "volume_m3": 3e-06
+    },
+    {
+      "id": "racket_frame_rim_n20",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.097282,
+          0.577187
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.097128,
+          0.597173
+        ],
+        "radius_m": 0.005995
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.577187,
+        "z_to": 0.597173,
+        "tube_axis_half_width_from_m": 0.097282,
+        "tube_axis_half_width_to_m": 0.097128
+      },
+      "volume_m3": 3e-06
+    },
+    {
+      "id": "racket_frame_rim_n21",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.097128,
+          0.597173
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.086323,
+          0.61716
+        ],
+        "radius_m": 0.004975
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.597173,
+        "z_to": 0.61716,
+        "tube_axis_half_width_from_m": 0.097128,
+        "tube_axis_half_width_to_m": 0.086323
+      },
+      "volume_m3": 2e-06
+    },
+    {
+      "id": "racket_frame_rim_n22",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.086323,
+          0.61716
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.080535,
+          0.637147
+        ],
+        "radius_m": 0.00497
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.61716,
+        "z_to": 0.637147,
+        "tube_axis_half_width_from_m": 0.086323,
+        "tube_axis_half_width_to_m": 0.080535
+      },
+      "volume_m3": 2e-06
+    },
+    {
+      "id": "racket_frame_rim_n23",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.080535,
+          0.637147
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.059461,
+          0.657133
+        ],
+        "radius_m": 0.00519
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.637147,
+        "z_to": 0.657133,
+        "tube_axis_half_width_from_m": 0.080535,
+        "tube_axis_half_width_to_m": 0.059461
+      },
+      "volume_m3": 3e-06
+    },
+    {
+      "id": "racket_frame_rim_n24",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          -0.059461,
+          0.657133
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.03165,
+          0.67712
+        ],
+        "radius_m": 0.005432
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.657133,
+        "z_to": 0.67712,
+        "tube_axis_half_width_from_m": 0.059461,
+        "tube_axis_half_width_to_m": 0.03165
+      },
+      "volume_m3": 4e-06
+    },
+    {
+      "id": "racket_frame_rim_p01",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.01883,
+          0.43728
+        ],
+        "axis_end_m": [
+          0.0,
+          0.067083,
+          0.457267
+        ],
+        "radius_m": 0.003896
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.43728,
+        "z_to": 0.457267,
+        "tube_axis_half_width_from_m": 0.01883,
+        "tube_axis_half_width_to_m": 0.067083
+      },
+      "volume_m3": 3e-06
+    },
+    {
+      "id": "racket_frame_rim_p02",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.067083,
+          0.457267
+        ],
+        "axis_end_m": [
+          0.0,
+          0.092003,
+          0.477253
+        ],
+        "radius_m": 0.005318
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.457267,
+        "z_to": 0.477253,
+        "tube_axis_half_width_from_m": 0.067083,
+        "tube_axis_half_width_to_m": 0.092003
+      },
+      "volume_m3": 3e-06
+    },
+    {
+      "id": "racket_frame_rim_p03",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.092003,
+          0.477253
+        ],
+        "axis_end_m": [
+          0.0,
+          0.098913,
+          0.49724
+        ],
+        "radius_m": 0.005038
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.477253,
+        "z_to": 0.49724,
+        "tube_axis_half_width_from_m": 0.092003,
+        "tube_axis_half_width_to_m": 0.098913
+      },
+      "volume_m3": 2e-06
+    },
+    {
+      "id": "racket_frame_rim_p04",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.098913,
+          0.49724
+        ],
+        "axis_end_m": [
+          0.0,
+          0.100999,
+          0.517227
+        ],
+        "radius_m": 0.006948
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.49724,
+        "z_to": 0.517227,
+        "tube_axis_half_width_from_m": 0.098913,
+        "tube_axis_half_width_to_m": 0.100999
+      },
+      "volume_m3": 4e-06
+    },
+    {
+      "id": "racket_frame_rim_p05",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.100999,
+          0.517227
+        ],
+        "axis_end_m": [
+          0.0,
+          0.102964,
+          0.537213
+        ],
+        "radius_m": 0.006388
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.517227,
+        "z_to": 0.537213,
+        "tube_axis_half_width_from_m": 0.100999,
+        "tube_axis_half_width_to_m": 0.102964
+      },
+      "volume_m3": 4e-06
+    },
+    {
+      "id": "racket_frame_rim_p06",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.102964,
+          0.537213
+        ],
+        "axis_end_m": [
+          0.0,
+          0.102741,
+          0.5572
+        ],
+        "radius_m": 0.00515
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.537213,
+        "z_to": 0.5572,
+        "tube_axis_half_width_from_m": 0.102964,
+        "tube_axis_half_width_to_m": 0.102741
+      },
+      "volume_m3": 2e-06
+    },
+    {
+      "id": "racket_frame_rim_p07",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.102741,
+          0.5572
+        ],
+        "axis_end_m": [
+          0.0,
+          0.097282,
+          0.577187
+        ],
+        "radius_m": 0.005977
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.5572,
+        "z_to": 0.577187,
+        "tube_axis_half_width_from_m": 0.102741,
+        "tube_axis_half_width_to_m": 0.097282
+      },
+      "volume_m3": 3e-06
+    },
+    {
+      "id": "racket_frame_rim_p08",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.097282,
+          0.577187
+        ],
+        "axis_end_m": [
+          0.0,
+          0.097128,
+          0.597173
+        ],
+        "radius_m": 0.005957
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.577187,
+        "z_to": 0.597173,
+        "tube_axis_half_width_from_m": 0.097282,
+        "tube_axis_half_width_to_m": 0.097128
+      },
+      "volume_m3": 3e-06
+    },
+    {
+      "id": "racket_frame_rim_p09",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.097128,
+          0.597173
+        ],
+        "axis_end_m": [
+          0.0,
+          0.086323,
+          0.61716
+        ],
+        "radius_m": 0.003896
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.597173,
+        "z_to": 0.61716,
+        "tube_axis_half_width_from_m": 0.097128,
+        "tube_axis_half_width_to_m": 0.086323
+      },
+      "volume_m3": 1e-06
+    },
+    {
+      "id": "racket_frame_rim_p10",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.086323,
+          0.61716
+        ],
+        "axis_end_m": [
+          0.0,
+          0.080535,
+          0.637147
+        ],
+        "radius_m": 0.005089
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.61716,
+        "z_to": 0.637147,
+        "tube_axis_half_width_from_m": 0.086323,
+        "tube_axis_half_width_to_m": 0.080535
+      },
+      "volume_m3": 2e-06
+    },
+    {
+      "id": "racket_frame_rim_p11",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.080535,
+          0.637147
+        ],
+        "axis_end_m": [
+          0.0,
+          0.059461,
+          0.657133
+        ],
+        "radius_m": 0.005167
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.637147,
+        "z_to": 0.657133,
+        "tube_axis_half_width_from_m": 0.080535,
+        "tube_axis_half_width_to_m": 0.059461
+      },
+      "volume_m3": 3e-06
+    },
+    {
+      "id": "racket_frame_rim_p12",
+      "order": 3,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.059461,
+          0.657133
+        ],
+        "axis_end_m": [
+          0.0,
+          0.03165,
+          0.67712
+        ],
+        "radius_m": 0.00572
+      },
+      "dimension_derivation": "axis = the measured TUBE CENTRELINE of the hoop on this side, i.e. (outer + inner)/2 of the |y| values of the authored vertex ring, linearly interpolated between consecutive nodes; radius = the largest measured tube half-thickness max((outer-inner)/2, max|x|) over the head rings",
+      "measured_extent_m": {
+        "z_from": 0.657133,
+        "z_to": 0.67712,
+        "tube_axis_half_width_from_m": 0.059461,
+        "tube_axis_half_width_to_m": 0.03165
+      },
+      "volume_m3": 4e-06
+    },
+    {
+      "id": "racket_frame_crown",
+      "order": 4,
+      "role": "frame",
+      "type": "capsule",
+      "geometry": {
+        "axis_start_m": [
+          0.0,
+          0.03165,
+          0.67712
+        ],
+        "axis_end_m": [
+          0.0,
+          -0.03165,
+          0.67712
+        ],
+        "radius_m": 0.005968
+      },
+      "dimension_derivation": "bridges the last measured tube-centreline node of the +Y chain to the one of the -Y chain, closing the hoop tip",
+      "measured_extent_m": {
+        "z_from": 0.67712,
+        "z_to": 0.67712,
+        "radius_m": 0.003896
+      },
+      "volume_m3": 8e-06
+    },
+    {
+      "id": "racket_string_bed_slab_01",
+      "order": 5,
+      "role": "string_bed",
+      "type": "box",
+      "geometry": {
+        "center_m": [
+          0.0,
+          0.0,
+          0.44449
+        ],
+        "half_extents_m": [
+          0.002501,
+          0.018835,
+          0.001472
+        ]
+      },
+      "dimension_derivation": "z-band of the Obj_Strings_0 vertices; half-width in Y = max |y| of the strings vertices inside the band (so the slab follows the elliptical bed outline); half-thickness in X = max |x| of the strings vertices. The bed is treated as a SOLID membrane: at the shuttle speeds of this project the string bed does not let the shuttle through, so the hole inside the head is not a collision void.",
+      "measured_extent_m": {
+        "z_min": 0.44391,
+        "z_max": 0.44507,
+        "half_width_m": 0.01883,
+        "half_thickness_m": 0.001
+      },
+      "volume_m3": 1e-06
+    },
+    {
+      "id": "racket_string_bed_slab_02",
+      "order": 5,
+      "role": "string_bed",
+      "type": "box",
+      "geometry": {
+        "center_m": [
+          0.0,
+          0.0,
+          0.448485
+        ],
+        "half_extents_m": [
+          0.001,
+          0.04642,
+          0.003415
+        ]
+      },
+      "dimension_derivation": "z-band of the Obj_Strings_0 vertices; half-width in Y = max |y| of the strings vertices inside the band (so the slab follows the elliptical bed outline); half-thickness in X = max |x| of the strings vertices. The bed is treated as a SOLID membrane: at the shuttle speeds of this project the string bed does not let the shuttle through, so the hole inside the head is not a collision void.",
+      "measured_extent_m": {
+        "z_min": 0.44507,
+        "z_max": 0.4519,
+        "half_width_m": 0.04642,
+        "half_thickness_m": 0.001
+      },
+      "volume_m3": 1e-06
+    },
+    {
+      "id": "racket_string_bed_slab_03",
+      "order": 5,
+      "role": "string_bed",
+      "type": "box",
+      "geometry": {
+        "center_m": [
+          0.0,
+          0.0,
+          0.460345
+        ],
+        "half_extents_m": [
+          0.001,
+          0.07733,
+          0.008445
+        ]
+      },
+      "dimension_derivation": "z-band of the Obj_Strings_0 vertices; half-width in Y = max |y| of the strings vertices inside the band (so the slab follows the elliptical bed outline); half-thickness in X = max |x| of the strings vertices. The bed is treated as a SOLID membrane: at the shuttle speeds of this project the string bed does not let the shuttle through, so the hole inside the head is not a collision void.",
+      "measured_extent_m": {
+        "z_min": 0.4519,
+        "z_max": 0.46879,
+        "half_width_m": 0.07733,
+        "half_thickness_m": 0.001
+      },
+      "volume_m3": 5e-06
+    },
+    {
+      "id": "racket_string_bed_slab_04",
+      "order": 5,
+      "role": "string_bed",
+      "type": "box",
+      "geometry": {
+        "center_m": [
+          0.0,
+          0.0,
+          0.47801
+        ],
+        "half_extents_m": [
+          0.002139,
+          0.092435,
+          0.009225
+        ]
+      },
+      "dimension_derivation": "z-band of the Obj_Strings_0 vertices; half-width in Y = max |y| of the strings vertices inside the band (so the slab follows the elliptical bed outline); half-thickness in X = max |x| of the strings vertices. The bed is treated as a SOLID membrane: at the shuttle speeds of this project the string bed does not let the shuttle through, so the hole inside the head is not a collision void.",
+      "measured_extent_m": {
+        "z_min": 0.46879,
+        "z_max": 0.48723,
+        "half_width_m": 0.09243,
+        "half_thickness_m": 0.001
+      },
+      "volume_m3": 1.5e-05
+    },
+    {
+      "id": "racket_string_bed_slab_05",
+      "order": 5,
+      "role": "string_bed",
+      "type": "box",
+      "geometry": {
+        "center_m": [
+          0.0,
+          0.0,
+          0.50086
+        ],
+        "half_extents_m": [
+          0.001,
+          0.10073,
+          0.01363
+        ]
+      },
+      "dimension_derivation": "z-band of the Obj_Strings_0 vertices; half-width in Y = max |y| of the strings vertices inside the band (so the slab follows the elliptical bed outline); half-thickness in X = max |x| of the strings vertices. The bed is treated as a SOLID membrane: at the shuttle speeds of this project the string bed does not let the shuttle through, so the hole inside the head is not a collision void.",
+      "measured_extent_m": {
+        "z_min": 0.48723,
+        "z_max": 0.51449,
+        "half_width_m": 0.10073,
+        "half_thickness_m": 0.001
+      },
+      "volume_m3": 1.1e-05
+    },
+    {
+      "id": "racket_string_bed_slab_06",
+      "order": 5,
+      "role": "string_bed",
+      "type": "box",
+      "geometry": {
+        "center_m": [
+          0.0,
+          0.0,
+          0.5329
+        ],
+        "half_extents_m": [
+          0.001,
+          0.10073,
+          0.01841
+        ]
+      },
+      "dimension_derivation": "z-band of the Obj_Strings_0 vertices; half-width in Y = max |y| of the strings vertices inside the band (so the slab follows the elliptical bed outline); half-thickness in X = max |x| of the strings vertices. The bed is treated as a SOLID membrane: at the shuttle speeds of this project the string bed does not let the shuttle through, so the hole inside the head is not a collision void.",
+      "measured_extent_m": {
+        "z_min": 0.51449,
+        "z_max": 0.55131,
+        "half_width_m": 0.10073,
+        "half_thickness_m": 0.001
+      },
+      "volume_m3": 1.5e-05
+    },
+    {
+      "id": "racket_string_bed_slab_07",
+      "order": 5,
+      "role": "string_bed",
+      "type": "box",
+      "geometry": {
+        "center_m": [
+          0.0,
+          0.0,
+          0.56958
+        ],
+        "half_extents_m": [
+          0.001,
+          0.10073,
+          0.01827
+        ]
+      },
+      "dimension_derivation": "z-band of the Obj_Strings_0 vertices; half-width in Y = max |y| of the strings vertices inside the band (so the slab follows the elliptical bed outline); half-thickness in X = max |x| of the strings vertices. The bed is treated as a SOLID membrane: at the shuttle speeds of this project the string bed does not let the shuttle through, so the hole inside the head is not a collision void.",
+      "measured_extent_m": {
+        "z_min": 0.55131,
+        "z_max": 0.58785,
+        "half_width_m": 0.10073,
+        "half_thickness_m": 0.001
+      },
+      "volume_m3": 1.5e-05
+    },
+    {
+      "id": "racket_string_bed_slab_08",
+      "order": 5,
+      "role": "string_bed",
+      "type": "box",
+      "geometry": {
+        "center_m": [
+          0.0,
+          0.0,
+          0.608195
+        ],
+        "half_extents_m": [
+          0.002289,
+          0.094375,
+          0.02035
+        ]
+      },
+      "dimension_derivation": "z-band of the Obj_Strings_0 vertices; half-width in Y = max |y| of the strings vertices inside the band (so the slab follows the elliptical bed outline); half-thickness in X = max |x| of the strings vertices. The bed is treated as a SOLID membrane: at the shuttle speeds of this project the string bed does not let the shuttle through, so the hole inside the head is not a collision void.",
+      "measured_extent_m": {
+        "z_min": 0.58785,
+        "z_max": 0.62854,
+        "half_width_m": 0.09437,
+        "half_thickness_m": 0.001
+      },
+      "volume_m3": 3.5e-05
+    },
+    {
+      "id": "racket_string_bed_slab_09",
+      "order": 5,
+      "role": "string_bed",
+      "type": "box",
+      "geometry": {
+        "center_m": [
+          0.0,
+          0.0,
+          0.641765
+        ],
+        "half_extents_m": [
+          0.002296,
+          0.080175,
+          0.01323
+        ]
+      },
+      "dimension_derivation": "z-band of the Obj_Strings_0 vertices; half-width in Y = max |y| of the strings vertices inside the band (so the slab follows the elliptical bed outline); half-thickness in X = max |x| of the strings vertices. The bed is treated as a SOLID membrane: at the shuttle speeds of this project the string bed does not let the shuttle through, so the hole inside the head is not a collision void.",
+      "measured_extent_m": {
+        "z_min": 0.62854,
+        "z_max": 0.65499,
+        "half_width_m": 0.08017,
+        "half_thickness_m": 0.001
+      },
+      "volume_m3": 1.9e-05
+    },
+    {
+      "id": "racket_string_bed_slab_10",
+      "order": 5,
+      "role": "string_bed",
+      "type": "box",
+      "geometry": {
+        "center_m": [
+          0.0,
+          0.0,
+          0.662335
+        ],
+        "half_extents_m": [
+          0.002813,
+          0.058095,
+          0.00735
+        ]
+      },
+      "dimension_derivation": "z-band of the Obj_Strings_0 vertices; half-width in Y = max |y| of the strings vertices inside the band (so the slab follows the elliptical bed outline); half-thickness in X = max |x| of the strings vertices. The bed is treated as a SOLID membrane: at the shuttle speeds of this project the string bed does not let the shuttle through, so the hole inside the head is not a collision void.",
+      "measured_extent_m": {
+        "z_min": 0.65499,
+        "z_max": 0.66968,
+        "half_width_m": 0.05809,
+        "half_thickness_m": 0.001
+      },
+      "volume_m3": 1e-05
+    },
+    {
+      "id": "racket_string_bed_slab_11",
+      "order": 5,
+      "role": "string_bed",
+      "type": "box",
+      "geometry": {
+        "center_m": [
+          0.0,
+          0.0,
+          0.67247
+        ],
+        "half_extents_m": [
+          0.003015,
+          0.029755,
+          0.002795
+        ]
+      },
+      "dimension_derivation": "z-band of the Obj_Strings_0 vertices; half-width in Y = max |y| of the strings vertices inside the band (so the slab follows the elliptical bed outline); half-thickness in X = max |x| of the strings vertices. The bed is treated as a SOLID membrane: at the shuttle speeds of this project the string bed does not let the shuttle through, so the hole inside the head is not a collision void.",
+      "measured_extent_m": {
+        "z_min": 0.66968,
+        "z_max": 0.67526,
+        "half_width_m": 0.02975,
+        "half_thickness_m": 0.001
+      },
+      "volume_m3": 2e-06
+    }
+  ],
+  "accuracy": {
+    "containment": {
+      "surface_samples": 20000,
+      "inside_fraction": 0.64005,
+      "within_tolerance_fraction": 1.0,
+      "tolerance_m": 0.001,
+      "max_uncovered_distance_m": 0.000614,
+      "verdict": "PASS",
+      "meaning": "every sampled visual surface point is inside the proxy union (or at most tolerance_m outside it); the proxy therefore cannot let the visual racket poke through a shuttle"
+    },
+    "bbox_volume_coverage": {
+      "bbox_samples": 200000,
+      "fraction_of_visual_bbox_inside_proxy": 0.074525,
+      "bbox_volume_m3": 0.00467,
+      "meaning": "of the visual bounding-box volume, this fraction is solid proxy; the rest is the air around the handle/head that the visual bbox spans (the bbox of a racket is mostly air, so this number is low by nature)"
+    },
+    "solid_volume": {
+      "proxy_volume_m3": 0.000425,
+      "visual_shell_volume_m3": 0.001467,
+      "proxy_over_shell": 0.28987,
+      "meaning": "both are ESTIMATES: the proxy is a union (overlapping primitives are counted twice) and the shell volume is a signed-tetrahedron sum over open low-poly shells"
+    },
+    "leak": {
+      "samples_inside_proxy": 4000,
+      "max_distance_to_visual_surface_m": 0.015355,
+      "p95_distance_to_visual_surface_m": 0.009008,
+      "mean_distance_to_visual_surface_m": 0.002366,
+      "meaning": "how much air the proxy claims: the worst proxy-interior point is this far from the nearest visual triangle (largest at the top of the string-bed slabs, where the elliptical bed narrows inside a z-slab)"
+    },
+    "repair": {
+      "pass": "per-point nearest-primitive growth (radius / half-extent) until containment",
+      "max_passes": 12,
+      "before": {
+        "inside_fraction": 0.3004,
+        "within_tolerance_fraction": 0.98425,
+        "max_uncovered_distance_m": 0.003157
+      },
+      "growths": [
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_fork_p",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.005554,
+          "added_m": 0.001658
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_crown",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.005968,
+          "added_m": 0.002072
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_p04",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.006948,
+          "added_m": 0.003052
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_p12",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.00572,
+          "added_m": 0.001824
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_n20",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.005995,
+          "added_m": 0.002099
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_n16",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.007121,
+          "added_m": 0.003225
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_n17",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.006427,
+          "added_m": 0.002531
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_n14",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.00546,
+          "added_m": 0.001564
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_n19",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.006035,
+          "added_m": 0.002139
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_p05",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.006388,
+          "added_m": 0.002492
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_n23",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.00519,
+          "added_m": 0.001294
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_11",
+          "channel": "half_extents_m[X]",
+          "from_m": 0.001,
+          "to_m": 0.003015,
+          "added_m": 0.002015
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_11",
+          "channel": "half_extents_m[Y]",
+          "from_m": 0.02975,
+          "to_m": 0.029755,
+          "added_m": 5e-06
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_11",
+          "channel": "half_extents_m[Z]",
+          "from_m": 0.00279,
+          "to_m": 0.002795,
+          "added_m": 5e-06
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_p02",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.005318,
+          "added_m": 0.001422
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_p07",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.005977,
+          "added_m": 0.002081
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_n21",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.004975,
+          "added_m": 0.001079
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_10",
+          "channel": "half_extents_m[X]",
+          "from_m": 0.001,
+          "to_m": 0.002813,
+          "added_m": 0.001813
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_10",
+          "channel": "half_extents_m[Y]",
+          "from_m": 0.05809,
+          "to_m": 0.058095,
+          "added_m": 5e-06
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_10",
+          "channel": "half_extents_m[Z]",
+          "from_m": 0.007345,
+          "to_m": 0.00735,
+          "added_m": 5e-06
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_p06",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.00515,
+          "added_m": 0.001254
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_n18",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.005178,
+          "added_m": 0.001282
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_p11",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.005167,
+          "added_m": 0.001271
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_n24",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.005432,
+          "added_m": 0.001536
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_01",
+          "channel": "half_extents_m[X]",
+          "from_m": 0.001,
+          "to_m": 0.002501,
+          "added_m": 0.001501
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_01",
+          "channel": "half_extents_m[Y]",
+          "from_m": 0.01883,
+          "to_m": 0.018835,
+          "added_m": 5e-06
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_01",
+          "channel": "half_extents_m[Z]",
+          "from_m": 0.00058,
+          "to_m": 0.001472,
+          "added_m": 0.000892
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_fork_n",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.00595,
+          "added_m": 0.002054
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_p08",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.005957,
+          "added_m": 0.002061
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_04",
+          "channel": "half_extents_m[X]",
+          "from_m": 0.001,
+          "to_m": 0.002139,
+          "added_m": 0.001139
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_04",
+          "channel": "half_extents_m[Y]",
+          "from_m": 0.09243,
+          "to_m": 0.092435,
+          "added_m": 5e-06
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_04",
+          "channel": "half_extents_m[Z]",
+          "from_m": 0.00922,
+          "to_m": 0.009225,
+          "added_m": 5e-06
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_08",
+          "channel": "half_extents_m[X]",
+          "from_m": 0.001,
+          "to_m": 0.002289,
+          "added_m": 0.001289
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_08",
+          "channel": "half_extents_m[Y]",
+          "from_m": 0.09437,
+          "to_m": 0.094375,
+          "added_m": 5e-06
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_08",
+          "channel": "half_extents_m[Z]",
+          "from_m": 0.020345,
+          "to_m": 0.02035,
+          "added_m": 5e-06
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_n22",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.00497,
+          "added_m": 0.001074
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_p03",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.005038,
+          "added_m": 0.001142
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_09",
+          "channel": "half_extents_m[X]",
+          "from_m": 0.001,
+          "to_m": 0.002296,
+          "added_m": 0.001296
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_09",
+          "channel": "half_extents_m[Y]",
+          "from_m": 0.08017,
+          "to_m": 0.080175,
+          "added_m": 5e-06
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_string_bed_slab_09",
+          "channel": "half_extents_m[Z]",
+          "from_m": 0.013225,
+          "to_m": 0.01323,
+          "added_m": 5e-06
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_p10",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.005089,
+          "added_m": 0.001193
+        },
+        {
+          "iteration": 1,
+          "primitive": "racket_frame_rim_n15",
+          "channel": "radius_m",
+          "from_m": 0.003896,
+          "to_m": 0.004996,
+          "added_m": 0.0011
+        }
+      ],
+      "passes_used": 1,
+      "after": {
+        "inside_fraction": 0.64005,
+        "within_tolerance_fraction": 1.0,
+        "max_uncovered_distance_m": 0.000614
+      },
+      "primitives_grown": 30
+    },
+    "tolerance_source": "CONTAINMENT_TOL_M in this tool = 0.001 m, chosen one decade below the smallest racket feature the proxy models (shaft radius)",
+    "acceptance_rule": "the build exits 0 only if within_tolerance_fraction == 1.0 after the repair loop; otherwise it exits 1 and this file must not be used as a collider"
+  },
+  "explicitly_not": [
+    "a manufacturer / CAD collision model: the source is a low-poly Sketchfab visual (CC-BY-4.0) whose overall length is 682.7 mm versus 675 mm product / 680 mm BWF max",
+    "a physical-material model: no mass, inertia, friction or restitution is stated here",
+    "a racket MOUNT model: the handle->flange transform stays UNKNOWN (frame_tree.json edges 13/14) and no mount geometry is added by this proxy",
+    "a deformation model: the bed is modelled as a rigid solid membrane"
+  ],
+  "unknown": [
+    {
+      "what": "the real racket's strung bed tension / deflection",
+      "value": "UNKNOWN",
+      "missing_datum": "no string-tension measurement in the repo"
+    },
+    {
+      "what": "the collision behaviour of the actual physical racket",
+      "value": "UNKNOWN",
+      "missing_datum": "no contact experiment; the proxy has no material properties"
+    },
+    {
+      "what": "the material of the frame (mass distribution)",
+      "value": "UNKNOWN",
+      "missing_datum": "the visual asset carries colour only"
+    }
+  ],
+  "provenance": {
+    "pxr_used": true,
+    "isaac_sim_used": false,
+    "gpu_used": false,
+    "assets_modified": false,
+    "source_sha256_expected": "643fb67003c6429f98ec132d2db056c83ed02811b594ad27904b618bf7c1ec29",
+    "source_sha256_actual": "643fb67003c6429f98ec132d2db056c83ed02811b594ad27904b618bf7c1ec29",
+    "seed": 20261021,
+    "deterministic": true,
+    "command": "python tools/p6_frames/build_racket_collision_proxy.py"
+  }
+}
