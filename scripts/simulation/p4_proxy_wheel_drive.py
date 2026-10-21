@@ -154,6 +154,16 @@ def author(path, lift):
         joint.CreateAxisAttr("X")
         joint.CreateLowerLimitAttr(-1.0e6)
         joint.CreateUpperLimitAttr(1.0e6)
+        # A USD joint without a DriveAPI has no PhysX drive at all, so an Isaac Lab
+        # implicit actuator has nothing to write to: P4p_spin1_r01 commanded 2 rad/s and
+        # measured -0.0013 rad/s.  The drive is therefore authored explicitly; the
+        # actuator config below then overwrites stiffness/damping/gains.
+        drive = UsdPhysics.DriveAPI.Apply(joint.GetPrim(), "angular")
+        drive.CreateTypeAttr("force")
+        drive.CreateStiffnessAttr(0.0)
+        drive.CreateDampingAttr(40.0)
+        drive.CreateMaxForceAttr(400.0)
+        drive.CreateTargetVelocityAttr(0.0)
     stage.GetRootLayer().Save()
     return {"usd": os.path.abspath(path)}
 
