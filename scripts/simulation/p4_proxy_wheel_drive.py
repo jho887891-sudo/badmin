@@ -307,7 +307,9 @@ def main():
     # (contact point moves +Y).  So chassis vy = -omega*r and omega = -vy/r.  v_cmd > 0 means
     # "travel along -Y".  The first version got this sign wrong and the loop ran away to
     # 0.914 m/s for a 0.30 m/s command (P4V_030_r03), which the gate caught.
-    vy_cmd_signed = -abs(v_cmd) if v_cmd > 0 else abs(v_cmd)
+    # the CLAMP must reach the loop: P4V_clamp_r09 commanded 0.80 m/s with a 0.50 m/s limit
+    # and reached 0.849 m/s because vy_cmd_signed was built from the unclamped v_cmd.
+    vy_cmd_signed = -commanded_v if v_cmd > 0 else commanded_v
     trim_integral = 0.0
     for step in range(steps + 1):
         if step > 0 and closed_loop:
