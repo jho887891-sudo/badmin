@@ -308,6 +308,7 @@ def main():
     # "travel along -Y".  The first version got this sign wrong and the loop ran away to
     # 0.914 m/s for a 0.30 m/s command (P4V_030_r03), which the gate caught.
     vy_cmd_signed = -abs(v_cmd) if v_cmd > 0 else abs(v_cmd)
+    trim_integral = 0.0
     for step in range(steps + 1):
         if step > 0 and closed_loop:
             # measured chassis speed along the roll axis (Y)
@@ -322,8 +323,17 @@ def main():
             vy_target = vy_cmd_signed * phase_fraction
             if step > hold_end:
                 vy_target = 0.0                # stop test
-            vy_cmd_step = vy_target + float(ARGS.velocity_kp) * (vy_target - vy_meas)
-            wheel_speed = -vy_cmd_step / float(ARGS.nominal_radius)
+                trim_integral = 0.0
+            # CONTROL LAW v2: feed-forward (the open-loop matrix already tracks the commanded
+            # wheel speed to 0.05-0.15 %, so omega_ff = -vy/r is almost the whole answer) plus a
+            # SLOW integral trim.  The first law (omega = -(vy_t + K(vy_t - vy_meas))/r) had
+            # gain -K on the previous measured speed and its stable-looking fixed point was
+            # 3x the command: P4V_030_r05 sat at 0.913 m/s for a 0.30 m/s command.
+            omega_ff = -vy_target / float(ARGS.nominal_radius)
+            trim_integral += float(ARGS.velocity_kp) * DT * (vy_meas - vy_target)
+            trim_limit = max(0.2 * abs(omega_ff), 0.5)
+            trim_integral = max(-trim_limit, min(trim_limit, trim_integral))
+            wheel_speed = omega_ff + trim_integral
             wheel_speed = max(-50.0, min(50.0, wheel_speed))
             values = [wheel_speed] * len(joint_names)
             target_tensor = torch.tensor([values], dtype=torch.float32, device=robot.device)
