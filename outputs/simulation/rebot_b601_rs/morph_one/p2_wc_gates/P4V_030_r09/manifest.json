@@ -1,0 +1,19 @@
+{
+ "stage": "P4_PROXY",
+ "run_id": "P4V_030_r09",
+ "scene_variant": "P4_PROXY_WHEEL_DRIVE",
+ "profile": "velocity_control",
+ "physics_dt_s": 0.008333333333333333,
+ "steps": 600,
+ "friction_coefficient": 0.8,
+ "payload_kg": 0.0,
+ "single_factor_note": "exactly one of friction / payload / wheel speed may differ between two runs of the P4-08 matrix",
+ "gravity_m_s2": [
+  0.0,
+  0.0,
+  -9.81
+ ],
+ "preregistration": "management/morph_one_rs/PHASE_P4_PROXY_PREREG.md",
+ "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+ "command": "/home/dgut/runs/g/scripts/simulation/p4_proxy_wheel_drive.py --run-id P4V_030_r09 --out-dir /home/dgut/runs/g/P4V_030_r09 --profile velocity_control --read-contacts --velocity-cmd 0.30 --speed-limit 0.50"
+}
