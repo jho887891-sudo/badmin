@@ -79,7 +79,15 @@ def test_strip_volatile_is_deterministic(index):
 def test_strip_moving_keeps_the_refs(index):
     moving = a01.strip_moving(index)
     assert "branches" in moving and "worktrees" in moving
+    assert "repo_head_sha" in moving
     assert "generated_at_utc" not in moving
+
+
+def test_stable_view_ignores_the_worktree_head(index):
+    moved = json.loads(json.dumps(index))
+    moved["repo"]["head_sha"] = "0" * 40
+    moved["repo"]["head_branch"] = "someone/else"
+    assert a01.strip_volatile(moved) == a01.strip_volatile(index)
 
 
 def test_stable_view_changes_when_a_document_changes(index):

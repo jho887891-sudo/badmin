@@ -387,6 +387,11 @@ def strip_volatile(index: dict) -> dict:
     clone = json.loads(json.dumps(index))
     for key in MOVING_KEYS:
         clone.pop(key, None)
+    repo = clone.get("repo")
+    if isinstance(repo, dict):
+        # the worktree's own HEAD moves with every commit
+        repo.pop("head_sha", None)
+        repo.pop("head_branch", None)
     env = clone.get("environment")
     if isinstance(env, dict):
         env.pop("platform", None)
@@ -397,6 +402,10 @@ def strip_moving(index: dict) -> dict:
     """Ref-shaped facts only (branch/PR/worktree/run listings)."""
     clone = json.loads(json.dumps(index))
     keep = {key: clone.get(key) for key in MOVING_KEYS if key != "generated_at_utc"}
+    repo = clone.get("repo")
+    if isinstance(repo, dict):
+        keep["repo_head_sha"] = repo.get("head_sha")
+        keep["repo_head_branch"] = repo.get("head_branch")
     return keep
 
 
