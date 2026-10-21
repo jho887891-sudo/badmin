@@ -1,0 +1,180 @@
+{
+  "schema": "p6_camera_metadata/1",
+  "generated_by": "tools/p6_frames/build_p6_frame_contract.py",
+  "device": {
+    "model": "Intel RealSense D455",
+    "model_provenance": {
+      "status": "UNKNOWN",
+      "why": "the model name appears only in task text and in dataset-scope lists such as configs/tiny_recovery_yolo26s_v1.yaml:40 ('D455 hard negatives'); no committed device record (serial number, firmware, rs-enumerate-devices output) exists in this repository",
+      "missing_datum": "the serial number and firmware version of the unit actually mounted"
+    }
+  },
+  "fields": {
+    "intrinsics": {
+      "status": "UNKNOWN",
+      "fx_px": null,
+      "fy_px": null,
+      "cx_px": null,
+      "cy_px": null,
+      "missing_datum": "one committed intrinsics record for the exact depth/colour streams in the exact resolution profile that will be used",
+      "would_come_from": "on the device: rs-enumerate-devices -c (or pyrealsense2 pipeline.get_active_profile().get_stream(rs.stream.depth).as_video_stream_profile().get_intrinsics()) saved as configs/camera/d455_<serial>_<mode>_intrinsics.json and committed",
+      "rejected_substitutes": [
+        {
+          "file": "simulation/badminton_scene/scene_layout.py",
+          "line": 87,
+          "value": "rig_world=(-1.40,0,1.20), pitch_deg=-4.0, baseline=0.29, left_y/right_y=+-0.145",
+          "why": "the file header itself says 'ENGINEERING_V0_1 camera rig placeholder (no sensor/render)'. It has no intrinsics and no D455 identity, so it cannot stand in for a calibration; the 0.29 m baseline is rig geometry, not a measured stereo baseline."
+        },
+        {
+          "file": "docs/ALGORITHM_AUDIT.md",
+          "line": 56,
+          "value": "fx=700 px",
+          "why": "an engineered proxy calibration for rendering/synthetic data, explicitly labelled '代理标定'; it is not a measurement of any D455"
+        },
+        {
+          "file": "outputs/shuttle_detection/capability/CONTROLLED_MATRIX_RUN1.md",
+          "line": 20,
+          "value": "fx=11200 px",
+          "why": "a long-lens render camera used to draw the size ladder; physically unrelated to a D455"
+        },
+        {
+          "file": "management/shuttle_detection/plan5_input_requirements.md",
+          "line": 57,
+          "value": "'The repository holds no calibrated fx'",
+          "why": "the repository states the gap itself"
+        }
+      ]
+    },
+    "resolution": {
+      "status": "UNKNOWN",
+      "width_px": null,
+      "height_px": null,
+      "missing_datum": "the actual stream profile the perception stack runs (D455 supports several; the choice sets the intrinsics, so it cannot be assumed independently of them)",
+      "would_come_from": "the same intrinsics record; profile name e.g. 848x480x30 or 1280x720x30"
+    },
+    "rgb_depth_alignment": {
+      "status": "UNKNOWN",
+      "aligned": null,
+      "missing_datum": "whether the pipeline runs align(rs.stream.color) (depth expressed in the colour optical frame) or publishes the raw depth frame, and T_depth_color in the chosen mode",
+      "would_come_from": "the pipeline configuration in code plus depth_profile.get_extrinsics_to(color_profile) on the device",
+      "why_it_matters": "with alignment off, a pixel (u,v) in RGB and the same (u,v) in depth are DIFFERENT rays; every 3D projection in P7 depends on which one is true"
+    },
+    "frame_rate": {
+      "status": "UNKNOWN",
+      "fps": null,
+      "missing_datum": "the configured sensor frame rate and whether it is the same for depth and colour",
+      "would_come_from": "the pipeline config plus a timestamp log (P6-06 owns the timing protocol)"
+    },
+    "depth_units": {
+      "status": "UNKNOWN",
+      "depth_scale_m_per_unit": null,
+      "depth_encoding": null,
+      "missing_datum": "the depth scale factor of the unit (a per-device value, NOT a constant to hardcode)",
+      "would_come_from": "depth_sensor.get_depth_scale() at connect time, stored alongside the serial number. Assuming 0.001 m would silently put every ball 10x off if the device reports 0.0001."
+    },
+    "distortion": {
+      "status": "UNKNOWN",
+      "model": null,
+      "coefficients": null,
+      "missing_datum": "the distortion model and coefficients for the colour stream (the D455 RGB stream is typically Brown-Conrady; the VALUES are still per-device)",
+      "would_come_from": "the intrinsics record; a factory calibration read from the device is the minimum, a chessboard/charuco re-calibration is the honest maximum"
+    },
+    "extrinsics_depth_to_color": {
+      "status": "UNKNOWN",
+      "translation_m": null,
+      "rotation_quaternion": null,
+      "missing_datum": "T_depth_color for this unit",
+      "would_come_from": "depth_profile.get_extrinsics_to(color_profile) (factory, per-unit) committed with the serial"
+    },
+    "extrinsics_mount_to_camera": {
+      "status": "UNKNOWN",
+      "translation_m": null,
+      "rotation_quaternion": null,
+      "missing_datum": "T_mount_camera: where the camera sits on the robot and how it is aimed",
+      "would_come_from": "hand-eye calibration (or a measured CAD mount) against the chassis/arm base frame; the FOV of a camera is not a substitute for its pose"
+    }
+  },
+  "frames": {
+    "robot_mount_frame": {
+      "convention": "REP-103 body frame: +X forward, +Y left, +Z up, right-handed",
+      "note": "this is the frame the arm and chassis use; the frame tree in frame_tree.json is expressed in it"
+    },
+    "camera_optical_frame": {
+      "convention": "REP-103 optical frame: +Z forward out of the lens, +X right in the image, +Y down, right-handed",
+      "rotation_from_mount_to_optical": {
+        "quat_order": "wxyz",
+        "values": [
+          0.5,
+          0.5,
+          -0.5,
+          0.5
+        ],
+        "matrix": [
+          [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            -1.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "derivation": "the matrix columns are the mount axes expressed in optical coordinates: X_mount->(0,0,1)=optical +Z, Y_mount->(-1,0,0)=optical -X, Z_mount->(0,-1,0)=optical -Y. The matrix itself is the record; the quaternion is its wxyz encoding.",
+        "status": "CONVENTION_NOT_CALIBRATION",
+        "note": "the AXES are fixed by the two conventions; the camera's POSE on the robot is a different quantity and stays UNKNOWN above"
+      },
+      "handedness_check": "determinant of the matrix above is +1 (both frames are right-handed)"
+    },
+    "distinction_rule": "camera_optical_frame != robot_mount_frame: they differ by a fixed 90-degree permutation (R_x(-90) then R_z(-90)). A depth point (X,Y,Z)_optical is (Z, -X, -Y) in the mount frame. Mixing them rotates every ball position by 90 degrees and is invisible in a 2D overlay."
+  },
+  "repository_sources_checked": [
+    {
+      "file": "simulation/badminton_scene/scene_layout.py",
+      "sha256": "a5e47fca9b7455197e66d3aa23d5a4fa2381e47094a41a3d178d69227dc8c007",
+      "line": 87,
+      "content": "CAMERA = dict(rig_height=1.20, rig_rel_x=0.20, rig_world=(-1.40,0,1.20), pitch_deg=-4.0, baseline=0.29, left_y=0.145, right_y=-0.145)",
+      "verdict": "PLACEHOLDER_NOT_CALIBRATION",
+      "why": "the file header calls it 'ENGINEERING_V0_1 camera rig placeholder (no sensor/render)'. It carries NO intrinsics, NO resolution, NO distortion and NO D455 identity; baseline 0.29 m is a rig geometry placeholder, not a measured stereo baseline."
+    },
+    {
+      "file": "simulation/badminton_scene/camera_rig_cfg.py",
+      "sha256": "ece7cda249acc246ed16b84e925877e291751e41a9e513d132d9e5b9c4208d79",
+      "line": 1,
+      "content": "RIG = dict(mast_height=..., mast_radius=0.02, arm_y=CAMERA['baseline']/2+0.03, cam_box=(0.05,0.05,0.05))",
+      "verdict": "PLACEHOLDER_NOT_CALIBRATION",
+      "why": "derives a 50 mm cube and a mast from the placeholder above; it contains no camera model at all."
+    },
+    {
+      "file": "management/shuttle_detection/plan5_input_requirements.md",
+      "sha256": "65f7d5a8087d0a689876221b7895bdd15089ef2fab595747879eb6e3b897407d",
+      "line": 57,
+      "content": "The repository holds no calibrated fx",
+      "verdict": "CONFIRMS_UNKNOWN",
+      "why": "the project already recorded that any fx in this repo is absent, so filling these fields here would be invention."
+    }
+  ],
+  "verdict": {
+    "intrinsics": "UNKNOWN",
+    "resolution": "UNKNOWN",
+    "rgb_depth_alignment": "UNKNOWN",
+    "frame_rate": "UNKNOWN",
+    "depth_units": "UNKNOWN",
+    "distortion": "UNKNOWN",
+    "extrinsics": "UNKNOWN",
+    "summary": "NO D455 field is known from a committed source. What IS proven: the repository's only camera numbers are labelled placeholders, and the optical-vs-mount axis convention is stated exactly."
+  },
+  "fill_procedure": [
+    "1. On a host with the device attached: rs-enumerate-devices -c > d455_<serial>_<fw>_enumerate.txt",
+    "2. pyrealsense2: pick the exact stream profile the perception stack will run; read intrinsics + distortion for colour, intrinsics for depth, depth_sensor.get_depth_scale(), and depth_profile.get_extrinsics_to(color_profile)",
+    "3. Write configs/camera/d455_<serial>_<mode>.json with those numbers plus the profile name and firmware",
+    "4. Commit it, hash it, and point build_p6_frame_contract.py at it so these fields stop being UNKNOWN",
+    "5. Hand-eye calibrate T_mount_camera separately and commit that as its own record - it is a robot measurement, not a camera fact"
+  ]
+}

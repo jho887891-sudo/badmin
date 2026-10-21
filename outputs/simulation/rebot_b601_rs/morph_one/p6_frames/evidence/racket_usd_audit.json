@@ -1,0 +1,150 @@
+{
+  "schema": "p6_racket_asset_audit/1",
+  "usd": {
+    "status": "PASS",
+    "path": "E:\\具身智能\\badmin_wt_p6\\assets\\third_party\\racket_visual.usd",
+    "sha256": "643fb67003c6429f98ec132d2db056c83ed02811b594ad27904b618bf7c1ec29",
+    "bytes": 43217,
+    "file_format": "USDC (binary crate) - header PXR-USDC",
+    "default_prim": "/RacketVisual",
+    "metersPerUnit": 1.0,
+    "upAxis": "Z",
+    "units_verdict": "PASS",
+    "units_note": "metersPerUnit=1 with upAxis=Z: every coordinate in this asset is already metres and Z-up, so no 0.01 / 1000 factor may be applied anywhere downstream.",
+    "materials": [
+      "/RacketVisual/Looks/White",
+      "/RacketVisual/Looks/Strings"
+    ],
+    "meshes": [
+      {
+        "path": "/RacketVisual/Obj_Racket_0",
+        "points": 1632,
+        "bbox_stage_units_min": [
+          -0.01583999954164028,
+          -0.10796999931335449,
+          0.0
+        ],
+        "bbox_stage_units_max": [
+          0.01583999954164028,
+          0.10796999931335449,
+          0.682699978351593
+        ],
+        "bbox_metres_min": [
+          -0.01583999954164028,
+          -0.10796999931335449,
+          0.0
+        ],
+        "bbox_metres_max": [
+          0.01583999954164028,
+          0.10796999931335449,
+          0.682699978351593
+        ],
+        "has_collision_api": false
+      },
+      {
+        "path": "/RacketVisual/Obj_Strings_0",
+        "points": 44,
+        "bbox_stage_units_min": [
+          -0.0010000000474974513,
+          -0.10073000192642212,
+          0.44391000270843506
+        ],
+        "bbox_stage_units_max": [
+          0.0010000000474974513,
+          0.10073000192642212,
+          0.6752600073814392
+        ],
+        "bbox_metres_min": [
+          -0.0010000000474974513,
+          -0.10073000192642212,
+          0.44391000270843506
+        ],
+        "bbox_metres_max": [
+          0.0010000000474974513,
+          0.10073000192642212,
+          0.6752600073814392
+        ],
+        "has_collision_api": false
+      }
+    ],
+    "union_bbox_metres_min": [
+      -0.01583999954164028,
+      -0.10796999931335449,
+      0.0
+    ],
+    "union_bbox_metres_max": [
+      0.01583999954164028,
+      0.10796999931335449,
+      0.682699978351593
+    ],
+    "union_bbox_size_metres": [
+      0.03167999908328056,
+      0.21593999862670898,
+      0.682699978351593
+    ],
+    "overall_length_m": 0.682699978351593,
+    "head_width_m": 0.21593999862670898,
+    "collision_prims": [],
+    "collision_count": 0,
+    "collision_verdict": "PASS",
+    "collision_note": "ZERO CollisionAPI/Physics prims: this asset is visual-only and cannot be collided with. P6-07 must author its own proxies; anything reading a bbox from this file and calling it a collider is wrong.",
+    "flange_or_end_link_in_asset": false,
+    "flange_note": "The asset contains no flange, no mount and no joint: it is two meshes under one Xform. The origin is the butt end of the handle (z=0 coincides with the lowest mesh point), it is NOT the flange mating face. How deep the handle sits inside the mount is unmeasured, so the flange->handle-butt translation is UNKNOWN.",
+    "documented_bbox_matches": true,
+    "documented_bbox_verdict": "PASS",
+    "bbox_note": "Measured 682.7 mm overall vs 675 mm product length and 680 mm BWF maximum: the visual is bigger than the racket it stands for and has NOT been rescaled (configs/racket.yaml measured_unit is still REQUIRES_MEASUREMENT)."
+  },
+  "glb": {
+    "path": "E:\\具身智能\\badmin_wt_p6\\assets\\external\\_staging\\D_racket_shuttle\\original\\badminton_racket_and_shuttlecock_low_poly.glb",
+    "sha256": "8f6c2baac0bbd2f2f1aceaa295b06fd74a10aed59de8686d2d76cdcc2e22bfa5",
+    "bytes": 308444,
+    "glb_magic": "glTF",
+    "glb_version": 2,
+    "declared_length": 308444,
+    "asset": {
+      "extras": {
+        "author": "game_travel (https://sketchfab.com/game_travel)",
+        "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+        "source": "https://sketchfab.com/3d-models/badminton-racket-and-shuttlecock-low-poly-795e4cca2e544d7ab86a8e5c7ded2362",
+        "title": "Badminton Racket And Shuttlecock (Low Poly)"
+      },
+      "generator": "Sketchfab-12.65.0",
+      "version": "2.0"
+    },
+    "asset_extras": {
+      "author": "game_travel (https://sketchfab.com/game_travel)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/badminton-racket-and-shuttlecock-low-poly-795e4cca2e544d7ab86a8e5c7ded2362",
+      "title": "Badminton Racket And Shuttlecock (Low Poly)"
+    },
+    "generator": "Sketchfab-12.65.0",
+    "unit_convention": "glTF 2.0 spec: length unit is metres, right-handed, +Y up. The file has no unit field, so the unit is a SPEC property, not a measured one.",
+    "nodes_total": 17,
+    "nodes_with_local_transform": [],
+    "meshes": [
+      "Obj_Feather_0",
+      "Obj_Cork_0",
+      "Obj_Racket_0",
+      "Obj_Strings_0",
+      "Obj_Racket.001_0",
+      "Obj_Strings.001_0"
+    ],
+    "materials": [
+      "White",
+      "Strings"
+    ],
+    "extensions_used": null,
+    "scale_verdict": "PASS",
+    "scale_note": "No node in this GLB carries a scale/rotation/translation, so no Sketchfab authoring scale is hiding in the hierarchy: the mesh coordinates are already in glTF metres. Whether those metres match the real racket is a DIFFERENT question and is still open (682.7 mm vs 675 mm product length)."
+  },
+  "sha256_verdict": {
+    "racket_usd": "PASS",
+    "glb": "PASS",
+    "documented_in": "assets/THIRD_PARTY_ASSETS_RACKET.md:15,17"
+  },
+  "provenance": {
+    "generated_by": "tools/p6_frames/audit_racket_usd.py",
+    "pxr_used": true,
+    "assets_modified": false
+  }
+}

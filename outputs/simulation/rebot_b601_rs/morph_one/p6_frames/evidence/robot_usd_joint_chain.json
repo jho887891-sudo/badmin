@@ -1,0 +1,373 @@
+{
+  "schema": "p6_robot_usd_frame_chain/1",
+  "asset": {
+    "product": "ReBot B601-RS arm (as shipped in badminton_b601_rs_asset_v1)",
+    "remote_root": "/home/T7/dgut/robot_sim/packages/badminton_b601_rs_asset_v1/usd/rebot_b601_rs.usd/ReBot_Arm_RS",
+    "default_prim": "ReBot_Arm_RS",
+    "metersPerUnit": 1.0,
+    "kilogramsPerUnit": 1.0,
+    "upAxis": "Z",
+    "units_verdict": "PASS",
+    "layers": {
+      "ReBot_Arm_RS.usda": {
+        "remote_relative_path": "ReBot_Arm_RS.usda",
+        "sha256": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+        "local_bytes": 1251
+      },
+      "payloads/base.usda": {
+        "remote_relative_path": "payloads/base.usda",
+        "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+        "local_bytes": 28045
+      },
+      "payloads/Physics/physics.usda": {
+        "remote_relative_path": "payloads/Physics/physics.usda",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "local_bytes": 15832
+      }
+    }
+  },
+  "quaternion_convention": {
+    "usd": "wxyz (real first): GfQuatf / UsdGeom quatf and quatd attributes",
+    "this_record": "wxyz",
+    "note": "Do not hand these to anything that expects xyzw without an explicit swap."
+  },
+  "joints": [
+    {
+      "prim": "joint1",
+      "type": "PhysicsRevoluteJoint",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1",
+      "axis": "Z",
+      "quat_order": "wxyz",
+      "local_pos0": [
+        -0.00034283,
+        -0.00098683,
+        0.075
+      ],
+      "local_pos1": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot0_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "limit_lower_as_authored": -160.42818,
+      "limit_upper_as_authored": 160.42818,
+      "limit_unit_as_authored": "degree",
+      "limit_lower_rad": -2.7999999539821165,
+      "limit_upper_rad": 2.7999999539821165
+    },
+    {
+      "prim": "joint2",
+      "type": "PhysicsRevoluteJoint",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2",
+      "axis": "Z",
+      "quat_order": "wxyz",
+      "local_pos0": [
+        0.020343,
+        0.027237,
+        0.07
+      ],
+      "local_pos1": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot0_wxyz": [
+        -0.70710546,
+        0.7071081,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "limit_lower_as_authored": 0.0,
+      "limit_upper_as_authored": 179.90875,
+      "limit_unit_as_authored": "degree",
+      "limit_lower_rad": 0.0,
+      "limit_upper_rad": 3.1400000406473483
+    },
+    {
+      "prim": "joint3",
+      "type": "PhysicsRevoluteJoint",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1/link2",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3",
+      "axis": "Z",
+      "quat_order": "wxyz",
+      "local_pos0": [
+        -0.236,
+        2.7755576e-17,
+        0.0
+      ],
+      "local_pos1": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot0_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "limit_lower_as_authored": 0.0,
+      "limit_upper_as_authored": 179.90875,
+      "limit_unit_as_authored": "degree",
+      "limit_lower_rad": 0.0,
+      "limit_upper_rad": 3.1400000406473483
+    },
+    {
+      "prim": "joint4",
+      "type": "PhysicsRevoluteJoint",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4",
+      "axis": "Z",
+      "quat_order": "wxyz",
+      "local_pos0": [
+        0.228,
+        -0.072746,
+        0.0045
+      ],
+      "local_pos1": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot0_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "limit_lower_as_authored": -89.95438,
+      "limit_upper_as_authored": 89.95438,
+      "limit_unit_as_authored": "degree",
+      "limit_lower_rad": -1.5700001075901369,
+      "limit_upper_rad": 1.5700001075901369
+    },
+    {
+      "prim": "joint5",
+      "type": "PhysicsRevoluteJoint",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5",
+      "axis": "Z",
+      "quat_order": "wxyz",
+      "local_pos0": [
+        0.087,
+        -0.048,
+        -0.03075
+      ],
+      "local_pos1": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot0_wxyz": [
+        -0.7071081,
+        -0.70710546,
+        0.0,
+        -0.0
+      ],
+      "local_rot1_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "limit_lower_as_authored": -89.95438,
+      "limit_upper_as_authored": 89.95438,
+      "limit_unit_as_authored": "degree",
+      "limit_lower_rad": -1.5700001075901369,
+      "limit_upper_rad": 1.5700001075901369
+    },
+    {
+      "prim": "joint6",
+      "type": "PhysicsRevoluteJoint",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6",
+      "axis": "Z",
+      "quat_order": "wxyz",
+      "local_pos0": [
+        0.0365,
+        2.1175824e-22,
+        0.048
+      ],
+      "local_pos1": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot0_wxyz": [
+        -3.3148634e-17,
+        -0.70710546,
+        -3.7116984e-17,
+        0.7071081
+      ],
+      "local_rot1_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "limit_lower_as_authored": -179.90875,
+      "limit_upper_as_authored": 179.90875,
+      "limit_unit_as_authored": "degree",
+      "limit_lower_rad": -3.1400000406473483,
+      "limit_upper_rad": 3.1400000406473483
+    },
+    {
+      "prim": "gripper_joint1",
+      "type": "PhysicsPrismaticJoint",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_left",
+      "axis": "Z",
+      "quat_order": "wxyz",
+      "local_pos0": [
+        1.5351144e-07,
+        7.3385e-05,
+        0.124271
+      ],
+      "local_pos1": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot0_wxyz": [
+        0.7071081,
+        -0.70710546,
+        -2.5973434e-06,
+        2.597353e-06
+      ],
+      "local_rot1_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "limit_lower_as_authored": 0.0,
+      "limit_upper_as_authored": 0.05,
+      "limit_unit_as_authored": "degree",
+      "limit_lower_rad": 0.0,
+      "limit_upper_rad": 0.0008726646259971648
+    },
+    {
+      "prim": "gripper_joint2",
+      "type": "PhysicsPrismaticJoint",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_right",
+      "axis": "Z",
+      "quat_order": "wxyz",
+      "local_pos0": [
+        1.5458967e-07,
+        -7.3385e-05,
+        0.124271
+      ],
+      "local_pos1": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot0_wxyz": [
+        0.7071081,
+        0.70710546,
+        2.5973434e-06,
+        2.597353e-06
+      ],
+      "local_rot1_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "limit_lower_as_authored": 0.0,
+      "limit_upper_as_authored": 0.0715,
+      "limit_unit_as_authored": "degree",
+      "limit_lower_rad": 0.0,
+      "limit_upper_rad": 0.0012479104151759456
+    },
+    {
+      "prim": "root_joint",
+      "type": "PhysicsFixedJoint",
+      "body0": "/ReBot_Arm_RS",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link",
+      "axis": null,
+      "quat_order": "wxyz",
+      "local_pos0": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_pos1": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot0_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "limit_lower_as_authored": null,
+      "limit_upper_as_authored": null,
+      "limit_unit_as_authored": "degree",
+      "limit_lower_rad": null,
+      "limit_upper_rad": null
+    }
+  ],
+  "named_frames": [
+    {
+      "prim_name": "gripper_end",
+      "xformOp:translate": [
+        0.0,
+        0.0,
+        0.16621
+      ],
+      "xformOp:orient_wxyz": [
+        2.597488447e-06,
+        -0.7071054578,
+        -2.597497996e-06,
+        -0.7071080804
+      ]
+    }
+  ],
+  "provenance": {
+    "extracted_by": "tools/p6_frames/extract_robot_usd_frames.py",
+    "method": "ssh cat of the ASCII layers from the GPU host (read-only), then text parse; sha256 of each local copy equals the remote sha256sum",
+    "isaac_sim_used": false,
+    "gpu_used": false
+  }
+}
