@@ -57,7 +57,8 @@ def directed_displacement_track(command_xyz, positions, ratio=0.9):
     """
     if len(command_xyz) != 3:
         raise ValueError("command must contain exactly three XYZ components")
-    if not positions:
+    # numpy arrays must not be truth-tested (ambiguous); length is the only safe check.
+    if len(positions) == 0:
         raise ValueError("no recorded positions")
     cmd = [float(v) for v in command_xyz]
     if not all(math.isfinite(v) for v in cmd):

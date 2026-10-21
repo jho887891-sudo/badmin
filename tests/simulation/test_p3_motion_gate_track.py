@@ -95,3 +95,16 @@ def test_diagonal_command_projects_each_axis():
     assert result["pass"] is True
     assert result["achieved_ratio"] == pytest.approx(1.0, abs=1e-12)
     assert result["cross_track_m"] == pytest.approx(0.0, abs=1e-12)
+
+def test_numpy_positions_are_accepted():
+    numpy = pytest.importorskip("numpy")
+    positions = numpy.array([[0.0, 0.0, 0.40], [0.0, 0.0, 0.50]])
+    result = track([0.0, 0.0, 0.10], positions)
+    assert result["pass"] is True
+    assert result["achieved_ratio"] == pytest.approx(1.0, abs=1e-12)
+
+
+def test_numpy_positions_with_no_motion_fail():
+    numpy = pytest.importorskip("numpy")
+    positions = numpy.array([[0.0, 0.0, 0.40], [0.10, 0.0, 0.40]])
+    assert track([0.0, 0.0, 0.10], positions)["pass"] is False
