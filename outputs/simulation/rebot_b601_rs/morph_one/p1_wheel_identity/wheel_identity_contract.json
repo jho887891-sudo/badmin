@@ -1,0 +1,2382 @@
+{
+ "schema": "badmin.morph_one.wheel_identity_contract/1",
+ "task_ids": [
+  "P1-04",
+  "P1-05",
+  "P1-08",
+  "P1-09"
+ ],
+ "generated_by": "scripts/simulation/p1_wheel_identity_contract.py",
+ "status_policy": "a candidate is never promoted to a frozen parameter; UNKNOWN carries the concrete missing measurement",
+ "units": {
+  "length": "mm",
+  "angle": "deg"
+ },
+ "frames": {
+  "cad_frame": "CAD model frame, millimetres, as recorded by the STEP/USD measurement tools",
+  "usd_stage_up_axis": "Z",
+  "chassis_frame": "NOT FROZEN"
+ },
+ "inputs": {
+  "comparison.json": {
+   "present": true,
+   "bytes": 13207,
+   "sha256": "e104cee72ea9cd9198ad1dc7c9af8ac6c945c32ebd82ca5f8c26dffc07470438"
+  },
+  "step_remeasure.json": {
+   "present": true,
+   "bytes": 16042,
+   "sha256": "6750479609955ed7f8a5da78e45b685a054ca09d30f271c598c9ee595342dddb"
+  },
+  "usd_remeasure.json": {
+   "present": true,
+   "bytes": 19923,
+   "sha256": "8c02bbbe42eb169082f0454f0371bddc82038c33b18f44f12d1766087e1f884a"
+  },
+  "wheel_kinematics_extract.json": {
+   "present": true,
+   "bytes": 26513,
+   "sha256": "69ef08428d3158b11000c25e81ebe43cb3bdd6b291776635a9016a44190fcadf"
+  },
+  "cloud_geometry.json": {
+   "present": true,
+   "bytes": 27590,
+   "sha256": "a71d00a45d08daf3991ec6762ff162a57e6980b25f078f7145b1b3d84281a32d"
+  }
+ },
+ "evidence_dir": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity",
+ "known_facts": {
+  "step_vertex_bbox_mm": [
+   48.6527,
+   180.782,
+   157.7827
+  ],
+  "usd_point_cloud_bbox_mm": [
+   48.791061,
+   205.991409,
+   205.991409
+  ],
+  "step_max_circle_radius_mm": 103.0,
+  "usd_cloud_r_max_mm": 103.000022,
+  "p2_p4_proxy_box_half_height_m": 0.09,
+  "old_test_proxy_lift_m": 0.334
+ },
+ "wheels": {
+  "435700": {
+   "step_eid": 435700,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_15/Mesh",
+   "identity": {
+    "point_counts_equal_step_vs_usd": false,
+    "step_vertex_points": 250,
+    "step_cartesian_points": 7763,
+    "usd_point_count": 6354,
+    "usd_shell_count": 122,
+    "note": "STEP 250 BREP vertices vs USD 6354 tessellation points differ by construction; the tessellation is the authority for shape, the BREP for analytic radii"
+   },
+   "bbox_mm": {
+    "step_vertex_bbox_size": [
+     48.6527,
+     180.782,
+     157.7827
+    ],
+    "step_surface_envelope_bbox_size": [
+     50.5238,
+     206.0,
+     206.0
+    ],
+    "usd_point_cloud_bbox_size": [
+     48.7911,
+     205.9914,
+     205.9914
+    ],
+    "cloud_bbox_min": [
+     225.6064,
+     -346.9957,
+     -399.9957
+    ],
+    "cloud_bbox_max": [
+     274.3975,
+     -141.0043,
+     -194.0043
+    ],
+    "status": "PASS",
+    "comment": "the 48.65 vs 48.79 mm thin-axis gap and the 180.78/157.78 vs 205.99 mm in-plane gap are a measurement-convention difference, reproduced in P1_WHEEL_IDENTITY_205_VS_181.md"
+   },
+   "centre_mm": {
+    "point_cloud_bbox_centre": [
+     250.002,
+     -244.0,
+     -297.0
+    ],
+    "step_largest_circle_centre": [
+     250.0,
+     -244.0,
+     -297.0
+    ],
+    "cloud_rim_circle_fit_centre": [
+     250.002,
+     -244.0,
+     -297.0
+    ],
+    "cloud_rim_circle_fit_radius_mm": 102.999793,
+    "cloud_rim_circle_fit_residual_rms_mm": 0.000147,
+    "bbox_centre_minus_step_circle_centre_mm": [
+     0.00196,
+     7e-06,
+     7e-06
+    ],
+    "centres_agree_within_tol": true,
+    "frame": "CAD model frame (mm), origin = CAD global origin; NOT a chassis datum",
+    "status": "PARTIAL",
+    "why_partial": "three constructions agree to ~0.002 mm in the CAD frame, but no recorded chassis datum / mount transform exists, so the centre in the chassis or robot frame stays UNKNOWN"
+   },
+   "mesh_resolution_mm": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
+   "principal_axes": {
+    "pca_axes": [
+     {
+      "axis_index": 0,
+      "direction": [
+       7.4e-05,
+       0.842215,
+       -0.539141
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3343.0547,
+      "sigma_mm": 57.8192
+     },
+     {
+      "axis_index": 1,
+      "direction": [
+       1.3e-05,
+       0.539141,
+       0.842215
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3310.7567,
+      "sigma_mm": 57.5392
+     },
+     {
+      "axis_index": 2,
+      "direction": [
+       1.0,
+       -6.9e-05,
+       2.9e-05
+      ],
+      "extent_mm": 48.803,
+      "variance_mm2": 308.4048,
+      "sigma_mm": 17.5615
+     }
+    ],
+    "pca_centre_mm": [
+     249.8147,
+     -243.9962,
+     -297.055
+    ],
+    "smallest_extent_axis_direction": [
+     1.0,
+     -6.9e-05,
+     2.9e-05
+    ],
+    "smallest_extent_axis_extent_mm": 48.803,
+    "smallest_extent_axis_nearest_cad_axis": "x",
+    "angle_smallest_extent_axis_to_nearest_cad_axis_deg": 0.0043,
+    "min_extent_scan_direction": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "min_extent_scan_extent_mm": 49.2491,
+    "angle_min_extent_scan_to_pca_smallest_axis_deg": 0.165003,
+    "step_largest_circle_axis": [
+     1.0,
+     -0.0,
+     -0.0
+    ],
+    "angle_step_circle_axis_to_nearest_cad_axis_deg": 0.0,
+    "agreement_tol_deg": 0.5,
+    "blocked_checks": [],
+    "status": "PASS"
+   },
+   "radial_extent_mm": {
+    "spin_axis_candidate": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "r_max_mm": 103.0,
+    "r_min_mm": 62.9543,
+    "radial_extent_mm": 40.0457,
+    "outer_diameter_mm": 206.0,
+    "in_plane_bbox_diameter_mm": 205.991409,
+    "envelope_per_azimuth": {
+     "bin_deg": 5.0,
+     "bin_count": 72,
+     "occupied_bins": 72,
+     "coverage": 1.0,
+     "min_mm": 84.028802,
+     "median_mm": 102.999754,
+     "max_mm": 103.000022,
+     "peak_to_peak_mm": 18.971221,
+     "bins_below_r_max_minus_0p5mm": 8,
+     "bin_centre_deg_from_180": [
+      -177.5,
+      -172.5,
+      -167.5,
+      -162.5,
+      -157.5,
+      -152.5,
+      -147.5,
+      -142.5,
+      -137.5,
+      -132.5,
+      -127.5,
+      -122.5,
+      -117.5,
+      -112.5,
+      -107.5,
+      -102.5,
+      -97.5,
+      -92.5,
+      -87.5,
+      -82.5,
+      -77.5,
+      -72.5,
+      -67.5,
+      -62.5,
+      -57.5,
+      -52.5,
+      -47.5,
+      -42.5,
+      -37.5,
+      -32.5,
+      -27.5,
+      -22.5,
+      -17.5,
+      -12.5,
+      -7.5,
+      -2.5,
+      2.5,
+      7.5,
+      12.5,
+      17.5,
+      22.5,
+      27.5,
+      32.5,
+      37.5,
+      42.5,
+      47.5,
+      52.5,
+      57.5,
+      62.5,
+      67.5,
+      72.5,
+      77.5,
+      82.5,
+      87.5,
+      92.5,
+      97.5,
+      102.5,
+      107.5,
+      112.5,
+      117.5,
+      122.5,
+      127.5,
+      132.5,
+      137.5,
+      142.5,
+      147.5,
+      152.5,
+      157.5,
+      162.5,
+      167.5,
+      172.5,
+      177.5
+     ],
+     "per_bin_r_max_mm": [
+      84.0401,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      102.9999,
+      102.9999,
+      102.9999,
+      102.9999,
+      84.2415,
+      102.9998,
+      102.9998,
+      102.9997,
+      102.9997,
+      102.9997,
+      102.9996,
+      102.9996,
+      102.9996,
+      84.0881,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9997,
+      102.9997,
+      84.2371,
+      102.9998,
+      102.9998,
+      102.9998,
+      102.9999,
+      102.9999,
+      102.9999,
+      103.0,
+      103.0,
+      84.0439,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      102.9999,
+      102.9999,
+      84.2911,
+      102.9998,
+      102.9998,
+      102.9998,
+      102.9997,
+      102.9997,
+      102.9996,
+      102.9996,
+      102.9996,
+      84.0288,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9997,
+      102.9997,
+      102.9997,
+      84.3064,
+      102.9998,
+      102.9998,
+      102.9998,
+      102.9999,
+      102.9999,
+      102.9999,
+      103.0,
+      103.0
+     ]
+    },
+    "axial_width_mm": 49.2491,
+    "status": "PARTIAL",
+    "comment": "r_max is an outer radius of the widest measured feature, not a proven rolling radius; the radial extent is dominated by the hub bore (r_min)"
+   },
+   "circular_features": {
+    "step_circle_count": 136,
+    "step_cylindrical_surface_count": 124,
+    "max_circle_radius_mm": 103.0,
+    "max_cylinder_radius_mm": 68.5,
+    "max_radius_circle_count_in_prim": 2,
+    "max_radius_cylindrical_feature_count": 0,
+    "cloud_points_within_0p5mm_of_r_max": null,
+    "corner_drive_candidate_feature_count": 324,
+    "corner_drive_candidate_radius_max_mm": 103.0,
+    "step_vs_cloud_max_radius_residual_mm": 2.2e-05,
+    "envelope_uniformity": {
+     "bin_deg": 5.0,
+     "occupied_bins": 72,
+     "bin_count": 72,
+     "median_mm": 102.999754,
+     "min_mm": 84.028802,
+     "peak_to_peak_mm": 18.971221,
+     "bins_below_r_max_minus_0p5mm": 8,
+     "rim_band_width_mm": 0.5847
+    },
+    "rim_band_width_mm": 0.5847,
+    "rim_point_count": 64,
+    "radial_profile_per_axial_slice": [
+     {
+      "axial_mm": [
+       -275.335,
+       -269.179
+      ],
+      "r_max_mm": 94.842,
+      "r_min_mm": 68.443,
+      "points": 1573
+     },
+     {
+      "axial_mm": [
+       -269.179,
+       -263.022
+      ],
+      "r_max_mm": 98.745,
+      "r_min_mm": 62.954,
+      "points": 405
+     },
+     {
+      "axial_mm": [
+       -263.022,
+       -256.866
+      ],
+      "r_max_mm": 102.282,
+      "r_min_mm": 71.52,
+      "points": 1039
+     },
+     {
+      "axial_mm": [
+       -256.866,
+       -250.71
+      ],
+      "r_max_mm": 103.0,
+      "r_min_mm": 102.282,
+      "points": 147
+     },
+     {
+      "axial_mm": [
+       -250.71,
+       -244.554
+      ],
+      "r_max_mm": 103.0,
+      "r_min_mm": 71.487,
+      "points": 1045
+     },
+     {
+      "axial_mm": [
+       -244.554,
+       -238.398
+      ],
+      "r_max_mm": 102.282,
+      "r_min_mm": 100.189,
+      "points": 141
+     },
+     {
+      "axial_mm": [
+       -238.398,
+       -232.242
+      ],
+      "r_max_mm": 98.745,
+      "r_min_mm": 62.954,
+      "points": 405
+     },
+     {
+      "axial_mm": [
+       -232.242,
+       -226.086
+      ],
+      "r_max_mm": 94.842,
+      "r_min_mm": 68.443,
+      "points": 1599
+     }
+    ],
+    "thin_edge_finding": {
+     "statement": "the r_max feature occupies an axial band of only 0.585 mm, so it is a circular EDGE (rim lip / flange), not a rolling tread of the wheel's full 49.249 mm width",
+     "status": "CANDIDATE"
+    },
+    "envelope_aliasing": {
+     "bins_below_r_max_minus_0p5mm": 8,
+     "bin_count": 72,
+     "rim_point_count": 64,
+     "interpretation": "the low envelope bins are an ALIASING artefact: the outer circle is tessellated with about 64 vertices (5.625 deg spacing) while the envelope bin is 5 deg, so exactly 8 of 72 bins contain no rim vertex; the measured low bins sit at 45 deg intervals, which matches the beat period (72 / 8 = 9 bins). The outer envelope is therefore a full 360 deg circle within mesh resolution, and the low bins must NOT be reported as a notch in the wheel",
+     "status": "PASS"
+    },
+    "verdict": "max_circular_feature_radius_candidate=103.0mm",
+    "not_proven": [
+     "that the r=103 mm cylinder is the ground-contact (rolling) surface rather than a flange or rim lip",
+     "the tyre/tread material, compliance and contact-patch width",
+     "the loaded radius under the robot weight"
+    ]
+   },
+   "corner": "+-",
+   "steering_axis_candidate": {
+    "point_mm": [
+     250.0,
+     -99.6124,
+     -297.0
+    ],
+    "direction": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "radius_max_mm": 40.0,
+    "feature_count": 106,
+    "status": "CANDIDATE",
+    "comment": "a vertical (y) circle family of radius <= 40 mm at each corner is consistent with a swerve/steering module, so the CAD pose is one steering configuration, not a fixed wheel orientation"
+   },
+   "drive_axis_candidate": {
+    "point_mm": [
+     231.2388,
+     -244.0,
+     -297.0
+    ],
+    "direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "axial_span_mm": [
+     166.4,
+     284.6
+    ],
+    "status": "CANDIDATE"
+   }
+  },
+  "759491": {
+   "step_eid": 759491,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_23/Mesh",
+   "identity": {
+    "point_counts_equal_step_vs_usd": false,
+    "step_vertex_points": 250,
+    "step_cartesian_points": 7763,
+    "usd_point_count": 6354,
+    "usd_shell_count": 122,
+    "note": "STEP 250 BREP vertices vs USD 6354 tessellation points differ by construction; the tessellation is the authority for shape, the BREP for analytic radii"
+   },
+   "bbox_mm": {
+    "step_vertex_bbox_size": [
+     48.6527,
+     180.782,
+     157.7827
+    ],
+    "step_surface_envelope_bbox_size": [
+     50.5238,
+     206.0,
+     206.0
+    ],
+    "usd_point_cloud_bbox_size": [
+     48.7911,
+     205.9914,
+     205.9914
+    ],
+    "cloud_bbox_min": [
+     225.6064,
+     -346.9957,
+     194.0043
+    ],
+    "cloud_bbox_max": [
+     274.3975,
+     -141.0043,
+     399.9957
+    ],
+    "status": "PASS",
+    "comment": "the 48.65 vs 48.79 mm thin-axis gap and the 180.78/157.78 vs 205.99 mm in-plane gap are a measurement-convention difference, reproduced in P1_WHEEL_IDENTITY_205_VS_181.md"
+   },
+   "centre_mm": {
+    "point_cloud_bbox_centre": [
+     250.002,
+     -244.0,
+     297.0
+    ],
+    "step_largest_circle_centre": [
+     250.0,
+     -244.0,
+     297.0
+    ],
+    "cloud_rim_circle_fit_centre": [
+     250.002,
+     -244.0,
+     297.0
+    ],
+    "cloud_rim_circle_fit_radius_mm": 102.999793,
+    "cloud_rim_circle_fit_residual_rms_mm": 0.000147,
+    "bbox_centre_minus_step_circle_centre_mm": [
+     0.00196,
+     7e-06,
+     -7e-06
+    ],
+    "centres_agree_within_tol": true,
+    "frame": "CAD model frame (mm), origin = CAD global origin; NOT a chassis datum",
+    "status": "PARTIAL",
+    "why_partial": "three constructions agree to ~0.002 mm in the CAD frame, but no recorded chassis datum / mount transform exists, so the centre in the chassis or robot frame stays UNKNOWN"
+   },
+   "mesh_resolution_mm": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
+   "principal_axes": {
+    "pca_axes": [
+     {
+      "axis_index": 0,
+      "direction": [
+       7.4e-05,
+       -0.842215,
+       0.539141
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3343.0548,
+      "sigma_mm": 57.8192
+     },
+     {
+      "axis_index": 1,
+      "direction": [
+       1.3e-05,
+       -0.539141,
+       -0.842215
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3310.7567,
+      "sigma_mm": 57.5392
+     },
+     {
+      "axis_index": 2,
+      "direction": [
+       1.0,
+       6.9e-05,
+       -2.9e-05
+      ],
+      "extent_mm": 48.803,
+      "variance_mm2": 308.4048,
+      "sigma_mm": 17.5615
+     }
+    ],
+    "pca_centre_mm": [
+     249.8147,
+     -244.0038,
+     297.055
+    ],
+    "smallest_extent_axis_direction": [
+     1.0,
+     6.9e-05,
+     -2.9e-05
+    ],
+    "smallest_extent_axis_extent_mm": 48.803,
+    "smallest_extent_axis_nearest_cad_axis": "x",
+    "angle_smallest_extent_axis_to_nearest_cad_axis_deg": 0.0043,
+    "min_extent_scan_direction": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "min_extent_scan_extent_mm": 49.2491,
+    "angle_min_extent_scan_to_pca_smallest_axis_deg": 0.160349,
+    "step_largest_circle_axis": [
+     1.0,
+     -0.0,
+     0.0
+    ],
+    "angle_step_circle_axis_to_nearest_cad_axis_deg": 0.0,
+    "agreement_tol_deg": 0.5,
+    "blocked_checks": [],
+    "status": "PASS"
+   },
+   "radial_extent_mm": {
+    "spin_axis_candidate": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "r_max_mm": 103.0,
+    "r_min_mm": 62.9544,
+    "radial_extent_mm": 40.0456,
+    "outer_diameter_mm": 206.0,
+    "in_plane_bbox_diameter_mm": 205.991409,
+    "envelope_per_azimuth": {
+     "bin_deg": 5.0,
+     "bin_count": 72,
+     "occupied_bins": 72,
+     "coverage": 1.0,
+     "min_mm": 84.028781,
+     "median_mm": 102.999753,
+     "max_mm": 103.000019,
+     "peak_to_peak_mm": 18.971239,
+     "bins_below_r_max_minus_0p5mm": 8,
+     "bin_centre_deg_from_180": [
+      -177.5,
+      -172.5,
+      -167.5,
+      -162.5,
+      -157.5,
+      -152.5,
+      -147.5,
+      -142.5,
+      -137.5,
+      -132.5,
+      -127.5,
+      -122.5,
+      -117.5,
+      -112.5,
+      -107.5,
+      -102.5,
+      -97.5,
+      -92.5,
+      -87.5,
+      -82.5,
+      -77.5,
+      -72.5,
+      -67.5,
+      -62.5,
+      -57.5,
+      -52.5,
+      -47.5,
+      -42.5,
+      -37.5,
+      -32.5,
+      -27.5,
+      -22.5,
+      -17.5,
+      -12.5,
+      -7.5,
+      -2.5,
+      2.5,
+      7.5,
+      12.5,
+      17.5,
+      22.5,
+      27.5,
+      32.5,
+      37.5,
+      42.5,
+      47.5,
+      52.5,
+      57.5,
+      62.5,
+      67.5,
+      72.5,
+      77.5,
+      82.5,
+      87.5,
+      92.5,
+      97.5,
+      102.5,
+      107.5,
+      112.5,
+      117.5,
+      122.5,
+      127.5,
+      132.5,
+      137.5,
+      142.5,
+      147.5,
+      152.5,
+      157.5,
+      162.5,
+      167.5,
+      172.5,
+      177.5
+     ],
+     "per_bin_r_max_mm": [
+      84.488,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      102.9999,
+      102.9999,
+      102.9999,
+      102.9999,
+      84.2415,
+      102.9998,
+      102.9998,
+      102.9997,
+      102.9997,
+      102.9997,
+      102.9996,
+      102.9996,
+      102.9996,
+      84.5668,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9997,
+      102.9997,
+      102.9997,
+      84.2371,
+      102.9998,
+      102.9998,
+      102.9998,
+      102.9999,
+      102.9999,
+      102.9999,
+      103.0,
+      103.0,
+      84.044,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      102.9999,
+      102.9999,
+      102.9999,
+      84.2911,
+      102.9998,
+      102.9998,
+      102.9998,
+      102.9997,
+      102.9997,
+      102.9996,
+      102.9996,
+      102.9996,
+      84.0288,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9997,
+      102.9997,
+      84.3064,
+      102.9998,
+      102.9998,
+      102.9998,
+      102.9999,
+      102.9999,
+      102.9999,
+      103.0,
+      103.0
+     ]
+    },
+    "axial_width_mm": 49.2491,
+    "status": "PARTIAL",
+    "comment": "r_max is an outer radius of the widest measured feature, not a proven rolling radius; the radial extent is dominated by the hub bore (r_min)"
+   },
+   "circular_features": {
+    "step_circle_count": 136,
+    "step_cylindrical_surface_count": 124,
+    "max_circle_radius_mm": 103.0,
+    "max_cylinder_radius_mm": 68.5,
+    "max_radius_circle_count_in_prim": 2,
+    "max_radius_cylindrical_feature_count": 0,
+    "cloud_points_within_0p5mm_of_r_max": null,
+    "corner_drive_candidate_feature_count": 324,
+    "corner_drive_candidate_radius_max_mm": 103.0,
+    "step_vs_cloud_max_radius_residual_mm": 2.2e-05,
+    "envelope_uniformity": {
+     "bin_deg": 5.0,
+     "occupied_bins": 72,
+     "bin_count": 72,
+     "median_mm": 102.999753,
+     "min_mm": 84.028781,
+     "peak_to_peak_mm": 18.971239,
+     "bins_below_r_max_minus_0p5mm": 8,
+     "rim_band_width_mm": 0.5847
+    },
+    "rim_band_width_mm": 0.5847,
+    "rim_point_count": 64,
+    "radial_profile_per_axial_slice": [
+     {
+      "axial_mm": [
+       -273.675,
+       -267.519
+      ],
+      "r_max_mm": 94.842,
+      "r_min_mm": 68.443,
+      "points": 1573
+     },
+     {
+      "axial_mm": [
+       -267.519,
+       -261.362
+      ],
+      "r_max_mm": 98.745,
+      "r_min_mm": 62.954,
+      "points": 405
+     },
+     {
+      "axial_mm": [
+       -261.362,
+       -255.206
+      ],
+      "r_max_mm": 102.282,
+      "r_min_mm": 71.52,
+      "points": 1039
+     },
+     {
+      "axial_mm": [
+       -255.206,
+       -249.05
+      ],
+      "r_max_mm": 103.0,
+      "r_min_mm": 102.282,
+      "points": 147
+     },
+     {
+      "axial_mm": [
+       -249.05,
+       -242.894
+      ],
+      "r_max_mm": 103.0,
+      "r_min_mm": 71.487,
+      "points": 1045
+     },
+     {
+      "axial_mm": [
+       -242.894,
+       -236.738
+      ],
+      "r_max_mm": 102.282,
+      "r_min_mm": 100.189,
+      "points": 141
+     },
+     {
+      "axial_mm": [
+       -236.738,
+       -230.582
+      ],
+      "r_max_mm": 98.745,
+      "r_min_mm": 62.954,
+      "points": 405
+     },
+     {
+      "axial_mm": [
+       -230.582,
+       -224.426
+      ],
+      "r_max_mm": 94.842,
+      "r_min_mm": 68.443,
+      "points": 1599
+     }
+    ],
+    "thin_edge_finding": {
+     "statement": "the r_max feature occupies an axial band of only 0.585 mm, so it is a circular EDGE (rim lip / flange), not a rolling tread of the wheel's full 49.249 mm width",
+     "status": "CANDIDATE"
+    },
+    "envelope_aliasing": {
+     "bins_below_r_max_minus_0p5mm": 8,
+     "bin_count": 72,
+     "rim_point_count": 64,
+     "interpretation": "the low envelope bins are an ALIASING artefact: the outer circle is tessellated with about 64 vertices (5.625 deg spacing) while the envelope bin is 5 deg, so exactly 8 of 72 bins contain no rim vertex; the measured low bins sit at 45 deg intervals, which matches the beat period (72 / 8 = 9 bins). The outer envelope is therefore a full 360 deg circle within mesh resolution, and the low bins must NOT be reported as a notch in the wheel",
+     "status": "PASS"
+    },
+    "verdict": "max_circular_feature_radius_candidate=103.0mm",
+    "not_proven": [
+     "that the r=103 mm cylinder is the ground-contact (rolling) surface rather than a flange or rim lip",
+     "the tyre/tread material, compliance and contact-patch width",
+     "the loaded radius under the robot weight"
+    ]
+   },
+   "corner": "++",
+   "steering_axis_candidate": {
+    "point_mm": [
+     250.0,
+     -99.6124,
+     297.0
+    ],
+    "direction": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "radius_max_mm": 40.0,
+    "feature_count": 106,
+    "status": "CANDIDATE",
+    "comment": "a vertical (y) circle family of radius <= 40 mm at each corner is consistent with a swerve/steering module, so the CAD pose is one steering configuration, not a fixed wheel orientation"
+   },
+   "drive_axis_candidate": {
+    "point_mm": [
+     231.2635,
+     -244.0,
+     297.0
+    ],
+    "direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "axial_span_mm": [
+     166.4,
+     284.6
+    ],
+    "status": "CANDIDATE"
+   }
+  },
+  "773650": {
+   "step_eid": 773650,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_7/Mesh",
+   "identity": {
+    "point_counts_equal_step_vs_usd": false,
+    "step_vertex_points": 250,
+    "step_cartesian_points": 7763,
+    "usd_point_count": 6354,
+    "usd_shell_count": 122,
+    "note": "STEP 250 BREP vertices vs USD 6354 tessellation points differ by construction; the tessellation is the authority for shape, the BREP for analytic radii"
+   },
+   "bbox_mm": {
+    "step_vertex_bbox_size": [
+     48.6527,
+     180.782,
+     157.7827
+    ],
+    "step_surface_envelope_bbox_size": [
+     50.5238,
+     206.0,
+     206.0
+    ],
+    "usd_point_cloud_bbox_size": [
+     48.7911,
+     205.9914,
+     205.9914
+    ],
+    "cloud_bbox_min": [
+     -274.3975,
+     -346.9957,
+     -399.9957
+    ],
+    "cloud_bbox_max": [
+     -225.6064,
+     -141.0043,
+     -194.0043
+    ],
+    "status": "PASS",
+    "comment": "the 48.65 vs 48.79 mm thin-axis gap and the 180.78/157.78 vs 205.99 mm in-plane gap are a measurement-convention difference, reproduced in P1_WHEEL_IDENTITY_205_VS_181.md"
+   },
+   "centre_mm": {
+    "point_cloud_bbox_centre": [
+     -250.002,
+     -244.0,
+     -297.0
+    ],
+    "step_largest_circle_centre": [
+     -250.0,
+     -244.0,
+     -297.0
+    ],
+    "cloud_rim_circle_fit_centre": [
+     -250.002,
+     -244.0,
+     -297.0
+    ],
+    "cloud_rim_circle_fit_radius_mm": 102.999793,
+    "cloud_rim_circle_fit_residual_rms_mm": 0.000147,
+    "bbox_centre_minus_step_circle_centre_mm": [
+     -0.00196,
+     7e-06,
+     7e-06
+    ],
+    "centres_agree_within_tol": true,
+    "frame": "CAD model frame (mm), origin = CAD global origin; NOT a chassis datum",
+    "status": "PARTIAL",
+    "why_partial": "three constructions agree to ~0.002 mm in the CAD frame, but no recorded chassis datum / mount transform exists, so the centre in the chassis or robot frame stays UNKNOWN"
+   },
+   "mesh_resolution_mm": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
+   "principal_axes": {
+    "pca_axes": [
+     {
+      "axis_index": 0,
+      "direction": [
+       7.4e-05,
+       0.842215,
+       0.539141
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3343.0548,
+      "sigma_mm": 57.8192
+     },
+     {
+      "axis_index": 1,
+      "direction": [
+       1.3e-05,
+       0.539141,
+       -0.842215
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3310.7567,
+      "sigma_mm": 57.5392
+     },
+     {
+      "axis_index": 2,
+      "direction": [
+       1.0,
+       -6.9e-05,
+       -2.9e-05
+      ],
+      "extent_mm": 48.803,
+      "variance_mm2": 308.4048,
+      "sigma_mm": 17.5615
+     }
+    ],
+    "pca_centre_mm": [
+     -249.8147,
+     -244.0038,
+     -297.055
+    ],
+    "smallest_extent_axis_direction": [
+     1.0,
+     -6.9e-05,
+     -2.9e-05
+    ],
+    "smallest_extent_axis_extent_mm": 48.803,
+    "smallest_extent_axis_nearest_cad_axis": "x",
+    "angle_smallest_extent_axis_to_nearest_cad_axis_deg": 0.0043,
+    "min_extent_scan_direction": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "min_extent_scan_extent_mm": 49.2479,
+    "angle_min_extent_scan_to_pca_smallest_axis_deg": 0.161746,
+    "step_largest_circle_axis": [
+     -1.0,
+     -0.0,
+     -0.0
+    ],
+    "angle_step_circle_axis_to_nearest_cad_axis_deg": 0.0,
+    "agreement_tol_deg": 0.5,
+    "blocked_checks": [],
+    "status": "PASS"
+   },
+   "radial_extent_mm": {
+    "spin_axis_candidate": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "r_max_mm": 103.0,
+    "r_min_mm": 62.9542,
+    "radial_extent_mm": 40.0458,
+    "outer_diameter_mm": 206.0,
+    "in_plane_bbox_diameter_mm": 205.991409,
+    "envelope_per_azimuth": {
+     "bin_deg": 5.0,
+     "bin_count": 72,
+     "occupied_bins": 72,
+     "coverage": 1.0,
+     "min_mm": 84.02892,
+     "median_mm": 102.999748,
+     "max_mm": 103.000015,
+     "peak_to_peak_mm": 18.971095,
+     "bins_below_r_max_minus_0p5mm": 8,
+     "bin_centre_deg_from_180": [
+      -177.5,
+      -172.5,
+      -167.5,
+      -162.5,
+      -157.5,
+      -152.5,
+      -147.5,
+      -142.5,
+      -137.5,
+      -132.5,
+      -127.5,
+      -122.5,
+      -117.5,
+      -112.5,
+      -107.5,
+      -102.5,
+      -97.5,
+      -92.5,
+      -87.5,
+      -82.5,
+      -77.5,
+      -72.5,
+      -67.5,
+      -62.5,
+      -57.5,
+      -52.5,
+      -47.5,
+      -42.5,
+      -37.5,
+      -32.5,
+      -27.5,
+      -22.5,
+      -17.5,
+      -12.5,
+      -7.5,
+      -2.5,
+      2.5,
+      7.5,
+      12.5,
+      17.5,
+      22.5,
+      27.5,
+      32.5,
+      37.5,
+      42.5,
+      47.5,
+      52.5,
+      57.5,
+      62.5,
+      67.5,
+      72.5,
+      77.5,
+      82.5,
+      87.5,
+      92.5,
+      97.5,
+      102.5,
+      107.5,
+      112.5,
+      117.5,
+      122.5,
+      127.5,
+      132.5,
+      137.5,
+      142.5,
+      147.5,
+      152.5,
+      157.5,
+      162.5,
+      167.5,
+      172.5,
+      177.5
+     ],
+     "per_bin_r_max_mm": [
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      102.9999,
+      102.9999,
+      84.2894,
+      102.9999,
+      102.9998,
+      102.9998,
+      102.9997,
+      102.9997,
+      102.9997,
+      102.9996,
+      102.9996,
+      84.0289,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9997,
+      102.9997,
+      84.3076,
+      102.9997,
+      102.9998,
+      102.9998,
+      102.9999,
+      102.9999,
+      102.9999,
+      103.0,
+      103.0,
+      84.0394,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      102.9999,
+      102.9999,
+      84.242,
+      102.9999,
+      102.9998,
+      102.9998,
+      102.9997,
+      102.9997,
+      102.9997,
+      102.9997,
+      102.9996,
+      84.0874,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9997,
+      84.2368,
+      102.9997,
+      102.9997,
+      102.9998,
+      102.9998,
+      102.9999,
+      102.9999,
+      102.9999,
+      103.0,
+      84.5119
+     ]
+    },
+    "axial_width_mm": 49.2479,
+    "status": "PARTIAL",
+    "comment": "r_max is an outer radius of the widest measured feature, not a proven rolling radius; the radial extent is dominated by the hub bore (r_min)"
+   },
+   "circular_features": {
+    "step_circle_count": 136,
+    "step_cylindrical_surface_count": 124,
+    "max_circle_radius_mm": 103.0,
+    "max_cylinder_radius_mm": 68.5,
+    "max_radius_circle_count_in_prim": 2,
+    "max_radius_cylindrical_feature_count": 0,
+    "cloud_points_within_0p5mm_of_r_max": null,
+    "corner_drive_candidate_feature_count": 324,
+    "corner_drive_candidate_radius_max_mm": 103.0,
+    "step_vs_cloud_max_radius_residual_mm": 2.2e-05,
+    "envelope_uniformity": {
+     "bin_deg": 5.0,
+     "occupied_bins": 72,
+     "bin_count": 72,
+     "median_mm": 102.999748,
+     "min_mm": 84.02892,
+     "peak_to_peak_mm": 18.971095,
+     "bins_below_r_max_minus_0p5mm": 8,
+     "rim_band_width_mm": 0.5845
+    },
+    "rim_band_width_mm": 0.5845,
+    "rim_point_count": 64,
+    "radial_profile_per_axial_slice": [
+     {
+      "axial_mm": [
+       224.668,
+       230.824
+      ],
+      "r_max_mm": 94.845,
+      "r_min_mm": 68.443,
+      "points": 1600
+     },
+     {
+      "axial_mm": [
+       230.824,
+       236.98
+      ],
+      "r_max_mm": 98.745,
+      "r_min_mm": 62.954,
+      "points": 404
+     },
+     {
+      "axial_mm": [
+       236.98,
+       243.136
+      ],
+      "r_max_mm": 102.282,
+      "r_min_mm": 100.189,
+      "points": 141
+     },
+     {
+      "axial_mm": [
+       243.136,
+       249.292
+      ],
+      "r_max_mm": 103.0,
+      "r_min_mm": 71.487,
+      "points": 1045
+     },
+     {
+      "axial_mm": [
+       249.292,
+       255.448
+      ],
+      "r_max_mm": 103.0,
+      "r_min_mm": 102.282,
+      "points": 147
+     },
+     {
+      "axial_mm": [
+       255.448,
+       261.604
+      ],
+      "r_max_mm": 102.282,
+      "r_min_mm": 71.52,
+      "points": 1039
+     },
+     {
+      "axial_mm": [
+       261.604,
+       267.76
+      ],
+      "r_max_mm": 98.745,
+      "r_min_mm": 62.954,
+      "points": 404
+     },
+     {
+      "axial_mm": [
+       267.76,
+       273.916
+      ],
+      "r_max_mm": 94.845,
+      "r_min_mm": 68.443,
+      "points": 1574
+     }
+    ],
+    "thin_edge_finding": {
+     "statement": "the r_max feature occupies an axial band of only 0.585 mm, so it is a circular EDGE (rim lip / flange), not a rolling tread of the wheel's full 49.248 mm width",
+     "status": "CANDIDATE"
+    },
+    "envelope_aliasing": {
+     "bins_below_r_max_minus_0p5mm": 8,
+     "bin_count": 72,
+     "rim_point_count": 64,
+     "interpretation": "the low envelope bins are an ALIASING artefact: the outer circle is tessellated with about 64 vertices (5.625 deg spacing) while the envelope bin is 5 deg, so exactly 8 of 72 bins contain no rim vertex; the measured low bins sit at 45 deg intervals, which matches the beat period (72 / 8 = 9 bins). The outer envelope is therefore a full 360 deg circle within mesh resolution, and the low bins must NOT be reported as a notch in the wheel",
+     "status": "PASS"
+    },
+    "verdict": "max_circular_feature_radius_candidate=103.0mm",
+    "not_proven": [
+     "that the r=103 mm cylinder is the ground-contact (rolling) surface rather than a flange or rim lip",
+     "the tyre/tread material, compliance and contact-patch width",
+     "the loaded radius under the robot weight"
+    ]
+   },
+   "corner": "--",
+   "steering_axis_candidate": {
+    "point_mm": [
+     -250.0,
+     -101.8934,
+     -297.0
+    ],
+    "direction": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "radius_max_mm": 40.0,
+    "feature_count": 110,
+    "status": "CANDIDATE",
+    "comment": "a vertical (y) circle family of radius <= 40 mm at each corner is consistent with a swerve/steering module, so the CAD pose is one steering configuration, not a fixed wheel orientation"
+   },
+   "drive_axis_candidate": {
+    "point_mm": [
+     -231.2635,
+     -244.0,
+     -297.0
+    ],
+    "direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "axial_span_mm": [
+     -284.6,
+     -166.4
+    ],
+    "status": "CANDIDATE"
+   }
+  },
+  "871375": {
+   "step_eid": 871375,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_31/Mesh",
+   "identity": {
+    "point_counts_equal_step_vs_usd": false,
+    "step_vertex_points": 250,
+    "step_cartesian_points": 7763,
+    "usd_point_count": 6354,
+    "usd_shell_count": 122,
+    "note": "STEP 250 BREP vertices vs USD 6354 tessellation points differ by construction; the tessellation is the authority for shape, the BREP for analytic radii"
+   },
+   "bbox_mm": {
+    "step_vertex_bbox_size": [
+     48.6527,
+     180.782,
+     157.7827
+    ],
+    "step_surface_envelope_bbox_size": [
+     50.5238,
+     206.0,
+     206.0
+    ],
+    "usd_point_cloud_bbox_size": [
+     48.7911,
+     205.9914,
+     205.9914
+    ],
+    "cloud_bbox_min": [
+     -274.3975,
+     -346.9957,
+     194.0043
+    ],
+    "cloud_bbox_max": [
+     -225.6064,
+     -141.0043,
+     399.9957
+    ],
+    "status": "PASS",
+    "comment": "the 48.65 vs 48.79 mm thin-axis gap and the 180.78/157.78 vs 205.99 mm in-plane gap are a measurement-convention difference, reproduced in P1_WHEEL_IDENTITY_205_VS_181.md"
+   },
+   "centre_mm": {
+    "point_cloud_bbox_centre": [
+     -250.002,
+     -244.0,
+     297.0
+    ],
+    "step_largest_circle_centre": [
+     -250.0,
+     -244.0,
+     297.0
+    ],
+    "cloud_rim_circle_fit_centre": [
+     -250.002,
+     -244.0,
+     297.0
+    ],
+    "cloud_rim_circle_fit_radius_mm": 102.999793,
+    "cloud_rim_circle_fit_residual_rms_mm": 0.000147,
+    "bbox_centre_minus_step_circle_centre_mm": [
+     -0.00196,
+     7e-06,
+     -7e-06
+    ],
+    "centres_agree_within_tol": true,
+    "frame": "CAD model frame (mm), origin = CAD global origin; NOT a chassis datum",
+    "status": "PARTIAL",
+    "why_partial": "three constructions agree to ~0.002 mm in the CAD frame, but no recorded chassis datum / mount transform exists, so the centre in the chassis or robot frame stays UNKNOWN"
+   },
+   "mesh_resolution_mm": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
+   "principal_axes": {
+    "pca_axes": [
+     {
+      "axis_index": 0,
+      "direction": [
+       7.4e-05,
+       -0.842215,
+       -0.539141
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3343.0547,
+      "sigma_mm": 57.8192
+     },
+     {
+      "axis_index": 1,
+      "direction": [
+       1.3e-05,
+       -0.539141,
+       0.842215
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3310.7567,
+      "sigma_mm": 57.5392
+     },
+     {
+      "axis_index": 2,
+      "direction": [
+       1.0,
+       6.9e-05,
+       2.9e-05
+      ],
+      "extent_mm": 48.803,
+      "variance_mm2": 308.4048,
+      "sigma_mm": 17.5615
+     }
+    ],
+    "pca_centre_mm": [
+     -249.8147,
+     -243.9962,
+     297.055
+    ],
+    "smallest_extent_axis_direction": [
+     1.0,
+     6.9e-05,
+     2.9e-05
+    ],
+    "smallest_extent_axis_extent_mm": 48.803,
+    "smallest_extent_axis_nearest_cad_axis": "x",
+    "angle_smallest_extent_axis_to_nearest_cad_axis_deg": 0.0043,
+    "min_extent_scan_direction": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "min_extent_scan_extent_mm": 49.2479,
+    "angle_min_extent_scan_to_pca_smallest_axis_deg": 0.163634,
+    "step_largest_circle_axis": [
+     -1.0,
+     0.0,
+     0.0
+    ],
+    "angle_step_circle_axis_to_nearest_cad_axis_deg": 0.0,
+    "agreement_tol_deg": 0.5,
+    "blocked_checks": [],
+    "status": "PASS"
+   },
+   "radial_extent_mm": {
+    "spin_axis_candidate": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "r_max_mm": 103.0,
+    "r_min_mm": 62.9544,
+    "radial_extent_mm": 40.0456,
+    "outer_diameter_mm": 206.0,
+    "in_plane_bbox_diameter_mm": 205.991409,
+    "envelope_per_azimuth": {
+     "bin_deg": 5.0,
+     "bin_count": 72,
+     "occupied_bins": 72,
+     "coverage": 1.0,
+     "min_mm": 84.039365,
+     "median_mm": 102.999752,
+     "max_mm": 103.00001,
+     "peak_to_peak_mm": 18.960645,
+     "bins_below_r_max_minus_0p5mm": 8,
+     "bin_centre_deg_from_180": [
+      -177.5,
+      -172.5,
+      -167.5,
+      -162.5,
+      -157.5,
+      -152.5,
+      -147.5,
+      -142.5,
+      -137.5,
+      -132.5,
+      -127.5,
+      -122.5,
+      -117.5,
+      -112.5,
+      -107.5,
+      -102.5,
+      -97.5,
+      -92.5,
+      -87.5,
+      -82.5,
+      -77.5,
+      -72.5,
+      -67.5,
+      -62.5,
+      -57.5,
+      -52.5,
+      -47.5,
+      -42.5,
+      -37.5,
+      -32.5,
+      -27.5,
+      -22.5,
+      -17.5,
+      -12.5,
+      -7.5,
+      -2.5,
+      2.5,
+      7.5,
+      12.5,
+      17.5,
+      22.5,
+      27.5,
+      32.5,
+      37.5,
+      42.5,
+      47.5,
+      52.5,
+      57.5,
+      62.5,
+      67.5,
+      72.5,
+      77.5,
+      82.5,
+      87.5,
+      92.5,
+      97.5,
+      102.5,
+      107.5,
+      112.5,
+      117.5,
+      122.5,
+      127.5,
+      132.5,
+      137.5,
+      142.5,
+      147.5,
+      152.5,
+      157.5,
+      162.5,
+      167.5,
+      172.5,
+      177.5
+     ],
+     "per_bin_r_max_mm": [
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      102.9999,
+      102.9999,
+      84.2894,
+      102.9999,
+      102.9998,
+      102.9998,
+      102.9998,
+      102.9997,
+      102.9997,
+      102.9997,
+      102.9996,
+      84.4868,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9997,
+      102.9997,
+      84.3076,
+      102.9997,
+      102.9998,
+      102.9998,
+      102.9999,
+      102.9999,
+      102.9999,
+      103.0,
+      103.0,
+      84.0394,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      103.0,
+      102.9999,
+      102.9999,
+      102.9999,
+      84.242,
+      102.9999,
+      102.9998,
+      102.9998,
+      102.9997,
+      102.9997,
+      102.9997,
+      102.9996,
+      102.9996,
+      84.0874,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9996,
+      102.9997,
+      84.2368,
+      102.9997,
+      102.9997,
+      102.9998,
+      102.9998,
+      102.9999,
+      102.9999,
+      102.9999,
+      103.0,
+      84.0447
+     ]
+    },
+    "axial_width_mm": 49.2479,
+    "status": "PARTIAL",
+    "comment": "r_max is an outer radius of the widest measured feature, not a proven rolling radius; the radial extent is dominated by the hub bore (r_min)"
+   },
+   "circular_features": {
+    "step_circle_count": 136,
+    "step_cylindrical_surface_count": 124,
+    "max_circle_radius_mm": 103.0,
+    "max_cylinder_radius_mm": 68.5,
+    "max_radius_circle_count_in_prim": 2,
+    "max_radius_cylindrical_feature_count": 0,
+    "cloud_points_within_0p5mm_of_r_max": null,
+    "corner_drive_candidate_feature_count": 324,
+    "corner_drive_candidate_radius_max_mm": 103.0,
+    "step_vs_cloud_max_radius_residual_mm": 2.2e-05,
+    "envelope_uniformity": {
+     "bin_deg": 5.0,
+     "occupied_bins": 72,
+     "bin_count": 72,
+     "median_mm": 102.999752,
+     "min_mm": 84.039365,
+     "peak_to_peak_mm": 18.960645,
+     "bins_below_r_max_minus_0p5mm": 8,
+     "rim_band_width_mm": 0.5845
+    },
+    "rim_band_width_mm": 0.5845,
+    "rim_point_count": 64,
+    "radial_profile_per_axial_slice": [
+     {
+      "axial_mm": [
+       226.328,
+       232.484
+      ],
+      "r_max_mm": 94.845,
+      "r_min_mm": 68.443,
+      "points": 1600
+     },
+     {
+      "axial_mm": [
+       232.484,
+       238.64
+      ],
+      "r_max_mm": 98.745,
+      "r_min_mm": 62.954,
+      "points": 404
+     },
+     {
+      "axial_mm": [
+       238.64,
+       244.796
+      ],
+      "r_max_mm": 102.282,
+      "r_min_mm": 100.189,
+      "points": 141
+     },
+     {
+      "axial_mm": [
+       244.796,
+       250.952
+      ],
+      "r_max_mm": 103.0,
+      "r_min_mm": 71.487,
+      "points": 1045
+     },
+     {
+      "axial_mm": [
+       250.952,
+       257.108
+      ],
+      "r_max_mm": 103.0,
+      "r_min_mm": 102.282,
+      "points": 147
+     },
+     {
+      "axial_mm": [
+       257.108,
+       263.264
+      ],
+      "r_max_mm": 102.282,
+      "r_min_mm": 71.52,
+      "points": 1039
+     },
+     {
+      "axial_mm": [
+       263.264,
+       269.42
+      ],
+      "r_max_mm": 98.745,
+      "r_min_mm": 62.954,
+      "points": 404
+     },
+     {
+      "axial_mm": [
+       269.42,
+       275.576
+      ],
+      "r_max_mm": 94.845,
+      "r_min_mm": 68.443,
+      "points": 1574
+     }
+    ],
+    "thin_edge_finding": {
+     "statement": "the r_max feature occupies an axial band of only 0.585 mm, so it is a circular EDGE (rim lip / flange), not a rolling tread of the wheel's full 49.248 mm width",
+     "status": "CANDIDATE"
+    },
+    "envelope_aliasing": {
+     "bins_below_r_max_minus_0p5mm": 8,
+     "bin_count": 72,
+     "rim_point_count": 64,
+     "interpretation": "the low envelope bins are an ALIASING artefact: the outer circle is tessellated with about 64 vertices (5.625 deg spacing) while the envelope bin is 5 deg, so exactly 8 of 72 bins contain no rim vertex; the measured low bins sit at 45 deg intervals, which matches the beat period (72 / 8 = 9 bins). The outer envelope is therefore a full 360 deg circle within mesh resolution, and the low bins must NOT be reported as a notch in the wheel",
+     "status": "PASS"
+    },
+    "verdict": "max_circular_feature_radius_candidate=103.0mm",
+    "not_proven": [
+     "that the r=103 mm cylinder is the ground-contact (rolling) surface rather than a flange or rim lip",
+     "the tyre/tread material, compliance and contact-patch width",
+     "the loaded radius under the robot weight"
+    ]
+   },
+   "corner": "-+",
+   "steering_axis_candidate": {
+    "point_mm": [
+     -250.0,
+     -100.6816,
+     297.0
+    ],
+    "direction": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "radius_max_mm": 40.0,
+    "feature_count": 107,
+    "status": "CANDIDATE",
+    "comment": "a vertical (y) circle family of radius <= 40 mm at each corner is consistent with a swerve/steering module, so the CAD pose is one steering configuration, not a fixed wheel orientation"
+   },
+   "drive_axis_candidate": {
+    "point_mm": [
+     -231.2388,
+     -244.0,
+     297.0
+    ],
+    "direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "axial_span_mm": [
+     -284.6,
+     -166.4
+    ],
+    "status": "CANDIDATE"
+   }
+  }
+ },
+ "mirror_symmetry": {
+  "from_cloud_geometry": {
+   "pairs": [
+    {
+     "hausdorff_mm": 2.0872,
+     "mean_nearest_mm": 0.9329,
+     "forward_max_mm": 2.0872,
+     "backward_max_mm": 2.0872,
+     "plane": "z=0",
+     "source_step_eid": 435700,
+     "target_step_eid": 759491,
+     "source_corner": "+1-1",
+     "target_corner": "+1+1"
+    },
+    {
+     "hausdorff_mm": 2.0872,
+     "mean_nearest_mm": 0.9329,
+     "forward_max_mm": 2.0872,
+     "backward_max_mm": 2.0872,
+     "plane": "x=0",
+     "source_step_eid": 435700,
+     "target_step_eid": 773650,
+     "source_corner": "+1-1",
+     "target_corner": "-1-1"
+    },
+    {
+     "hausdorff_mm": 2.0872,
+     "mean_nearest_mm": 0.9329,
+     "forward_max_mm": 2.0872,
+     "backward_max_mm": 2.0872,
+     "plane": "x=0",
+     "source_step_eid": 759491,
+     "target_step_eid": 871375,
+     "source_corner": "+1+1",
+     "target_corner": "-1+1"
+    },
+    {
+     "hausdorff_mm": 2.0872,
+     "mean_nearest_mm": 0.9329,
+     "forward_max_mm": 2.0872,
+     "backward_max_mm": 2.0872,
+     "plane": "z=0",
+     "source_step_eid": 773650,
+     "target_step_eid": 871375,
+     "source_corner": "-1-1",
+     "target_corner": "-1+1"
+    }
+   ],
+   "note": "source cloud is mirrored across the named plane, then compared with the counterpart cloud; residual is an exact nearest-neighbour Hausdorff distance in mm",
+   "unmirrored_baseline": [],
+   "baseline_min_hausdorff_mm": null,
+   "max_residual_mm": 2.0872,
+   "max_mean_nearest_mm": 0.9329,
+   "pair_count": 4
+  },
+  "from_cad_axis_recording": [
+   {
+    "corner_a": "++",
+    "corner_b": "-+",
+    "mirror_axis": "x",
+    "comparable": true,
+    "mirror_residual_mm": [
+     0.0,
+     1.0692,
+     0.0
+    ],
+    "mirror_residual_norm_mm": 1.0692,
+    "ground_projection_residual_mm": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ground_projection_residual_norm_mm": 0.0,
+    "anchor_up_offset_mm": 1.0692,
+    "symmetry_metric": "horizontal_axis_footprint",
+    "radius_a_mm": 40.0,
+    "radius_b_mm": 40.0,
+    "radius_delta_mm": 0.0,
+    "consistent": true
+   },
+   {
+    "corner_a": "+-",
+    "corner_b": "--",
+    "mirror_axis": "x",
+    "comparable": true,
+    "mirror_residual_mm": [
+     0.0,
+     2.281,
+     0.0
+    ],
+    "mirror_residual_norm_mm": 2.281,
+    "ground_projection_residual_mm": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ground_projection_residual_norm_mm": 0.0,
+    "anchor_up_offset_mm": 2.281,
+    "symmetry_metric": "horizontal_axis_footprint",
+    "radius_a_mm": 40.0,
+    "radius_b_mm": 40.0,
+    "radius_delta_mm": 0.0,
+    "consistent": true
+   },
+   {
+    "corner_a": "++",
+    "corner_b": "+-",
+    "mirror_axis": "z",
+    "comparable": true,
+    "mirror_residual_mm": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mirror_residual_norm_mm": 0.0,
+    "ground_projection_residual_mm": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ground_projection_residual_norm_mm": 0.0,
+    "anchor_up_offset_mm": 0.0,
+    "symmetry_metric": "horizontal_axis_footprint",
+    "radius_a_mm": 40.0,
+    "radius_b_mm": 40.0,
+    "radius_delta_mm": 0.0,
+    "consistent": true
+   },
+   {
+    "corner_a": "-+",
+    "corner_b": "--",
+    "mirror_axis": "z",
+    "comparable": true,
+    "mirror_residual_mm": [
+     0.0,
+     1.2118,
+     0.0
+    ],
+    "mirror_residual_norm_mm": 1.2118,
+    "ground_projection_residual_mm": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "ground_projection_residual_norm_mm": 0.0,
+    "anchor_up_offset_mm": 1.2118,
+    "symmetry_metric": "horizontal_axis_footprint",
+    "radius_a_mm": 40.0,
+    "radius_b_mm": 40.0,
+    "radius_delta_mm": 0.0,
+    "consistent": true
+   }
+  ],
+  "centre_mirror_pairs": [
+   {
+    "plane": "z=0",
+    "source_step_eid": 435700,
+    "target_step_eid": 759491,
+    "centre_residual_mm": 0.0
+   },
+   {
+    "plane": "x=0",
+    "source_step_eid": 435700,
+    "target_step_eid": 773650,
+    "centre_residual_mm": 0.0
+   },
+   {
+    "plane": "x=0",
+    "source_step_eid": 435700,
+    "target_step_eid": 871375,
+    "centre_residual_mm": 594.0
+   },
+   {
+    "plane": "z=0",
+    "source_step_eid": 435700,
+    "target_step_eid": 871375,
+    "centre_residual_mm": 500.004
+   },
+   {
+    "plane": "x=0",
+    "source_step_eid": 759491,
+    "target_step_eid": 773650,
+    "centre_residual_mm": 594.0
+   },
+   {
+    "plane": "z=0",
+    "source_step_eid": 759491,
+    "target_step_eid": 773650,
+    "centre_residual_mm": 500.004
+   },
+   {
+    "plane": "x=0",
+    "source_step_eid": 759491,
+    "target_step_eid": 871375,
+    "centre_residual_mm": 0.0
+   },
+   {
+    "plane": "z=0",
+    "source_step_eid": 773650,
+    "target_step_eid": 871375,
+    "centre_residual_mm": 0.0
+   }
+  ],
+  "mirrored_max_hausdorff_mm": 2.0872,
+  "mirrored_max_mean_nearest_mm": 0.9329,
+  "vertex_spacing_p95_mm": 2.9877,
+  "pair_count": 4,
+  "verdict": "PASS",
+  "interpretation": "the mirror residual 2.0872 mm is NOT read as real asymmetry: it is below the cloud's own nearest-different-vertex distance p95 = 2.9877 mm (the mesh even contains coincident vertices, minimum spacing 0 mm), so the four solids are mirror copies within tessellation resolution. A rotational phase difference of one vertex step cannot be excluded and is not claimed.",
+  "max_centre_mirror_residual_mm": 594.0
+ },
+ "quantities": {
+  "wheel_radius": {
+   "verdict": "UNKNOWN",
+   "candidate": {
+    "value_mm": 103.0,
+    "label": "max circular feature radius candidate",
+    "step_analytic_radius_mm": 103.0,
+    "point_cloud_r_max_mm": 103.000022,
+    "residual_mm": 2.2e-05,
+    "radius_circle_count_in_prim": 2
+   },
+   "source_files": [
+    "step_remeasure.json",
+    "usd_remeasure.json",
+    "comparison.json",
+    "cloud_geometry.json"
+   ],
+   "why_unknown": "the largest cylinder/circle family at r=103 mm is measured consistently, but nothing in the recorded evidence proves it is the surface the wheel rolls on; it may be a flange or rim lip",
+   "missing_measurement": "ground-contact classification of the r=103 mm surface (axial/radial contact band + tread material) and the loaded radius under the robot mass",
+   "forbidden": [
+    "must not be reported as a verified wheel diameter 206 mm",
+    "must not be frozen as a physical parameter"
+   ]
+  },
+  "spin_axis": {
+   "verdict": "PASS",
+   "value": {
+    "direction_cad_frame": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "labelled_axis": "x",
+    "angle_to_cad_x_deg": 0.0043,
+    "methods_agreeing": [
+     "STEP largest-circle axis",
+     "point-cloud minimum-extent scan",
+     "point-cloud covariance principal axes"
+    ]
+   },
+   "uncertainty_deg": 0.5,
+   "source_files": [
+    "cloud_geometry.json",
+    "step_remeasure.json",
+    "comparison.json"
+   ],
+   "scope": "direction only, at the single CAD pose recorded; the axle LINE position and the axis under steering rotation are not proven",
+   "why_partial_if_any": "at least one independent spin-axis estimate missed the 0.5 deg tolerance",
+   "missing_measurement": "steering DOF / joint axis data and any measured wheel-pose under steering"
+  },
+  "wheel_centre": {
+   "verdict": "PARTIAL",
+   "value": {
+    "cad_frame_mm": {
+     "435700": [
+      250.002,
+      -244.0,
+      -297.0
+     ],
+     "759491": [
+      250.002,
+      -244.0,
+      297.0
+     ],
+     "773650": [
+      -250.002,
+      -244.0,
+      -297.0
+     ],
+     "871375": [
+      -250.002,
+      -244.0,
+      297.0
+     ]
+    },
+    "ylane_spread_mm": 0.0,
+    "methods_agreeing": [
+     "point-cloud bbox centre",
+     "STEP largest-circle centre",
+     "point-cloud rim circle fit"
+    ],
+    "agreement_mm": [
+     0.00196,
+     7e-06,
+     7e-06
+    ],
+    "height_above_wheel_bottom_mm": 103.0
+   },
+   "source_files": [
+    "comparison.json",
+    "cloud_geometry.json",
+    "wheel_kinematics_extract.json"
+   ],
+   "why_partial": "the centre is measured in the CAD model frame, but no chassis/robot datum transform is recorded, so the centre in the chassis frame remains UNKNOWN",
+   "missing_measurement": "authored chassis datum (root frame origin + up axis declaration) and a chassis-frame transform for every wheel"
+  },
+  "track_width": {
+   "verdict": "PARTIAL",
+   "candidate_mm": 500.004,
+   "definition": "distance between the two left/right wheel-centre x coordinates in the CAD frame",
+   "source_files": [
+    "comparison.json",
+    "cloud_geometry.json"
+   ],
+   "uncertainty_mm": 0.01,
+   "why_partial": "derived from the wheel centres and therefore inherits the missing chassis datum; also only valid at the recorded steering pose if the modules are swerve drives",
+   "missing_measurement": "chassis datum and the steering pose at which the track is defined"
+  },
+  "wheelbase": {
+   "verdict": "PARTIAL",
+   "candidate_mm": 594.0,
+   "definition": "distance between the two front/rear wheel-centre z coordinates in the CAD frame",
+   "source_files": [
+    "comparison.json",
+    "cloud_geometry.json"
+   ],
+   "uncertainty_mm": 0.01,
+   "why_partial": "same datum caveat as track_width",
+   "missing_measurement": "chassis datum and the steering pose at which the wheelbase is defined"
+  },
+  "up_axis": {
+   "verdict": "PARTIAL",
+   "value": {
+    "geometric_vertical_cad_axis": "y",
+    "evidence": "all four wheel centres share one y = -244.0 mm plane (spread 0.000000 mm), so y is the only axis consistent with four coplanar wheels",
+    "usd_stage_declared_up_axis": "Z",
+    "cad_extent_method": null
+   },
+   "why_partial": "the geometric vertical is inferred from wheel coplanarity, not from an authored datum, and it CONFLICTS with the USD stage's declared upAxis",
+   "missing_measurement": "an authored root frame with a declared up axis and gravity direction"
+  },
+  "wheel_mass_inertia_friction": {
+   "verdict": "UNKNOWN",
+   "missing_measurement": "vendor mass/inertia properties, tyre compound and friction coefficient; the CAD solids carry no density assignment in the recorded evidence"
+  },
+  "loaded_rolling_height": {
+   "verdict": "UNKNOWN",
+   "candidate_rejected": {
+    "value_m": 0.334,
+    "why_rejected": "0.334 m comes from a 90 mm half-height TEST_PROXY box resting on the ground, not from the real wheel geometry"
+   },
+   "proxy_vs_feature_delta_mm": 13.0,
+   "delta_statement": "the P2/P4 collision box half-height 0.090 m differs from the 103 mm circular feature by -13.0 mm, so any chassis height derived from the proxy box is 13 mm too low",
+   "missing_measurement": "the real ground-contact radius (loaded radius including tyre compliance)"
+  }
+ },
+ "p4_usage_contract": {
+  "may_consume_today_parameterised_only": [
+   {
+    "id": "wheel_spin_axis_direction",
+    "value": "unit vector +-x in the CAD frame (direction only)",
+    "status": "PASS",
+    "condition": "consume as an axis DIRECTION; never as a joint axis line position"
+   },
+   {
+    "id": "wheel_radius_parameter",
+    "value_m": 0.103,
+    "status": "CANDIDATE",
+    "condition": "must be passed as an explicit parameter tagged candidate=None-verified, with a sensitivity sweep; never written as the physical wheel radius"
+   },
+   {
+    "id": "track_width_parameter",
+    "value_m": 0.500004,
+    "status": "CANDIDATE",
+    "condition": "chassis-frame track stays UNKNOWN until a datum is authored"
+   },
+   {
+    "id": "wheelbase_parameter",
+    "value_m": 0.594,
+    "status": "CANDIDATE",
+    "condition": "same datum caveat"
+   },
+   {
+    "id": "wheel_prim_per_eid",
+    "value": {
+     "435700": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_15/Mesh",
+     "759491": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_23/Mesh",
+     "773650": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_7/Mesh",
+     "871375": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_31/Mesh"
+    },
+    "status": "PASS",
+    "condition": "identity mapping only; a mapping is not a joint and not a motor channel"
+   },
+   {
+    "id": "mirror_symmetry_check",
+    "value": "use the recorded residuals as a regression bound when re-authoring the four wheels",
+    "status": "PASS"
+   }
+  ],
+  "forbidden_as_frozen_truth": [
+   "wheel diameter 206 mm / wheel radius 0.103 m as a physical parameter",
+   "lift / spawn height 0.334 m as the real rolling height",
+   "the P2/P4 collision box half-height 0.090 m as the real wheel half-height (13 mm short)",
+   "wheel mass, inertia tensor, friction coefficient and tyre compliance",
+   "track width / wheelbase as chassis-frame values",
+   "any axle joint axis or motor channel derived from the axis clusters",
+   "the USD stage declared upAxis as the gravity direction",
+   "the steering DOF existence or reduction ratio"
+  ],
+  "gates_for_p4": [
+   "P4 must read this JSON and fail closed if a consumed quantity has verdict UNKNOWN and is requested as a frozen value",
+   "any wheel radius used for odometry must be an explicit parameter with a candidate tag and a sweep",
+   "P4 must not claim real wheel drive from a diagnostic motion source (P3-04)"
+  ]
+ },
+ "unknowns": [
+  {
+   "quantity": "wheel_radius",
+   "missing": "contact classification of the r=103 mm surface + loaded radius"
+  },
+  {
+   "quantity": "wheel_centre (chassis frame)",
+   "missing": "authored chassis datum / mount transform"
+  },
+  {
+   "quantity": "track_width",
+   "missing": "chassis datum + steering pose definition"
+  },
+  {
+   "quantity": "wheelbase",
+   "missing": "chassis datum + steering pose definition"
+  },
+  {
+   "quantity": "wheel_mass_inertia_friction",
+   "missing": "vendor data or a justified proxy"
+  },
+  {
+   "quantity": "loaded_rolling_height",
+   "missing": "loaded radius / tyre compliance measurement"
+  },
+  {
+   "quantity": "steering axis line and range",
+   "missing": "joint definitions and a steering-pose measurement"
+  }
+ ],
+ "discrepancies": [
+  {
+   "id": "proxy_box_13mm",
+   "statement": "P2/P4 collision box half-height 0.090 m vs 0.103 m circular feature radius -> 13 mm gap"
+  },
+  {
+   "id": "declared_up_axis",
+   "statement": "USD stage declares upAxis Z while the four coplanar wheel centres put the geometric vertical on the CAD y axis"
+  },
+  {
+   "id": "bbox_convention",
+   "statement": "BREP-vertex bbox [48.6527, 180.782, 157.7827] mm vs tessellated cloud bbox [48.791061, 205.991409, 205.991409] mm"
+  }
+ ]
+}

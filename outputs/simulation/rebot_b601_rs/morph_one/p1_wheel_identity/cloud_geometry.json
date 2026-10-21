@@ -1,0 +1,1608 @@
+{
+ "inputs": {
+  "usda": "/home/T7/dgut/runs/cad_dev/usd/M1-4WD4S_model2601_dev.usda",
+  "mapping": "/tmp/_scratch_mapping.json",
+  "eids": [
+   435700,
+   759491,
+   773650,
+   871375
+  ]
+ },
+ "stage": {
+  "meters_per_unit": 0.001,
+  "up_axis": "Z",
+  "note": "world coordinates are stage units * metersPerUnit * 1000 = millimetres"
+ },
+ "parameters": {
+  "rim_tol_mm": 0.05,
+  "azimuth_bin_deg": 5.0,
+  "axis_grid": 4001
+ },
+ "mirror_symmetry": {
+  "pairs": [
+   {
+    "hausdorff_mm": 2.0872,
+    "mean_nearest_mm": 0.9329,
+    "forward_max_mm": 2.0872,
+    "backward_max_mm": 2.0872,
+    "plane": "z=0",
+    "source_step_eid": 435700,
+    "target_step_eid": 759491,
+    "source_corner": "+1-1",
+    "target_corner": "+1+1"
+   },
+   {
+    "hausdorff_mm": 2.0872,
+    "mean_nearest_mm": 0.9329,
+    "forward_max_mm": 2.0872,
+    "backward_max_mm": 2.0872,
+    "plane": "x=0",
+    "source_step_eid": 435700,
+    "target_step_eid": 773650,
+    "source_corner": "+1-1",
+    "target_corner": "-1-1"
+   },
+   {
+    "hausdorff_mm": 2.0872,
+    "mean_nearest_mm": 0.9329,
+    "forward_max_mm": 2.0872,
+    "backward_max_mm": 2.0872,
+    "plane": "x=0",
+    "source_step_eid": 759491,
+    "target_step_eid": 871375,
+    "source_corner": "+1+1",
+    "target_corner": "-1+1"
+   },
+   {
+    "hausdorff_mm": 2.0872,
+    "mean_nearest_mm": 0.9329,
+    "forward_max_mm": 2.0872,
+    "backward_max_mm": 2.0872,
+    "plane": "z=0",
+    "source_step_eid": 773650,
+    "target_step_eid": 871375,
+    "source_corner": "-1-1",
+    "target_corner": "-1+1"
+   }
+  ],
+  "note": "source cloud is mirrored across the named plane, then compared with the counterpart cloud; residual is an exact nearest-neighbour Hausdorff distance in mm",
+  "unmirrored_baseline": [],
+  "baseline_min_hausdorff_mm": null,
+  "max_residual_mm": 2.0872,
+  "max_mean_nearest_mm": 0.9329,
+  "pair_count": 4
+ },
+ "wheels": {
+  "435700": {
+   "point_count": 6354,
+   "bbox_mm": {
+    "min": [
+     225.6064,
+     -346.9957,
+     -399.9957
+    ],
+    "max": [
+     274.3975,
+     -141.0043,
+     -194.0043
+    ],
+    "size": [
+     48.7911,
+     205.9914,
+     205.9914
+    ],
+    "centre": [
+     250.002,
+     -244.0,
+     -297.0
+    ]
+   },
+   "principal_axes": {
+    "centre_mm": [
+     249.8147,
+     -243.9962,
+     -297.055
+    ],
+    "axes": [
+     {
+      "axis_index": 0,
+      "direction": [
+       7.4e-05,
+       0.842215,
+       -0.539141
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3343.0547,
+      "sigma_mm": 57.8192
+     },
+     {
+      "axis_index": 1,
+      "direction": [
+       1.3e-05,
+       0.539141,
+       0.842215
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3310.7567,
+      "sigma_mm": 57.5392
+     },
+     {
+      "axis_index": 2,
+      "direction": [
+       1.0,
+       -6.9e-05,
+       2.9e-05
+      ],
+      "extent_mm": 48.803,
+      "variance_mm2": 308.4048,
+      "sigma_mm": 17.5615
+     }
+    ],
+    "smallest_extent_axis": {
+     "direction": [
+      1.0,
+      -6.9e-05,
+      2.9e-05
+     ],
+     "extent_mm": 48.803,
+     "nearest_cad_axis": "x",
+     "angle_to_nearest_cad_axis_deg": 0.004288,
+     "method": "covariance eigenvector with the smallest eigenvalue"
+    }
+   },
+   "mesh_resolution": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
+   "axis_search": {
+    "method": "minimum projected extent over 4001 Fibonacci directions + 3 local refinements",
+    "min_extent_mm": 49.2491,
+    "grid_extent_min_mm": 51.9075,
+    "grid_extent_p01_mm": 71.6092
+   },
+   "spin_axis": {
+    "direction": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "nearest_cad_axis": "x",
+    "angle_to_nearest_cad_axis_deg": 0.162636,
+    "angle_to_pca_smallest_axis_deg": 0.165003,
+    "angle_to_x_deg": 0.162636,
+    "angle_to_y_deg": 89.971538,
+    "angle_to_z_deg": 90.160126
+   },
+   "axial": {
+    "min_mm": -24.625,
+    "max_mm": 24.6241,
+    "width_mm": 49.2491,
+    "mid_mm": -0.0004
+   },
+   "radial": {
+    "min_mm": 62.9543,
+    "max_mm": 103.0,
+    "extent_mm": 40.0457,
+    "percentiles_mm": {
+     "1": 62.96782,
+     "10": 68.53469,
+     "50": 80.069864,
+     "90": 98.709489,
+     "99": 102.910428
+    }
+   },
+   "rim": {
+    "r_max_mm": 103.000022,
+    "rim_point_count": 64,
+    "rim_axial_min_mm": -0.2943,
+    "rim_axial_max_mm": 0.2904,
+    "rim_band_width_mm": 0.5847
+   },
+   "envelope_per_azimuth": {
+    "bin_deg": 5.0,
+    "bin_count": 72,
+    "occupied_bins": 72,
+    "coverage": 1.0,
+    "min_mm": 84.028802,
+    "median_mm": 102.999754,
+    "max_mm": 103.000022,
+    "peak_to_peak_mm": 18.971221,
+    "bins_below_r_max_minus_0p5mm": 8,
+    "bin_centre_deg_from_180": [
+     -177.5,
+     -172.5,
+     -167.5,
+     -162.5,
+     -157.5,
+     -152.5,
+     -147.5,
+     -142.5,
+     -137.5,
+     -132.5,
+     -127.5,
+     -122.5,
+     -117.5,
+     -112.5,
+     -107.5,
+     -102.5,
+     -97.5,
+     -92.5,
+     -87.5,
+     -82.5,
+     -77.5,
+     -72.5,
+     -67.5,
+     -62.5,
+     -57.5,
+     -52.5,
+     -47.5,
+     -42.5,
+     -37.5,
+     -32.5,
+     -27.5,
+     -22.5,
+     -17.5,
+     -12.5,
+     -7.5,
+     -2.5,
+     2.5,
+     7.5,
+     12.5,
+     17.5,
+     22.5,
+     27.5,
+     32.5,
+     37.5,
+     42.5,
+     47.5,
+     52.5,
+     57.5,
+     62.5,
+     67.5,
+     72.5,
+     77.5,
+     82.5,
+     87.5,
+     92.5,
+     97.5,
+     102.5,
+     107.5,
+     112.5,
+     117.5,
+     122.5,
+     127.5,
+     132.5,
+     137.5,
+     142.5,
+     147.5,
+     152.5,
+     157.5,
+     162.5,
+     167.5,
+     172.5,
+     177.5
+    ],
+    "per_bin_r_max_mm": [
+     84.0401,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     102.9999,
+     102.9999,
+     102.9999,
+     102.9999,
+     84.2415,
+     102.9998,
+     102.9998,
+     102.9997,
+     102.9997,
+     102.9997,
+     102.9996,
+     102.9996,
+     102.9996,
+     84.0881,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9997,
+     102.9997,
+     84.2371,
+     102.9998,
+     102.9998,
+     102.9998,
+     102.9999,
+     102.9999,
+     102.9999,
+     103.0,
+     103.0,
+     84.0439,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     102.9999,
+     102.9999,
+     84.2911,
+     102.9998,
+     102.9998,
+     102.9998,
+     102.9997,
+     102.9997,
+     102.9996,
+     102.9996,
+     102.9996,
+     84.0288,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9997,
+     102.9997,
+     102.9997,
+     84.3064,
+     102.9998,
+     102.9998,
+     102.9998,
+     102.9999,
+     102.9999,
+     102.9999,
+     103.0,
+     103.0
+    ]
+   },
+   "radial_profile_per_axial_slice": [
+    {
+     "axial_mm": [
+      -275.335,
+      -269.179
+     ],
+     "r_max_mm": 94.842,
+     "r_min_mm": 68.443,
+     "points": 1573
+    },
+    {
+     "axial_mm": [
+      -269.179,
+      -263.022
+     ],
+     "r_max_mm": 98.745,
+     "r_min_mm": 62.954,
+     "points": 405
+    },
+    {
+     "axial_mm": [
+      -263.022,
+      -256.866
+     ],
+     "r_max_mm": 102.282,
+     "r_min_mm": 71.52,
+     "points": 1039
+    },
+    {
+     "axial_mm": [
+      -256.866,
+      -250.71
+     ],
+     "r_max_mm": 103.0,
+     "r_min_mm": 102.282,
+     "points": 147
+    },
+    {
+     "axial_mm": [
+      -250.71,
+      -244.554
+     ],
+     "r_max_mm": 103.0,
+     "r_min_mm": 71.487,
+     "points": 1045
+    },
+    {
+     "axial_mm": [
+      -244.554,
+      -238.398
+     ],
+     "r_max_mm": 102.282,
+     "r_min_mm": 100.189,
+     "points": 141
+    },
+    {
+     "axial_mm": [
+      -238.398,
+      -232.242
+     ],
+     "r_max_mm": 98.745,
+     "r_min_mm": 62.954,
+     "points": 405
+    },
+    {
+     "axial_mm": [
+      -232.242,
+      -226.086
+     ],
+     "r_max_mm": 94.842,
+     "r_min_mm": 68.443,
+     "points": 1599
+    }
+   ],
+   "rim_circle_fit": {
+    "centre_mm": [
+     250.002,
+     -244.0,
+     -297.0
+    ],
+    "radius_mm": 102.999793,
+    "residual_rms_mm": 0.000147,
+    "residual_max_mm": 0.000221,
+    "centre_offset_from_bbox_centre_mm": 0.0
+   },
+   "step_eid": 435700,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_15/Mesh",
+   "face_count": 7900,
+   "triangle_count": 7900,
+   "local_to_world_scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "759491": {
+   "point_count": 6354,
+   "bbox_mm": {
+    "min": [
+     225.6064,
+     -346.9957,
+     194.0043
+    ],
+    "max": [
+     274.3975,
+     -141.0043,
+     399.9957
+    ],
+    "size": [
+     48.7911,
+     205.9914,
+     205.9914
+    ],
+    "centre": [
+     250.002,
+     -244.0,
+     297.0
+    ]
+   },
+   "principal_axes": {
+    "centre_mm": [
+     249.8147,
+     -244.0038,
+     297.055
+    ],
+    "axes": [
+     {
+      "axis_index": 0,
+      "direction": [
+       7.4e-05,
+       -0.842215,
+       0.539141
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3343.0548,
+      "sigma_mm": 57.8192
+     },
+     {
+      "axis_index": 1,
+      "direction": [
+       1.3e-05,
+       -0.539141,
+       -0.842215
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3310.7567,
+      "sigma_mm": 57.5392
+     },
+     {
+      "axis_index": 2,
+      "direction": [
+       1.0,
+       6.9e-05,
+       -2.9e-05
+      ],
+      "extent_mm": 48.803,
+      "variance_mm2": 308.4048,
+      "sigma_mm": 17.5615
+     }
+    ],
+    "smallest_extent_axis": {
+     "direction": [
+      1.0,
+      6.9e-05,
+      -2.9e-05
+     ],
+     "extent_mm": 48.803,
+     "nearest_cad_axis": "x",
+     "angle_to_nearest_cad_axis_deg": 0.004288,
+     "method": "covariance eigenvector with the smallest eigenvalue"
+    }
+   },
+   "mesh_resolution": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
+   "axis_search": {
+    "method": "minimum projected extent over 4001 Fibonacci directions + 3 local refinements",
+    "min_extent_mm": 49.2491,
+    "grid_extent_min_mm": 51.9075,
+    "grid_extent_p01_mm": 71.6093
+   },
+   "spin_axis": {
+    "direction": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "nearest_cad_axis": "x",
+    "angle_to_nearest_cad_axis_deg": 0.162636,
+    "angle_to_pca_smallest_axis_deg": 0.160349,
+    "angle_to_x_deg": 0.162636,
+    "angle_to_y_deg": 89.971538,
+    "angle_to_z_deg": 90.160126
+   },
+   "axial": {
+    "min_mm": -24.625,
+    "max_mm": 24.6241,
+    "width_mm": 49.2491,
+    "mid_mm": -0.0004
+   },
+   "radial": {
+    "min_mm": 62.9544,
+    "max_mm": 103.0,
+    "extent_mm": 40.0457,
+    "percentiles_mm": {
+     "1": 62.968129,
+     "10": 68.534799,
+     "50": 80.0676,
+     "90": 98.709489,
+     "99": 102.910432
+    }
+   },
+   "rim": {
+    "r_max_mm": 103.000019,
+    "rim_point_count": 64,
+    "rim_axial_min_mm": -0.2943,
+    "rim_axial_max_mm": 0.2904,
+    "rim_band_width_mm": 0.5847
+   },
+   "envelope_per_azimuth": {
+    "bin_deg": 5.0,
+    "bin_count": 72,
+    "occupied_bins": 72,
+    "coverage": 1.0,
+    "min_mm": 84.028781,
+    "median_mm": 102.999753,
+    "max_mm": 103.000019,
+    "peak_to_peak_mm": 18.971239,
+    "bins_below_r_max_minus_0p5mm": 8,
+    "bin_centre_deg_from_180": [
+     -177.5,
+     -172.5,
+     -167.5,
+     -162.5,
+     -157.5,
+     -152.5,
+     -147.5,
+     -142.5,
+     -137.5,
+     -132.5,
+     -127.5,
+     -122.5,
+     -117.5,
+     -112.5,
+     -107.5,
+     -102.5,
+     -97.5,
+     -92.5,
+     -87.5,
+     -82.5,
+     -77.5,
+     -72.5,
+     -67.5,
+     -62.5,
+     -57.5,
+     -52.5,
+     -47.5,
+     -42.5,
+     -37.5,
+     -32.5,
+     -27.5,
+     -22.5,
+     -17.5,
+     -12.5,
+     -7.5,
+     -2.5,
+     2.5,
+     7.5,
+     12.5,
+     17.5,
+     22.5,
+     27.5,
+     32.5,
+     37.5,
+     42.5,
+     47.5,
+     52.5,
+     57.5,
+     62.5,
+     67.5,
+     72.5,
+     77.5,
+     82.5,
+     87.5,
+     92.5,
+     97.5,
+     102.5,
+     107.5,
+     112.5,
+     117.5,
+     122.5,
+     127.5,
+     132.5,
+     137.5,
+     142.5,
+     147.5,
+     152.5,
+     157.5,
+     162.5,
+     167.5,
+     172.5,
+     177.5
+    ],
+    "per_bin_r_max_mm": [
+     84.488,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     102.9999,
+     102.9999,
+     102.9999,
+     102.9999,
+     84.2415,
+     102.9998,
+     102.9998,
+     102.9997,
+     102.9997,
+     102.9997,
+     102.9996,
+     102.9996,
+     102.9996,
+     84.5668,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9997,
+     102.9997,
+     102.9997,
+     84.2371,
+     102.9998,
+     102.9998,
+     102.9998,
+     102.9999,
+     102.9999,
+     102.9999,
+     103.0,
+     103.0,
+     84.044,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     102.9999,
+     102.9999,
+     102.9999,
+     84.2911,
+     102.9998,
+     102.9998,
+     102.9998,
+     102.9997,
+     102.9997,
+     102.9996,
+     102.9996,
+     102.9996,
+     84.0288,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9997,
+     102.9997,
+     84.3064,
+     102.9998,
+     102.9998,
+     102.9998,
+     102.9999,
+     102.9999,
+     102.9999,
+     103.0,
+     103.0
+    ]
+   },
+   "radial_profile_per_axial_slice": [
+    {
+     "axial_mm": [
+      -273.675,
+      -267.519
+     ],
+     "r_max_mm": 94.842,
+     "r_min_mm": 68.443,
+     "points": 1573
+    },
+    {
+     "axial_mm": [
+      -267.519,
+      -261.362
+     ],
+     "r_max_mm": 98.745,
+     "r_min_mm": 62.954,
+     "points": 405
+    },
+    {
+     "axial_mm": [
+      -261.362,
+      -255.206
+     ],
+     "r_max_mm": 102.282,
+     "r_min_mm": 71.52,
+     "points": 1039
+    },
+    {
+     "axial_mm": [
+      -255.206,
+      -249.05
+     ],
+     "r_max_mm": 103.0,
+     "r_min_mm": 102.282,
+     "points": 147
+    },
+    {
+     "axial_mm": [
+      -249.05,
+      -242.894
+     ],
+     "r_max_mm": 103.0,
+     "r_min_mm": 71.487,
+     "points": 1045
+    },
+    {
+     "axial_mm": [
+      -242.894,
+      -236.738
+     ],
+     "r_max_mm": 102.282,
+     "r_min_mm": 100.189,
+     "points": 141
+    },
+    {
+     "axial_mm": [
+      -236.738,
+      -230.582
+     ],
+     "r_max_mm": 98.745,
+     "r_min_mm": 62.954,
+     "points": 405
+    },
+    {
+     "axial_mm": [
+      -230.582,
+      -224.426
+     ],
+     "r_max_mm": 94.842,
+     "r_min_mm": 68.443,
+     "points": 1599
+    }
+   ],
+   "rim_circle_fit": {
+    "centre_mm": [
+     250.002,
+     -244.0,
+     297.0
+    ],
+    "radius_mm": 102.999793,
+    "residual_rms_mm": 0.000147,
+    "residual_max_mm": 0.000219,
+    "centre_offset_from_bbox_centre_mm": 0.0
+   },
+   "step_eid": 759491,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_23/Mesh",
+   "face_count": 7900,
+   "triangle_count": 7900,
+   "local_to_world_scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "773650": {
+   "point_count": 6354,
+   "bbox_mm": {
+    "min": [
+     -274.3975,
+     -346.9957,
+     -399.9957
+    ],
+    "max": [
+     -225.6064,
+     -141.0043,
+     -194.0043
+    ],
+    "size": [
+     48.7911,
+     205.9914,
+     205.9914
+    ],
+    "centre": [
+     -250.002,
+     -244.0,
+     -297.0
+    ]
+   },
+   "principal_axes": {
+    "centre_mm": [
+     -249.8147,
+     -244.0038,
+     -297.055
+    ],
+    "axes": [
+     {
+      "axis_index": 0,
+      "direction": [
+       7.4e-05,
+       0.842215,
+       0.539141
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3343.0548,
+      "sigma_mm": 57.8192
+     },
+     {
+      "axis_index": 1,
+      "direction": [
+       1.3e-05,
+       0.539141,
+       -0.842215
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3310.7567,
+      "sigma_mm": 57.5392
+     },
+     {
+      "axis_index": 2,
+      "direction": [
+       1.0,
+       -6.9e-05,
+       -2.9e-05
+      ],
+      "extent_mm": 48.803,
+      "variance_mm2": 308.4048,
+      "sigma_mm": 17.5615
+     }
+    ],
+    "smallest_extent_axis": {
+     "direction": [
+      1.0,
+      -6.9e-05,
+      -2.9e-05
+     ],
+     "extent_mm": 48.803,
+     "nearest_cad_axis": "x",
+     "angle_to_nearest_cad_axis_deg": 0.004288,
+     "method": "covariance eigenvector with the smallest eigenvalue"
+    }
+   },
+   "mesh_resolution": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
+   "axis_search": {
+    "method": "minimum projected extent over 4001 Fibonacci directions + 3 local refinements",
+    "min_extent_mm": 49.2479,
+    "grid_extent_min_mm": 51.9026,
+    "grid_extent_p01_mm": 71.6008
+   },
+   "spin_axis": {
+    "direction": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "nearest_cad_axis": "x",
+    "angle_to_nearest_cad_axis_deg": 0.162636,
+    "angle_to_pca_smallest_axis_deg": 0.161746,
+    "angle_to_x_deg": 0.162636,
+    "angle_to_y_deg": 89.971538,
+    "angle_to_z_deg": 90.160126
+   },
+   "axial": {
+    "min_mm": -24.624,
+    "max_mm": 24.6239,
+    "width_mm": 49.2479,
+    "mid_mm": -0.0001
+   },
+   "radial": {
+    "min_mm": 62.9542,
+    "max_mm": 103.0,
+    "extent_mm": 40.0459,
+    "percentiles_mm": {
+     "1": 62.968042,
+     "10": 68.534221,
+     "50": 80.069308,
+     "90": 98.709766,
+     "99": 102.910428
+    }
+   },
+   "rim": {
+    "r_max_mm": 103.000015,
+    "rim_point_count": 64,
+    "rim_axial_min_mm": -0.2903,
+    "rim_axial_max_mm": 0.2942,
+    "rim_band_width_mm": 0.5845
+   },
+   "envelope_per_azimuth": {
+    "bin_deg": 5.0,
+    "bin_count": 72,
+    "occupied_bins": 72,
+    "coverage": 1.0,
+    "min_mm": 84.02892,
+    "median_mm": 102.999748,
+    "max_mm": 103.000015,
+    "peak_to_peak_mm": 18.971095,
+    "bins_below_r_max_minus_0p5mm": 8,
+    "bin_centre_deg_from_180": [
+     -177.5,
+     -172.5,
+     -167.5,
+     -162.5,
+     -157.5,
+     -152.5,
+     -147.5,
+     -142.5,
+     -137.5,
+     -132.5,
+     -127.5,
+     -122.5,
+     -117.5,
+     -112.5,
+     -107.5,
+     -102.5,
+     -97.5,
+     -92.5,
+     -87.5,
+     -82.5,
+     -77.5,
+     -72.5,
+     -67.5,
+     -62.5,
+     -57.5,
+     -52.5,
+     -47.5,
+     -42.5,
+     -37.5,
+     -32.5,
+     -27.5,
+     -22.5,
+     -17.5,
+     -12.5,
+     -7.5,
+     -2.5,
+     2.5,
+     7.5,
+     12.5,
+     17.5,
+     22.5,
+     27.5,
+     32.5,
+     37.5,
+     42.5,
+     47.5,
+     52.5,
+     57.5,
+     62.5,
+     67.5,
+     72.5,
+     77.5,
+     82.5,
+     87.5,
+     92.5,
+     97.5,
+     102.5,
+     107.5,
+     112.5,
+     117.5,
+     122.5,
+     127.5,
+     132.5,
+     137.5,
+     142.5,
+     147.5,
+     152.5,
+     157.5,
+     162.5,
+     167.5,
+     172.5,
+     177.5
+    ],
+    "per_bin_r_max_mm": [
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     102.9999,
+     102.9999,
+     84.2894,
+     102.9999,
+     102.9998,
+     102.9998,
+     102.9997,
+     102.9997,
+     102.9997,
+     102.9996,
+     102.9996,
+     84.0289,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9997,
+     102.9997,
+     84.3076,
+     102.9997,
+     102.9998,
+     102.9998,
+     102.9999,
+     102.9999,
+     102.9999,
+     103.0,
+     103.0,
+     84.0394,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     102.9999,
+     102.9999,
+     84.242,
+     102.9999,
+     102.9998,
+     102.9998,
+     102.9997,
+     102.9997,
+     102.9997,
+     102.9997,
+     102.9996,
+     84.0874,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9997,
+     84.2368,
+     102.9997,
+     102.9997,
+     102.9998,
+     102.9998,
+     102.9999,
+     102.9999,
+     102.9999,
+     103.0,
+     84.5119
+    ]
+   },
+   "radial_profile_per_axial_slice": [
+    {
+     "axial_mm": [
+      224.668,
+      230.824
+     ],
+     "r_max_mm": 94.845,
+     "r_min_mm": 68.443,
+     "points": 1600
+    },
+    {
+     "axial_mm": [
+      230.824,
+      236.98
+     ],
+     "r_max_mm": 98.745,
+     "r_min_mm": 62.954,
+     "points": 404
+    },
+    {
+     "axial_mm": [
+      236.98,
+      243.136
+     ],
+     "r_max_mm": 102.282,
+     "r_min_mm": 100.189,
+     "points": 141
+    },
+    {
+     "axial_mm": [
+      243.136,
+      249.292
+     ],
+     "r_max_mm": 103.0,
+     "r_min_mm": 71.487,
+     "points": 1045
+    },
+    {
+     "axial_mm": [
+      249.292,
+      255.448
+     ],
+     "r_max_mm": 103.0,
+     "r_min_mm": 102.282,
+     "points": 147
+    },
+    {
+     "axial_mm": [
+      255.448,
+      261.604
+     ],
+     "r_max_mm": 102.282,
+     "r_min_mm": 71.52,
+     "points": 1039
+    },
+    {
+     "axial_mm": [
+      261.604,
+      267.76
+     ],
+     "r_max_mm": 98.745,
+     "r_min_mm": 62.954,
+     "points": 404
+    },
+    {
+     "axial_mm": [
+      267.76,
+      273.916
+     ],
+     "r_max_mm": 94.845,
+     "r_min_mm": 68.443,
+     "points": 1574
+    }
+   ],
+   "rim_circle_fit": {
+    "centre_mm": [
+     -250.002,
+     -244.0,
+     -297.0
+    ],
+    "radius_mm": 102.999793,
+    "residual_rms_mm": 0.000147,
+    "residual_max_mm": 0.000221,
+    "centre_offset_from_bbox_centre_mm": 0.0
+   },
+   "step_eid": 773650,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_7/Mesh",
+   "face_count": 7900,
+   "triangle_count": 7900,
+   "local_to_world_scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "871375": {
+   "point_count": 6354,
+   "bbox_mm": {
+    "min": [
+     -274.3975,
+     -346.9957,
+     194.0043
+    ],
+    "max": [
+     -225.6064,
+     -141.0043,
+     399.9957
+    ],
+    "size": [
+     48.7911,
+     205.9914,
+     205.9914
+    ],
+    "centre": [
+     -250.002,
+     -244.0,
+     297.0
+    ]
+   },
+   "principal_axes": {
+    "centre_mm": [
+     -249.8147,
+     -243.9962,
+     297.055
+    ],
+    "axes": [
+     {
+      "axis_index": 0,
+      "direction": [
+       7.4e-05,
+       -0.842215,
+       -0.539141
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3343.0547,
+      "sigma_mm": 57.8192
+     },
+     {
+      "axis_index": 1,
+      "direction": [
+       1.3e-05,
+       -0.539141,
+       0.842215
+      ],
+      "extent_mm": 205.9148,
+      "variance_mm2": 3310.7567,
+      "sigma_mm": 57.5392
+     },
+     {
+      "axis_index": 2,
+      "direction": [
+       1.0,
+       6.9e-05,
+       2.9e-05
+      ],
+      "extent_mm": 48.803,
+      "variance_mm2": 308.4048,
+      "sigma_mm": 17.5615
+     }
+    ],
+    "smallest_extent_axis": {
+     "direction": [
+      1.0,
+      6.9e-05,
+      2.9e-05
+     ],
+     "extent_mm": 48.803,
+     "nearest_cad_axis": "x",
+     "angle_to_nearest_cad_axis_deg": 0.004288,
+     "method": "covariance eigenvector with the smallest eigenvalue"
+    }
+   },
+   "mesh_resolution": {
+    "min_mm": 0.0,
+    "median_mm": 0.0,
+    "p95_mm": 2.9877,
+    "max_mm": 3.23
+   },
+   "axis_search": {
+    "method": "minimum projected extent over 4001 Fibonacci directions + 3 local refinements",
+    "min_extent_mm": 49.2479,
+    "grid_extent_min_mm": 51.9021,
+    "grid_extent_p01_mm": 71.6007
+   },
+   "spin_axis": {
+    "direction": [
+     0.999995971,
+     0.000496752,
+     -0.002794729
+    ],
+    "nearest_cad_axis": "x",
+    "angle_to_nearest_cad_axis_deg": 0.162636,
+    "angle_to_pca_smallest_axis_deg": 0.163634,
+    "angle_to_x_deg": 0.162636,
+    "angle_to_y_deg": 89.971538,
+    "angle_to_z_deg": 90.160126
+   },
+   "axial": {
+    "min_mm": -24.624,
+    "max_mm": 24.6239,
+    "width_mm": 49.2479,
+    "mid_mm": -0.0001
+   },
+   "radial": {
+    "min_mm": 62.9544,
+    "max_mm": 103.0,
+    "extent_mm": 40.0456,
+    "percentiles_mm": {
+     "1": 62.967844,
+     "10": 68.533981,
+     "50": 80.069334,
+     "90": 98.709769,
+     "99": 102.910435
+    }
+   },
+   "rim": {
+    "r_max_mm": 103.00001,
+    "rim_point_count": 64,
+    "rim_axial_min_mm": -0.2903,
+    "rim_axial_max_mm": 0.2942,
+    "rim_band_width_mm": 0.5845
+   },
+   "envelope_per_azimuth": {
+    "bin_deg": 5.0,
+    "bin_count": 72,
+    "occupied_bins": 72,
+    "coverage": 1.0,
+    "min_mm": 84.039365,
+    "median_mm": 102.999752,
+    "max_mm": 103.00001,
+    "peak_to_peak_mm": 18.960645,
+    "bins_below_r_max_minus_0p5mm": 8,
+    "bin_centre_deg_from_180": [
+     -177.5,
+     -172.5,
+     -167.5,
+     -162.5,
+     -157.5,
+     -152.5,
+     -147.5,
+     -142.5,
+     -137.5,
+     -132.5,
+     -127.5,
+     -122.5,
+     -117.5,
+     -112.5,
+     -107.5,
+     -102.5,
+     -97.5,
+     -92.5,
+     -87.5,
+     -82.5,
+     -77.5,
+     -72.5,
+     -67.5,
+     -62.5,
+     -57.5,
+     -52.5,
+     -47.5,
+     -42.5,
+     -37.5,
+     -32.5,
+     -27.5,
+     -22.5,
+     -17.5,
+     -12.5,
+     -7.5,
+     -2.5,
+     2.5,
+     7.5,
+     12.5,
+     17.5,
+     22.5,
+     27.5,
+     32.5,
+     37.5,
+     42.5,
+     47.5,
+     52.5,
+     57.5,
+     62.5,
+     67.5,
+     72.5,
+     77.5,
+     82.5,
+     87.5,
+     92.5,
+     97.5,
+     102.5,
+     107.5,
+     112.5,
+     117.5,
+     122.5,
+     127.5,
+     132.5,
+     137.5,
+     142.5,
+     147.5,
+     152.5,
+     157.5,
+     162.5,
+     167.5,
+     172.5,
+     177.5
+    ],
+    "per_bin_r_max_mm": [
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     102.9999,
+     102.9999,
+     84.2894,
+     102.9999,
+     102.9998,
+     102.9998,
+     102.9998,
+     102.9997,
+     102.9997,
+     102.9997,
+     102.9996,
+     84.4868,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9997,
+     102.9997,
+     84.3076,
+     102.9997,
+     102.9998,
+     102.9998,
+     102.9999,
+     102.9999,
+     102.9999,
+     103.0,
+     103.0,
+     84.0394,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     103.0,
+     102.9999,
+     102.9999,
+     102.9999,
+     84.242,
+     102.9999,
+     102.9998,
+     102.9998,
+     102.9997,
+     102.9997,
+     102.9997,
+     102.9996,
+     102.9996,
+     84.0874,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9996,
+     102.9997,
+     84.2368,
+     102.9997,
+     102.9997,
+     102.9998,
+     102.9998,
+     102.9999,
+     102.9999,
+     102.9999,
+     103.0,
+     84.0447
+    ]
+   },
+   "radial_profile_per_axial_slice": [
+    {
+     "axial_mm": [
+      226.328,
+      232.484
+     ],
+     "r_max_mm": 94.845,
+     "r_min_mm": 68.443,
+     "points": 1600
+    },
+    {
+     "axial_mm": [
+      232.484,
+      238.64
+     ],
+     "r_max_mm": 98.745,
+     "r_min_mm": 62.954,
+     "points": 404
+    },
+    {
+     "axial_mm": [
+      238.64,
+      244.796
+     ],
+     "r_max_mm": 102.282,
+     "r_min_mm": 100.189,
+     "points": 141
+    },
+    {
+     "axial_mm": [
+      244.796,
+      250.952
+     ],
+     "r_max_mm": 103.0,
+     "r_min_mm": 71.487,
+     "points": 1045
+    },
+    {
+     "axial_mm": [
+      250.952,
+      257.108
+     ],
+     "r_max_mm": 103.0,
+     "r_min_mm": 102.282,
+     "points": 147
+    },
+    {
+     "axial_mm": [
+      257.108,
+      263.264
+     ],
+     "r_max_mm": 102.282,
+     "r_min_mm": 71.52,
+     "points": 1039
+    },
+    {
+     "axial_mm": [
+      263.264,
+      269.42
+     ],
+     "r_max_mm": 98.745,
+     "r_min_mm": 62.954,
+     "points": 404
+    },
+    {
+     "axial_mm": [
+      269.42,
+      275.576
+     ],
+     "r_max_mm": 94.845,
+     "r_min_mm": 68.443,
+     "points": 1574
+    }
+   ],
+   "rim_circle_fit": {
+    "centre_mm": [
+     -250.002,
+     -244.0,
+     297.0
+    ],
+    "radius_mm": 102.999793,
+    "residual_rms_mm": 0.000147,
+    "residual_max_mm": 0.000222,
+    "centre_offset_from_bbox_centre_mm": 0.0
+   },
+   "step_eid": 871375,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_31/Mesh",
+   "face_count": 7900,
+   "triangle_count": 7900,
+   "local_to_world_scale": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  }
+ },
+ "notes": [
+  "the minimum-extent direction is an independent spin-axis estimate from the cloud alone",
+  "a constant envelope radius over a full 360 deg is what makes a surface a rolling surface",
+  "the rim circle fit gives the wheel centre without using any BREP placement entity",
+  "no GPU, no Isaac Sim, no rendering: pxr + numpy only"
+ ]
+}
