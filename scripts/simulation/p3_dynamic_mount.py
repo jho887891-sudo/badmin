@@ -242,25 +242,42 @@ def main():
                _np(robot.data.body_pos_w[0, chassis_index]).reshape(-1)[:3]]
         return pos, raw_to_wxyz(raw)
 
-    # Convention probe: a unit pose cannot distinguish wxyz from xyzw, so write a known
-    # 0.2 rad yaw and check the measured yaw.  The order that reproduces it is recorded.
-    # The probe runs AFTER a first sim.reset() and is followed by a second reset, otherwise a
-    # wrong-order probe quaternion (which is a ~180 deg flip) leaks into the run: that is
-    # exactly what happened in P3_static_r01, whose step 0 chassis pose was
-    # (0.216, 0.145, 0.374) instead of (0, 0, 0.400).
+    # Convention probe: a unit quaternion cannot distinguish wxyz from xyzw, so write a known
+    # 0.2 rad yaw in BOTH candidate orders and keep the one whose MEASURED yaw matches.
+    #
+    # Two defects made the first two attempts useless and are fixed here:
+    #   * P3_static_r01/P3_static_r03 decided the order from a single candidate whose wrong-order
+    #     quaternion is a ~180 deg flip, and robot.update() without a physics advance reports a
+    #     STALE pose, so the probe "measured" yaw 0 even for the correct order and picked the
+    #     wrong one.  The probe now advances the physics (sim.forward()) before reading, and
+    #     tests both orders instead of trusting the first.
+    def probe_order(candidate, target_yaw=0.2):
+        saved = quat_order["value"]
+        quat_order["value"] = candidate
+        write_pose(np.array([0.0, 0.0, LIFT]), target_yaw)
+        sim.forward()
+        robot.update(DT)
+        _, probe_quat = read_chassis()
+        measured = yaw_of(probe_quat)
+        quat_order["value"] = saved
+        return float(measured)
+
     sim.reset()
-    write_pose(np.array([0.0, 0.0, LIFT]), 0.2)
-    robot.update(DT)
-    _, probe_quat = read_chassis()
-    probe_yaw = yaw_of(probe_quat)
-    if abs(probe_yaw - 0.2) > 0.01:
-        quat_order["value"] = "xyzw"
-        quat_order["reason"] = ("wxyz probe produced yaw %.6f rad instead of 0.2 rad; "
-                                "write_root_pose_to_sim takes xyzw in this build" % probe_yaw)
-        quat_order["wxyz_probe_yaw_rad"] = round(probe_yaw, 9)
+    probe_results = {"wxyz": probe_order("wxyz"), "xyzw": probe_order("xyzw")}
     sim.reset()
-    # Establish step 0 explicitly with the confirmed order, then verify it took effect.
+    best = min(probe_results, key=lambda name: abs(probe_results[name] - 0.2))
+    quat_order["value"] = best
+    quat_order["reason"] = ("both candidate orders were written and measured; %s reproduced "
+                            "the commanded 0.2 rad yaw" % best)
+    quat_order["probe_measured_yaw_rad"] = {name: round(value, 9)
+                                            for name, value in probe_results.items()}
+    quat_order["probe_commanded_yaw_rad"] = 0.2
+    quat_order["probe_absolute_error_rad"] = {
+        name: round(abs(value - 0.2), 9) for name, value in probe_results.items()}
+    sim.reset()
+    # Establish step 0 explicitly with the confirmed order, verify it took effect.
     write_pose(np.array([0.0, 0.0, LIFT]), 0.0)
+    sim.forward()
     robot.update(DT)
     start_pos, start_quat = read_chassis()
     start_error = float(np.linalg.norm(np.asarray(start_pos) - np.array([0.0, 0.0, LIFT])))
