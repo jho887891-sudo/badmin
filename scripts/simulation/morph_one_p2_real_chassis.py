@@ -44,6 +44,8 @@ PARSER.add_argument("--lift", type=float, default=0.334)
 PARSER.add_argument("--steps", type=int, default=STEPS)
 PARSER.add_argument("--no-ground", dest="include_ground", action="store_false", default=True)
 PARSER.add_argument("--read-contacts", action="store_true")
+PARSER.add_argument("--gravity-z", type=float, default=0.0,
+                    help="G5: negative value enables Earth gravity for a real landing test")
 AppLauncher.add_app_launcher_args(PARSER)
 ARGS = PARSER.parse_args()
 LAUNCHER = AppLauncher(ARGS)
@@ -165,7 +167,8 @@ def main():
 
     physics = PhysxCfg(solver_type=1, enable_external_forces_every_iteration=True)
     sim = sim_utils.SimulationContext(
-        sim_utils.SimulationCfg(dt=DT, device="cuda:0", gravity=(0.0, 0.0, 0.0),
+        sim_utils.SimulationCfg(dt=DT, device="cuda:0",
+                                gravity=(0.0, 0.0, float(ARGS.gravity_z)),
                                 physics=physics))
     if ARGS.include_ground:
         ground = sim_utils.GroundPlaneCfg()
