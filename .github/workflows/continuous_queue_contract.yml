@@ -1,0 +1,32 @@
+name: Continuous P0-P8 Queue Contract
+
+on:
+  push:
+    branches:
+      - chatgpt/p2-wc-continuous-queue-20261021
+  pull_request:
+    paths:
+      - "management/morph_one_rs/EXECUTION_QUEUE_CONTINUOUS_P0_P8.md"
+      - "management/morph_one_rs/EXECUTION_QUEUE_STATE.json"
+      - "scripts/simulation/task_queue.py"
+      - "tests/simulation/test_continuous_task_queue.py"
+      - ".github/workflows/continuous_queue_contract.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate task queue state
+        run: python scripts/simulation/task_queue.py --validate
+      - name: Run offline task contract tests
+        run: python -m unittest discover -s tests/simulation -p 'test_continuous_task_queue.py' -v
+      - name: Show next ready tasks
+        run: python scripts/simulation/task_queue.py --resource gpu --limit 10
