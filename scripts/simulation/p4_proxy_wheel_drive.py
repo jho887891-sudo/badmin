@@ -468,7 +468,10 @@ def main():
         dt = DT
         speed_series = np.abs(np.diff(positions[:, 1]) / dt)
         steady = speed_series[ramp_steps:hold_end] if hold_end > ramp_steps else speed_series
-        tail_speed = speed_series[-int(0.5 / dt):]
+        # NOTE: do NOT reuse the name `tail_speed` here - it is already the scalar chassis
+        # speed from the open-loop metric block, and shadowing it crashed P4V_030_r01 with
+        # "type numpy.ndarray doesn't define __round__".
+        tail_speed_arr = speed_series[-int(0.5 / dt):]
         commanded_v_eff = min(abs(float(ARGS.velocity_cmd)), float(ARGS.speed_limit))
         steady_mean = float(np.mean(steady)) if steady.size else 0.0
         velocity_metrics = {
@@ -480,7 +483,7 @@ def main():
             "steady_relative_error": (round(abs(steady_mean - commanded_v_eff) / commanded_v_eff, 9)
                                       if commanded_v_eff > 1e-9 else None),
             "peak_speed_m_s": round(float(np.max(speed_series)), 9),
-            "since_zero_max_speed_m_s": round(float(np.max(tail_speed)), 9),
+            "since_zero_max_speed_m_s": round(float(np.max(tail_speed_arr)), 9),
             "distance_m": round(float(abs(positions[-1][1] - positions[0][1])), 9),
             "kp": float(ARGS.velocity_kp),
             "nominal_radius_m": float(ARGS.nominal_radius),
