@@ -42,6 +42,8 @@ def main(argv=None):
                         help="G5_r01 result.json for the 60-step equivalence control")
     parser.add_argument("--equivalence-run", default=None,
                         help="run_id of the 60-step variant-A equivalence run")
+    parser.add_argument("--write-notes", action="store_true",
+                        help="write notes.md into every run directory (positives / negatives / unknowns)")
     args = parser.parse_args(argv)
 
     runs = {}
@@ -165,6 +167,42 @@ def main(argv=None):
     }
     with open(args.out, "w", encoding="utf-8") as handle:
         json.dump(summary, handle, ensure_ascii=False, indent=1)
+    if args.write_notes:
+        for run_id, entry in sorted(runs.items()):
+            result = entry["result"]
+            row = table[run_id]
+            impl_det = determinism.get(result["impl"], {})
+            failing = sorted(name for name, ok in result["gates"].items() if not ok)
+            lines = [
+                "# %s · %s" % (run_id, result["impl"]),
+                "",
+                "- gate_result: **%s** (mode=%s)" % (result["gate_result"], result["gate_mode"]),
+                "- peak contact: %s N, first contact step %s" % (
+                    row["peak_contact_force_n"], row["first_contact_step"]),
+                "- final chassis z: %s m, tail speed max: %s m/s, tail z span: %s m" % (
+                    row["final_chassis_z_m"], row["tail_speed_max_m_s"],
+                    result["metrics"].get("tail_z_span_m")),
+                "- max tilt: %s rad, tail max penetration: %s m" % (
+                    row["max_tilt_rad"], row["tail_max_penetration_m"]),
+                "- contact api: %s; per-wheel contact: %s" % (
+                    row["contact_api"], row["per_wheel_contact"]),
+                "",
+                "## Positives",
+            ]
+            lines += ["- gate %s = true" % name for name, ok in result["gates"].items() if ok] or ["- (none)"]
+            lines += ["", "## Negatives / failing gates"]
+            lines += (["- gate %s = false" % name for name in failing] or ["- none"])
+            lines += ["", "## Unknowns"]
+            if row["per_wheel_contact"] != "MEASURED":
+                lines.append("- per-wheel contact is UNKNOWN for this implementation: only an "
+                             "explicit rigid body can host a ContactSensor, so A/C report an "
+                             "aggregate chassis value only (recorded as null, not 0 N).")
+            lines.append("- cooked PhysX geometry: UNKNOWN (no exposed query API in this build).")
+            lines.append("- determinism (same impl, two run_ids): %s" %
+                         (impl_det.get("status", "UNKNOWN")))
+            lines.append("")
+            with open(os.path.join(entry["run_dir"], "notes.md"), "w", encoding="utf-8") as handle:
+                handle.write("\n".join(lines))
     print(json.dumps({k: summary[k] for k in ("verdicts", "determinism", "g5_equivalence")},
                      ensure_ascii=False, indent=1))
     return 0

@@ -46,6 +46,9 @@ PARSER.add_argument("--no-ground", dest="include_ground", action="store_false", 
 PARSER.add_argument("--read-contacts", action="store_true")
 PARSER.add_argument("--gravity-z", type=float, default=0.0,
                     help="G5: negative value enables Earth gravity for a real landing test")
+PARSER.add_argument("--gate-mode", choices=("static", "landing"), default="static",
+                    help="'static' = original P2 zero-gravity t0/drift gates; 'landing' = "
+                         "pre-registered gravity landing/load-bearing gates")
 AppLauncher.add_app_launcher_args(PARSER)
 ARGS = PARSER.parse_args()
 LAUNCHER = AppLauncher(ARGS)
@@ -56,6 +59,9 @@ from isaaclab.assets import Articulation, ArticulationCfg  # noqa: E402
 from isaaclab_physx.physics import PhysxCfg  # noqa: E402
 from pxr import Gf, Sdf, Usd, UsdGeom, UsdPhysics  # noqa: E402
 from p2_chassis_frame_math import wheel_bottom_world_z  # noqa: E402
+from p2_landing_gates import compute_landing_gates  # noqa: E402
+
+CHASSIS_MASS_KG = 20.0
 
 
 def _np(values):
@@ -84,6 +90,12 @@ def rotation_matrix(quat_wxyz):
         [2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x)],
         [2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)],
     ])
+
+
+def tilt_from_upright(quat_wxyz):
+    """Angle between the body's local +Z and world +Z."""
+    rot = rotation_matrix(quat_wxyz)
+    return float(math.acos(max(-1.0, min(1.0, float(rot[2, 2])))))
 
 
 def angle_between(a, b):
@@ -227,7 +239,8 @@ def main():
                            _np(robot.data.body_lin_vel_w[0, 0]).reshape(-1)[:3]],
                "ang_vel": [round(float(v), 12) for v in
                            _np(robot.data.body_ang_vel_w[0, 0]).reshape(-1)[:3]],
-               "max_contact_force_n": contact_forces()}
+               "max_contact_force_n": contact_forces(),
+               "tilt_rad": round(tilt_from_upright(raw_to_wxyz(raw)), 12)}
         row["finite"] = all(math.isfinite(v) for v in
                             row["pos"] + row["raw_quat"] + row["lin_vel"] + row["ang_vel"])
         jsonl.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -281,13 +294,40 @@ def main():
     # No contact force at zero gravity and zero overlap is NOT an error:
     # an ordinary resting body with g=0 can have zero normal force.
     # The penetration probe must instead be assessed independently.
+    static_gates = dict(verdict)
+    landing_metrics = None
+    if ARGS.gate_mode == "landing":
+        # Free fall cannot satisfy a "world pose must not move" gate, so the landing
+        # run is judged only by the pre-registered landing/load-bearing gates.  The
+        # original static booleans stay in the JSON as diagnostics, never as the gate.
+        wheel_bottoms = []
+        for frame in frames:
+            rot = rotation_matrix(frame["normalized_quat_wxyz"])
+            wheel_bottoms.append([frame["pos"][2] + float(rot[2, 0] * centre[0]
+                                                          + rot[2, 1] * centre[1]
+                                                          + rot[2, 2] * centre[2])
+                                  - WHEEL_HALF[2] for centre in WHEEL_CENTRES])
+        verdict, landing_metrics = compute_landing_gates(
+            frames, wheel_bottoms, gravity_z=float(ARGS.gravity_z),
+            mass_kg=CHASSIS_MASS_KG)
+        metrics = dict(landing_metrics)
+        metrics.update({"t0_world_position_error_m": round(world_pos_0, 12),
+                        "t0_world_rotation_error_rad": round(world_rot_0, 12),
+                        "settle_60_step_chassis_drift_m": round(drift, 12)})
+        thresholds = {"note": "landing gate thresholds are frozen in "
+                              "PHASE_P2_G5_LANDING_GATE.md and "
+                              "PHASE_P2_WC_G6_PREREGISTRATION.md",
+                      "static_thresholds_used_only_as_diagnostics": thresholds}
+    else:
+        metrics = {"t0_world_position_error_m": round(world_pos_0, 12),
+                   "t0_world_rotation_error_rad": round(world_rot_0, 12),
+                   "settle_60_step_chassis_drift_m": round(drift, 12)}
     gate = "PASS" if all(verdict.values()) else "FAIL"
     result = {
         "run_id": ARGS.run_id, "scene_variant": "REAL_CHASSIS_SIMPLIFIED",
+        "gate_mode": ARGS.gate_mode,
         "gate_result": gate,
-        "metrics": {"t0_world_position_error_m": round(world_pos_0, 12),
-                    "t0_world_rotation_error_rad": round(world_rot_0, 12),
-                    "settle_60_step_chassis_drift_m": round(drift, 12)},
+        "metrics": metrics,
         "thresholds": thresholds, "gates": verdict,
         "diagnostics": {"lift_m": float(ARGS.lift),
                         "measured_wheel_bottom_z_m": MEASURED_WHEEL_BOTTOM_Z_M,
@@ -303,6 +343,11 @@ def main():
                         "max_contact_force_settle_n": (
                             max((row.get("max_contact_force_n") or 0.0) for row in settle)
                             if sensor is not None else None),
+                        "static_gates_as_diagnostics": static_gates,
+                        "static_thresholds_as_diagnostics": {
+                            "position_m": 0.001, "rotation_rad": 0.001,
+                            "settle_drift_m": 0.001},
+                        "chassis_mass_kg": CHASSIS_MASS_KG,
                         "bodies": body_names},
     }
     with open(os.path.join(out_dir, "result.json"), "w", encoding="utf-8") as handle:
@@ -312,8 +357,9 @@ def main():
                    "geometry_source": "measured CAD (wheel solids 435700/759491/773650/871375 + body module)",
                    # record the gravity that was ACTUALLY configured, not a constant:
                    # G5 landed under g=-9.81 but the old manifest claimed [0,0,0].
-                   "physics_dt_s": DT,
+                   "physics_dt_s": DT, "steps": int(ARGS.steps),
                    "gravity_m_s2": [0.0, 0.0, float(ARGS.gravity_z)],
+                   "gate_mode": ARGS.gate_mode,
                    "include_ground": bool(ARGS.include_ground), "lift_m": float(ARGS.lift),
                    "command": " ".join(os.sys.argv)}, handle, ensure_ascii=False, indent=1)
     print(json.dumps({k: result[k] for k in ("run_id", "gate_result", "metrics")},

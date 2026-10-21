@@ -168,9 +168,19 @@ def author(path, lift, impl):
 
     wheel_paths = []
     for index, centre in enumerate(WHEEL_CENTRES, start=1):
-        wheel_path = "/RC/Chassis/wheel%d" % index
-        wheel = UsdGeom.Xform.Define(stage, Sdf.Path(wheel_path))
-        UsdGeom.Xformable(wheel).AddTranslateOp().Set(Gf.Vec3f(*centre))
+        # Variant B gives every wheel an explicit rigid body.  USD/PhysX forbid NESTED
+        # rigid bodies, so those wheel prims become SIBLINGS of the chassis and must
+        # therefore carry the lift themselves (they are not children of the lifted
+        # chassis).  The authored world-bottom assertion below still guards this.
+        if impl == "box_child_rigid":
+            wheel_path = "/RC/wheel%d" % index
+            wheel = UsdGeom.Xform.Define(stage, Sdf.Path(wheel_path))
+            UsdGeom.Xformable(wheel).AddTranslateOp().Set(
+                Gf.Vec3f(centre[0], centre[1], centre[2] + lift))
+        else:
+            wheel_path = "/RC/Chassis/wheel%d" % index
+            wheel = UsdGeom.Xform.Define(stage, Sdf.Path(wheel_path))
+            UsdGeom.Xformable(wheel).AddTranslateOp().Set(Gf.Vec3f(*centre))
         if impl == "mesh_convex_hull":
             points, faces = elliptical_cylinder_mesh(*WHEEL_HALF)
             mesh = UsdGeom.Mesh.Define(stage, Sdf.Path(wheel_path).AppendChild("geometry"))
@@ -189,8 +199,7 @@ def author(path, lift, impl):
             wheel_mass = UsdPhysics.MassAPI.Apply(prim)
             wheel_mass.CreateMassAttr(WHEEL_MASS_KG)
             wheel_mass.CreateCenterOfMassAttr(Gf.Vec3f(0.0))
-            joint = UsdPhysics.FixedJoint.Define(
-                stage, Sdf.Path("/RC/Chassis/joint_wheel%d" % index))
+            joint = UsdPhysics.FixedJoint.Define(stage, Sdf.Path("/RC/joint_wheel%d" % index))
             joint.CreateBody0Rel().SetTargets([Sdf.Path("/RC/Chassis")])
             joint.CreateBody1Rel().SetTargets([Sdf.Path(wheel_path)])
             joint.CreateLocalPos0Attr().Set(Gf.Vec3f(*centre))
@@ -238,7 +247,20 @@ def main():
     spawn = sim_utils.UsdFileCfg(usd_path=authored["usd"], activate_contact_sensors=True)
     spawn.func("/World/RC", spawn)
 
+    def has_contact_reporter(path):
+        """Isaac Lab only marks rigid-body prims and stops at the first nested body."""
+        try:
+            import omni.usd
+
+            stage = omni.usd.get_context().get_stage()
+            prim = stage.GetPrimAtPath(path)
+            return bool(prim and prim.IsValid()
+                        and "PhysxContactReportAPI" in prim.GetAppliedSchemas())
+        except Exception:
+            return False
+
     sensors = {}
+    reporter_status = {}
     contact_api = "UNKNOWN"
     if ARGS.read_contacts:
         try:
@@ -248,24 +270,37 @@ def main():
             if ARGS.impl == "box_child_rigid":
                 # Only an explicit rigid body can host a ContactSensor, so per-wheel
                 # contact is measurable for variant B alone; A/C stay chassis-aggregate.
-                targets += [("wheel%d" % i, "/World/RC/Chassis/wheel%d" % i) for i in range(1, 5)]
+                targets += [("wheel%d" % i, "/World/RC/wheel%d" % i) for i in range(1, 5)]
+            skipped = []
             for name, prim_path in targets:
-                sensors[name] = ContactSensor(ContactSensorCfg(
-                    prim_path=prim_path, update_period=0.0, history_length=0,
-                    debug_vis=False))
+                reporter_status[name] = has_contact_reporter(prim_path)
+                if not reporter_status[name]:
+                    # Never let a missing reporter abort the physics run: record it.
+                    skipped.append(prim_path)
+                    continue
+                try:
+                    sensors[name] = ContactSensor(ContactSensorCfg(
+                        prim_path=prim_path, update_period=0.0, history_length=0,
+                        debug_vis=False))
+                except Exception as exc:
+                    reporter_status[name] = False
+                    skipped.append("%s(%s)" % (prim_path, type(exc).__name__))
             contact_api = "isaaclab.sensors.ContactSensor(%d prims)" % len(sensors)
+            if skipped:
+                contact_api += "; no_contact_reporter=%s" % ",".join(skipped)
         except Exception as exc:  # pragma: no cover
             sensors = {}
             contact_api = "UNKNOWN: %s" % type(exc).__name__
 
     robot = Articulation(ArticulationCfg(prim_path="/World/RC", spawn=None, actuators={}))
-    if ARGS.impl != "box_child_rigid":
-        # Pitfall 3: a jointless scene fails the default init-state regex ".*".
-        for field in ("joint_pos", "joint_vel"):
-            try:
-                setattr(robot.cfg.init_state, field, {})
-            except Exception:
-                pass
+    # Pitfall 3: this scene exposes no DOF (four FixedJoints are not DOF joints), so the
+    # default init-state regex ".*" has nothing to match and reset() raises.  Clear both
+    # dictionaries for EVERY variant, not just the jointless ones.
+    for field in ("joint_pos", "joint_vel"):
+        try:
+            setattr(robot.cfg.init_state, field, {})
+        except Exception:
+            pass
     sim.reset()
 
     def update_sensors():
@@ -412,6 +447,7 @@ def main():
             "total_mass_kg": authored["total_mass_kg"],
             "contact_api": contact_api,
             "contact_sensor_prims": list(sensors.keys()),
+            "contact_reporter_present": reporter_status,
             "bodies": body_names,
             "wheel_bottom_model": "chassis body origin + R*(wheel centre local) - 0.090",
             "cooked_shape_query": "UNKNOWN (no exposed PhysX cooked-geometry API in this build)",
