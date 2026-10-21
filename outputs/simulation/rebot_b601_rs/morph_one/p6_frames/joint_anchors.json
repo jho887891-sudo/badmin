@@ -1,0 +1,913 @@
+{
+  "schema": "p6_joint_anchors/1",
+  "task": "P6-02-OI-1",
+  "title": "The body1 side of every arm joint: physics:localPos1 / physics:localRot1",
+  "why_this_file_exists": "mounted_chain.json composed the arm chain as if a USD joint were a single local pose on body0. It is not: a PhysicsJoint fixes the joint frame in body0 via (physics:localPos0, physics:localRot0) AND in body1 via (physics:localPos1, physics:localRot1). The body0 -> body1 transform is X0 * inv(X1). Composition B dropped X1, so it drifted from the pxr end-effector pose by 0.33242 m. Both compositions had det(R) = +1, so the gap was missing data, not a handedness or unit bug.",
+  "joint_frame_rule": {
+    "statement": "T_body0_body1 = X0 * inv(X1), with X0 = (localPos0, localRot0) and X1 = (localPos1, localRot1)",
+    "why_inv": "localPos/localRot place the JOINT frame inside each body; going body0 -> body1 walks into the joint frame and back out of it",
+    "degenerate_case": "T_body0_body1 == X0 exactly when X1 == identity; that is the case the P6 frame tree silently assumed for every joint"
+  },
+  "units": {
+    "length": "metre",
+    "angle": "radian",
+    "quaternion": "wxyz (USD convention)",
+    "source_note": "the layer declares metersPerUnit = 1.0; no scale factor is applied anywhere"
+  },
+  "source": {
+    "arm_asset_remote_path": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+    "arm_asset_sha256": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+    "joint_layer_relative_path": "payloads/Physics/physics.usda",
+    "joint_layer_sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+    "joint_layer_sha256_matches_remote": true,
+    "joint_layer_bytes": 15832,
+    "read_method": "ssh dgut@172.31.68.251 'cat <path>'' into a gitignored _scratch_* directory; the GPU host was read-only, nothing was written there, no Isaac and no GPU compute was used",
+    "hash_check": "sha256sum on the host before and after the copy; both equal the local sha256",
+    "parse_method": "pure-python regex over the USD text (pxr cross-checked when importable)"
+  },
+  "counts": {
+    "joints_extracted": 7,
+    "revolute": 6,
+    "fixed": 1,
+    "joints_whose_body1_pose_is_the_identity": 2,
+    "joints_whose_body1_pose_is_not_the_identity": 5
+  },
+  "joints": [
+    {
+      "prim": "root_joint",
+      "usd_type": "PhysicsFixedJoint",
+      "physics_axis": null,
+      "body0": "/ReBot_Arm_RS",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link",
+      "local_pos0_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot0_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_pos1_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "x1_is_identity": true,
+      "limits_deg_as_authored": null,
+      "source_lines": {
+        "prim_def": 308,
+        "prim_end": 318,
+        "physics_axis": null,
+        "body0": 311,
+        "body1": 313,
+        "localPos0": 314,
+        "localPos1": 315,
+        "localRot0": 316,
+        "localRot1": 317,
+        "limits": null
+      },
+      "X0_joint_in_body0": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "X1_joint_in_body1": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "T_body0_body1": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R_T_body0_body1": 1.0,
+      "merged_chain_edge": 3
+    },
+    {
+      "prim": "joint1",
+      "usd_type": "PhysicsRevoluteJoint",
+      "physics_axis": "Z",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1",
+      "local_pos0_m": [
+        -0.00034283,
+        -0.00098683,
+        0.075
+      ],
+      "local_rot0_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "local_pos1_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "x1_is_identity": false,
+      "limits_deg_as_authored": null,
+      "source_lines": {
+        "prim_def": 124,
+        "prim_end": 145,
+        "physics_axis": 132,
+        "body0": 134,
+        "body1": 136,
+        "localPos0": 137,
+        "localPos1": 138,
+        "localRot0": 139,
+        "localRot1": 140,
+        "limits": null
+      },
+      "X0_joint_in_body0": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          -0.00034283
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0,
+          -0.00098683
+        ],
+        [
+          -0.0,
+          0.0,
+          -1.0,
+          0.075
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "X1_joint_in_body1": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.0,
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "T_body0_body1": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.00034283
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -0.00098683
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.075
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R_T_body0_body1": 1.0,
+      "merged_chain_edge": 4
+    },
+    {
+      "prim": "joint2",
+      "usd_type": "PhysicsRevoluteJoint",
+      "physics_axis": "Z",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2",
+      "local_pos0_m": [
+        0.020343,
+        0.027237,
+        0.07
+      ],
+      "local_rot0_wxyz": [
+        -0.70710546,
+        0.7071081,
+        0.0,
+        0.0
+      ],
+      "local_pos1_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "x1_is_identity": true,
+      "limits_deg_as_authored": null,
+      "source_lines": {
+        "prim_def": 147,
+        "prim_end": 168,
+        "physics_axis": 155,
+        "body0": 157,
+        "body1": 159,
+        "localPos0": 160,
+        "localPos1": 161,
+        "localRot0": 162,
+        "localRot1": 163,
+        "limits": null
+      },
+      "X0_joint_in_body0": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.020343
+        ],
+        [
+          0.0,
+          -3.7335238112223834e-06,
+          0.9999999999930305,
+          0.027237
+        ],
+        [
+          0.0,
+          -0.9999999999930305,
+          -3.7335238112223834e-06,
+          0.07
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "X1_joint_in_body1": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "T_body0_body1": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.020343
+        ],
+        [
+          0.0,
+          -3.7335238112223834e-06,
+          0.9999999999930305,
+          0.027237
+        ],
+        [
+          0.0,
+          -0.9999999999930305,
+          -3.7335238112223834e-06,
+          0.07
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R_T_body0_body1": 1.0000000000000002,
+      "merged_chain_edge": 5
+    },
+    {
+      "prim": "joint3",
+      "usd_type": "PhysicsRevoluteJoint",
+      "physics_axis": "Z",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1/link2",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3",
+      "local_pos0_m": [
+        -0.236,
+        2.7755576e-17,
+        0.0
+      ],
+      "local_rot0_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "local_pos1_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "x1_is_identity": false,
+      "limits_deg_as_authored": null,
+      "source_lines": {
+        "prim_def": 170,
+        "prim_end": 191,
+        "physics_axis": 178,
+        "body0": 180,
+        "body1": 182,
+        "localPos0": 183,
+        "localPos1": 184,
+        "localRot0": 185,
+        "localRot1": 186,
+        "limits": null
+      },
+      "X0_joint_in_body0": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          -0.236
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0,
+          2.7755576e-17
+        ],
+        [
+          -0.0,
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "X1_joint_in_body1": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.0,
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "T_body0_body1": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.236
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          2.7755576e-17
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R_T_body0_body1": 1.0,
+      "merged_chain_edge": 6
+    },
+    {
+      "prim": "joint4",
+      "usd_type": "PhysicsRevoluteJoint",
+      "physics_axis": "Z",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4",
+      "local_pos0_m": [
+        0.228,
+        -0.072746,
+        0.0045
+      ],
+      "local_rot0_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "local_pos1_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "x1_is_identity": false,
+      "limits_deg_as_authored": null,
+      "source_lines": {
+        "prim_def": 193,
+        "prim_end": 214,
+        "physics_axis": 201,
+        "body0": 203,
+        "body1": 205,
+        "localPos0": 206,
+        "localPos1": 207,
+        "localRot0": 208,
+        "localRot1": 209,
+        "limits": null
+      },
+      "X0_joint_in_body0": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          0.228
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0,
+          -0.072746
+        ],
+        [
+          -0.0,
+          0.0,
+          -1.0,
+          0.0045
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "X1_joint_in_body1": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.0,
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "T_body0_body1": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.228
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -0.072746
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0045
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R_T_body0_body1": 1.0,
+      "merged_chain_edge": 7
+    },
+    {
+      "prim": "joint5",
+      "usd_type": "PhysicsRevoluteJoint",
+      "physics_axis": "Z",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5",
+      "local_pos0_m": [
+        0.087,
+        -0.048,
+        -0.03075
+      ],
+      "local_rot0_wxyz": [
+        -0.7071081,
+        -0.70710546,
+        0.0,
+        -0.0
+      ],
+      "local_pos1_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "x1_is_identity": false,
+      "limits_deg_as_authored": null,
+      "source_lines": {
+        "prim_def": 216,
+        "prim_end": 237,
+        "physics_axis": 224,
+        "body0": 226,
+        "body1": 228,
+        "localPos0": 229,
+        "localPos1": 230,
+        "localRot0": 231,
+        "localRot1": 232,
+        "limits": null
+      },
+      "X0_joint_in_body0": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          0.087
+        ],
+        [
+          0.0,
+          3.7335238108893165e-06,
+          -0.9999999999930305,
+          -0.048
+        ],
+        [
+          0.0,
+          0.9999999999930305,
+          3.7335238108893165e-06,
+          -0.03075
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "X1_joint_in_body1": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.0,
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "T_body0_body1": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.087
+        ],
+        [
+          0.0,
+          -3.7335238108893165e-06,
+          0.9999999999930305,
+          -0.048
+        ],
+        [
+          0.0,
+          -0.9999999999930305,
+          -3.7335238108893165e-06,
+          -0.03075
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R_T_body0_body1": 1.0000000000000002,
+      "merged_chain_edge": 8
+    },
+    {
+      "prim": "joint6",
+      "usd_type": "PhysicsRevoluteJoint",
+      "physics_axis": "Z",
+      "body0": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5",
+      "body1": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6",
+      "local_pos0_m": [
+        0.0365,
+        2.1175824e-22,
+        0.048
+      ],
+      "local_rot0_wxyz": [
+        -3.3148634e-17,
+        -0.70710546,
+        -3.7116984e-17,
+        0.7071081
+      ],
+      "local_pos1_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_rot1_wxyz": [
+        0.0,
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "x1_is_identity": false,
+      "limits_deg_as_authored": null,
+      "source_lines": {
+        "prim_def": 239,
+        "prim_end": 260,
+        "physics_axis": 247,
+        "body0": 249,
+        "body1": 251,
+        "localPos0": 252,
+        "localPos1": 253,
+        "localRot0": 254,
+        "localRot1": 255,
+        "limits": null
+      },
+      "X0_joint_in_body0": [
+        [
+          -3.7335238112223834e-06,
+          9.937057963408373e-17,
+          -0.9999999999930305,
+          0.0365
+        ],
+        [
+          5.6119088984088475e-18,
+          -1.0000000000000004,
+          -9.937060058697182e-17,
+          2.1175824e-22
+        ],
+        [
+          -0.9999999999930305,
+          -5.61227990087314e-18,
+          3.7335238108893165e-06,
+          0.048
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "X1_joint_in_body1": [
+        [
+          1.0,
+          -0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -0.0,
+          0.0,
+          -1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "T_body0_body1": [
+        [
+          -3.7335238112223834e-06,
+          -9.937057963408373e-17,
+          0.9999999999930305,
+          0.0365
+        ],
+        [
+          5.6119088984088475e-18,
+          1.0000000000000004,
+          9.937060058697182e-17,
+          2.1175824e-22
+        ],
+        [
+          -0.9999999999930305,
+          5.61227990087314e-18,
+          -3.7335238108893165e-06,
+          0.048
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R_T_body0_body1": 1.0000000000000007,
+      "merged_chain_edge": 9
+    }
+  ],
+  "the_missing_datum": {
+    "what": "physics:localPos1 and physics:localRot1 for joint1..joint6 (and root_joint)",
+    "where_it_was": "the SAME sha256-pinned layer that already supplied localPos0/localRot0, lines recorded per joint in source_lines",
+    "why_the_frame_tree_missed_it": "the P6 extractor recorded one pose per joint edge and named it translation_m/rotation_quat without recording which body side it belonged to; the body0 side was silently taken as the whole joint",
+    "is_it_now_known": true
+  },
+  "provenance": {
+    "pxr_used": false,
+    "isaac_sim_used": false,
+    "gpu_used": false,
+    "assets_modified": false,
+    "remote_written": false,
+    "deterministic": true,
+    "command": "python tools/p6_frames/build_joint_anchors.py --physics-usda <read-only copy> --remote-sha256 <sha256sum from the host>"
+  }
+}
