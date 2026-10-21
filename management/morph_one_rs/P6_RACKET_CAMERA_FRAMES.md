@@ -171,8 +171,8 @@ depth 点 (X,Y,Z)_optical 在 mount 帧是 (Z, -X, -Y)
 
 ```text
 python -m pytest tests/simulation/p6_frame_tree_test.py -q
-............................                                             [100%]
-28 passed in 0.43s
+.............................                                            [100%]
+29 passed in 0.54s
 exit=0
 ```
 
@@ -183,7 +183,9 @@ exit=0
 3. **右手/左手**：所有断言边的 `det(R)=+1`（≥10 条），并给出反例 `diag(1,1,-1)` 的 det=-1；球拍 `+Y=Z×X` 的基也断言 det=+1。
 4. **camera optical vs robot mount**：光学帧矩阵必须把 mount +X 映到 optical +Z、+Y 映到 -X、+Z 映到 -Y，det=+1；深度点 `(1,2,3)_optical → (3,-1,-2)_mount`；所有相机字段 `status=UNKNOWN` 且数值为 null；占位值 0.29/1.20/-4.0/0.145 **不得**作为契约值出现（只允许出现在"拒绝记录"里）。
 
-结构性断言（同样在 28 条里）：每条边要么 `ASSERTED_BY_ASSET`（带 file+sha256+locator+数值），要么 `UNKNOWN`（数值全 null 且必须写 missing_datum）；`frame_tree.json` 的矩阵必须能由 evidence 里的四元数当场重算出来；磁盘上 `racket_visual.usd` 的 sha256 必须同时等于审计记录和合同里的值；夹爪两条边 `mount_allowed=false`。
+5. **链式复合**（第 5 类）：joint1…joint6 的 6 个旋转矩阵连乘后仍须 `det=+1` 且 `RᵀR=I`（误差 1e-9）。单条边的约定写错不会自己报错，但连乘会离开正交群，这是抓"某一条边悄悄错了"的检查——同一条测试里还顺带用真实 sha256 校验了 GLB 原始文件（不是恒真断言）。
+
+结构性断言：每条边要么 `ASSERTED_BY_ASSET`（带 file+sha256+locator+数值），要么 `UNKNOWN`（数值全 null 且必须写 missing_datum）；`frame_tree.json` 的矩阵必须能由 evidence 里的四元数当场重算出来；磁盘上 `racket_visual.usd` 的 sha256 必须同时等于审计记录和合同里的值；夹爪两条边 `mount_allowed=false`。
 
 ---
 
@@ -195,7 +197,7 @@ cd E:\具身智能\badmin_wt_p6
 python tools/p6_frames/audit_racket_usd.py                                     # exit 0（需 pxr）
 python tools/p6_frames/extract_robot_usd_frames.py --layer ... --out ...       # exit 0（纯文本，9 joints）
 python tools/p6_frames/build_p6_frame_contract.py                              # exit 0（15 edges / 10 asserted / 5 unknown）
-python -m pytest tests/simulation/p6_frame_tree_test.py -q                     # exit 0，28 passed
+python -m pytest tests/simulation/p6_frame_tree_test.py -q                     # exit 0，29 passed
 ```
 
 没有 pxr 的机器：跳过第 1 条（其结论已在 `evidence/racket_usd_audit.json`），其余三条照跑。

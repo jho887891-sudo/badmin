@@ -358,7 +358,9 @@ class TestContractStructure:
         tree = load(FRAME_TREE)
         assert real == audit["usd"]["sha256"]
         assert real == tree["evidence"]["racket_usd"]["sha256"]
-        assert real == audit["glb"]["sha256"] or True  # glb is a different file, hashed separately
+        # the GLB is a different file with its own hash - checked against the record, not assumed
+        glb = ROOT / "assets/external/_staging/D_racket_shuttle/original/badminton_racket_and_shuttlecock_low_poly.glb"
+        assert sha256_file(glb) == audit["glb"]["sha256"]
         assert audit["sha256_verdict"]["racket_usd"] == "PASS"
         assert audit["sha256_verdict"]["glb"] == "PASS"
 
@@ -375,6 +377,27 @@ class TestContractStructure:
         for e in jaws:
             assert e["mount_allowed"] is False
             assert e["joint_limits_as_authored_m"][1] > 0
+
+    def test_composing_the_whole_arm_chain_stays_a_proper_rotation(self):
+        """A chain of 10 asserted rotations composed together must still be a rotation.
+
+        This is the check that catches a single edge authored in the wrong convention: the
+        product drifts off det=+1 / off orthonormality only if one factor is wrong, and a
+        wrist flip does not announce itself otherwise.
+        """
+        tree = load(FRAME_TREE)
+        chain = [e for e in tree["edges"] if e.get("joint_name") in
+                 ("joint%d" % i for i in range(1, 7))]
+        assert len(chain) == 6
+        total = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+        for e in chain:
+            total = matmul(total, mat_from_quat_wxyz(e["rotation_quat"]["values"]))
+        assert det3(total) == pytest.approx(1.0, abs=1e-9)
+        # R^T R must be the identity for an orthonormal basis
+        rt = [[total[j][i] for j in range(3)] for i in range(3)]
+        assert flat(matmul(rt, total)) == pytest.approx([1.0, 0.0, 0.0,
+                                                        0.0, 1.0, 0.0,
+                                                        0.0, 0.0, 1.0], abs=1e-9)
 
     def test_summary_counts_match_the_edges(self):
         tree = load(FRAME_TREE)
