@@ -80,13 +80,16 @@ def test_every_rest_value_is_strictly_inside_its_limit_with_the_documented_margi
             assert limit.lower < value < limit.upper, (spec.key, name, value)
 
 
-def test_the_margin_rule_is_five_percent_or_50_milli_units_whichever_is_smaller(rest_pose):
+def test_the_margin_rule_is_five_percent_of_travel(rest_pose):
+    """>= 5% of the joint's own range from either stop, in the joint's own unit."""
     revolute = rest_pose.JointLimit(
         name="j", kind="revolute", lower=-1.0, upper=1.0, unit="rad", source="test")
-    assert rest_pose.required_margin(revolute) == pytest.approx(rest_pose.MARGIN_ABS)
+    assert rest_pose.required_margin(revolute) == pytest.approx(0.05 * 2.0)
     narrow = rest_pose.JointLimit(
         name="f", kind="prismatic", lower=0.0, upper=0.05, unit="m", source="test")
     assert rest_pose.required_margin(narrow) == pytest.approx(0.05 * 0.05)
+    # A relative rule, so a wide joint is held further from its stop than a narrow one.
+    assert rest_pose.required_margin(revolute) > rest_pose.required_margin(narrow)
 
 
 # --------------------------------------------------------------------------- 3. RS limits vs USD

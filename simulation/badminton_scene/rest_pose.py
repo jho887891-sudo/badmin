@@ -13,16 +13,17 @@ WHY THIS MODULE EXISTS
     joint5..joint1, root_joint) is neither the URDF order nor the DOF order (P5 F2).
 
 WHAT "VALID" MEANS HERE
-    Every rest value is STRICTLY inside its joint's limits, by at least
+    Every rest value is STRICTLY inside its joint's limits, by at least 5% of that joint's travel
+    from the nearer stop:
 
-        required_margin = min(0.05, 0.05 * travel)
+        required_margin = 0.05 * travel          (5% of range)
 
-    in the joint's own unit (rad for revolute, m for prismatic). 0.05 rad is the "clearly off the
-    stop" margin; the 5%-of-travel cap exists because a prismatic finger whose whole travel is
-    0.05 m can never be 0.05 m away from both ends. A value sitting exactly on a limit is a
-    violation, not a pass: it is what put the URDF zero pose against the joint stops in the first
-    place (see simulation/piper_stage0/piper_cfg.py comments) and it leaves PhysX no room to hold
-    the joint without pushing.
+    in the joint's own unit (rad for revolute, m for prismatic). The rule is relative, not a fixed
+    0.05 rad, because the two finger joints travel 0.05 m and 0.0715 m: 5% of 0.05 m is 0.0025 m,
+    whereas "0.05 rad" would demand a margin larger than a finger's whole stroke. A value sitting
+    exactly on a limit is a violation, not a pass: it is what put the URDF zero pose against the
+    joint stops in the first place (see simulation/piper_stage0/piper_cfg.py comments) and it
+    leaves PhysX no room to hold the joint without pushing.
 
 FAILURE MODE (the caller cannot ignore it)
     resolve_model() / rest_joint_pos() / validate_rest_pose() RAISE; they never return a sentinel.
@@ -56,10 +57,12 @@ from typing import Dict, Iterable, Mapping, Optional, Sequence, Tuple
 MODEL_PIPER = "piper"
 MODEL_REBOT_RS = "rebot_b601_rs"
 
-#: Absolute margin, in the joint's own unit (rad / m).
-MARGIN_ABS = 0.05
-#: Fraction-of-travel cap on that margin, for joints whose travel is smaller than MARGIN_ABS.
+#: The rule: every rest value sits at least this fraction of the joint's travel from either stop.
 MARGIN_FRACTION = 0.05
+#: Only used for a joint with zero travel, where a fraction of the travel is 0 and would accept a
+#: value sitting exactly on the stop. No joint in either table is degenerate; this keeps the rule
+#: total instead of special-casing the caller.
+MARGIN_ABS = 0.05
 
 
 class ResetPoseError(RuntimeError):
@@ -284,8 +287,15 @@ def limits_for(model: object) -> Dict[str, JointLimit]:
 
 
 def required_margin(limit: JointLimit) -> float:
-    """min(MARGIN_ABS, MARGIN_FRACTION * travel) in the joint's own unit."""
-    return min(MARGIN_ABS, MARGIN_FRACTION * abs(limit.travel))
+    """>= 5% of the joint's travel, in the joint's own unit (rad / m).
+
+    Relative rather than absolute so that a 0.05 m finger stroke and a 3.14 rad wrist get a
+    comparable "off the stop" guarantee instead of one rule that is absurd for one of them.
+    """
+    travel = abs(limit.travel)
+    if travel == 0.0:
+        return MARGIN_ABS
+    return MARGIN_FRACTION * travel
 
 
 def margin(limit: JointLimit, value: float) -> float:
