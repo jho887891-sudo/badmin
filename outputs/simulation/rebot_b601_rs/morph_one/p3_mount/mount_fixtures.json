@@ -1,0 +1,364 @@
+{
+  "schema": "p3_mount_fixtures/1",
+  "task": "P3-01",
+  "generated_by": "tools/p3_mount/gen_mount_fixtures.py",
+  "derived_from_contract": "outputs/simulation/rebot_b601_rs/morph_one/p3_mount/mount_frame_tree.json",
+  "asset_sha256_root_layer": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+  "quaternion_convention": "wxyz (real first)",
+  "tolerance_used": {
+    "position_m": 0.001,
+    "rotation_rad": 0.001,
+    "source": {
+      "file": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_GATE.md",
+      "line": 25,
+      "branch": "dev/p2-wheel-contact-g1g4",
+      "quote": "| `mount_stable` | 相对安装位姿相对 step0 的**最大**偏差 ≤ **0.001 m** 且 ≤ **0.001 rad** | 与 P2 零重力静置同量级；运动中不放松 |",
+      "gate_row": "mount_stable",
+      "note": "pre-registered before any P3 run; frozen, not to be relaxed after seeing data"
+    }
+  },
+  "chain_product": {
+    "frame": "arm_base -> gripper_end (authored rest pose, joints at their USD rest transforms)",
+    "position_m": [
+      0.301710169999,
+      2.62633e-07,
+      0.217746720407
+    ],
+    "quat_wxyz": [
+      1.0,
+      -6.9738e-08,
+      -1.7116e-08,
+      -0.0
+    ],
+    "self_check_against_pxr": {
+      "recorded_by_pxr": {
+        "position": [
+          0.301710169999,
+          2.62633e-07,
+          0.217746720407
+        ],
+        "quat_wxyz": [
+          1.0,
+          -6.9738e-08,
+          -1.7116e-08,
+          0.0
+        ]
+      },
+      "recomposed_here": {
+        "position": [
+          0.301710169999,
+          2.62633e-07,
+          0.217746720407
+        ],
+        "quat_wxyz": [
+          1.0,
+          -6.9738e-08,
+          -1.7116e-08,
+          -0.0
+        ]
+      },
+      "position_delta_m": 0.0,
+      "rotation_delta_rad": 0.0
+    }
+  },
+  "non_triviality": {
+    "rule": "fixtures 2 and 3 must have |rotation angle| > 0.1 rad on the chassis",
+    "chassis_rotation_angles_rad": [
+      0.0,
+      0.35,
+      0.316108960343
+    ],
+    "non_trivial_fixture_count": 2,
+    "note": "F1_identity is the deliberate control with angle 0; the requirement 'non-trivial' applies to the yaw/roll references, which is exactly what F2/F3 carry."
+  },
+  "fixtures": [
+    {
+      "id": "F1_identity",
+      "label": "control: chassis at the origin, no rotation",
+      "why": "reference baseline; on its own it proves nothing about the mount",
+      "non_trivial": false,
+      "chassis_command_reference": {
+        "position_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "yaw_rad": 0.0,
+        "roll_rad": 0.0,
+        "rotation_order": "R = Rz(yaw) @ Rx(roll)"
+      },
+      "expected_world_pose": {
+        "chassis": {
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation_angle_rad": 0.0
+        },
+        "arm_base": {
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation_angle_rad": 0.0
+        },
+        "base_link": {
+          "position_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation_angle_rad": 0.0
+        },
+        "gripper_end": {
+          "position_m": [
+            0.301710169999,
+            2.62633e-07,
+            0.217746720407
+          ],
+          "quat_wxyz": [
+            1.0,
+            -6.9738e-08,
+            -1.7116e-08,
+            -0.0
+          ],
+          "rotation_angle_rad": 1.42927e-07
+        }
+      },
+      "expected_mount_relative": {
+        "frame_pair": "chassis -> arm_base",
+        "position_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "quat_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "position_norm_m": 0.0,
+        "rotation_angle_rad": 0.0,
+        "invariance": "must equal the identity within tolerance in EVERY fixture"
+      },
+      "determinants": {
+        "chassis_R": 1.0,
+        "mount_rotation_R": 1.0,
+        "chain_R": 1.0
+      }
+    },
+    {
+      "id": "F2_yaw_035",
+      "label": "pure yaw 0.35 rad (+0.30 m x)",
+      "why": "P3-02 yaw profile amplitude; a pure yaw must leave the mount offset untouched",
+      "non_trivial": true,
+      "chassis_command_reference": {
+        "position_m": [
+          0.3,
+          0.0,
+          0.0
+        ],
+        "yaw_rad": 0.35,
+        "roll_rad": 0.0,
+        "rotation_order": "R = Rz(yaw) @ Rx(roll)"
+      },
+      "expected_world_pose": {
+        "chassis": {
+          "position_m": [
+            0.3,
+            0.0,
+            0.0
+          ],
+          "quat_wxyz": [
+            0.984726538905,
+            0.0,
+            0.0,
+            0.174108137594
+          ],
+          "rotation_angle_rad": 0.35
+        },
+        "arm_base": {
+          "position_m": [
+            0.3,
+            0.0,
+            0.0
+          ],
+          "quat_wxyz": [
+            0.984726538905,
+            0.0,
+            0.0,
+            0.174108137594
+          ],
+          "rotation_angle_rad": 0.350000000001
+        },
+        "base_link": {
+          "position_m": [
+            0.3,
+            0.0,
+            0.0
+          ],
+          "quat_wxyz": [
+            0.984726538905,
+            0.0,
+            0.0,
+            0.174108137594
+          ],
+          "rotation_angle_rad": 0.350000000001
+        },
+        "gripper_end": {
+          "position_m": [
+            0.583418210829,
+            0.10345600249,
+            0.217746720407
+          ],
+          "quat_wxyz": [
+            0.984726538905,
+            -6.5693e-08,
+            -2.8996e-08,
+            0.174108137593
+          ],
+          "rotation_angle_rad": 0.349999999999
+        }
+      },
+      "expected_mount_relative": {
+        "frame_pair": "chassis -> arm_base",
+        "position_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "quat_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "position_norm_m": 0.0,
+        "rotation_angle_rad": 0.0,
+        "invariance": "must equal the identity within tolerance in EVERY fixture"
+      },
+      "determinants": {
+        "chassis_R": 1.0,
+        "mount_rotation_R": 1.0,
+        "chain_R": 1.0
+      }
+    },
+    {
+      "id": "F3_yaw_030_roll_010",
+      "label": "combined yaw 0.30 rad + roll 0.10 rad (-0.15 m x, +0.20 m y, +0.10 m z)",
+      "why": "combined yaw+roll couples the mount axes; a mount error hidden by pure yaw shows up here",
+      "non_trivial": true,
+      "chassis_command_reference": {
+        "position_m": [
+          -0.15,
+          0.2,
+          0.1
+        ],
+        "yaw_rad": 0.3,
+        "roll_rad": 0.1,
+        "rotation_order": "R = Rz(yaw) @ Rx(roll)"
+      },
+      "expected_world_pose": {
+        "chassis": {
+          "position_m": [
+            -0.15,
+            0.2,
+            0.1
+          ],
+          "quat_wxyz": [
+            0.98753537156,
+            0.049417957074,
+            0.007468793718,
+            0.149251373721
+          ],
+          "rotation_angle_rad": 0.316108960343
+        },
+        "arm_base": {
+          "position_m": [
+            -0.15,
+            0.2,
+            0.1
+          ],
+          "quat_wxyz": [
+            0.98753537156,
+            0.049417957074,
+            0.007468793718,
+            0.149251373721
+          ],
+          "rotation_angle_rad": 0.316108960343
+        },
+        "base_link": {
+          "position_m": [
+            -0.15,
+            0.2,
+            0.1
+          ],
+          "quat_wxyz": [
+            0.98753537156,
+            0.049417957074,
+            0.007468793718,
+            0.149251373721
+          ],
+          "rotation_angle_rad": 0.316108960343
+        },
+        "gripper_end": {
+          "position_m": [
+            0.144658793498,
+            0.2683942156,
+            0.31665892
+          ],
+          "quat_wxyz": [
+            0.987535375134,
+            0.04941789076,
+            0.007468766408,
+            0.149251373396
+          ],
+          "rotation_angle_rad": 0.316108914928
+        }
+      },
+      "expected_mount_relative": {
+        "frame_pair": "chassis -> arm_base",
+        "position_m": [
+          0.0,
+          -0.0,
+          0.0
+        ],
+        "quat_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "position_norm_m": 0.0,
+        "rotation_angle_rad": 0.0,
+        "invariance": "must equal the identity within tolerance in EVERY fixture"
+      },
+      "determinants": {
+        "chassis_R": 1.0,
+        "mount_rotation_R": 1.0,
+        "chain_R": 1.0
+      }
+    }
+  ]
+}

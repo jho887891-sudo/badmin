@@ -1,0 +1,820 @@
+{
+  "schema": "p3_mount_frame_tree/1",
+  "task": "P3-01",
+  "subtask": "freeze the chassis <-> arm-base 6DoF frame tree, its anchor and its reference fixtures",
+  "generated_by": "tools/p3_mount/extract_mount_frame_tree.py",
+  "asset": {
+    "product": "ReBot B601-RS arm, as shipped in badminton_b601_rs_asset_v1",
+    "remote_asset_root": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS",
+    "default_prim": "ReBot_Arm_RS",
+    "meters_per_unit": 1.0,
+    "kilograms_per_unit": 1.0,
+    "up_axis": "Z",
+    "active_physics_variant": "physx",
+    "unit_locators": {
+      "metersPerUnit": 19,
+      "kilogramsPerUnit": 18,
+      "upAxis": 20,
+      "defaultPrim": 6,
+      "Physics_variant": 26
+    },
+    "units_verdict": "PASS",
+    "layers": {
+      "ReBot_Arm_RS.usda": {
+        "remote_relative_path": "ReBot_Arm_RS.usda",
+        "role": "root layer: defaultPrim, units, upAxis, active Physics variant",
+        "sha256": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+        "bytes": 1251
+      },
+      "payloads/base.usda": {
+        "remote_relative_path": "payloads/base.usda",
+        "role": "prim hierarchy Geometry/base_link .. link6/gripper_end (+ authored xformOps)",
+        "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+        "bytes": 28045
+      },
+      "payloads/robot.usda": {
+        "remote_relative_path": "payloads/robot.usda",
+        "role": "Isaac*API overrides only, no transforms",
+        "sha256": "757b36cbb7dc2ea3ea604b9a2d97566bc148c78b7b549a08482ceb8f6acb630c",
+        "bytes": 3538
+      },
+      "payloads/Physics/physx.usda": {
+        "remote_relative_path": "payloads/Physics/physx.usda",
+        "role": "active variant payload, sublayers physics.usda, PhysxJointAPI only",
+        "sha256": "e51eae9dbb0d15ec433073d98244417224b0591adbd0ae918863250e81dc6bda",
+        "bytes": 2127
+      },
+      "payloads/Physics/physics.usda": {
+        "remote_relative_path": "payloads/Physics/physics.usda",
+        "role": "joint authoring, incl. the root_joint chassis<->arm anchor",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "bytes": 15832
+      }
+    },
+    "active_variant_note": "root layer selects Physics='physx'; physx.usda is a payload that SUBLAYERS physics.usda, so the joint authoring in physics.usda (incl. root_joint) is the active authoring, not a dead layer."
+  },
+  "quaternion_convention": {
+    "usd": "wxyz (real first) for quatf/quatd",
+    "this_record": "wxyz",
+    "warning": "never feed these to xyzw consumers without an explicit swap"
+  },
+  "frame_tree": {
+    "root": "world",
+    "note": "world -> chassis is the free/diagnostic root pose (P2/P3 write_root_pose_to_sim); chassis -> arm_base is the retargeted root_joint; the rest is the arm kinematics.",
+    "nodes": [
+      {
+        "name": "world",
+        "kind": "inertial frame (Isaac stage /world)",
+        "source": "P3 scene convention, not authored in the arm asset"
+      },
+      {
+        "name": "chassis",
+        "kind": "rigid body, proxy chassis prim /RW/Chassis in the P2/P3 scene",
+        "mass_kg": 20.0,
+        "articulation_root": false,
+        "source": "scripts/simulation/p2_wc_g7b_arm_with_wheels.py (CHASSIS_MASS_KG = 20.0; the arm keeps the only ArticulationRootAPI)",
+        "source_file": "scripts/simulation/p2_wc_g7b_arm_with_wheels.py",
+        "source_branch": "dev/p2-wheel-contact-g1g4"
+      },
+      {
+        "name": "arm_base",
+        "prim_path": "/ReBot_Arm_RS",
+        "kind": "asset defaultPrim, body0 of root_joint after retarget",
+        "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+        "sha256": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+        "locator": "defaultPrim = \"ReBot_Arm_RS\""
+      },
+      {
+        "name": "base_link",
+        "prim_path": "/ReBot_Arm_RS/Geometry/base_link",
+        "kind": "first arm rigid body (URDF base_link)",
+        "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/base.usda",
+        "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+        "locator": "line 45"
+      },
+      {
+        "name": "link1..link6",
+        "prim_path": "/ReBot_Arm_RS/Geometry/base_link/link1..link6",
+        "kind": "arm kinematic chain",
+        "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/base.usda",
+        "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+        "locator": "nested def Xform blocks under base_link"
+      },
+      {
+        "name": "gripper_end",
+        "prim_path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_end",
+        "kind": "tool flange frame",
+        "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/base.usda",
+        "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+        "locator": "line 432"
+      }
+    ],
+    "edges": [
+      {
+        "edge": "world -> chassis",
+        "joint": "free 6DoF root pose (diagnostic drive in P3)",
+        "authored_by": "P3 scene, NOT this asset",
+        "pose_source": "runtime body_pos_w/body_quat_w of the chassis body"
+      },
+      {
+        "edge": "chassis -> arm_base",
+        "joint": "root_joint (PhysicsFixedJoint)",
+        "authored_by": "the asset (body0 retargeted from /ReBot_Arm_RS to the chassis in the P2/P3 scene)",
+        "anchor": {
+          "prim_path": "/ReBot_Arm_RS/Physics/root_joint",
+          "type_as_authored": "PhysicsFixedJoint",
+          "authored_in_layer": "payloads/Physics/physics.usda",
+          "defline": 308,
+          "body0": {
+            "value": "/ReBot_Arm_RS",
+            "unit": "prim path",
+            "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+            "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+            "locator": 311
+          },
+          "body1": {
+            "value": "/ReBot_Arm_RS/Geometry/base_link",
+            "unit": "prim path",
+            "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+            "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+            "locator": 313
+          },
+          "local_pos0": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "unit": "m",
+            "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+            "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+            "locator": 314
+          },
+          "local_rot0": {
+            "value": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "unit": "quaternion wxyz (dimensionless)",
+            "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+            "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+            "locator": 316
+          },
+          "local_pos1": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "unit": "m",
+            "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+            "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+            "locator": 315
+          },
+          "local_rot1": {
+            "value": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "unit": "quaternion wxyz (dimensionless)",
+            "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+            "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+            "locator": 317
+          }
+        }
+      },
+      {
+        "edge": "arm_base -> base_link",
+        "joint": "rigid (fixed) — root_joint is fixed, base_link has no xformOp",
+        "authored_by": "payloads/base.usda",
+        "local_transform": {
+          "position": {
+            "value": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "unit": "m",
+            "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/base.usda",
+            "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+            "locator": "line 56"
+          },
+          "quat_wxyz": {
+            "value": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "unit": "quaternion wxyz",
+            "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/base.usda",
+            "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+            "locator": "line 54"
+          }
+        },
+        "derived_transform": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "position_norm_m": 0.0,
+          "rotation_rad": 0.0
+        }
+      },
+      {
+        "edge": "/ReBot_Arm_RS/Geometry/base_link -> link1",
+        "joint": "authored rest-pose hop (joint value contributes nothing to the frame tree)",
+        "local_transform": {
+          "position": [
+            -0.00034283,
+            -0.00098683,
+            0.075
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "edge": "/ReBot_Arm_RS/Geometry/base_link/link1 -> link2",
+        "joint": "authored rest-pose hop (joint value contributes nothing to the frame tree)",
+        "local_transform": {
+          "position": [
+            0.020343,
+            0.027237,
+            0.07
+          ],
+          "quat_wxyz": [
+            -0.707105457783,
+            0.707108104588,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "edge": "/ReBot_Arm_RS/Geometry/base_link/link1/link2 -> link3",
+        "joint": "authored rest-pose hop (joint value contributes nothing to the frame tree)",
+        "local_transform": {
+          "position": [
+            -0.236,
+            0.0,
+            0.0
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2/link3 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "edge": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3 -> link4",
+        "joint": "authored rest-pose hop (joint value contributes nothing to the frame tree)",
+        "local_transform": {
+          "position": [
+            0.228,
+            -0.072746,
+            0.0045
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "edge": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4 -> link5",
+        "joint": "authored rest-pose hop (joint value contributes nothing to the frame tree)",
+        "local_transform": {
+          "position": [
+            0.087,
+            -0.048,
+            -0.03075
+          ],
+          "quat_wxyz": [
+            -0.707105457783,
+            0.707108104588,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "edge": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5 -> link6",
+        "joint": "authored rest-pose hop (joint value contributes nothing to the frame tree)",
+        "local_transform": {
+          "position": [
+            0.0365,
+            0.0,
+            0.048
+          ],
+          "quat_wxyz": [
+            0.707105457783,
+            0.0,
+            0.707108104588,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "edge": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6 -> gripper_end",
+        "joint": "authored rest-pose hop (joint value contributes nothing to the frame tree)",
+        "local_transform": {
+          "position": [
+            0.0,
+            0.0,
+            0.16621
+          ],
+          "quat_wxyz": [
+            -2.597488e-06,
+            0.707105469881,
+            2.597498e-06,
+            0.707108092481
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_end local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "edge": "base_link -> .. -> gripper_end",
+        "joint": "arm kinematic chain (6 revolute joints + gripper)",
+        "composed_rest_pose": {
+          "prim_path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_end",
+          "world_position": [
+            0.301710169999,
+            2.62633e-07,
+            0.217746720407
+          ],
+          "world_quat_wxyz": [
+            1.0,
+            -6.9738e-08,
+            -1.7116e-08,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "frame_note": "asset root frame (== arm base frame, chassis frame after the retarget)",
+          "locator": "UsdGeom.XformCache.GetLocalToWorldTransform(/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_end)"
+        }
+      }
+    ]
+  },
+  "chassis_to_arm_base_transform": {
+    "position_m": {
+      "value": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "source_file": "derived from remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+      "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+      "locator": "root_joint physics:localPos0 (314) and physics:localPos1 (315), composed as T(localPos0,localRot0) @ inv(T(localPos1,localRot1))"
+    },
+    "rotation_quat_wxyz": {
+      "value": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unit": "quaternion wxyz (dimensionless)",
+      "source_file": "derived from remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+      "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+      "locator": "root_joint physics:localRot0/localRot1"
+    },
+    "position_norm_m": 0.0,
+    "rotation_angle_rad": 0.0,
+    "derivation": "T_chassis_arm_base = T(localPos0,localRot0) @ inv(T(localPos1,localRot1)); both local poses are authored as the identity, so the chassis body frame and the arm base frame coincide exactly. The retarget only rewrites physics:body0 (to /RW/Chassis); it does not touch the anchors.",
+    "authoring_consequence": "because localPos0/localRot0 are identity, the arm sits at the CHASSIS ORIGIN, not at a CAD mount point: any real mount offset must come from the chassis-side body0 pose and is NOT authored anywhere in this asset (see UNKNOWN below)."
+  },
+  "tolerances": {
+    "position_m": 0.001,
+    "rotation_rad": 0.001,
+    "source": {
+      "file": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_GATE.md",
+      "line": 25,
+      "branch": "dev/p2-wheel-contact-g1g4",
+      "quote": "| `mount_stable` | 相对安装位姿相对 step0 的**最大**偏差 ≤ **0.001 m** 且 ≤ **0.001 rad** | 与 P2 零重力静置同量级；运动中不放松 |",
+      "gate_row": "mount_stable",
+      "note": "pre-registered before any P3 run; frozen, not to be relaxed after seeing data"
+    },
+    "p3_01_use": "the mount-relative pose of every reference fixture must stay inside these bounds"
+  },
+  "joint_anchor": {
+    "prim_path": "/ReBot_Arm_RS/Physics/root_joint",
+    "type_as_authored": "PhysicsFixedJoint",
+    "authored_in_layer": "payloads/Physics/physics.usda",
+    "defline": 308,
+    "body0": {
+      "value": "/ReBot_Arm_RS",
+      "unit": "prim path",
+      "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+      "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+      "locator": 311
+    },
+    "body1": {
+      "value": "/ReBot_Arm_RS/Geometry/base_link",
+      "unit": "prim path",
+      "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+      "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+      "locator": 313
+    },
+    "local_pos0": {
+      "value": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+      "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+      "locator": 314
+    },
+    "local_rot0": {
+      "value": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unit": "quaternion wxyz (dimensionless)",
+      "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+      "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+      "locator": 316
+    },
+    "local_pos1": {
+      "value": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+      "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+      "locator": 315
+    },
+    "local_rot1": {
+      "value": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unit": "quaternion wxyz (dimensionless)",
+      "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+      "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+      "locator": 317
+    }
+  },
+  "cross_checks": [
+    {
+      "checked": true,
+      "name": "joint1_localPos0_equals_link1_authored_translate",
+      "joint1_localPos0": {
+        "value": [
+          -0.00034283,
+          -0.00098683,
+          0.075
+        ],
+        "unit": "m",
+        "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/Physics/physics.usda",
+        "sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6",
+        "locator": "line 137"
+      },
+      "link1_authored_translate": {
+        "value": [
+          -0.00034283,
+          -0.00098683,
+          0.075
+        ],
+        "unit": "m",
+        "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/base.usda",
+        "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+        "locator": "xformOp:translate of /ReBot_Arm_RS/Geometry/base_link/link1"
+      },
+      "max_abs_delta_m": 0.0
+    },
+    {
+      "checked": true,
+      "name": "product_of_authored_hops_equals_pxr_world_gripper_end",
+      "detail": {
+        "position_delta_m": 0.0,
+        "rotation_delta_rad": 0.0
+      },
+      "reason": null
+    }
+  ],
+  "arm_chain_rest_pose": {
+    "pxr_available": true,
+    "pxr_reason": null,
+    "pxr_usd_version": [
+      0,
+      26,
+      11
+    ],
+    "hops": [
+      {
+        "parent": "/ReBot_Arm_RS",
+        "child": "/ReBot_Arm_RS/Geometry",
+        "local_transform": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "parent": "/ReBot_Arm_RS/Geometry",
+        "child": "/ReBot_Arm_RS/Geometry/base_link",
+        "local_transform": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "parent": "/ReBot_Arm_RS/Geometry/base_link",
+        "child": "/ReBot_Arm_RS/Geometry/base_link/link1",
+        "local_transform": {
+          "position": [
+            -0.00034283,
+            -0.00098683,
+            0.075
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "parent": "/ReBot_Arm_RS/Geometry/base_link/link1",
+        "child": "/ReBot_Arm_RS/Geometry/base_link/link1/link2",
+        "local_transform": {
+          "position": [
+            0.020343,
+            0.027237,
+            0.07
+          ],
+          "quat_wxyz": [
+            -0.707105457783,
+            0.707108104588,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "parent": "/ReBot_Arm_RS/Geometry/base_link/link1/link2",
+        "child": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3",
+        "local_transform": {
+          "position": [
+            -0.236,
+            0.0,
+            0.0
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2/link3 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "parent": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3",
+        "child": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4",
+        "local_transform": {
+          "position": [
+            0.228,
+            -0.072746,
+            0.0045
+          ],
+          "quat_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "parent": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4",
+        "child": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5",
+        "local_transform": {
+          "position": [
+            0.087,
+            -0.048,
+            -0.03075
+          ],
+          "quat_wxyz": [
+            -0.707105457783,
+            0.707108104588,
+            0.0,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "parent": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5",
+        "child": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6",
+        "local_transform": {
+          "position": [
+            0.0365,
+            0.0,
+            0.048
+          ],
+          "quat_wxyz": [
+            0.707105457783,
+            0.0,
+            0.707108104588,
+            0.0
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6 local transform (xformOp:translate + xformOp:orient)"
+      },
+      {
+        "parent": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6",
+        "child": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_end",
+        "local_transform": {
+          "position": [
+            0.0,
+            0.0,
+            0.16621
+          ],
+          "quat_wxyz": [
+            -2.597488e-06,
+            0.707105469881,
+            2.597498e-06,
+            0.707108092481
+          ],
+          "unit": "m / quaternion wxyz",
+          "det_R": 1.0
+        },
+        "source_file": "composed stage of /home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda (payloads/base.usda xformOps)",
+        "locator": "prim /ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_end local transform (xformOp:translate + xformOp:orient)"
+      }
+    ],
+    "gripper_end_world_rest_pose": {
+      "prim_path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_end",
+      "world_position": [
+        0.301710169999,
+        2.62633e-07,
+        0.217746720407
+      ],
+      "world_quat_wxyz": [
+        1.0,
+        -6.9738e-08,
+        -1.7116e-08,
+        0.0
+      ],
+      "unit": "m / quaternion wxyz",
+      "frame_note": "asset root frame (== arm base frame, chassis frame after the retarget)",
+      "locator": "UsdGeom.XformCache.GetLocalToWorldTransform(/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_end)"
+    },
+    "gripper_end_authored_xform": {
+      "prim_path": "/ReBot_Arm_RS/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_end",
+      "def_line": 432,
+      "xformOp_translate": {
+        "value": [
+          0.0,
+          0.0,
+          0.16621
+        ],
+        "unit": "m",
+        "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/base.usda",
+        "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+        "locator": "line 439"
+      },
+      "xformOp_orient": {
+        "value": [
+          2.597488447e-06,
+          -0.7071054578,
+          -2.597497996e-06,
+          -0.7071080804
+        ],
+        "unit": "quaternion wxyz",
+        "source_file": "remote::/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/payloads/base.usda",
+        "sha256": "032ef9d0953b51ab94e7111446b005b9946b9f00f6477981694718eb0cf557ef",
+        "locator": "line 437"
+      }
+    }
+  },
+  "unknown": [
+    {
+      "value": "UNKNOWN",
+      "missing_datum": "no chassis asset is referenced by the arm USD; the M1-4WD4S CAD has no machine-readable mount frame in this repo, so the mount offset is UNKNOWN and the scene uses the identity mount",
+      "what": "physical CAD mount point of the arm on the M1-4WD4S chassis"
+    },
+    {
+      "value": "UNKNOWN",
+      "missing_datum": "no FEA / bolt-preload data in the asset; P3 can only measure kinematic rigidity",
+      "what": "wrench/stiffness of the manufactured joint between chassis and arm base"
+    },
+    {
+      "value": "UNKNOWN",
+      "missing_datum": "the P2/P3 proxy uses /RW/Chassis (body origin); a real bracket prim would shift the relative transform",
+      "what": "whether the retargeted body0 in a real deployment is the chassis body origin or a mount bracket prim"
+    }
+  ],
+  "provenance": {
+    "method": "ssh cat of the ASCII layers from the read-only GPU host, sha256 compared 1:1 with the remote sha256sum, then text parse (+ optional pxr compose). No Isaac Sim, no GPU, no writes on the host.",
+    "isaac_sim_used": false,
+    "gpu_used": false,
+    "remote_writes": false,
+    "asset_sha256_expected": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+    "root_layer_sha256_matches_expected": true
+  }
+}
