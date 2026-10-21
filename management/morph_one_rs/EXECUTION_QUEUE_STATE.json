@@ -1,1700 +1,1706 @@
 {
-  "schema_version": "1.0",
-  "project": "Morph One x B601-RS x D455 x Badminton",
-  "generator": "tools/queue/queue_state.py",
-  "spec": {
-    "path": "management/morph_one_rs/EXECUTION_QUEUE_CONTINUOUS_P0_P8.md",
-    "ref": "origin/chatgpt/p2-wc-continuous-queue-20261021",
-    "sha": "79ffab3b5916cc5063c09801298d400eeaf4e24a",
-    "task_count": 96
+ "schema_version": "1.0",
+ "project": "Morph One x B601-RS x D455 x Badminton",
+ "generator": "tools/queue/queue_state.py",
+ "spec": {
+  "path": "management/morph_one_rs/EXECUTION_QUEUE_CONTINUOUS_P0_P8.md",
+  "ref": "origin/chatgpt/p2-wc-continuous-queue-20261021",
+  "sha": "79ffab3b5916cc5063c09801298d400eeaf4e24a",
+  "task_count": 96
+ },
+ "protocol": "checkpoint-not-stop",
+ "whole_project_done": false,
+ "status_values": [
+  "READY",
+  "RUNNING",
+  "DONE",
+  "PARTIAL",
+  "FAILED",
+  "BLOCKED",
+  "UNKNOWN"
+ ],
+ "dependency_policy": {
+  "P3-*": "SPEC 3.3: P3 real 6DoF motion unlocks only after the P2 evidence matrix",
+  "P4-*": "SPEC 3.4: real wheel drive needs wheel identity + P2 + P3",
+  "P6-static": "SPEC 3.2: P6 static/offline parts need the P2 matrix for the chassis facts",
+  "P6-09": "integration manifest needs the arm controller API and the integrated static load",
+  "P7-*": "SPEC 3.5: closed-loop hitting needs the arm API and the integrated capability gate",
+  "P8-06": "SPEC 3.5: actual PPO training stays gated behind P7-13",
+  "P8-design": "SPEC 3.2: P8 design/mock/doc slots are READY now; PPO and the real robot are not authorized"
+ },
+ "tasks": [
+  {
+   "task_id": "A01",
+   "stage": "A",
+   "title": "全仓库 P0–P8 实际文件/分支/PR/HEAD/保护范围清点，输出机器可读工程索引，不假设 main 是默认分支。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "queue-agent",
+   "head_sha": "114dc32d5c6ba00de2f4db3155ee6153632a1bb2",
+   "artifact": "management/morph_one_rs/ENGINEERING_INDEX.json",
+   "latest_run_id": null,
+   "next_action": "rerun the generator after every push round",
+   "blocker": null,
+   "last_error": null
   },
-  "protocol": "checkpoint-not-stop",
-  "whole_project_done": false,
-  "status_values": [
-    "READY",
-    "RUNNING",
-    "DONE",
-    "PARTIAL",
-    "FAILED",
-    "BLOCKED",
-    "UNKNOWN"
-  ],
-  "dependency_policy": {
-    "P3-*": "SPEC 3.3: P3 real 6DoF motion unlocks only after the P2 evidence matrix",
-    "P4-*": "SPEC 3.4: real wheel drive needs wheel identity + P2 + P3",
-    "P6-static": "SPEC 3.2: P6 static/offline parts need the P2 matrix for the chassis facts",
-    "P6-09": "integration manifest needs the arm controller API and the integrated static load",
-    "P7-*": "SPEC 3.5: closed-loop hitting needs the arm API and the integrated capability gate",
-    "P8-06": "SPEC 3.5: actual PPO training stays gated behind P7-13",
-    "P8-design": "SPEC 3.2: P8 design/mock/doc slots are READY now; PPO and the real robot are not authorized"
+  {
+   "task_id": "A02",
+   "stage": "A",
+   "title": "实现动态队列状态文件 schema、依赖拓扑、READY 自动选择器；针对循环依赖与 BLOCKED 传染做离线单测。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "queue-agent",
+   "head_sha": "114dc32d5c6ba00de2f4db3155ee6153632a1bb2",
+   "artifact": "tools/queue/queue_state.py",
+   "latest_run_id": null,
+   "next_action": "consume --ready from other workstreams",
+   "blocker": null,
+   "last_error": null
   },
-  "tasks": [
-    {
-      "task_id": "A01",
-      "stage": "A",
-      "title": "全仓库 P0–P8 实际文件/分支/PR/HEAD/保护范围清点，输出机器可读工程索引，不假设 main 是默认分支。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "queue-agent",
-      "head_sha": "114dc32d5c6ba00de2f4db3155ee6153632a1bb2",
-      "artifact": "management/morph_one_rs/ENGINEERING_INDEX.json",
-      "latest_run_id": null,
-      "next_action": "rerun the generator after every push round",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "A02",
-      "stage": "A",
-      "title": "实现动态队列状态文件 schema、依赖拓扑、READY 自动选择器；针对循环依赖与 BLOCKED 传染做离线单测。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "queue-agent",
-      "head_sha": "114dc32d5c6ba00de2f4db3155ee6153632a1bb2",
-      "artifact": "tools/queue/queue_state.py",
-      "latest_run_id": null,
-      "next_action": "consume --ready from other workstreams",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "A03",
-      "stage": "A",
-      "title": "每次 commit/PR/Issue 状态一致性检查，防止同一任务并发重复写入或无证据 DONE。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "queue-agent",
-      "head_sha": "114dc32d5c6ba00de2f4db3155ee6153632a1bb2",
-      "artifact": "tools/queue/check_consistency.py",
-      "latest_run_id": null,
-      "next_action": "run before every queue status write",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "A04",
-      "stage": "A",
-      "title": "GPU 独占锁 + PID 验证 + 退出后 Kit 子孙进程清理审计；不得误杀其他用户进程。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "A05",
-      "stage": "A",
-      "title": "实验 YAML/JSON 配置、参数 hash、环境指纹、资产 SHA、实际应用参数落地，任何配置失配 FAIL。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "A06",
-      "stage": "A",
-      "title": "唯一 RUN_ID、不可变原始证据、manifest/summary SHA256、任意旧 JSON 残留 fail-closed。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "A07",
-      "stage": "A",
-      "title": "跨代理 PR review 约定：隔离 worktree、可 cherry-pick、小 diff、冲突解决、回归测试和 reviewer 签字。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "A08",
-      "stage": "A",
-      "title": "离线 CI 矩阵：数值/物理几何/文件契约/坏数据注入；GPU 自动化仅在授权环境串行触发。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "A09",
-      "stage": "A",
-      "title": "每项 gate 的断言来源可追踪：源码行、SPEC 条款、单位、数据文件、验收裁定。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "A10",
-      "stage": "A",
-      "title": "一键复现实验命令及 README，验证“纯 CPU 检查”不意外启动 Kit。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "queue-agent",
-      "head_sha": "114dc32d5c6ba00de2f4db3155ee6153632a1bb2",
-      "artifact": "docs/queue/README_zh.md",
-      "latest_run_id": null,
-      "next_action": "keep the CPU runbook current",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P0-01",
-      "stage": "P0",
-      "title": "合入/复用此前 18 项 runner 回归的**有效补丁**到独立集成分支，不盲合其他实验分支。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P0-02",
-      "stage": "P0",
-      "title": "child 0 + JSON FAIL、child nonzero + JSON PASS、missing/invalid/NaN/conflict/empty gates 的全部 fail-closed。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "subagent",
-      "head_sha": "ce278c2",
-      "artifact": "tests/simulation/test_p2_gate_runner.py",
-      "latest_run_id": null,
-      "next_action": "see PR #23 (test/p0-gate-runner-strict-outdir)",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "artifact path repaired: duplicate artifact claim / artifact was a file under a run_id directory (flagged by A05/A06/A09 tests)",
-          "old_artifact": "tools/simulation/p2_gate_runner.py",
-          "old_head_sha": "ce278c2",
-          "new_artifact": "tests/simulation/test_p2_gate_runner.py",
-          "new_head_sha": "ce278c2",
-          "status_changed": false
-        }
-      ]
-    },
-    {
-      "task_id": "P0-03",
-      "stage": "P0",
-      "title": "\\`--timeout\\` 真正杀死超时实验；检查 Kit 子孙进程是否残留和 GPU 资源泄漏，记录实际 PID。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "subagent",
-      "head_sha": "ce278c2",
-      "artifact": "tools/simulation/p2_gate_runner.py",
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "artifact repaired to remove a duplicate artifact claim (flagged by the A05/A06/A09 consistency tests)",
-          "old_artifact": "tests/simulation/test_p2_gate_runner.py",
-          "old_head_sha": "ce278c2",
-          "new_artifact": "tools/simulation/p2_gate_runner.py",
-          "new_head_sha": "ce278c2",
-          "status_changed": false
-        }
-      ]
-    },
-    {
-      "task_id": "P0-04",
-      "stage": "P0",
-      "title": "重复 out-dir 明确拒绝/独占创建；保留此前“重命名 stale JSON”的历史兼容策略，但新实验不得依赖它形成假 PASS。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "subagent",
-      "head_sha": "ce278c2",
-      "artifact": "management/morph_one_rs/P2_GATE_RUNNER_STRICT_OUTDIR.md",
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P0-05",
-      "stage": "P0",
-      "title": "报告 \\`manifest.gravity\\` vs 命令实际 \\`gravity-z\\` 冲突、steps/dt/config/source hashes 不一致时 INVALID。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P0-06",
-      "stage": "P0",
-      "title": "JSONL 逐帧完整性、排序、NaN/Inf、四元数顺序、坐标单位、接触 unavailable 与 0N 的区别。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "subagent",
-      "head_sha": "3a366e7",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6A_r01/raw_poses.jsonl",
-      "latest_run_id": null,
-      "next_action": "checker validated on the real G6A_r01 evidence (361 frames, contact numeric 361, valid=true, exit 0)",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "artifact repaired to remove a duplicate artifact claim (flagged by the A05/A06/A09 consistency tests)",
-          "old_artifact": "tools/simulation/p2_gate_runner.py",
-          "old_head_sha": "ce278c2",
-          "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6A_r01/raw_poses.jsonl",
-          "new_head_sha": "3a366e7",
-          "status_changed": false
-        }
-      ]
-    },
-    {
-      "task_id": "P0-07",
-      "stage": "P0",
-      "title": "在真实 Kit 上做故障注入：Python 抛异常子进程 0、真正 PASS、真正 FAIL、timeout 和历史目录防串用。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P0-08",
-      "stage": "P0",
-      "title": "P0 工具 PR #14/#16/#17 与 DeepSeek runner 的功能对照，保留一套明确验收接口并测试 backward compatibility。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P0-09",
-      "stage": "P0",
-      "title": "生成可重跑的 PASS/FAIL/UNKNOWN 看板，不能自动把全局项目状态归为 PASS。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P1-01",
-      "stage": "P1",
-      "title": "冻结厂商 STEP、USD、mapping.csv/JSON 的 SHA、metersPerUnit 和坐标转换、原始文件只读。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P1-02",
-      "stage": "P1",
-      "title": "重演 205.991 vs 180.782 mm 的 BREP 顶点盒/曲面包络/三角网格 AABB 区别，固定三种口径。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P1-03",
-      "stage": "P1",
-      "title": "四轮 eid→USD prim mapping 的实体逐项对照，检查重复 mapping、axis 旋转和左右镜像。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P1-04",
-      "stage": "P1",
-      "title": "从 CAD 轴面/圆柱面/网格法线辨认轮子旋转轴、真正轮中心（chassis frame），不是只看顶点盒。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "subagent",
-      "head_sha": "c3ec799",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/cloud_geometry.json",
-      "latest_run_id": null,
-      "next_action": "see PR #25",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "artifact path repaired: duplicate artifact claim / artifact was a file under a run_id directory (flagged by A05/A06/A09 tests)",
-          "old_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
-          "old_head_sha": "c3ec799",
-          "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/cloud_geometry.json",
-          "new_head_sha": "c3ec799",
-          "status_changed": false
-        }
-      ]
-    },
-    {
-      "task_id": "P1-05",
-      "stage": "P1",
-      "title": "圆柱 \\`r=103mm\\` 是滚动面还是挡边/法兰的分类证据；未证实继续 UNKNOWN，不擅自称轮径 206mm。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "subagent",
-      "head_sha": "c3ec799",
-      "artifact": "management/morph_one_rs/P1_WHEEL_ROLLING_SURFACE.md",
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P1-06",
-      "stage": "P1",
-      "title": "四轮轴心间距/前后轮距/轮序/正转方向，自洽的 CAD/world transform 表和可视化检查。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P1-07",
-      "stage": "P1",
-      "title": "质量/惯量/材料/接触形状从可用来源核实；厂家未知值保留 UNKNOWN，必要时 proxy 明确标注。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P1-08",
-      "stage": "P1",
-      "title": "真实外圆几何 vs 目前 90mm 半高代理盒差异量化，重算真实接地高度；不能把旧 \\`lift=.334\\` 当官方值。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P1-09",
-      "stage": "P1",
-      "title": "输出 \\`wheel_identity_contract.json\\`、按实体的 hash、来源、质量、轴心及不确定性，对 P4 提供 gate。",
-      "dependencies": [],
-      "status": "PARTIAL",
-      "owner": "subagent",
-      "head_sha": "c3ec799",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
-      "latest_run_id": null,
-      "next_action": "contract exists but wheel_radius/loaded height remain UNKNOWN; P4 stays blocked on real wheel identity",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P2-01",
-      "stage": "P2",
-      "title": "回归 G0–G4 原始证据，补 \\`G2_r02\\`，纠正“每组已重复两次”的过度表述。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "bb15065",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G2_r02/result.json",
-      "latest_run_id": "G2_r02",
-      "next_action": "G2 repetition closed; wording corrected in PHASE_P2_WC_G6_COLLISION_IMPLEMENTATIONS.md",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P2-02",
-      "stage": "P2",
-      "title": "修 \\`morph_one_p2_real_chassis.py\\` manifest 的实际重力/命令/配置一致性；对旧 G5 追加**独立审计结果**，不覆盖旧 JSON。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "bb15065",
-      "artifact": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
-      "latest_run_id": "G5_r01",
-      "next_action": "manifest now records the real gravity; old G5 JSON untouched",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P2-03",
-      "stage": "P2",
-      "title": "设计专门的 G5 **重力落地验收**：正常无初始穿透、观察下落与接触，稳定窗口统计 z、vz、az、接触力；不拿零重力静置最大漂移阈值判自由落体。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "bb15065",
-      "artifact": "scripts/simulation/p2_landing_gates.py",
-      "latest_run_id": "G5L_r01",
-      "next_action": "landing gate pre-registered and unit tested (9 tests)",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P2-04",
-      "stage": "P2",
-      "title": "新 G5 两次独立运行，至少 120 步（必要时更长直至有充分稳态窗口），输出真实 landing timeline、min ground gap、姿态 roll/pitch、steady-state contact/weight 支撑对照。稳态公差在运行前基于 proxy/数值精度预注册，不能看结果调阈值。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "bb15065",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6A_r02/result.json",
-      "latest_run_id": "G6A_r02",
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P2-05",
-      "stage": "P2",
-      "title": "G6 **只改一个因素**做 collision-shape 对照：Compound Cube ↔ 合法的 Mesh ConvexHull/独立形状；不因 CPU/GPU 误用导致假错误。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "bb15065",
-      "artifact": "management/morph_one_rs/PHASE_P2_WC_G6_COLLISION_IMPLEMENTATIONS.md",
-      "latest_run_id": "G6C_r02",
-      "next_action": "G6 A/B/C runs already exist (G6A_r01/r02, G6B_r05/r06, G6C_r01/r02): have an independent agent re-audit them before P2-05 may be recorded DONE",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P2-06",
-      "stage": "P2",
-      "title": "分别独立验证 USD authored world bbox、runtime shape 激活、ContactSensor、solver depenetration，传感器 0N 不独立证明有效或无效。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "bb15065",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6B_r05/result.json",
-      "latest_run_id": "G6B_r05",
-      "next_action": "per-wheel contact needs explicit rigid bodies; chassis sensor alone is not the total",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P2-07",
-      "stage": "P2",
-      "title": "G7 上一轮真实 B601-RS 0g 10刚体/8DOF PASS 复用；另做 **真实 arm + 修正四轮 compound 在同一 PhysX 场景**，检查是否碰撞、是否有双重质量/错误刚体嵌套。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "3a366e7",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G7B_grav_r08/result.json",
-      "latest_run_id": "G7B_grav_r08",
-      "next_action": "real arm + four wheels carry 255.144983 N = mg under gravity",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P2-08",
-      "stage": "P2",
-      "title": "整机合法静置 g=0 和重力支持场景分开 Gate；真实臂/底盘相对安装位置与角度分别 ≤1mm/0.001rad，绝不伪称自由落体世界位姿不变。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "3a366e7",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G5L_r01/result.json",
-      "latest_run_id": null,
-      "next_action": "static (g=0) and gravity support gates kept separate",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "artifact path repaired: duplicate artifact claim / artifact was a file under a run_id directory (flagged by A05/A06/A09 tests)",
-          "old_artifact": "management/morph_one_rs/PHASE_P2_EVIDENCE_MATRIX.md",
-          "old_head_sha": "14c38ee",
-          "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G5L_r01/result.json",
-          "new_head_sha": "3a366e7",
-          "status_changed": false
-        }
-      ]
-    },
-    {
-      "task_id": "P2-09",
-      "stage": "P2",
-      "title": "各实验 2 独立 run_id、raw full steps、outer exit 正负例、资产 hash、日志，另一个代理用独立验收器审计。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "3a366e7",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6C_r02",
-      "latest_run_id": null,
-      "next_action": "every P2 experiment has >=2 run ids except G7B which has r07 (defect) + r08 (PASS)",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "artifact path repaired: duplicate artifact claim / artifact was a file under a run_id directory (flagged by A05/A06/A09 tests)",
-          "old_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/g6_summary.json",
-          "old_head_sha": "14c38ee",
-          "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6C_r02",
-          "new_head_sha": "3a366e7",
-          "status_changed": false
-        }
-      ]
-    },
-    {
-      "task_id": "P2-10",
-      "stage": "P2",
-      "title": "一份 **P2 最终证据矩阵**：真实/代理、静置/落地、源资产/派生资产、PASS/FAIL/PARTIAL 与解除依赖条件；达门禁后自动解锁 P3 READY。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "14c38ee",
-      "artifact": "management/morph_one_rs/PHASE_P2_EVIDENCE_MATRIX.md",
-      "latest_run_id": null,
-      "next_action": "matrix delivered; last row awaits G7B_grav_r08",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P3-01",
-      "stage": "P3",
-      "title": "冻结底盘 chassis/arm base 6DoF frame tree、Joint anchor、相对姿态误差与非平凡 yaw/roll 参考。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "DONE",
-      "owner": "subagent",
-      "head_sha": "0bbed19",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p3_mount/mount_frame_tree.json",
-      "latest_run_id": null,
-      "next_action": "PR #29; anchor read from the real asset (localPos/localRot 0/identity)",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P3-02",
-      "stage": "P3",
-      "title": "纯 X/Y 非零平移、独立 Z 位移、纯 yaw 非零转角，分别验证**实际测量**非零，而不是只有目标命令。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "2fd84a3",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_z_r13/result.json",
-      "latest_run_id": "P3_z_r13",
-      "next_action": "v1.1 directed gate: z 0.9758, xy 1.0014; both profiles now have 2 independent runs",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "re-pointed at the evidence commit that actually contains the run (6b8b516) and recorded the post-fix verdict",
-          "old": {
-            "status": "PARTIAL",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_xy_r09/result.json",
-            "head_sha": "3a366e7",
-            "latest_run_id": "P3_xy_r09"
-          },
-          "new": {
-            "status": "PARTIAL",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_xy_r09/result.json",
-            "head_sha": "6b8b516",
-            "latest_run_id": "P3_xy_r09"
-          }
-        }
-      ]
-    },
-    {
-      "task_id": "P3-03",
-      "stage": "P3",
-      "title": "平移+转向复合运动及加减速段，记录 chassis/arm 全帧世界与相对 pose。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "6b8b516",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_compound_r11/result.json",
-      "latest_run_id": "P3_compound_r11",
-      "next_action": "offset-compensated command realises 0.2544 m of 0.25 m and 0.299998 rad; r09 FAIL kept as evidence the gate caught root!=chassis",
-      "blocker": null,
-      "last_error": "root!=chassis: 0.208 m offset makes a root-pose command not a chassis command; realized 0.1812 m vs required 0.225 m",
-      "repair_log": [
-        {
-          "reason": "re-pointed at the evidence commit that actually contains the run (6b8b516) and recorded the post-fix verdict",
-          "old": {
-            "status": "FAILED",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_compound_r09/result.json",
-            "head_sha": "3a366e7",
-            "latest_run_id": "P3_compound_r09"
-          },
-          "new": {
-            "status": "DONE",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_compound_r11/result.json",
-            "head_sha": "6b8b516",
-            "latest_run_id": "P3_compound_r11"
-          }
-        }
-      ]
-    },
-    {
-      "task_id": "P3-04",
-      "stage": "P3",
-      "title": "可控运动施加手段合法、明确标为诊断驱动；**这种驱动不能冒充 P4 真实轮驱动**。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P3-05",
-      "stage": "P3",
-      "title": "真实臂关节在固定 target 下的位姿稳定、接触/自碰撞、超限检查及 FAIL 注入。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "PARTIAL",
-      "owner": "main",
-      "head_sha": "6b8b516",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_static_r11/result.json",
-      "latest_run_id": "P3_static_r11",
-      "next_action": "joint deviation 0.0179-0.0347 rad under motion; no limit violation observed",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "re-pointed at the evidence commit that actually contains the run (6b8b516) and recorded the post-fix verdict",
-          "old": {
-            "status": "PARTIAL",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_compound_r11/result.json",
-            "head_sha": "d75e246",
-            "latest_run_id": "P3_compound_r11"
-          },
-          "new": {
-            "status": "PARTIAL",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_compound_r11/result.json",
-            "head_sha": "6b8b516",
-            "latest_run_id": "P3_compound_r11"
-          }
-        },
-        {
-          "reason": "artifact de-duplicated against P3-03",
-          "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_static_r11/result.json"
-        }
-      ]
-    },
-    {
-      "task_id": "P3-06",
-      "stage": "P3",
-      "title": "相对安装 6DoF 最大误差、峰值速度/角速度以及 dynamic jerk 指标；执行前从原协议冻结阈值，非见数调参。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "6b8b516",
-      "artifact": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_RESULTS.md",
-      "latest_run_id": "P3_compound_r11",
-      "next_action": "mount drift 1.5e-8..3e-8 m; velocity/jerk are zero by construction and are NOT smoothness evidence",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "re-pointed at the evidence commit that actually contains the run (6b8b516) and recorded the post-fix verdict",
-          "old": {
-            "status": "PARTIAL",
-            "artifact": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_RESULTS.md",
-            "head_sha": "3a366e7",
-            "latest_run_id": null
-          },
-          "new": {
-            "status": "DONE",
-            "artifact": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_RESULTS.md",
-            "head_sha": "6b8b516",
-            "latest_run_id": "P3_compound_r11"
-          }
-        }
-      ]
-    },
-    {
-      "task_id": "P3-07",
-      "stage": "P3",
-      "title": "不同 initial yaw/arm pose、至少两次独立 run，证明不是单个位姿硬编码修正。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "2fd84a3",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_xy_r13/result.json",
-      "latest_run_id": "P3_xy_r13",
-      "next_action": "static/yaw/xy/z all have >=2 independent runs under v1.1 or v1.0",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "re-pointed at the evidence commit that actually contains the run (6b8b516) and recorded the post-fix verdict",
-          "old": {
-            "status": "PARTIAL",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_yaw_r09/result.json",
-            "head_sha": "3a366e7",
-            "latest_run_id": "P3_yaw_r09"
-          },
-          "new": {
-            "status": "PARTIAL",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_yaw_r11/result.json",
-            "head_sha": "6b8b516",
-            "latest_run_id": "P3_yaw_r11"
-          }
-        }
-      ]
-    },
-    {
-      "task_id": "P3-08",
-      "stage": "P3",
-      "title": "P3 PASS/FAIL 原始录像/轨迹、复现命令与审计输出，达标后让 P4 由 BLOCKED→READY。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "PARTIAL",
-      "owner": "main",
-      "head_sha": "2fd84a3",
-      "artifact": "management/morph_one_rs/PHASE_P3_GATE_V1_1_AMENDMENT.md",
-      "latest_run_id": null,
-      "next_action": "v1.1 prereg + both fail-open negative controls FAIL as required; summary table still to be consolidated",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P4-01",
-      "stage": "P4",
-      "title": "从 P1 wheel identity 建立 wheel prim→axle joint→DOF→motor channel 一一映射，方向/单位/极限自检。",
-      "dependencies": [
-        "P1-09",
-        "P2-10",
-        "P3-08"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P4-02",
-      "stage": "P4",
-      "title": "合理质量/惯量/接触摩擦代理，区分物理支持证据和未经厂家授权的估计参数。",
-      "dependencies": [
-        "P1-09",
-        "P2-10",
-        "P3-08"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P4-03",
-      "stage": "P4",
-      "title": "轮毂/轮胎与底盘刚体的 articulation graph 有效性、root/motor placement、多环境可解析性。",
-      "dependencies": [
-        "P1-09",
-        "P2-10",
-        "P3-08"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P4-04",
-      "stage": "P4",
-      "title": "单轮低速开环旋转，记录关节角、实际轮速与电机目标/扭矩，先无地面后有地面。",
-      "dependencies": [
-        "P1-09",
-        "P2-10",
-        "P3-08"
-      ],
-      "status": "PARTIAL",
-      "owner": "main",
-      "head_sha": "5b74eb1",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_spin1_r02/result.json",
-      "latest_run_id": "P4p_spin1_r02",
-      "next_action": "P4_PROXY single wheel 1.771/2.0 rad/s; P4_REAL still BLOCKED on P1 loaded radius",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "re-pointed at commit 5b74eb1, which is the commit that actually contains the P4_PROXY run directories",
-          "old": {
-            "status": "PARTIAL",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_spin1_r02/result.json",
-            "head_sha": "2fd84a3",
-            "latest_run_id": "P4p_spin1_r02"
-          },
-          "new": {
-            "status": "PARTIAL",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_spin1_r02/result.json",
-            "head_sha": "5b74eb1",
-            "latest_run_id": "P4p_spin1_r02"
-          }
-        }
-      ]
-    },
-    {
-      "task_id": "P4-05",
-      "stage": "P4",
-      "title": "四轮同时正反低速旋转、位置与实际角速度同步，方向对照。",
-      "dependencies": [
-        "P1-09",
-        "P2-10",
-        "P3-08"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P4-06",
-      "stage": "P4",
-      "title": "平地低速直线前进/后退，\\`wheel rpm → chassis displacement\\` 由真实物理接触产生。",
-      "dependencies": [
-        "P1-09",
-        "P2-10",
-        "P3-08"
-      ],
-      "status": "PARTIAL",
-      "owner": "main",
-      "head_sha": "5b74eb1",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_rollneg_r02/result.json",
-      "latest_run_id": "P4p_rollneg_r02",
-      "next_action": "P4_PROXY straight roll +-1.215 m with <=0.14%% tracking and zero root writes",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "re-pointed at commit 5b74eb1, which is the commit that actually contains the P4_PROXY run directories",
-          "old": {
-            "status": "PARTIAL",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_rollneg_r02/result.json",
-            "head_sha": "2fd84a3",
-            "latest_run_id": "P4p_rollneg_r02"
-          },
-          "new": {
-            "status": "PARTIAL",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_rollneg_r02/result.json",
-            "head_sha": "5b74eb1",
-            "latest_run_id": "P4p_rollneg_r02"
-          }
-        }
-      ]
-    },
-    {
-      "task_id": "P4-07",
-      "stage": "P4",
-      "title": "低速纯转弯、不同转弯半径、轮滑及 yaw rate 的实测闭环。",
-      "dependencies": [
-        "P1-09",
-        "P2-10",
-        "P3-08"
-      ],
-      "status": "DONE",
-      "owner": "main",
-      "head_sha": "5b74eb1",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_turn_r04/result.json",
-      "latest_run_id": "P4p_turn_r04",
-      "next_action": "P4_PROXY differential yaw 1.4175 rad; only ONE valid run so far",
-      "blocker": null,
-      "last_error": null,
-      "repair_log": [
-        {
-          "reason": "re-pointed at commit 5b74eb1, which is the commit that actually contains the P4_PROXY run directories",
-          "old": {
-            "status": "PARTIAL",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_turn_r03/result.json",
-            "head_sha": "2fd84a3",
-            "latest_run_id": "P4p_turn_r03"
-          },
-          "new": {
-            "status": "DONE",
-            "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_turn_r04/result.json",
-            "head_sha": "5b74eb1",
-            "latest_run_id": "P4p_turn_r04"
-          }
-        }
-      ]
-    },
-    {
-      "task_id": "P4-08",
-      "stage": "P4",
-      "title": "不同摩擦系数、载荷、地面接触法向变化的单因素对照，不宣称未知轮胎摩擦为真实。",
-      "dependencies": [
-        "P1-09",
-        "P2-10",
-        "P3-08"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P4-09",
-      "stage": "P4",
-      "title": "基于 joint/odom/ground truth 的速度控制器、坡道加减速、安全加速度限值（仅仿真）。",
-      "dependencies": [
-        "P1-09",
-        "P2-10",
-        "P3-08"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P4-10",
-      "stage": "P4",
-      "title": "里程计与 ground truth 误差、轮滑识别、静止驻停和急停 HOLD（仿真），完整错误路径。",
-      "dependencies": [
-        "P1-09",
-        "P2-10",
-        "P3-08"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P4-11",
-      "stage": "P4",
-      "title": "真实驱动不可用时独立代理可继续开发控制接口/单测但不得虚构“轮驱动已完成”；P4 达标自动解锁相关 P6 任务。",
-      "dependencies": [
-        "P1-09",
-        "P2-10",
-        "P3-08"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P5-01",
-      "stage": "P5",
-      "title": "将单臂关节事实与限位合同、P5 子代理 14 tests 证据整合至可运行测试。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P5-02",
-      "stage": "P5",
-      "title": "修复 \\`simulation/badminton_scene/reset.py\\` 的 **PiPER 默认 joint3=-1.5rad** 与 B601-RS \\`[0,3.14]rad\\` 不一致；按型号/DOF name 定义安全 reset，保留 PiPER 不变行为。",
-      "dependencies": [],
-      "status": "DONE",
-      "owner": "subagent",
-      "head_sha": "6672306",
-      "artifact": "simulation/badminton_scene/rest_pose.py",
-      "latest_run_id": "",
-      "next_action": "see PR #22",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P5-03",
-      "stage": "P5",
-      "title": "所有 rest pose 和随机 reset 关节值在 USD/URDF/应用合同内，缺有效值 FAIL/HOLD 而非静默 clamp。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P5-04",
-      "stage": "P5",
-      "title": "joint name→runtime DOF index 显式映射，不使用 USD stage 遍历顺序；角关节 USD gain 的度制/弧度换算验收。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P5-05",
-      "stage": "P5",
-      "title": "运动命令限位、速度/加速度/扭矩保护，以及 6 轴与夹爪 2 DOF 的独立归属。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P5-06",
-      "stage": "P5",
-      "title": "单环境 reset 负例：越限、错误名字、NaN、缺关节，确认异常路径不会触发危险目标。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P5-07",
-      "stage": "P5",
-      "title": "N=2 多环境实例隔离与 reset 随机化；实际支持再测 16/64/128，不能因显存不足硬跑。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P5-08",
-      "stage": "P5",
-      "title": "多环境吞吐、内存峰值、跨环境 state leakage、复现种子与掉线恢复。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P5-09",
-      "stage": "P5",
-      "title": "最小可复用 B601-RS controller API（state, joint targets, reset, hold, IK hook）与独立单测。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P6-01",
-      "stage": "P6",
-      "title": "审计球拍 GLB/USD 的单位、碰撞代理、安装法兰/末端 link 几何授权，源资产只读。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P6-02",
-      "stage": "P6",
-      "title": "球拍→末端→臂→底盘的 frame tree、相对转换、姿态/接触容差和基准配置。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "DONE",
-      "owner": "subagent",
-      "head_sha": "3540109",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/mounted_chain_v2.json",
-      "latest_run_id": "P6-02-OI-1",
-      "next_action": "body1 localRot1 anchors extracted: 5 joints carry a 180 deg X flip; joint-chain vs pxr error 0.33242 m / pi rad -> 1.85e-09 m / 2.15e-08 rad; mounted_chain.json untouched (v1 and its open_issue preserved), 5 UNKNOWN edges still non-numeric",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P6-03",
-      "stage": "P6",
-      "title": "D455 相机真实机型/镜头坐标（optical frame）与机器人 mount frame 区分，未标定外参 UNKNOWN。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P6-04",
-      "stage": "P6",
-      "title": "相机内参、分辨率、RGB-depth 对齐、帧率、深度单位、畸变参数的版本化元数据读取与校验。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "PARTIAL",
-      "owner": "subagent",
-      "head_sha": "d7672d5",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/camera_metadata.json",
-      "latest_run_id": null,
-      "next_action": "every D455 number UNKNOWN; only the optical-vs-mount convention proven",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P6-05",
-      "stage": "P6",
-      "title": "多坐标变换一致性（camera→base→world→racket）和米/毫米、左右手坐标的回归样例。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P6-06",
-      "stage": "P6",
-      "title": "RGB、Depth、机器人 state 时间戳、延迟/掉帧同步协议；真实硬件采集需相应权限，无硬件用回放测试。",
-      "dependencies": [
-        "P2-10",
-        "P6-03"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P6-07",
-      "stage": "P6",
-      "title": "模拟羽毛球 GLB/碰撞体、球拍包围盒和球-拍接触检测最小样例，代理标签不可冒充真实球动力学。",
-      "dependencies": [
-        "P2-10"
-      ],
-      "status": "DONE",
-      "owner": "subagent",
-      "head_sha": "0e87c5e",
-      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/racket_collision_proxy.json",
-      "latest_run_id": null,
-      "next_action": "43 primitive proxy, 20000-sample surface containment 1.000000 within 1 mm, max_uncovered 0.614 mm; CC-BY low-poly, not a vendor collision model",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P6-08",
-      "stage": "P6",
-      "title": "单场景整机模型静态加载、碰撞、重力稳定、所有传感器发布有效和运行时零 NaN。",
-      "dependencies": [
-        "P2-10",
-        "P5-09"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P6-09",
-      "stage": "P6",
-      "title": "整机集成 manifest 和多环境能力 gate；完成后自动开放 P7 可控闭环试验。",
-      "dependencies": [
-        "P2-10",
-        "P5-09",
-        "P6-08"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-01",
-      "stage": "P7",
-      "title": "审核 YOLO 模型/data manifest、训练/验证视频分组防泄漏、标签/负样本、小尺寸 4–6 px 分布。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-02",
-      "stage": "P7",
-      "title": "可复现检测推理基线：置信度、召回、误检、按球像素大小分桶；GPU 不可用则标 NOT RUN。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-03",
-      "stage": "P7",
-      "title": "640/960/1280 以及 crop/tiling 的真实精度-延迟对照，不能只比较训练 loss。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-04",
-      "stage": "P7",
-      "title": "检测器输出统一 \\`timestamp, frame_id, bbox, confidence, pixel_covariance\\`，接口/单位单测。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "PARTIAL",
-      "owner": "subagent",
-      "head_sha": "8150b2a",
-      "artifact": "src/perception/shuttle_detection/detection_output.py",
-      "latest_run_id": null,
-      "next_action": "delivered+tested (PR #27); queue dependency model ties it to P5-09/P6-09, revisit in A02",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-05",
-      "stage": "P7",
-      "title": "EKF/其他时序滤波器状态定义、过程噪声、测量噪声和离群拒绝，支持只见 2D 时保持像面状态。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "PARTIAL",
-      "owner": "subagent",
-      "head_sha": "8150b2a",
-      "artifact": "src/badminton_brain/estimation/shuttle_state_ekf.py",
-      "latest_run_id": null,
-      "next_action": "delivered+tested (PR #27); 3D upgrade still needs calibration",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-06",
-      "stage": "P7",
-      "title": "若有可信深度/双目和标定，才升级三维 \\`position/velocity/cov\\`；不得把 2D bbox 当真实三维。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-07",
-      "stage": "P7",
-      "title": "0.3–0.8 s 球轨迹预测的统一 horizon、误差/置信区间/观测缺失处理和分场景回放。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "PARTIAL",
-      "owner": "subagent",
-      "head_sha": "8150b2a",
-      "artifact": "src/badminton_brain/prediction/horizon_prediction.py",
-      "latest_run_id": null,
-      "next_action": "delivered+tested; CI covers 0% under drag mismatch (pinned negative result)",
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-08",
-      "stage": "P7",
-      "title": "视觉测量延迟、球速/小目标噪声的传播，输出预测不确定度与过期帧拒绝。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-09",
-      "stage": "P7",
-      "title": "球拍可达工作空间、机械臂限位、IK、多候选击球时间点、避障/自碰撞。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-10",
-      "stage": "P7",
-      "title": "安全 FSM：SEARCH/TRACK/PREDICT/PLAN/EXECUTE/HOLD；置信度不足、时间超限、不可达时进入 HOLD。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-11",
-      "stage": "P7",
-      "title": "固定静止球、低速确定性来球、低扰动轨迹三种仿真序列，逐级启用真实闭环。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-12",
-      "stage": "P7",
-      "title": "低速击球复现统计：每组 trial 数、检测率、预测位置误差、实际接触率、有效回球率、失败案例。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P7-13",
-      "stage": "P7",
-      "title": "端到端推理与控制延迟预算、帧同步、异常恢复、冷启动/重复任务一致性回放；不能用离线轨迹 loss 替代击球成功率。",
-      "dependencies": [
-        "P5-09",
-        "P6-09"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P8-01",
-      "stage": "P8",
-      "title": "仅搭建训练接口设计 \\`observation/action/reward/reset/termination\\` 和 schema/形状测试，不启动 PPO。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P8-02",
-      "stage": "P8",
-      "title": "安全 reward 候选与约束指标（距离、碰撞、速度、成功、超时），先离线可计算性验证。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P8-03",
-      "stage": "P8",
-      "title": "训练/验证/测试随机种子分离、任务 difficulty curriculum、不可泄漏记录。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P8-04",
-      "stage": "P8",
-      "title": "非 RL 基线（有限状态/可达性/简单跟踪控制）和同口径任务成功率评测协议。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P8-05",
-      "stage": "P8",
-      "title": "PPO 预算门禁文件：GPU/训练时间上限、安全守卫、可恢复 checkpoint、停止条件和回滚。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P8-06",
-      "stage": "P8",
-      "title": "算法设计与离线 mock tests；实际 PPO 训练**须用户再次明确授权并满足 P5/P6/P7 门禁**。",
-      "dependencies": [
-        "P7-13"
-      ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P8-07",
-      "stage": "P8",
-      "title": "真机实验风险清单、急停/Watchdog/人工安全区域/速度限制方案仅写文档，**禁止向实体机器人发送动作**。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
-    },
-    {
-      "task_id": "P8-08",
-      "stage": "P8",
-      "title": "未来研究扩展（不冒充已实现）：主动感知、VLA 策略接口/数据记录、感知→计划→动作的失败归因与评测方案。",
-      "dependencies": [],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
-      "latest_run_id": null,
-      "next_action": null,
-      "blocker": null,
-      "last_error": null
+  {
+   "task_id": "A03",
+   "stage": "A",
+   "title": "每次 commit/PR/Issue 状态一致性检查，防止同一任务并发重复写入或无证据 DONE。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "queue-agent",
+   "head_sha": "114dc32d5c6ba00de2f4db3155ee6153632a1bb2",
+   "artifact": "tools/queue/check_consistency.py",
+   "latest_run_id": null,
+   "next_action": "run before every queue status write",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "A04",
+   "stage": "A",
+   "title": "GPU 独占锁 + PID 验证 + 退出后 Kit 子孙进程清理审计；不得误杀其他用户进程。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "A05",
+   "stage": "A",
+   "title": "实验 YAML/JSON 配置、参数 hash、环境指纹、资产 SHA、实际应用参数落地，任何配置失配 FAIL。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "A06",
+   "stage": "A",
+   "title": "唯一 RUN_ID、不可变原始证据、manifest/summary SHA256、任意旧 JSON 残留 fail-closed。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "A07",
+   "stage": "A",
+   "title": "跨代理 PR review 约定：隔离 worktree、可 cherry-pick、小 diff、冲突解决、回归测试和 reviewer 签字。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "A08",
+   "stage": "A",
+   "title": "离线 CI 矩阵：数值/物理几何/文件契约/坏数据注入；GPU 自动化仅在授权环境串行触发。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "A09",
+   "stage": "A",
+   "title": "每项 gate 的断言来源可追踪：源码行、SPEC 条款、单位、数据文件、验收裁定。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "A10",
+   "stage": "A",
+   "title": "一键复现实验命令及 README，验证“纯 CPU 检查”不意外启动 Kit。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "queue-agent",
+   "head_sha": "114dc32d5c6ba00de2f4db3155ee6153632a1bb2",
+   "artifact": "docs/queue/README_zh.md",
+   "latest_run_id": null,
+   "next_action": "keep the CPU runbook current",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P0-01",
+   "stage": "P0",
+   "title": "合入/复用此前 18 项 runner 回归的**有效补丁**到独立集成分支，不盲合其他实验分支。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P0-02",
+   "stage": "P0",
+   "title": "child 0 + JSON FAIL、child nonzero + JSON PASS、missing/invalid/NaN/conflict/empty gates 的全部 fail-closed。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "ce278c2",
+   "artifact": "tests/simulation/test_p2_gate_runner.py",
+   "latest_run_id": null,
+   "next_action": "see PR #23 (test/p0-gate-runner-strict-outdir)",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "artifact path repaired: duplicate artifact claim / artifact was a file under a run_id directory (flagged by A05/A06/A09 tests)",
+     "old_artifact": "tools/simulation/p2_gate_runner.py",
+     "old_head_sha": "ce278c2",
+     "new_artifact": "tests/simulation/test_p2_gate_runner.py",
+     "new_head_sha": "ce278c2",
+     "status_changed": false
     }
-  ]
+   ]
+  },
+  {
+   "task_id": "P0-03",
+   "stage": "P0",
+   "title": "\\`--timeout\\` 真正杀死超时实验；检查 Kit 子孙进程是否残留和 GPU 资源泄漏，记录实际 PID。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "ce278c2",
+   "artifact": "tools/simulation/p2_gate_runner.py",
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "artifact repaired to remove a duplicate artifact claim (flagged by the A05/A06/A09 consistency tests)",
+     "old_artifact": "tests/simulation/test_p2_gate_runner.py",
+     "old_head_sha": "ce278c2",
+     "new_artifact": "tools/simulation/p2_gate_runner.py",
+     "new_head_sha": "ce278c2",
+     "status_changed": false
+    }
+   ]
+  },
+  {
+   "task_id": "P0-04",
+   "stage": "P0",
+   "title": "重复 out-dir 明确拒绝/独占创建；保留此前“重命名 stale JSON”的历史兼容策略，但新实验不得依赖它形成假 PASS。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "ce278c2",
+   "artifact": "management/morph_one_rs/P2_GATE_RUNNER_STRICT_OUTDIR.md",
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P0-05",
+   "stage": "P0",
+   "title": "报告 \\`manifest.gravity\\` vs 命令实际 \\`gravity-z\\` 冲突、steps/dt/config/source hashes 不一致时 INVALID。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P0-06",
+   "stage": "P0",
+   "title": "JSONL 逐帧完整性、排序、NaN/Inf、四元数顺序、坐标单位、接触 unavailable 与 0N 的区别。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "3a366e7",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6A_r01/raw_poses.jsonl",
+   "latest_run_id": null,
+   "next_action": "checker validated on the real G6A_r01 evidence (361 frames, contact numeric 361, valid=true, exit 0)",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "artifact repaired to remove a duplicate artifact claim (flagged by the A05/A06/A09 consistency tests)",
+     "old_artifact": "tools/simulation/p2_gate_runner.py",
+     "old_head_sha": "ce278c2",
+     "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6A_r01/raw_poses.jsonl",
+     "new_head_sha": "3a366e7",
+     "status_changed": false
+    }
+   ]
+  },
+  {
+   "task_id": "P0-07",
+   "stage": "P0",
+   "title": "在真实 Kit 上做故障注入：Python 抛异常子进程 0、真正 PASS、真正 FAIL、timeout 和历史目录防串用。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P0-08",
+   "stage": "P0",
+   "title": "P0 工具 PR #14/#16/#17 与 DeepSeek runner 的功能对照，保留一套明确验收接口并测试 backward compatibility。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P0-09",
+   "stage": "P0",
+   "title": "生成可重跑的 PASS/FAIL/UNKNOWN 看板，不能自动把全局项目状态归为 PASS。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P1-01",
+   "stage": "P1",
+   "title": "冻结厂商 STEP、USD、mapping.csv/JSON 的 SHA、metersPerUnit 和坐标转换、原始文件只读。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P1-02",
+   "stage": "P1",
+   "title": "重演 205.991 vs 180.782 mm 的 BREP 顶点盒/曲面包络/三角网格 AABB 区别，固定三种口径。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P1-03",
+   "stage": "P1",
+   "title": "四轮 eid→USD prim mapping 的实体逐项对照，检查重复 mapping、axis 旋转和左右镜像。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P1-04",
+   "stage": "P1",
+   "title": "从 CAD 轴面/圆柱面/网格法线辨认轮子旋转轴、真正轮中心（chassis frame），不是只看顶点盒。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "c3ec799",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/cloud_geometry.json",
+   "latest_run_id": null,
+   "next_action": "see PR #25",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "artifact path repaired: duplicate artifact claim / artifact was a file under a run_id directory (flagged by A05/A06/A09 tests)",
+     "old_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
+     "old_head_sha": "c3ec799",
+     "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/cloud_geometry.json",
+     "new_head_sha": "c3ec799",
+     "status_changed": false
+    }
+   ]
+  },
+  {
+   "task_id": "P1-05",
+   "stage": "P1",
+   "title": "圆柱 \\`r=103mm\\` 是滚动面还是挡边/法兰的分类证据；未证实继续 UNKNOWN，不擅自称轮径 206mm。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "c3ec799",
+   "artifact": "management/morph_one_rs/P1_WHEEL_ROLLING_SURFACE.md",
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P1-06",
+   "stage": "P1",
+   "title": "四轮轴心间距/前后轮距/轮序/正转方向，自洽的 CAD/world transform 表和可视化检查。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P1-07",
+   "stage": "P1",
+   "title": "质量/惯量/材料/接触形状从可用来源核实；厂家未知值保留 UNKNOWN，必要时 proxy 明确标注。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P1-08",
+   "stage": "P1",
+   "title": "真实外圆几何 vs 目前 90mm 半高代理盒差异量化，重算真实接地高度；不能把旧 \\`lift=.334\\` 当官方值。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P1-09",
+   "stage": "P1",
+   "title": "输出 \\`wheel_identity_contract.json\\`、按实体的 hash、来源、质量、轴心及不确定性，对 P4 提供 gate。",
+   "dependencies": [],
+   "status": "PARTIAL",
+   "owner": "subagent",
+   "head_sha": "c3ec799",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/wheel_identity_contract.json",
+   "latest_run_id": null,
+   "next_action": "contract exists but wheel_radius/loaded height remain UNKNOWN; P4 stays blocked on real wheel identity",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P2-01",
+   "stage": "P2",
+   "title": "回归 G0–G4 原始证据，补 \\`G2_r02\\`，纠正“每组已重复两次”的过度表述。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "bb15065",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G2_r02/result.json",
+   "latest_run_id": "G2_r02",
+   "next_action": "G2 repetition closed; wording corrected in PHASE_P2_WC_G6_COLLISION_IMPLEMENTATIONS.md",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P2-02",
+   "stage": "P2",
+   "title": "修 \\`morph_one_p2_real_chassis.py\\` manifest 的实际重力/命令/配置一致性；对旧 G5 追加**独立审计结果**，不覆盖旧 JSON。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "bb15065",
+   "artifact": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+   "latest_run_id": "G5_r01",
+   "next_action": "manifest now records the real gravity; old G5 JSON untouched",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P2-03",
+   "stage": "P2",
+   "title": "设计专门的 G5 **重力落地验收**：正常无初始穿透、观察下落与接触，稳定窗口统计 z、vz、az、接触力；不拿零重力静置最大漂移阈值判自由落体。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "bb15065",
+   "artifact": "scripts/simulation/p2_landing_gates.py",
+   "latest_run_id": "G5L_r01",
+   "next_action": "landing gate pre-registered and unit tested (9 tests)",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P2-04",
+   "stage": "P2",
+   "title": "新 G5 两次独立运行，至少 120 步（必要时更长直至有充分稳态窗口），输出真实 landing timeline、min ground gap、姿态 roll/pitch、steady-state contact/weight 支撑对照。稳态公差在运行前基于 proxy/数值精度预注册，不能看结果调阈值。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "bb15065",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6A_r02/result.json",
+   "latest_run_id": "G6A_r02",
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P2-05",
+   "stage": "P2",
+   "title": "G6 **只改一个因素**做 collision-shape 对照：Compound Cube ↔ 合法的 Mesh ConvexHull/独立形状；不因 CPU/GPU 误用导致假错误。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "bb15065",
+   "artifact": "management/morph_one_rs/PHASE_P2_WC_G6_COLLISION_IMPLEMENTATIONS.md",
+   "latest_run_id": "G6C_r02",
+   "next_action": "G6 A/B/C runs already exist (G6A_r01/r02, G6B_r05/r06, G6C_r01/r02): have an independent agent re-audit them before P2-05 may be recorded DONE",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P2-06",
+   "stage": "P2",
+   "title": "分别独立验证 USD authored world bbox、runtime shape 激活、ContactSensor、solver depenetration，传感器 0N 不独立证明有效或无效。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "bb15065",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6B_r05/result.json",
+   "latest_run_id": "G6B_r05",
+   "next_action": "per-wheel contact needs explicit rigid bodies; chassis sensor alone is not the total",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P2-07",
+   "stage": "P2",
+   "title": "G7 上一轮真实 B601-RS 0g 10刚体/8DOF PASS 复用；另做 **真实 arm + 修正四轮 compound 在同一 PhysX 场景**，检查是否碰撞、是否有双重质量/错误刚体嵌套。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "3a366e7",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G7B_grav_r08/result.json",
+   "latest_run_id": "G7B_grav_r08",
+   "next_action": "real arm + four wheels carry 255.144983 N = mg under gravity",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P2-08",
+   "stage": "P2",
+   "title": "整机合法静置 g=0 和重力支持场景分开 Gate；真实臂/底盘相对安装位置与角度分别 ≤1mm/0.001rad，绝不伪称自由落体世界位姿不变。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "3a366e7",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G5L_r01/result.json",
+   "latest_run_id": null,
+   "next_action": "static (g=0) and gravity support gates kept separate",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "artifact path repaired: duplicate artifact claim / artifact was a file under a run_id directory (flagged by A05/A06/A09 tests)",
+     "old_artifact": "management/morph_one_rs/PHASE_P2_EVIDENCE_MATRIX.md",
+     "old_head_sha": "14c38ee",
+     "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G5L_r01/result.json",
+     "new_head_sha": "3a366e7",
+     "status_changed": false
+    }
+   ]
+  },
+  {
+   "task_id": "P2-09",
+   "stage": "P2",
+   "title": "各实验 2 独立 run_id、raw full steps、outer exit 正负例、资产 hash、日志，另一个代理用独立验收器审计。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "3a366e7",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6C_r02",
+   "latest_run_id": null,
+   "next_action": "every P2 experiment has >=2 run ids except G7B which has r07 (defect) + r08 (PASS)",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "artifact path repaired: duplicate artifact claim / artifact was a file under a run_id directory (flagged by A05/A06/A09 tests)",
+     "old_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/g6_summary.json",
+     "old_head_sha": "14c38ee",
+     "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6C_r02",
+     "new_head_sha": "3a366e7",
+     "status_changed": false
+    }
+   ]
+  },
+  {
+   "task_id": "P2-10",
+   "stage": "P2",
+   "title": "一份 **P2 最终证据矩阵**：真实/代理、静置/落地、源资产/派生资产、PASS/FAIL/PARTIAL 与解除依赖条件；达门禁后自动解锁 P3 READY。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "14c38ee",
+   "artifact": "management/morph_one_rs/PHASE_P2_EVIDENCE_MATRIX.md",
+   "latest_run_id": null,
+   "next_action": "matrix delivered; last row awaits G7B_grav_r08",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P3-01",
+   "stage": "P3",
+   "title": "冻结底盘 chassis/arm base 6DoF frame tree、Joint anchor、相对姿态误差与非平凡 yaw/roll 参考。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "0bbed19",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p3_mount/mount_frame_tree.json",
+   "latest_run_id": null,
+   "next_action": "PR #29; anchor read from the real asset (localPos/localRot 0/identity)",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P3-02",
+   "stage": "P3",
+   "title": "纯 X/Y 非零平移、独立 Z 位移、纯 yaw 非零转角，分别验证**实际测量**非零，而不是只有目标命令。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "2fd84a3",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_z_r13/result.json",
+   "latest_run_id": "P3_z_r13",
+   "next_action": "v1.1 directed gate: z 0.9758, xy 1.0014; both profiles now have 2 independent runs",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "re-pointed at the evidence commit that actually contains the run (6b8b516) and recorded the post-fix verdict",
+     "old": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_xy_r09/result.json",
+      "head_sha": "3a366e7",
+      "latest_run_id": "P3_xy_r09"
+     },
+     "new": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_xy_r09/result.json",
+      "head_sha": "6b8b516",
+      "latest_run_id": "P3_xy_r09"
+     }
+    }
+   ]
+  },
+  {
+   "task_id": "P3-03",
+   "stage": "P3",
+   "title": "平移+转向复合运动及加减速段，记录 chassis/arm 全帧世界与相对 pose。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "6b8b516",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_compound_r11/result.json",
+   "latest_run_id": "P3_compound_r11",
+   "next_action": "offset-compensated command realises 0.2544 m of 0.25 m and 0.299998 rad; r09 FAIL kept as evidence the gate caught root!=chassis",
+   "blocker": null,
+   "last_error": "root!=chassis: 0.208 m offset makes a root-pose command not a chassis command; realized 0.1812 m vs required 0.225 m",
+   "repair_log": [
+    {
+     "reason": "re-pointed at the evidence commit that actually contains the run (6b8b516) and recorded the post-fix verdict",
+     "old": {
+      "status": "FAILED",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_compound_r09/result.json",
+      "head_sha": "3a366e7",
+      "latest_run_id": "P3_compound_r09"
+     },
+     "new": {
+      "status": "DONE",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_compound_r11/result.json",
+      "head_sha": "6b8b516",
+      "latest_run_id": "P3_compound_r11"
+     }
+    }
+   ]
+  },
+  {
+   "task_id": "P3-04",
+   "stage": "P3",
+   "title": "可控运动施加手段合法、明确标为诊断驱动；**这种驱动不能冒充 P4 真实轮驱动**。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P3-05",
+   "stage": "P3",
+   "title": "真实臂关节在固定 target 下的位姿稳定、接触/自碰撞、超限检查及 FAIL 注入。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "PARTIAL",
+   "owner": "main",
+   "head_sha": "6b8b516",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_static_r11/result.json",
+   "latest_run_id": "P3_static_r11",
+   "next_action": "joint deviation 0.0179-0.0347 rad under motion; no limit violation observed",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "re-pointed at the evidence commit that actually contains the run (6b8b516) and recorded the post-fix verdict",
+     "old": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_compound_r11/result.json",
+      "head_sha": "d75e246",
+      "latest_run_id": "P3_compound_r11"
+     },
+     "new": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_compound_r11/result.json",
+      "head_sha": "6b8b516",
+      "latest_run_id": "P3_compound_r11"
+     }
+    },
+    {
+     "reason": "artifact de-duplicated against P3-03",
+     "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_static_r11/result.json"
+    }
+   ]
+  },
+  {
+   "task_id": "P3-06",
+   "stage": "P3",
+   "title": "相对安装 6DoF 最大误差、峰值速度/角速度以及 dynamic jerk 指标；执行前从原协议冻结阈值，非见数调参。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "6b8b516",
+   "artifact": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_RESULTS.md",
+   "latest_run_id": "P3_compound_r11",
+   "next_action": "mount drift 1.5e-8..3e-8 m; velocity/jerk are zero by construction and are NOT smoothness evidence",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "re-pointed at the evidence commit that actually contains the run (6b8b516) and recorded the post-fix verdict",
+     "old": {
+      "status": "PARTIAL",
+      "artifact": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_RESULTS.md",
+      "head_sha": "3a366e7",
+      "latest_run_id": null
+     },
+     "new": {
+      "status": "DONE",
+      "artifact": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_RESULTS.md",
+      "head_sha": "6b8b516",
+      "latest_run_id": "P3_compound_r11"
+     }
+    }
+   ]
+  },
+  {
+   "task_id": "P3-07",
+   "stage": "P3",
+   "title": "不同 initial yaw/arm pose、至少两次独立 run，证明不是单个位姿硬编码修正。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "2fd84a3",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_xy_r13/result.json",
+   "latest_run_id": "P3_xy_r13",
+   "next_action": "static/yaw/xy/z all have >=2 independent runs under v1.1 or v1.0",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "re-pointed at the evidence commit that actually contains the run (6b8b516) and recorded the post-fix verdict",
+     "old": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_yaw_r09/result.json",
+      "head_sha": "3a366e7",
+      "latest_run_id": "P3_yaw_r09"
+     },
+     "new": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_yaw_r11/result.json",
+      "head_sha": "6b8b516",
+      "latest_run_id": "P3_yaw_r11"
+     }
+    }
+   ]
+  },
+  {
+   "task_id": "P3-08",
+   "stage": "P3",
+   "title": "P3 PASS/FAIL 原始录像/轨迹、复现命令与审计输出，达标后让 P4 由 BLOCKED→READY。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "PARTIAL",
+   "owner": "main",
+   "head_sha": "2fd84a3",
+   "artifact": "management/morph_one_rs/PHASE_P3_GATE_V1_1_AMENDMENT.md",
+   "latest_run_id": null,
+   "next_action": "v1.1 prereg + both fail-open negative controls FAIL as required; summary table still to be consolidated",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P4-01",
+   "stage": "P4",
+   "title": "从 P1 wheel identity 建立 wheel prim→axle joint→DOF→motor channel 一一映射，方向/单位/极限自检。",
+   "dependencies": [
+    "P1-09",
+    "P2-10",
+    "P3-08"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P4-02",
+   "stage": "P4",
+   "title": "合理质量/惯量/接触摩擦代理，区分物理支持证据和未经厂家授权的估计参数。",
+   "dependencies": [
+    "P1-09",
+    "P2-10",
+    "P3-08"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P4-03",
+   "stage": "P4",
+   "title": "轮毂/轮胎与底盘刚体的 articulation graph 有效性、root/motor placement、多环境可解析性。",
+   "dependencies": [
+    "P1-09",
+    "P2-10",
+    "P3-08"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P4-04",
+   "stage": "P4",
+   "title": "单轮低速开环旋转，记录关节角、实际轮速与电机目标/扭矩，先无地面后有地面。",
+   "dependencies": [
+    "P1-09",
+    "P2-10",
+    "P3-08"
+   ],
+   "status": "PARTIAL",
+   "owner": "main",
+   "head_sha": "5b74eb1",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_spin1_r02/result.json",
+   "latest_run_id": "P4p_spin1_r02",
+   "next_action": "P4_PROXY single wheel 1.771/2.0 rad/s; P4_REAL still BLOCKED on P1 loaded radius",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "re-pointed at commit 5b74eb1, which is the commit that actually contains the P4_PROXY run directories",
+     "old": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_spin1_r02/result.json",
+      "head_sha": "2fd84a3",
+      "latest_run_id": "P4p_spin1_r02"
+     },
+     "new": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_spin1_r02/result.json",
+      "head_sha": "5b74eb1",
+      "latest_run_id": "P4p_spin1_r02"
+     }
+    }
+   ]
+  },
+  {
+   "task_id": "P4-05",
+   "stage": "P4",
+   "title": "四轮同时正反低速旋转、位置与实际角速度同步，方向对照。",
+   "dependencies": [
+    "P1-09",
+    "P2-10",
+    "P3-08"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P4-06",
+   "stage": "P4",
+   "title": "平地低速直线前进/后退，\\`wheel rpm → chassis displacement\\` 由真实物理接触产生。",
+   "dependencies": [
+    "P1-09",
+    "P2-10",
+    "P3-08"
+   ],
+   "status": "PARTIAL",
+   "owner": "main",
+   "head_sha": "5b74eb1",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_rollneg_r02/result.json",
+   "latest_run_id": "P4p_rollneg_r02",
+   "next_action": "P4_PROXY straight roll +-1.215 m with <=0.14%% tracking and zero root writes",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "re-pointed at commit 5b74eb1, which is the commit that actually contains the P4_PROXY run directories",
+     "old": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_rollneg_r02/result.json",
+      "head_sha": "2fd84a3",
+      "latest_run_id": "P4p_rollneg_r02"
+     },
+     "new": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_rollneg_r02/result.json",
+      "head_sha": "5b74eb1",
+      "latest_run_id": "P4p_rollneg_r02"
+     }
+    }
+   ]
+  },
+  {
+   "task_id": "P4-07",
+   "stage": "P4",
+   "title": "低速纯转弯、不同转弯半径、轮滑及 yaw rate 的实测闭环。",
+   "dependencies": [
+    "P1-09",
+    "P2-10",
+    "P3-08"
+   ],
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "5b74eb1",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_turn_r04/result.json",
+   "latest_run_id": "P4p_turn_r04",
+   "next_action": "P4_PROXY differential yaw 1.4175 rad; only ONE valid run so far",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "re-pointed at commit 5b74eb1, which is the commit that actually contains the P4_PROXY run directories",
+     "old": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_turn_r03/result.json",
+      "head_sha": "2fd84a3",
+      "latest_run_id": "P4p_turn_r03"
+     },
+     "new": {
+      "status": "DONE",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4p_turn_r04/result.json",
+      "head_sha": "5b74eb1",
+      "latest_run_id": "P4p_turn_r04"
+     }
+    }
+   ]
+  },
+  {
+   "task_id": "P4-08",
+   "stage": "P4",
+   "title": "不同摩擦系数、载荷、地面接触法向变化的单因素对照，不宣称未知轮胎摩擦为真实。",
+   "dependencies": [
+    "P1-09",
+    "P2-10",
+    "P3-08"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P4-09",
+   "stage": "P4",
+   "title": "基于 joint/odom/ground truth 的速度控制器、坡道加减速、安全加速度限值（仅仿真）。",
+   "dependencies": [
+    "P1-09",
+    "P2-10",
+    "P3-08"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P4-10",
+   "stage": "P4",
+   "title": "里程计与 ground truth 误差、轮滑识别、静止驻停和急停 HOLD（仿真），完整错误路径。",
+   "dependencies": [
+    "P1-09",
+    "P2-10",
+    "P3-08"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P4-11",
+   "stage": "P4",
+   "title": "真实驱动不可用时独立代理可继续开发控制接口/单测但不得虚构“轮驱动已完成”；P4 达标自动解锁相关 P6 任务。",
+   "dependencies": [
+    "P1-09",
+    "P2-10",
+    "P3-08"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P5-01",
+   "stage": "P5",
+   "title": "将单臂关节事实与限位合同、P5 子代理 14 tests 证据整合至可运行测试。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P5-02",
+   "stage": "P5",
+   "title": "修复 \\`simulation/badminton_scene/reset.py\\` 的 **PiPER 默认 joint3=-1.5rad** 与 B601-RS \\`[0,3.14]rad\\` 不一致；按型号/DOF name 定义安全 reset，保留 PiPER 不变行为。",
+   "dependencies": [],
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "6672306",
+   "artifact": "simulation/badminton_scene/rest_pose.py",
+   "latest_run_id": "",
+   "next_action": "see PR #22",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P5-03",
+   "stage": "P5",
+   "title": "所有 rest pose 和随机 reset 关节值在 USD/URDF/应用合同内，缺有效值 FAIL/HOLD 而非静默 clamp。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P5-04",
+   "stage": "P5",
+   "title": "joint name→runtime DOF index 显式映射，不使用 USD stage 遍历顺序；角关节 USD gain 的度制/弧度换算验收。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P5-05",
+   "stage": "P5",
+   "title": "运动命令限位、速度/加速度/扭矩保护，以及 6 轴与夹爪 2 DOF 的独立归属。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P5-06",
+   "stage": "P5",
+   "title": "单环境 reset 负例：越限、错误名字、NaN、缺关节，确认异常路径不会触发危险目标。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P5-07",
+   "stage": "P5",
+   "title": "N=2 多环境实例隔离与 reset 随机化；实际支持再测 16/64/128，不能因显存不足硬跑。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P5-08",
+   "stage": "P5",
+   "title": "多环境吞吐、内存峰值、跨环境 state leakage、复现种子与掉线恢复。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P5-09",
+   "stage": "P5",
+   "title": "最小可复用 B601-RS controller API（state, joint targets, reset, hold, IK hook）与独立单测。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P6-01",
+   "stage": "P6",
+   "title": "审计球拍 GLB/USD 的单位、碰撞代理、安装法兰/末端 link 几何授权，源资产只读。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P6-02",
+   "stage": "P6",
+   "title": "球拍→末端→臂→底盘的 frame tree、相对转换、姿态/接触容差和基准配置。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "3540109",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/mounted_chain_v2.json",
+   "latest_run_id": "",
+   "next_action": "body1 localRot1 anchors extracted: 5 joints carry a 180 deg X flip; joint-chain vs pxr error 0.33242 m / pi rad -> 1.85e-09 m / 2.15e-08 rad; mounted_chain.json untouched (v1 and its open_issue preserved), 5 UNKNOWN edges still non-numeric",
+   "blocker": null,
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "P6-02 is a code+evidence task with no run directory; latest_run_id cleared",
+     "old_latest_run_id": "P6-02-OI-1"
+    }
+   ]
+  },
+  {
+   "task_id": "P6-03",
+   "stage": "P6",
+   "title": "D455 相机真实机型/镜头坐标（optical frame）与机器人 mount frame 区分，未标定外参 UNKNOWN。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P6-04",
+   "stage": "P6",
+   "title": "相机内参、分辨率、RGB-depth 对齐、帧率、深度单位、畸变参数的版本化元数据读取与校验。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "PARTIAL",
+   "owner": "subagent",
+   "head_sha": "d7672d5",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/camera_metadata.json",
+   "latest_run_id": null,
+   "next_action": "every D455 number UNKNOWN; only the optical-vs-mount convention proven",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P6-05",
+   "stage": "P6",
+   "title": "多坐标变换一致性（camera→base→world→racket）和米/毫米、左右手坐标的回归样例。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P6-06",
+   "stage": "P6",
+   "title": "RGB、Depth、机器人 state 时间戳、延迟/掉帧同步协议；真实硬件采集需相应权限，无硬件用回放测试。",
+   "dependencies": [
+    "P2-10",
+    "P6-03"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P6-07",
+   "stage": "P6",
+   "title": "模拟羽毛球 GLB/碰撞体、球拍包围盒和球-拍接触检测最小样例，代理标签不可冒充真实球动力学。",
+   "dependencies": [
+    "P2-10"
+   ],
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "0e87c5e",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/racket_collision_proxy.json",
+   "latest_run_id": null,
+   "next_action": "43 primitive proxy, 20000-sample surface containment 1.000000 within 1 mm, max_uncovered 0.614 mm; CC-BY low-poly, not a vendor collision model",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P6-08",
+   "stage": "P6",
+   "title": "单场景整机模型静态加载、碰撞、重力稳定、所有传感器发布有效和运行时零 NaN。",
+   "dependencies": [
+    "P2-10",
+    "P5-09"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P6-09",
+   "stage": "P6",
+   "title": "整机集成 manifest 和多环境能力 gate；完成后自动开放 P7 可控闭环试验。",
+   "dependencies": [
+    "P2-10",
+    "P5-09",
+    "P6-08"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-01",
+   "stage": "P7",
+   "title": "审核 YOLO 模型/data manifest、训练/验证视频分组防泄漏、标签/负样本、小尺寸 4–6 px 分布。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-02",
+   "stage": "P7",
+   "title": "可复现检测推理基线：置信度、召回、误检、按球像素大小分桶；GPU 不可用则标 NOT RUN。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-03",
+   "stage": "P7",
+   "title": "640/960/1280 以及 crop/tiling 的真实精度-延迟对照，不能只比较训练 loss。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-04",
+   "stage": "P7",
+   "title": "检测器输出统一 \\`timestamp, frame_id, bbox, confidence, pixel_covariance\\`，接口/单位单测。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "PARTIAL",
+   "owner": "subagent",
+   "head_sha": "8150b2a",
+   "artifact": "src/perception/shuttle_detection/detection_output.py",
+   "latest_run_id": null,
+   "next_action": "delivered+tested (PR #27); queue dependency model ties it to P5-09/P6-09, revisit in A02",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-05",
+   "stage": "P7",
+   "title": "EKF/其他时序滤波器状态定义、过程噪声、测量噪声和离群拒绝，支持只见 2D 时保持像面状态。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "PARTIAL",
+   "owner": "subagent",
+   "head_sha": "8150b2a",
+   "artifact": "src/badminton_brain/estimation/shuttle_state_ekf.py",
+   "latest_run_id": null,
+   "next_action": "delivered+tested (PR #27); 3D upgrade still needs calibration",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-06",
+   "stage": "P7",
+   "title": "若有可信深度/双目和标定，才升级三维 \\`position/velocity/cov\\`；不得把 2D bbox 当真实三维。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-07",
+   "stage": "P7",
+   "title": "0.3–0.8 s 球轨迹预测的统一 horizon、误差/置信区间/观测缺失处理和分场景回放。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "PARTIAL",
+   "owner": "subagent",
+   "head_sha": "8150b2a",
+   "artifact": "src/badminton_brain/prediction/horizon_prediction.py",
+   "latest_run_id": null,
+   "next_action": "delivered+tested; CI covers 0% under drag mismatch (pinned negative result)",
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-08",
+   "stage": "P7",
+   "title": "视觉测量延迟、球速/小目标噪声的传播，输出预测不确定度与过期帧拒绝。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-09",
+   "stage": "P7",
+   "title": "球拍可达工作空间、机械臂限位、IK、多候选击球时间点、避障/自碰撞。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-10",
+   "stage": "P7",
+   "title": "安全 FSM：SEARCH/TRACK/PREDICT/PLAN/EXECUTE/HOLD；置信度不足、时间超限、不可达时进入 HOLD。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-11",
+   "stage": "P7",
+   "title": "固定静止球、低速确定性来球、低扰动轨迹三种仿真序列，逐级启用真实闭环。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-12",
+   "stage": "P7",
+   "title": "低速击球复现统计：每组 trial 数、检测率、预测位置误差、实际接触率、有效回球率、失败案例。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P7-13",
+   "stage": "P7",
+   "title": "端到端推理与控制延迟预算、帧同步、异常恢复、冷启动/重复任务一致性回放；不能用离线轨迹 loss 替代击球成功率。",
+   "dependencies": [
+    "P5-09",
+    "P6-09"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P8-01",
+   "stage": "P8",
+   "title": "仅搭建训练接口设计 \\`observation/action/reward/reset/termination\\` 和 schema/形状测试，不启动 PPO。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P8-02",
+   "stage": "P8",
+   "title": "安全 reward 候选与约束指标（距离、碰撞、速度、成功、超时），先离线可计算性验证。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P8-03",
+   "stage": "P8",
+   "title": "训练/验证/测试随机种子分离、任务 difficulty curriculum、不可泄漏记录。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P8-04",
+   "stage": "P8",
+   "title": "非 RL 基线（有限状态/可达性/简单跟踪控制）和同口径任务成功率评测协议。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P8-05",
+   "stage": "P8",
+   "title": "PPO 预算门禁文件：GPU/训练时间上限、安全守卫、可恢复 checkpoint、停止条件和回滚。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P8-06",
+   "stage": "P8",
+   "title": "算法设计与离线 mock tests；实际 PPO 训练**须用户再次明确授权并满足 P5/P6/P7 门禁**。",
+   "dependencies": [
+    "P7-13"
+   ],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P8-07",
+   "stage": "P8",
+   "title": "真机实验风险清单、急停/Watchdog/人工安全区域/速度限制方案仅写文档，**禁止向实体机器人发送动作**。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  },
+  {
+   "task_id": "P8-08",
+   "stage": "P8",
+   "title": "未来研究扩展（不冒充已实现）：主动感知、VLA 策略接口/数据记录、感知→计划→动作的失败归因与评测方案。",
+   "dependencies": [],
+   "status": "UNKNOWN",
+   "owner": null,
+   "head_sha": null,
+   "artifact": null,
+   "latest_run_id": null,
+   "next_action": null,
+   "blocker": null,
+   "last_error": null
+  }
+ ]
 }
