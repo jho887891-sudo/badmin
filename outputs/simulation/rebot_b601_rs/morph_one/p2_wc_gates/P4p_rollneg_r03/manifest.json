@@ -1,0 +1,16 @@
+{
+ "stage": "P4_PROXY",
+ "run_id": "P4p_rollneg_r03",
+ "scene_variant": "P4_PROXY_WHEEL_DRIVE",
+ "profile": "roll_neg_y",
+ "physics_dt_s": 0.008333333333333333,
+ "steps": 360,
+ "gravity_m_s2": [
+  0.0,
+  0.0,
+  -9.81
+ ],
+ "preregistration": "management/morph_one_rs/PHASE_P4_PROXY_PREREG.md",
+ "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+ "command": "/home/dgut/runs/g/scripts/simulation/p4_proxy_wheel_drive.py --run-id P4p_rollneg_r03 --out-dir /home/dgut/runs/g/P4p_rollneg_r03 --profile roll_neg_y --read-contacts"
+}
