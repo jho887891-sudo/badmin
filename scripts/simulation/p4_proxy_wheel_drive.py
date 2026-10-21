@@ -49,6 +49,7 @@ BODY_CENTRE = (0.0, -0.0024, -0.0404)
 CHASSIS_MASS_KG = 16.0
 WHEEL_MASS_KG = 1.0
 TOTAL_MASS_KG = CHASSIS_MASS_KG + 4.0 * WHEEL_MASS_KG
+PAYLOAD_HALF = (0.15, 0.125, 0.075)    # 0.30 x 0.25 x 0.15 m TEST_PROXY payload box
 GROUND_CLEARANCE_M = 0.02
 DT = 1.0 / 120.0
 TAIL_STEPS = 60
@@ -66,6 +67,8 @@ PROFILES = {
     "roll_neg_y": ([4.0, 4.0, 4.0, 4.0], 360, "straight roll, chassis -Y expected"),
     "roll_pos_y": ([-4.0, -4.0, -4.0, -4.0], 360, "straight roll reversed, chassis +Y expected"),
     "turn": ([3.0, 3.0, -3.0, -3.0], 360, "left/right opposed, yaw expected"),
+    "hold_still": ([0.0, 0.0, 0.0, 0.0], 240,
+                   "NEGATIVE CONTROL: zero wheel targets, the chassis must NOT move"),
 }
 
 PARSER = argparse.ArgumentParser(description="P4 PROXY four-wheel drive (no root writes)")
@@ -75,6 +78,15 @@ PARSER.add_argument("--profile", required=True, choices=sorted(PROFILES))
 PARSER.add_argument("--steps", type=int, default=0, help="0 = use the profile default")
 PARSER.add_argument("--gravity-z", type=float, default=-9.81)
 PARSER.add_argument("--read-contacts", action="store_true")
+PARSER.add_argument("--friction", type=float, default=0.8,
+                    help="ground static/dynamic friction coefficient (TEST_PROXY value, not "
+                         "vendor data). Single factor: only ONE of friction/payload/speed may "
+                         "differ between two runs.")
+PARSER.add_argument("--payload-kg", type=float, default=0.0,
+                    help="extra payload rigid body fixed on the chassis (TEST_PROXY mass), "
+                         "box 0.30 x 0.25 x 0.15 m centred 0.15 m above the chassis origin")
+PARSER.add_argument("--wheel-speed", type=float, default=None,
+                    help="override the straight-roll wheel speed magnitude in rad/s")
 AppLauncher.add_app_launcher_args(PARSER)
 ARGS = PARSER.parse_args()
 LAUNCHER = AppLauncher(ARGS)
@@ -110,7 +122,7 @@ def yaw_of(quat_wxyz):
     return float(math.atan2(2.0 * (w * z + x * y), 1.0 - 2.0 * (y * y + z * z)))
 
 
-def author(path, lift):
+def author(path, lift, payload_kg=0.0):
     stage = Usd.Stage.CreateNew(path)
     UsdGeom.SetStageMetersPerUnit(stage, 1.0)
     UsdGeom.SetStageUpAxis(stage, UsdGeom.Tokens.z)
@@ -171,22 +183,56 @@ def author(path, lift):
         drive.CreateDampingAttr(40.0)
         drive.CreateMaxForceAttr(400.0)
         drive.CreateTargetVelocityAttr(0.0)
+
+    if payload_kg > 0.0:
+        # Load single-factor: a documented extra rigid body fixed on the chassis top, with
+        # its own mass/COM/inertia, so the run records WHERE the extra mass sits instead of
+        # silently inflating the chassis MassAPI (which would leave the inertia untouched).
+        payload = UsdGeom.Xform.Define(stage, Sdf.Path("/PD/payload"))
+        UsdGeom.Xformable(payload).AddTranslateOp().Set(
+            Gf.Vec3f(0.0, 0.0, 0.15 + lift))
+        pay_geom = UsdGeom.Cube.Define(stage, Sdf.Path("/PD/payload/geometry"))
+        pay_geom.CreateSizeAttr(1.0)
+        UsdGeom.Xformable(pay_geom.GetPrim()).AddScaleOp().Set(
+            Gf.Vec3f(PAYLOAD_HALF[0] * 2, PAYLOAD_HALF[1] * 2, PAYLOAD_HALF[2] * 2))
+        UsdPhysics.CollisionAPI.Apply(pay_geom.GetPrim())
+        UsdPhysics.RigidBodyAPI.Apply(payload.GetPrim())
+        pay_mass = UsdPhysics.MassAPI.Apply(payload.GetPrim())
+        pay_mass.CreateMassAttr(float(payload_kg))
+        pay_mass.CreateCenterOfMassAttr(Gf.Vec3f(0.0))
+        pay_joint = UsdPhysics.FixedJoint.Define(stage, Sdf.Path("/PD/joint_payload"))
+        pay_joint.CreateBody0Rel().SetTargets([Sdf.Path("/PD/Chassis")])
+        pay_joint.CreateBody1Rel().SetTargets([Sdf.Path("/PD/payload")])
+        pay_joint.CreateLocalPos0Attr().Set(Gf.Vec3f(0.0, 0.0, 0.15))
+        pay_joint.CreateLocalPos1Attr().Set(Gf.Vec3f(0.0))
+        pay_joint.CreateLocalRot0Attr().Set(Gf.Quatf(1.0, 0.0, 0.0, 0.0))
+        pay_joint.CreateLocalRot1Attr().Set(Gf.Quatf(1.0, 0.0, 0.0, 0.0))
+
     stage.GetRootLayer().Save()
-    return {"usd": os.path.abspath(path)}
+    return {"usd": os.path.abspath(path), "payload_kg": float(payload_kg)}
 
 
 def main():
     out_dir = os.path.abspath(ARGS.out_dir)
     os.makedirs(out_dir, exist_ok=True)
     targets, default_steps, description = PROFILES[ARGS.profile]
+    if ARGS.wheel_speed is not None:
+        magnitude = float(ARGS.wheel_speed)
+        targets = [magnitude if t > 0 else (-magnitude if t < 0 else 0.0) for t in targets]
     steps = ARGS.steps or default_steps
     lift = WHEEL_RADIUS_M + abs(WHEEL_AXLES[0][2]) + GROUND_CLEARANCE_M   # 0.347 + 0.02
-    authored = author(os.path.join(out_dir, "authored_p4_proxy.usda"), lift)
+    authored = author(os.path.join(out_dir, "authored_p4_proxy.usda"), lift,
+                      float(ARGS.payload_kg))
 
     physics = PhysxCfg(solver_type=1, enable_external_forces_every_iteration=True)
     sim = sim_utils.SimulationContext(sim_utils.SimulationCfg(
         dt=DT, device="cuda:0", gravity=(0.0, 0.0, float(ARGS.gravity_z)), physics=physics))
-    ground = sim_utils.GroundPlaneCfg()
+    # friction single factor: the SAME material is applied to the ground plane only, so
+    # wheel/ground friction can be changed without touching geometry, mass or drive.
+    ground = sim_utils.GroundPlaneCfg(physics_material=sim_utils.RigidBodyMaterialCfg(
+        static_friction=float(ARGS.friction),
+        dynamic_friction=float(ARGS.friction),
+        restitution=0.0))
     ground.func("/World/ground", ground)
     spawn = sim_utils.UsdFileCfg(usd_path=authored["usd"], activate_contact_sensors=True)
     spawn.func("/World/PD", spawn)
@@ -255,9 +301,13 @@ def main():
         raw = [float(v) for v in
                _np(robot.data.body_quat_w[0, chassis_index]).reshape(-1)[:4]]
         wheel_omega = {}
+        wheel_pos = {}
         for wheel, joint_name in enumerate(wheel_joint_names):
             wheel_omega["wheel%d" % (wheel + 1)] = round(
                 float(_np(robot.data.joint_vel[0, joint_index[joint_name]])), 9)
+            # integrated joint angle -> needed for the MEASURED rolling radius
+            wheel_pos["wheel%d" % (wheel + 1)] = round(
+                float(_np(robot.data.joint_pos[0, joint_index[joint_name]])), 9)
         contacts = {}
         for name, sensor in sensors.items():
             try:
@@ -270,6 +320,7 @@ def main():
                "chassis_pos": [round(v, 12) for v in chassis_pos],
                "chassis_yaw_rad": round(yaw_of(raw_to_wxyz(raw)), 9),
                "wheel_omega_rad_s": wheel_omega,
+               "wheel_pos_rad": wheel_pos,
                "wheel_target_rad_s": {("wheel%d" % (i + 1)): round(float(targets[i]), 9)
                                        for i in range(4)},
                "contact_by_sensor_n": contacts,
@@ -303,8 +354,50 @@ def main():
                         if value is not None], default=None)
     yaw_change = abs(frames[-1]["chassis_yaw_rad"] - frames[0]["chassis_yaw_rad"])
 
+    # measured rolling radius: delta-distance / delta-MEASURED-joint-angle (NOT commanded
+    # rpm). The old field divided by the commanded angular velocity and was therefore
+    # always 0 (an UNKNOWN, per the PR #35 report).
+    import math as _math
+
+    wheel_delta_theta = {}
+    for i in range(4):
+        name = "wheel%d" % (i + 1)
+        q0 = frames[0]["wheel_pos_rad"][name]
+        q1 = frames[-1]["wheel_pos_rad"][name]
+        wheel_delta_theta[name] = float(q1 - q0)
+    roll_axis = 1          # rolling is along world Y for a common +X axle
+    delta_roll = float(displacement[roll_axis])
+    measured_radius = {}
+    for name, delta_theta in wheel_delta_theta.items():
+        if abs(delta_theta) > 1e-3 and abs(delta_roll) > 1e-3:
+            measured_radius[name] = round(abs(delta_roll) / abs(delta_theta), 6)
+        else:
+            measured_radius[name] = None
+    radii = [v for v in measured_radius.values() if v is not None]
+    radius_error = ([round(abs(v - WHEEL_RADIUS_M) / WHEEL_RADIUS_M, 6) for v in radii]
+                    if radii else [])
+    # mass / COM / inertia audit (feeds P4-02)
+    def body_audit():
+        out = {"source": "PhysX runtime via root_physx_view", "available": {}}
+        for field, getter in (("masses", "get_masses"), ("coms", "get_coms"),
+                              ("inertias", "get_inertias")):
+            try:
+                method = getattr(robot.root_physx_view, getter, None)
+                if method is None:
+                    out["available"][field] = "API_ABSENT"
+                    continue
+                values = _np(method())
+                out["available"][field] = _np(values).reshape(-1, np.shape(values)[-1]
+                                                     ).tolist() if np.ndim(values) > 1 else \
+                    [float(v) for v in _np(values).reshape(-1)]
+            except Exception as exc:
+                out["available"][field] = "FAILED: %s" % type(exc).__name__
+        return out
+
     thresholds = {"speed_tracking_rel": 0.20, "min_displacement_m": 0.01,
-                  "contact_force_n": 1.0, "tail_speed_max_m_s": 5.0}
+                  "contact_force_n": 1.0, "tail_speed_max_m_s": 5.0,
+                  "hold_still_m": 1e-3, "hold_still_rad": 1e-3,
+                  "rolling_radius_rel": 0.10}
     gates = {
         "all_finite": all(frame["finite"] for frame in frames),
         "no_root_pose_write": ROOT_WRITES["count"] == 0,
@@ -321,6 +414,17 @@ def main():
             sign * displacement[1] >= thresholds["min_displacement_m"])
     if ARGS.profile == "turn":
         gates["yaw_changed"] = bool(yaw_change >= 0.05)
+    if ARGS.profile == "hold_still":
+        # NEGATIVE CONTROL: with zero wheel targets the chassis must not move at all.
+        gates["no_motion_without_drive"] = bool(
+            float(np.linalg.norm(displacement[:2])) <= thresholds["hold_still_m"]
+            and yaw_change <= thresholds["hold_still_rad"])
+    if ARGS.profile in ("roll_neg_y", "roll_pos_y") and radii:
+        # the measured rolling radius must match the P1 v2 geometric value, otherwise the
+        # chassis is sliding rather than rolling (or the drive/direction is wrong)
+        gates["measured_rolling_radius_consistent"] = bool(
+            max(radius_error) <= thresholds["rolling_radius_rel"])
+    audit = body_audit()
     gate = "PASS" if all(gates.values()) else "FAIL"
 
     result = {
@@ -355,11 +459,15 @@ def main():
             "tail_chassis_speed_m_s": round(tail_speed, 9),
             "yaw_change_rad": round(yaw_change, 9),
             "peak_contact_force_n": peak_contact,
-            "distance_per_wheel_revolution_m": [
-                round(float(displacement[0] / (tail_omega["wheel%d" % (i + 1)] * (steps * DT))
-                            * 2.0 * math.pi * WHEEL_RADIUS_M)
-                      if abs(tail_omega["wheel%d" % (i + 1)]) > 1e-6 else None)
-                for i in range(4)],
+            # DEPRECATED (kept only for lineage): the old field divided by the COMMANDED
+            # angular velocity and always produced 0 -> treated as UNKNOWN, never as a radius.
+            "distance_per_wheel_revolution_m_deprecated": "UNKNOWN (old field was wrong)",
+            "wheel_delta_theta_rad": {k: round(v, 9) for k, v in wheel_delta_theta.items()},
+            "measured_rolling_radius_m": measured_radius,
+            "measured_rolling_radius_rel_error": radius_error,
+            "measured_rolling_radius_basis": ("|delta chassis Y| / |delta MEASURED joint "
+                                              "angle|; includes any slip, so it is an "
+                                              "effective radius, not the tyre radius"),
             "steps": steps,
         },
         "thresholds": thresholds, "gates": gates,
@@ -369,6 +477,13 @@ def main():
             "body_names": body_names, "joint_names": joint_names,
             "dofs": int(robot.data.joint_pos.shape[1]),
             "gravity_m_s2": [0.0, 0.0, float(ARGS.gravity_z)],
+            "friction_coefficient": float(ARGS.friction),
+            "friction_source": "TEST_PROXY value set on the ground material; not vendor data",
+            "payload_kg": float(ARGS.payload_kg),
+            "payload_body": ("/PD/payload box 0.30x0.25x0.15 m at +0.15 m above the chassis "
+                             "origin, FixedJoint to the chassis" if ARGS.payload_kg > 0
+                             else None),
+            "body_audit": audit,
             "note": ("P4_PROXY only: verified axle/radius geometry with a CYLINDER tread proxy "
                      "and proxy masses. Not P4_REAL, not the vendor physical model."),
         },
@@ -379,6 +494,10 @@ def main():
         json.dump({"stage": "P4_PROXY", "run_id": ARGS.run_id,
                    "scene_variant": "P4_PROXY_WHEEL_DRIVE", "profile": ARGS.profile,
                    "physics_dt_s": DT, "steps": steps,
+                   "friction_coefficient": float(ARGS.friction),
+                   "payload_kg": float(ARGS.payload_kg),
+                   "single_factor_note": ("exactly one of friction / payload / wheel speed may "
+                                          "differ between two runs of the P4-08 matrix"),
                    "gravity_m_s2": [0.0, 0.0, float(ARGS.gravity_z)],
                    "preregistration": "management/morph_one_rs/PHASE_P4_PROXY_PREREG.md",
                    "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
