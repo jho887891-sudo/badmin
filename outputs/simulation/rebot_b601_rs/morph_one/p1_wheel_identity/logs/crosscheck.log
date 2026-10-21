@@ -1,0 +1,21 @@
+# CMD: python scripts/simulation/p1_check_wheel_parts_csv.py --rev 53d71ff --csv outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/step_remeasure.csv --json outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/step_remeasure.json --repo-root <main-worktree> --eids 435700,759491,773650,871375
+historical source: 53d71ff:outputs/simulation/rebot_b601_rs/morph_one/wheels_b0853ef/wheel_parts.csv
+435700  size old=[48.653, 180.782, 157.783] new=[48.653, 180.782, 157.783] equal=True
+      circular_features old=260  CIRCLE=136 + CYLINDRICAL_SURFACE=124 = 260  equal=True
+      max_circle_radius old=103.0 new=103.0 equal=True
+      this round adds: vertex_points=250 cartesian_points=7763 envelope_bbox=[50.5238, 206.0, 206.0]
+759491  size old=[48.653, 180.782, 157.783] new=[48.653, 180.782, 157.783] equal=True
+      circular_features old=260  CIRCLE=136 + CYLINDRICAL_SURFACE=124 = 260  equal=True
+      max_circle_radius old=103.0 new=103.0 equal=True
+      this round adds: vertex_points=250 cartesian_points=7763 envelope_bbox=[50.5238, 206.0, 206.0]
+773650  size old=[48.653, 180.782, 157.783] new=[48.653, 180.782, 157.783] equal=True
+      circular_features old=260  CIRCLE=136 + CYLINDRICAL_SURFACE=124 = 260  equal=True
+      max_circle_radius old=103.0 new=103.0 equal=True
+      this round adds: vertex_points=250 cartesian_points=7763 envelope_bbox=[50.5238, 206.0, 206.0]
+871375  size old=[48.653, 180.782, 157.783] new=[48.653, 180.782, 157.783] equal=True
+      circular_features old=260  CIRCLE=136 + CYLINDRICAL_SURFACE=124 = 260  equal=True
+      max_circle_radius old=103.0 new=103.0 equal=True
+      this round adds: vertex_points=250 cartesian_points=7763 envelope_bbox=[50.5238, 206.0, 206.0]
+
+CROSSCHECK PASS
+# EXIT=0

@@ -1,0 +1,17 @@
+# CMD: python scripts/simulation/p1_step_solid_surface_bbox.py --step <scratch>/M1-4WD4S_model2601.step --eids 435700,759491,773650,871375 --out-json outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/step_remeasure.json --out-csv outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/step_remeasure.csv
+STEP file      : E:\��������\badmin_project\_scratch_downloads\M1-4WD4S_model2601.step (115496178 bytes)
+file_schema    : CONFIG_CONTROL_DESIGN
+declared units : {"si_unit_tokens": [" $, .RADIAN. ", " $, .STERADIAN. ", " .MILLI., .METRE. "], "conversion_based_units": [], "global_unit_context": [" ( #120813, #136850, #699449 "], "file_schema": "CONFIG_CONTROL_DESIGN"}
+parse warnings : 0
+
+eid      verts  circ  cyl  maxR_mm  vertex bbox (mm)              envelope bbox (mm)
+------------------------------------------------------------------------------------
+435700   250    136   124  103.0    48.653 x 180.782 x 157.783     50.524 x 206.000 x 206.000
+759491   250    136   124  103.0    48.653 x 180.782 x 157.783     50.524 x 206.000 x 206.000
+773650   250    136   124  103.0    48.653 x 180.782 x 157.783     50.524 x 206.000 x 206.000
+871375   250    136   124  103.0    48.653 x 180.782 x 157.783     50.524 x 206.000 x 206.000
+
+wrote outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/step_remeasure.json
+wrote outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/step_remeasure.csv
+# EXIT=0
+# ELAPSED_S=43.3

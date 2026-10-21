@@ -1,0 +1,17 @@
+# CMD: ssh dgut@172.31.68.251 'cd /home/dgut/runs/p1_wheel_identity && /home/T7/ojh/robot_sim/env_isaaclab/bin/python p1_usd_wheel_prim_measure.py --usda /home/T7/dgut/runs/cad_dev/usd/M1-4WD4S_model2601_dev.usda --mapping /home/dgut/runs/wheels/mapping.json --eids 435700,759491,773650,871375 --out-json p1_usd_wheel_prim_measure.json --out-csv p1_usd_wheel_prim_measure.csv; echo REMOTE_EXIT=$?'
+usda                 : /home/T7/dgut/runs/cad_dev/usd/M1-4WD4S_model2601_dev.usda
+stage metersPerUnit  : 0.001
+stage upAxis         : Z
+mapping pairs        : 282 (unique eids 282)
+
+eid      pts     faces  shells  world bbox (mm)                  r_max_mm  axis
+-------------------------------------------------------------------------------
+435700   6354    7900   122     48.791 x 205.991 x 205.991       103.000022 x
+759491   6354    7900   122     48.791 x 205.991 x 205.991       103.000022 x
+773650   6354    7900   122     48.791 x 205.991 x 205.991       103.000022 x
+871375   6354    7900   122     48.791 x 205.991 x 205.991       103.000022 x
+
+wrote p1_usd_wheel_prim_measure.json
+wrote p1_usd_wheel_prim_measure.csv
+REMOTE_EXIT=0
+# SSH_EXIT=0

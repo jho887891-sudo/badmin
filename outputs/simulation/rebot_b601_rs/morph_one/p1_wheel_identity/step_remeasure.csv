@@ -1,0 +1,5 @@
+step_eid,step_name,vertex_points,circle_count,cylindrical_surface_count,max_circle_radius_mm,vertex_bbox_x_mm,vertex_bbox_y_mm,vertex_bbox_z_mm,envelope_bbox_x_mm,envelope_bbox_y_mm,envelope_bbox_z_mm
+435700,NONE,250,136,124,103.0,48.6527,180.782,157.7827,50.5238,206.0,206.0
+759491,NONE,250,136,124,103.0,48.6527,180.782,157.7827,50.5238,206.0,206.0
+773650,NONE,250,136,124,103.0,48.6527,180.782,157.7827,50.5238,206.0,206.0
+871375,NONE,250,136,124,103.0,48.6527,180.782,157.7827,50.5238,206.0,206.0

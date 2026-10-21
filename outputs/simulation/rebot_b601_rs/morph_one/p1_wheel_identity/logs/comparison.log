@@ -1,0 +1,19 @@
+# CMD: python scripts/simulation/p1_wheel_identity_compare.py --step-json outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/step_remeasure.json --usd-json outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/usd_remeasure.json --out-json outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/comparison.json --out-csv outputs/simulation/rebot_b601_rs/morph_one/p1_wheel_identity/comparison.csv
+eid      stepverts usdpts  stepVertex bbox (mm)             envelope bbox (mm)             usd bbox (mm)                    Rstep    Rusd
+-----------------------------------------------------------------------------------------------------------------------------------------
+435700   250       6354    48.653 x 180.782 x 157.783      50.524 x 206.000 x 206.000     48.791 x 205.991 x 205.991       103.0    103.000022
+759491   250       6354    48.653 x 180.782 x 157.783      50.524 x 206.000 x 206.000     48.791 x 205.991 x 205.991       103.0    103.000022
+773650   250       6354    48.653 x 180.782 x 157.783      50.524 x 206.000 x 206.000     48.791 x 205.991 x 205.991       103.0    103.000022
+871375   250       6354    48.653 x 180.782 x 157.783      50.524 x 206.000 x 206.000     48.791 x 205.991 x 205.991       103.0    103.000022
+
+hypothesis verdicts:
+  unit_mismatch                      FAIL
+  bbox_computation_method            PASS
+  merged_multiple_entities           UNKNOWN
+  mapping_candidate_mismatch         FAIL
+  hub_vs_tyre_two_entities           UNKNOWN
+  overall                            PARTIAL
+
+wrote outputs\simulation\rebot_b601_rs\morph_one\p1_wheel_identity\comparison.json
+wrote outputs\simulation\rebot_b601_rs\morph_one\p1_wheel_identity\comparison.csv
+# EXIT=0

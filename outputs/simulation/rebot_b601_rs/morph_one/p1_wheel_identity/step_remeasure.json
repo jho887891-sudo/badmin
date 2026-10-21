@@ -1,0 +1,764 @@
+{
+  "tool": "p1_step_solid_surface_bbox.py",
+  "step_path": "E:\\具身智能\\badmin_project\\_scratch_downloads\\M1-4WD4S_model2601.step",
+  "step_size_bytes": 115496178,
+  "file_schema": "CONFIG_CONTROL_DESIGN",
+  "units": {
+    "si_unit_tokens": [
+      " $, .RADIAN. ",
+      " $, .STERADIAN. ",
+      " .MILLI., .METRE. "
+    ],
+    "conversion_based_units": [],
+    "global_unit_context": [
+      " ( #120813, #136850, #699449 "
+    ],
+    "file_schema": "CONFIG_CONTROL_DESIGN"
+  },
+  "parse_warnings": 0,
+  "requested_eids": [
+    435700,
+    759491,
+    773650,
+    871375
+  ],
+  "solids": [
+    {
+      "step_eid": 435700,
+      "step_type": "MANIFOLD_SOLID_BREP",
+      "step_name": "NONE",
+      "closure_entities": 11633,
+      "vertex_points": 250,
+      "cartesian_points_in_closure": 7763,
+      "circle_count": 136,
+      "cylindrical_surface_count": 124,
+      "ellipse_count": 0,
+      "spline_control_points": 7073,
+      "max_circle_radius_mm": 103.0,
+      "max_cylinder_radius_mm": 68.5,
+      "top_circles": [
+        {
+          "entity_id": 371030,
+          "radius_mm": 103.0,
+          "centre_mm": [
+            250.0,
+            -244.0,
+            -297.0
+          ],
+          "axis": [
+            1.0,
+            -0.0,
+            -0.0
+          ]
+        },
+        {
+          "entity_id": 978483,
+          "radius_mm": 103.0,
+          "centre_mm": [
+            250.0,
+            -244.0,
+            -297.0
+          ],
+          "axis": [
+            1.0,
+            -0.0,
+            -0.0
+          ]
+        },
+        {
+          "entity_id": 544046,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            229.5,
+            -244.0,
+            -297.0
+          ],
+          "axis": [
+            1.0,
+            -0.0,
+            -0.0
+          ]
+        },
+        {
+          "entity_id": 632431,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            229.5,
+            -244.0,
+            -297.0
+          ],
+          "axis": [
+            1.0,
+            -0.0,
+            -0.0
+          ]
+        },
+        {
+          "entity_id": 807842,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            270.5,
+            -244.0,
+            -297.0
+          ],
+          "axis": [
+            1.0,
+            -0.0,
+            -0.0
+          ]
+        }
+      ],
+      "vertex_bbox": {
+        "min": [
+          225.616,
+          -334.391,
+          -375.8924
+        ],
+        "max": [
+          274.2687,
+          -153.609,
+          -218.1096
+        ],
+        "size": [
+          48.6527,
+          180.782,
+          157.7827
+        ],
+        "centre": [
+          249.9423,
+          -244.0,
+          -297.001
+        ]
+      },
+      "surface_envelope_bbox": {
+        "min": [
+          224.7381,
+          -347.0,
+          -400.0
+        ],
+        "max": [
+          275.2619,
+          -141.0,
+          -194.0
+        ],
+        "size": [
+          50.5238,
+          206.0,
+          206.0
+        ],
+        "centre": [
+          250.0,
+          -244.0,
+          -297.0
+        ]
+      },
+      "all_points_bbox": {
+        "min": [
+          225.5904,
+          -334.391,
+          -381.5004
+        ],
+        "max": [
+          274.4001,
+          -153.609,
+          -212.4999
+        ],
+        "size": [
+          48.8098,
+          180.782,
+          169.0006
+        ],
+        "centre": [
+          249.9953,
+          -244.0,
+          -297.0002
+        ]
+      },
+      "type_counts": {
+        "CARTESIAN_POINT": 7763,
+        "ORIENTED_EDGE": 772,
+        "DIRECTION": 766,
+        "EDGE_CURVE": 386,
+        "AXIS2_PLACEMENT_3D": 326,
+        "VERTEX_POINT": 250,
+        "EDGE_LOOP": 244,
+        "ADVANCED_FACE": 190,
+        "FACE_OUTER_BOUND": 190,
+        "CIRCLE": 136,
+        "B_SPLINE_CURVE_WITH_KNOTS": 136,
+        "CYLINDRICAL_SURFACE": 124
+      },
+      "vertex_bbox_helper": {
+        "min": [
+          225.616,
+          -334.391,
+          -375.8924
+        ],
+        "max": [
+          274.2687,
+          -153.609,
+          -218.1096
+        ],
+        "size": [
+          48.6527,
+          180.782,
+          157.7827
+        ],
+        "vertex_points": 250
+      }
+    },
+    {
+      "step_eid": 759491,
+      "step_type": "MANIFOLD_SOLID_BREP",
+      "step_name": "NONE",
+      "closure_entities": 11633,
+      "vertex_points": 250,
+      "cartesian_points_in_closure": 7763,
+      "circle_count": 136,
+      "cylindrical_surface_count": 124,
+      "ellipse_count": 0,
+      "spline_control_points": 7073,
+      "max_circle_radius_mm": 103.0,
+      "max_cylinder_radius_mm": 68.5,
+      "top_circles": [
+        {
+          "entity_id": 661366,
+          "radius_mm": 103.0,
+          "centre_mm": [
+            250.0,
+            -244.0,
+            297.0
+          ],
+          "axis": [
+            1.0,
+            -0.0,
+            0.0
+          ]
+        },
+        {
+          "entity_id": 1067208,
+          "radius_mm": 103.0,
+          "centre_mm": [
+            250.0,
+            -244.0,
+            297.0
+          ],
+          "axis": [
+            1.0,
+            -0.0,
+            0.0
+          ]
+        },
+        {
+          "entity_id": 129764,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            229.5,
+            -244.0,
+            297.0
+          ],
+          "axis": [
+            1.0,
+            -0.0,
+            0.0
+          ]
+        },
+        {
+          "entity_id": 145342,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            229.5,
+            -244.0,
+            297.0
+          ],
+          "axis": [
+            1.0,
+            -0.0,
+            0.0
+          ]
+        },
+        {
+          "entity_id": 441864,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            270.5,
+            -244.0,
+            297.0
+          ],
+          "axis": [
+            1.0,
+            -0.0,
+            0.0
+          ]
+        }
+      ],
+      "vertex_bbox": {
+        "min": [
+          225.616,
+          -334.391,
+          218.1096
+        ],
+        "max": [
+          274.2687,
+          -153.609,
+          375.8924
+        ],
+        "size": [
+          48.6527,
+          180.782,
+          157.7827
+        ],
+        "centre": [
+          249.9423,
+          -244.0,
+          297.001
+        ]
+      },
+      "surface_envelope_bbox": {
+        "min": [
+          224.7381,
+          -347.0,
+          194.0
+        ],
+        "max": [
+          275.2619,
+          -141.0,
+          400.0
+        ],
+        "size": [
+          50.5238,
+          206.0,
+          206.0
+        ],
+        "centre": [
+          250.0,
+          -244.0,
+          297.0
+        ]
+      },
+      "all_points_bbox": {
+        "min": [
+          225.5904,
+          -334.391,
+          212.4999
+        ],
+        "max": [
+          274.4001,
+          -153.609,
+          381.5004
+        ],
+        "size": [
+          48.8098,
+          180.782,
+          169.0006
+        ],
+        "centre": [
+          249.9953,
+          -244.0,
+          297.0002
+        ]
+      },
+      "type_counts": {
+        "CARTESIAN_POINT": 7763,
+        "ORIENTED_EDGE": 772,
+        "DIRECTION": 766,
+        "EDGE_CURVE": 386,
+        "AXIS2_PLACEMENT_3D": 326,
+        "VERTEX_POINT": 250,
+        "EDGE_LOOP": 244,
+        "ADVANCED_FACE": 190,
+        "FACE_OUTER_BOUND": 190,
+        "CIRCLE": 136,
+        "B_SPLINE_CURVE_WITH_KNOTS": 136,
+        "CYLINDRICAL_SURFACE": 124
+      },
+      "vertex_bbox_helper": {
+        "min": [
+          225.616,
+          -334.391,
+          218.1096
+        ],
+        "max": [
+          274.2687,
+          -153.609,
+          375.8924
+        ],
+        "size": [
+          48.6527,
+          180.782,
+          157.7827
+        ],
+        "vertex_points": 250
+      }
+    },
+    {
+      "step_eid": 773650,
+      "step_type": "MANIFOLD_SOLID_BREP",
+      "step_name": "NONE",
+      "closure_entities": 11633,
+      "vertex_points": 250,
+      "cartesian_points_in_closure": 7763,
+      "circle_count": 136,
+      "cylindrical_surface_count": 124,
+      "ellipse_count": 0,
+      "spline_control_points": 7073,
+      "max_circle_radius_mm": 103.0,
+      "max_cylinder_radius_mm": 68.5,
+      "top_circles": [
+        {
+          "entity_id": 604163,
+          "radius_mm": 103.0,
+          "centre_mm": [
+            -250.0,
+            -244.0,
+            -297.0
+          ],
+          "axis": [
+            -1.0,
+            -0.0,
+            -0.0
+          ]
+        },
+        {
+          "entity_id": 902203,
+          "radius_mm": 103.0,
+          "centre_mm": [
+            -250.0,
+            -244.0,
+            -297.0
+          ],
+          "axis": [
+            -1.0,
+            -0.0,
+            -0.0
+          ]
+        },
+        {
+          "entity_id": 101601,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            -270.5,
+            -244.0,
+            -297.0
+          ],
+          "axis": [
+            -1.0,
+            -0.0,
+            -0.0
+          ]
+        },
+        {
+          "entity_id": 297384,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            -270.5,
+            -244.0,
+            -297.0
+          ],
+          "axis": [
+            -1.0,
+            -0.0,
+            -0.0
+          ]
+        },
+        {
+          "entity_id": 443419,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            -229.5,
+            -244.0,
+            -297.0
+          ],
+          "axis": [
+            -1.0,
+            -0.0,
+            -0.0
+          ]
+        }
+      ],
+      "vertex_bbox": {
+        "min": [
+          -274.2687,
+          -334.391,
+          -375.8924
+        ],
+        "max": [
+          -225.616,
+          -153.609,
+          -218.1096
+        ],
+        "size": [
+          48.6527,
+          180.782,
+          157.7827
+        ],
+        "centre": [
+          -249.9423,
+          -244.0,
+          -297.001
+        ]
+      },
+      "surface_envelope_bbox": {
+        "min": [
+          -275.2619,
+          -347.0,
+          -400.0
+        ],
+        "max": [
+          -224.7381,
+          -141.0,
+          -194.0
+        ],
+        "size": [
+          50.5238,
+          206.0,
+          206.0
+        ],
+        "centre": [
+          -250.0,
+          -244.0,
+          -297.0
+        ]
+      },
+      "all_points_bbox": {
+        "min": [
+          -274.4001,
+          -334.391,
+          -381.5004
+        ],
+        "max": [
+          -225.5904,
+          -153.609,
+          -212.4999
+        ],
+        "size": [
+          48.8098,
+          180.782,
+          169.0006
+        ],
+        "centre": [
+          -249.9953,
+          -244.0,
+          -297.0002
+        ]
+      },
+      "type_counts": {
+        "CARTESIAN_POINT": 7763,
+        "ORIENTED_EDGE": 772,
+        "DIRECTION": 766,
+        "EDGE_CURVE": 386,
+        "AXIS2_PLACEMENT_3D": 326,
+        "VERTEX_POINT": 250,
+        "EDGE_LOOP": 244,
+        "ADVANCED_FACE": 190,
+        "FACE_OUTER_BOUND": 190,
+        "CIRCLE": 136,
+        "B_SPLINE_CURVE_WITH_KNOTS": 136,
+        "CYLINDRICAL_SURFACE": 124
+      },
+      "vertex_bbox_helper": {
+        "min": [
+          -274.2687,
+          -334.391,
+          -375.8924
+        ],
+        "max": [
+          -225.616,
+          -153.609,
+          -218.1096
+        ],
+        "size": [
+          48.6527,
+          180.782,
+          157.7827
+        ],
+        "vertex_points": 250
+      }
+    },
+    {
+      "step_eid": 871375,
+      "step_type": "MANIFOLD_SOLID_BREP",
+      "step_name": "NONE",
+      "closure_entities": 11633,
+      "vertex_points": 250,
+      "cartesian_points_in_closure": 7763,
+      "circle_count": 136,
+      "cylindrical_surface_count": 124,
+      "ellipse_count": 0,
+      "spline_control_points": 7073,
+      "max_circle_radius_mm": 103.0,
+      "max_cylinder_radius_mm": 68.5,
+      "top_circles": [
+        {
+          "entity_id": 791549,
+          "radius_mm": 103.0,
+          "centre_mm": [
+            -250.0,
+            -244.0,
+            297.0
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "entity_id": 1059337,
+          "radius_mm": 103.0,
+          "centre_mm": [
+            -250.0,
+            -244.0,
+            297.0
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "entity_id": 73757,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            -270.5,
+            -244.0,
+            297.0
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "entity_id": 598100,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            -229.5,
+            -244.0,
+            297.0
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "entity_id": 679464,
+          "radius_mm": 92.5,
+          "centre_mm": [
+            -270.5,
+            -244.0,
+            297.0
+          ],
+          "axis": [
+            -1.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "vertex_bbox": {
+        "min": [
+          -274.2687,
+          -334.391,
+          218.1096
+        ],
+        "max": [
+          -225.616,
+          -153.609,
+          375.8924
+        ],
+        "size": [
+          48.6527,
+          180.782,
+          157.7827
+        ],
+        "centre": [
+          -249.9423,
+          -244.0,
+          297.001
+        ]
+      },
+      "surface_envelope_bbox": {
+        "min": [
+          -275.2619,
+          -347.0,
+          194.0
+        ],
+        "max": [
+          -224.7381,
+          -141.0,
+          400.0
+        ],
+        "size": [
+          50.5238,
+          206.0,
+          206.0
+        ],
+        "centre": [
+          -250.0,
+          -244.0,
+          297.0
+        ]
+      },
+      "all_points_bbox": {
+        "min": [
+          -274.4001,
+          -334.391,
+          212.4999
+        ],
+        "max": [
+          -225.5904,
+          -153.609,
+          381.5004
+        ],
+        "size": [
+          48.8098,
+          180.782,
+          169.0006
+        ],
+        "centre": [
+          -249.9953,
+          -244.0,
+          297.0002
+        ]
+      },
+      "type_counts": {
+        "CARTESIAN_POINT": 7763,
+        "ORIENTED_EDGE": 772,
+        "DIRECTION": 766,
+        "EDGE_CURVE": 386,
+        "AXIS2_PLACEMENT_3D": 326,
+        "VERTEX_POINT": 250,
+        "EDGE_LOOP": 244,
+        "ADVANCED_FACE": 190,
+        "FACE_OUTER_BOUND": 190,
+        "CIRCLE": 136,
+        "B_SPLINE_CURVE_WITH_KNOTS": 136,
+        "CYLINDRICAL_SURFACE": 124
+      },
+      "vertex_bbox_helper": {
+        "min": [
+          -274.2687,
+          -334.391,
+          218.1096
+        ],
+        "max": [
+          -225.616,
+          -153.609,
+          375.8924
+        ],
+        "size": [
+          48.6527,
+          180.782,
+          157.7827
+        ],
+        "vertex_points": 250
+      }
+    }
+  ],
+  "bracket_meaning": "vertex_bbox is a lower bracket and surface_envelope_bbox an upper bracket of the true axis-aligned bbox; the true bbox lies between them. Neither is a wheel diameter."
+}

@@ -1,0 +1,15 @@
+# P1 wheel identity provenance
+generated_utc: 2026-10-21T02:56:40Z
+local_python: Python 3.11.9
+local_host_os: Microsoft Windows NT 10.0.26100.0
+local_step_copy: E:\具身智能\badmin_project\_scratch_downloads\M1-4WD4S_model2601.step
+local_step_sha256: 388cb3653a864066a35a54065f71938635c7e9a221cb4b897b31fbd44ff266c5
+local_step_bytes: 115496178
+git_base_commit: 459cb122f7be68ad60295ee61c4faaf73618b151
+git_branch: p1/wheel-identity-205-vs-181
+remote_host=jxxy
+remote_user=dgut
+Python 3.12.13
+3b9962913ec517637df2a57df58acb5650fe995b437088539e26f00912af74b7  /home/T7/dgut/runs/cad_dev/usd/M1-4WD4S_model2601_dev.usda
+460ebbb0d2a1faea3f81792fe67f5334d98fb53e62b70bf95d1fdbbe360ec096  /home/dgut/runs/wheels/mapping.json
+388cb3653a864066a35a54065f71938635c7e9a221cb4b897b31fbd44ff266c5  /home/T7/dgut/robot_sim/assets/robots/badminton_robot/morph_one/cad/M1-4WD4S_model2601.step

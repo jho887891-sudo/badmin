@@ -1,0 +1,885 @@
+{
+  "tool": "p1_usd_wheel_prim_measure.py",
+  "usda": "/home/T7/dgut/runs/cad_dev/usd/M1-4WD4S_model2601_dev.usda",
+  "mapping": "/home/dgut/runs/wheels/mapping.json",
+  "stage_meters_per_unit": 0.001,
+  "stage_up_axis": "Z",
+  "pxr_version": [
+    0,
+    25,
+    11
+  ],
+  "requested_eids": [
+    435700,
+    759491,
+    773650,
+    871375
+  ],
+  "solids": [
+    {
+      "step_eid": 435700,
+      "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_15/Mesh",
+      "mapping_entry_keys": [
+        "grade",
+        "group_meshes",
+        "group_solids",
+        "mesh_exceeds_vertex_bbox_mm",
+        "name_key",
+        "reasons",
+        "sandwich",
+        "step_closure_bbox_mm",
+        "step_eid",
+        "step_name",
+        "step_vertex_bbox_mm",
+        "usd_bbox_mm",
+        "usd_core",
+        "usd_path",
+        "usd_points"
+      ],
+      "mapping_grade": "CANDIDATE",
+      "prim_valid": true,
+      "type_name": "Mesh",
+      "point_count": 6354,
+      "face_count": 7900,
+      "face_vertex_index_count": 23700,
+      "shell_count_vertex_connectivity": 122,
+      "components": {
+        "count": 122,
+        "vertex_count_min": 16,
+        "vertex_count_median": 32.0,
+        "vertex_count_max": 1088,
+        "components_spanning_outer_diameter": 8,
+        "largest_components": [
+          {
+            "vertex_count": 1088,
+            "bbox_size_mm": [
+              41.0,
+              205.9914,
+              205.9914
+            ]
+          },
+          {
+            "vertex_count": 962,
+            "bbox_size_mm": [
+              4.3975,
+              184.9923,
+              184.9923
+            ]
+          },
+          {
+            "vertex_count": 944,
+            "bbox_size_mm": [
+              4.3936,
+              184.9923,
+              184.9923
+            ]
+          },
+          {
+            "vertex_count": 128,
+            "bbox_size_mm": [
+              4.0126,
+              136.9952,
+              136.9952
+            ]
+          },
+          {
+            "vertex_count": 128,
+            "bbox_size_mm": [
+              0.0,
+              136.9952,
+              136.9952
+            ]
+          }
+        ],
+        "note": "vertex-connected components of an unwelded tessellation are BREP face patches, not physical parts; a component count above 1 is therefore not proof of a merged mesh"
+      },
+      "authored_extent_stage_units": [
+        [
+          -24.395531,
+          -102.995705,
+          -102.995705
+        ],
+        [
+          24.395531,
+          102.995705,
+          102.995705
+        ]
+      ],
+      "prim_to_world_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          250.00196075439453,
+          -243.99999237060547,
+          -296.99999237060547,
+          1.0
+        ]
+      ],
+      "local_bbox_stage_units": {
+        "min": [
+          -24.395531,
+          -102.995705,
+          -102.995705
+        ],
+        "max": [
+          24.395531,
+          102.995705,
+          102.995705
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_stage_units": {
+        "min": [
+          225.60643,
+          -346.995697,
+          -399.995697
+        ],
+        "max": [
+          274.397491,
+          -141.004288,
+          -194.004288
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_mm": {
+        "min": [
+          225.60643,
+          -346.995697,
+          -399.995697
+        ],
+        "max": [
+          274.397491,
+          -141.004288,
+          -194.004288
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_m": {
+        "min": [
+          0.225606,
+          -0.346996,
+          -0.399996
+        ],
+        "max": [
+          0.274397,
+          -0.141004,
+          -0.194004
+        ],
+        "size": [
+          0.048791,
+          0.205991,
+          0.205991
+        ]
+      },
+      "pxr_compute_world_bound_mm": {
+        "min": [
+          225.60643,
+          -346.995697,
+          -399.995697
+        ],
+        "max": [
+          274.397491,
+          -141.004288,
+          -194.004288
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "disc_axis_index": 0,
+      "disc_axis": "x",
+      "radial_stats_world_mm": {
+        "min": 62.999669,
+        "p50": 80.040063,
+        "p90": 98.705384,
+        "max": 103.000022,
+        "points_within_0p5mm_of_max": 192
+      },
+      "outer_diameter_from_points_mm": 206.000044,
+      "local_to_world_scale_ratio": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "step_eid": 759491,
+      "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_23/Mesh",
+      "mapping_entry_keys": [
+        "grade",
+        "group_meshes",
+        "group_solids",
+        "mesh_exceeds_vertex_bbox_mm",
+        "name_key",
+        "reasons",
+        "sandwich",
+        "step_closure_bbox_mm",
+        "step_eid",
+        "step_name",
+        "step_vertex_bbox_mm",
+        "usd_bbox_mm",
+        "usd_core",
+        "usd_path",
+        "usd_points"
+      ],
+      "mapping_grade": "CANDIDATE",
+      "prim_valid": true,
+      "type_name": "Mesh",
+      "point_count": 6354,
+      "face_count": 7900,
+      "face_vertex_index_count": 23700,
+      "shell_count_vertex_connectivity": 122,
+      "components": {
+        "count": 122,
+        "vertex_count_min": 16,
+        "vertex_count_median": 32.0,
+        "vertex_count_max": 1088,
+        "components_spanning_outer_diameter": 8,
+        "largest_components": [
+          {
+            "vertex_count": 1088,
+            "bbox_size_mm": [
+              41.0,
+              205.9914,
+              205.9914
+            ]
+          },
+          {
+            "vertex_count": 962,
+            "bbox_size_mm": [
+              4.3975,
+              184.9923,
+              184.9923
+            ]
+          },
+          {
+            "vertex_count": 944,
+            "bbox_size_mm": [
+              4.3936,
+              184.9923,
+              184.9923
+            ]
+          },
+          {
+            "vertex_count": 128,
+            "bbox_size_mm": [
+              4.0126,
+              136.9952,
+              136.9952
+            ]
+          },
+          {
+            "vertex_count": 128,
+            "bbox_size_mm": [
+              0.0,
+              136.9952,
+              136.9952
+            ]
+          }
+        ],
+        "note": "vertex-connected components of an unwelded tessellation are BREP face patches, not physical parts; a component count above 1 is therefore not proof of a merged mesh"
+      },
+      "authored_extent_stage_units": [
+        [
+          -24.395531,
+          -102.995705,
+          -102.995705
+        ],
+        [
+          24.395531,
+          102.995705,
+          102.995705
+        ]
+      ],
+      "prim_to_world_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          250.00196075439453,
+          -243.99999237060547,
+          296.99999237060547,
+          1.0
+        ]
+      ],
+      "local_bbox_stage_units": {
+        "min": [
+          -24.395531,
+          -102.995705,
+          -102.995705
+        ],
+        "max": [
+          24.395531,
+          102.995705,
+          102.995705
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_stage_units": {
+        "min": [
+          225.60643,
+          -346.995697,
+          194.004288
+        ],
+        "max": [
+          274.397491,
+          -141.004288,
+          399.995697
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_mm": {
+        "min": [
+          225.60643,
+          -346.995697,
+          194.004288
+        ],
+        "max": [
+          274.397491,
+          -141.004288,
+          399.995697
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_m": {
+        "min": [
+          0.225606,
+          -0.346996,
+          0.194004
+        ],
+        "max": [
+          0.274397,
+          -0.141004,
+          0.399996
+        ],
+        "size": [
+          0.048791,
+          0.205991,
+          0.205991
+        ]
+      },
+      "pxr_compute_world_bound_mm": {
+        "min": [
+          225.60643,
+          -346.995697,
+          194.004288
+        ],
+        "max": [
+          274.397491,
+          -141.004288,
+          399.995697
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "disc_axis_index": 0,
+      "disc_axis": "x",
+      "radial_stats_world_mm": {
+        "min": 62.999669,
+        "p50": 80.04006,
+        "p90": 98.705384,
+        "max": 103.000022,
+        "points_within_0p5mm_of_max": 192
+      },
+      "outer_diameter_from_points_mm": 206.000044,
+      "local_to_world_scale_ratio": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "step_eid": 773650,
+      "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_7/Mesh",
+      "mapping_entry_keys": [
+        "grade",
+        "group_meshes",
+        "group_solids",
+        "mesh_exceeds_vertex_bbox_mm",
+        "name_key",
+        "reasons",
+        "sandwich",
+        "step_closure_bbox_mm",
+        "step_eid",
+        "step_name",
+        "step_vertex_bbox_mm",
+        "usd_bbox_mm",
+        "usd_core",
+        "usd_path",
+        "usd_points"
+      ],
+      "mapping_grade": "CANDIDATE",
+      "prim_valid": true,
+      "type_name": "Mesh",
+      "point_count": 6354,
+      "face_count": 7900,
+      "face_vertex_index_count": 23700,
+      "shell_count_vertex_connectivity": 122,
+      "components": {
+        "count": 122,
+        "vertex_count_min": 16,
+        "vertex_count_median": 32.0,
+        "vertex_count_max": 1088,
+        "components_spanning_outer_diameter": 8,
+        "largest_components": [
+          {
+            "vertex_count": 1088,
+            "bbox_size_mm": [
+              41.0,
+              205.9914,
+              205.9914
+            ]
+          },
+          {
+            "vertex_count": 962,
+            "bbox_size_mm": [
+              4.3975,
+              184.9923,
+              184.9923
+            ]
+          },
+          {
+            "vertex_count": 944,
+            "bbox_size_mm": [
+              4.3936,
+              184.9923,
+              184.9923
+            ]
+          },
+          {
+            "vertex_count": 128,
+            "bbox_size_mm": [
+              4.0126,
+              136.9952,
+              136.9952
+            ]
+          },
+          {
+            "vertex_count": 128,
+            "bbox_size_mm": [
+              0.0,
+              136.9952,
+              136.9952
+            ]
+          }
+        ],
+        "note": "vertex-connected components of an unwelded tessellation are BREP face patches, not physical parts; a component count above 1 is therefore not proof of a merged mesh"
+      },
+      "authored_extent_stage_units": [
+        [
+          -24.395531,
+          -102.995705,
+          -102.995705
+        ],
+        [
+          24.395531,
+          102.995705,
+          102.995705
+        ]
+      ],
+      "prim_to_world_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          -250.00196075439453,
+          -243.99999237060547,
+          -296.99999237060547,
+          1.0
+        ]
+      ],
+      "local_bbox_stage_units": {
+        "min": [
+          -24.395531,
+          -102.995705,
+          -102.995705
+        ],
+        "max": [
+          24.395531,
+          102.995705,
+          102.995705
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_stage_units": {
+        "min": [
+          -274.397491,
+          -346.995697,
+          -399.995697
+        ],
+        "max": [
+          -225.60643,
+          -141.004288,
+          -194.004288
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_mm": {
+        "min": [
+          -274.397491,
+          -346.995697,
+          -399.995697
+        ],
+        "max": [
+          -225.60643,
+          -141.004288,
+          -194.004288
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_m": {
+        "min": [
+          -0.274397,
+          -0.346996,
+          -0.399996
+        ],
+        "max": [
+          -0.225606,
+          -0.141004,
+          -0.194004
+        ],
+        "size": [
+          0.048791,
+          0.205991,
+          0.205991
+        ]
+      },
+      "pxr_compute_world_bound_mm": {
+        "min": [
+          -274.397491,
+          -346.995697,
+          -399.995697
+        ],
+        "max": [
+          -225.60643,
+          -141.004288,
+          -194.004288
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "disc_axis_index": 0,
+      "disc_axis": "x",
+      "radial_stats_world_mm": {
+        "min": 62.999669,
+        "p50": 80.04006,
+        "p90": 98.705384,
+        "max": 103.000022,
+        "points_within_0p5mm_of_max": 192
+      },
+      "outer_diameter_from_points_mm": 206.000044,
+      "local_to_world_scale_ratio": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "step_eid": 871375,
+      "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_31/Mesh",
+      "mapping_entry_keys": [
+        "grade",
+        "group_meshes",
+        "group_solids",
+        "mesh_exceeds_vertex_bbox_mm",
+        "name_key",
+        "reasons",
+        "sandwich",
+        "step_closure_bbox_mm",
+        "step_eid",
+        "step_name",
+        "step_vertex_bbox_mm",
+        "usd_bbox_mm",
+        "usd_core",
+        "usd_path",
+        "usd_points"
+      ],
+      "mapping_grade": "CANDIDATE",
+      "prim_valid": true,
+      "type_name": "Mesh",
+      "point_count": 6354,
+      "face_count": 7900,
+      "face_vertex_index_count": 23700,
+      "shell_count_vertex_connectivity": 122,
+      "components": {
+        "count": 122,
+        "vertex_count_min": 16,
+        "vertex_count_median": 32.0,
+        "vertex_count_max": 1088,
+        "components_spanning_outer_diameter": 8,
+        "largest_components": [
+          {
+            "vertex_count": 1088,
+            "bbox_size_mm": [
+              41.0,
+              205.9914,
+              205.9914
+            ]
+          },
+          {
+            "vertex_count": 962,
+            "bbox_size_mm": [
+              4.3975,
+              184.9923,
+              184.9923
+            ]
+          },
+          {
+            "vertex_count": 944,
+            "bbox_size_mm": [
+              4.3936,
+              184.9923,
+              184.9923
+            ]
+          },
+          {
+            "vertex_count": 128,
+            "bbox_size_mm": [
+              4.0126,
+              136.9952,
+              136.9952
+            ]
+          },
+          {
+            "vertex_count": 128,
+            "bbox_size_mm": [
+              0.0,
+              136.9952,
+              136.9952
+            ]
+          }
+        ],
+        "note": "vertex-connected components of an unwelded tessellation are BREP face patches, not physical parts; a component count above 1 is therefore not proof of a merged mesh"
+      },
+      "authored_extent_stage_units": [
+        [
+          -24.395531,
+          -102.995705,
+          -102.995705
+        ],
+        [
+          24.395531,
+          102.995705,
+          102.995705
+        ]
+      ],
+      "prim_to_world_matrix": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          -250.00196075439453,
+          -243.99999237060547,
+          296.99999237060547,
+          1.0
+        ]
+      ],
+      "local_bbox_stage_units": {
+        "min": [
+          -24.395531,
+          -102.995705,
+          -102.995705
+        ],
+        "max": [
+          24.395531,
+          102.995705,
+          102.995705
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_stage_units": {
+        "min": [
+          -274.397491,
+          -346.995697,
+          194.004288
+        ],
+        "max": [
+          -225.60643,
+          -141.004288,
+          399.995697
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_mm": {
+        "min": [
+          -274.397491,
+          -346.995697,
+          194.004288
+        ],
+        "max": [
+          -225.60643,
+          -141.004288,
+          399.995697
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "world_bbox_m": {
+        "min": [
+          -0.274397,
+          -0.346996,
+          0.194004
+        ],
+        "max": [
+          -0.225606,
+          -0.141004,
+          0.399996
+        ],
+        "size": [
+          0.048791,
+          0.205991,
+          0.205991
+        ]
+      },
+      "pxr_compute_world_bound_mm": {
+        "min": [
+          -274.397491,
+          -346.995697,
+          194.004288
+        ],
+        "max": [
+          -225.60643,
+          -141.004288,
+          399.995697
+        ],
+        "size": [
+          48.791061,
+          205.991409,
+          205.991409
+        ]
+      },
+      "disc_axis_index": 0,
+      "disc_axis": "x",
+      "radial_stats_world_mm": {
+        "min": 62.999669,
+        "p50": 80.040063,
+        "p90": 98.705384,
+        "max": 103.000022,
+        "points_within_0p5mm_of_max": 192
+      },
+      "outer_diameter_from_points_mm": 206.000044,
+      "local_to_world_scale_ratio": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "bbox_definition": "world_bbox_* is the axis-aligned box of the mesh point set transformed by the prim's local-to-world matrix; pxr_compute_world_bound_mm is UsdGeom.BBoxCache for cross-check"
+}

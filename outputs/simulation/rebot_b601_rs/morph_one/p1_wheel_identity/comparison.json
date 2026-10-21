@@ -1,0 +1,413 @@
+{
+  "tool": "p1_wheel_identity_compare.py",
+  "step_json": "E:\\具身智能\\badmin_p1_wheel\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p1_wheel_identity\\step_remeasure.json",
+  "usd_json": "E:\\具身智能\\badmin_p1_wheel\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p1_wheel_identity\\usd_remeasure.json",
+  "step_units": {
+    "si_unit_tokens": [
+      " $, .RADIAN. ",
+      " $, .STERADIAN. ",
+      " .MILLI., .METRE. "
+    ],
+    "conversion_based_units": [],
+    "global_unit_context": [
+      " ( #120813, #136850, #699449 "
+    ],
+    "file_schema": "CONFIG_CONTROL_DESIGN"
+  },
+  "usd_stage_meters_per_unit": 0.001,
+  "rows": [
+    {
+      "step_eid": 435700,
+      "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_15/Mesh",
+      "step_vertex_points": 250,
+      "step_cartesian_points": 7763,
+      "step_advanced_faces": 190,
+      "step_circle_count": 136,
+      "step_cylinder_count": 124,
+      "usd_point_count": 6354,
+      "usd_face_count": 7900,
+      "usd_shell_count": 122,
+      "point_counts_equal": false,
+      "step_vertex_bbox_x_mm": 48.6527,
+      "step_vertex_bbox_y_mm": 180.782,
+      "step_vertex_bbox_z_mm": 157.7827,
+      "step_envelope_bbox_x_mm": 50.5238,
+      "step_envelope_bbox_y_mm": 206.0,
+      "step_envelope_bbox_z_mm": 206.0,
+      "usd_bbox_x_mm": 48.791061,
+      "usd_bbox_y_mm": 205.991409,
+      "usd_bbox_z_mm": 205.991409,
+      "step_max_circle_radius_mm": 103.0,
+      "usd_point_radius_max_mm": 103.000022,
+      "radius_residual_mm": 2.2e-05,
+      "thin_axis": "x",
+      "thin_axis_step_vertex_mm": 48.6527,
+      "thin_axis_usd_mm": 48.791061,
+      "in_plane_bracket_low_mm": 157.7827,
+      "in_plane_bracket_high_mm": 206.0,
+      "in_plane_bracket_width_mm": 48.2173,
+      "in_plane_usd_sorted_mm": [
+        205.991409,
+        205.991409
+      ],
+      "in_plane_vertex_sorted_mm": [
+        157.7827,
+        180.782
+      ],
+      "usd_inside_step_bracket": true,
+      "largest_circle_centre_mm": [
+        250.0,
+        -244.0,
+        -297.0
+      ],
+      "usd_bbox_centre_mm": [
+        250.00196,
+        -243.999993,
+        -296.999993
+      ],
+      "centre_delta_mm": [
+        0.00196,
+        7e-06,
+        7e-06
+      ],
+      "centres_agree_within_tol": true,
+      "usd_radial_stats_mm": {
+        "min": 62.999669,
+        "p50": 80.040063,
+        "p90": 98.705384,
+        "max": 103.000022,
+        "points_within_0p5mm_of_max": 192
+      }
+    },
+    {
+      "step_eid": 759491,
+      "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_23/Mesh",
+      "step_vertex_points": 250,
+      "step_cartesian_points": 7763,
+      "step_advanced_faces": 190,
+      "step_circle_count": 136,
+      "step_cylinder_count": 124,
+      "usd_point_count": 6354,
+      "usd_face_count": 7900,
+      "usd_shell_count": 122,
+      "point_counts_equal": false,
+      "step_vertex_bbox_x_mm": 48.6527,
+      "step_vertex_bbox_y_mm": 180.782,
+      "step_vertex_bbox_z_mm": 157.7827,
+      "step_envelope_bbox_x_mm": 50.5238,
+      "step_envelope_bbox_y_mm": 206.0,
+      "step_envelope_bbox_z_mm": 206.0,
+      "usd_bbox_x_mm": 48.791061,
+      "usd_bbox_y_mm": 205.991409,
+      "usd_bbox_z_mm": 205.991409,
+      "step_max_circle_radius_mm": 103.0,
+      "usd_point_radius_max_mm": 103.000022,
+      "radius_residual_mm": 2.2e-05,
+      "thin_axis": "x",
+      "thin_axis_step_vertex_mm": 48.6527,
+      "thin_axis_usd_mm": 48.791061,
+      "in_plane_bracket_low_mm": 157.7827,
+      "in_plane_bracket_high_mm": 206.0,
+      "in_plane_bracket_width_mm": 48.2173,
+      "in_plane_usd_sorted_mm": [
+        205.991409,
+        205.991409
+      ],
+      "in_plane_vertex_sorted_mm": [
+        157.7827,
+        180.782
+      ],
+      "usd_inside_step_bracket": true,
+      "largest_circle_centre_mm": [
+        250.0,
+        -244.0,
+        297.0
+      ],
+      "usd_bbox_centre_mm": [
+        250.00196,
+        -243.999993,
+        296.999993
+      ],
+      "centre_delta_mm": [
+        0.00196,
+        7e-06,
+        -7e-06
+      ],
+      "centres_agree_within_tol": true,
+      "usd_radial_stats_mm": {
+        "min": 62.999669,
+        "p50": 80.04006,
+        "p90": 98.705384,
+        "max": 103.000022,
+        "points_within_0p5mm_of_max": 192
+      }
+    },
+    {
+      "step_eid": 773650,
+      "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_7/Mesh",
+      "step_vertex_points": 250,
+      "step_cartesian_points": 7763,
+      "step_advanced_faces": 190,
+      "step_circle_count": 136,
+      "step_cylinder_count": 124,
+      "usd_point_count": 6354,
+      "usd_face_count": 7900,
+      "usd_shell_count": 122,
+      "point_counts_equal": false,
+      "step_vertex_bbox_x_mm": 48.6527,
+      "step_vertex_bbox_y_mm": 180.782,
+      "step_vertex_bbox_z_mm": 157.7827,
+      "step_envelope_bbox_x_mm": 50.5238,
+      "step_envelope_bbox_y_mm": 206.0,
+      "step_envelope_bbox_z_mm": 206.0,
+      "usd_bbox_x_mm": 48.791061,
+      "usd_bbox_y_mm": 205.991409,
+      "usd_bbox_z_mm": 205.991409,
+      "step_max_circle_radius_mm": 103.0,
+      "usd_point_radius_max_mm": 103.000022,
+      "radius_residual_mm": 2.2e-05,
+      "thin_axis": "x",
+      "thin_axis_step_vertex_mm": 48.6527,
+      "thin_axis_usd_mm": 48.791061,
+      "in_plane_bracket_low_mm": 157.7827,
+      "in_plane_bracket_high_mm": 206.0,
+      "in_plane_bracket_width_mm": 48.2173,
+      "in_plane_usd_sorted_mm": [
+        205.991409,
+        205.991409
+      ],
+      "in_plane_vertex_sorted_mm": [
+        157.7827,
+        180.782
+      ],
+      "usd_inside_step_bracket": true,
+      "largest_circle_centre_mm": [
+        -250.0,
+        -244.0,
+        -297.0
+      ],
+      "usd_bbox_centre_mm": [
+        -250.00196,
+        -243.999993,
+        -296.999993
+      ],
+      "centre_delta_mm": [
+        -0.00196,
+        7e-06,
+        7e-06
+      ],
+      "centres_agree_within_tol": true,
+      "usd_radial_stats_mm": {
+        "min": 62.999669,
+        "p50": 80.04006,
+        "p90": 98.705384,
+        "max": 103.000022,
+        "points_within_0p5mm_of_max": 192
+      }
+    },
+    {
+      "step_eid": 871375,
+      "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_31/Mesh",
+      "step_vertex_points": 250,
+      "step_cartesian_points": 7763,
+      "step_advanced_faces": 190,
+      "step_circle_count": 136,
+      "step_cylinder_count": 124,
+      "usd_point_count": 6354,
+      "usd_face_count": 7900,
+      "usd_shell_count": 122,
+      "point_counts_equal": false,
+      "step_vertex_bbox_x_mm": 48.6527,
+      "step_vertex_bbox_y_mm": 180.782,
+      "step_vertex_bbox_z_mm": 157.7827,
+      "step_envelope_bbox_x_mm": 50.5238,
+      "step_envelope_bbox_y_mm": 206.0,
+      "step_envelope_bbox_z_mm": 206.0,
+      "usd_bbox_x_mm": 48.791061,
+      "usd_bbox_y_mm": 205.991409,
+      "usd_bbox_z_mm": 205.991409,
+      "step_max_circle_radius_mm": 103.0,
+      "usd_point_radius_max_mm": 103.000022,
+      "radius_residual_mm": 2.2e-05,
+      "thin_axis": "x",
+      "thin_axis_step_vertex_mm": 48.6527,
+      "thin_axis_usd_mm": 48.791061,
+      "in_plane_bracket_low_mm": 157.7827,
+      "in_plane_bracket_high_mm": 206.0,
+      "in_plane_bracket_width_mm": 48.2173,
+      "in_plane_usd_sorted_mm": [
+        205.991409,
+        205.991409
+      ],
+      "in_plane_vertex_sorted_mm": [
+        157.7827,
+        180.782
+      ],
+      "usd_inside_step_bracket": true,
+      "largest_circle_centre_mm": [
+        -250.0,
+        -244.0,
+        297.0
+      ],
+      "usd_bbox_centre_mm": [
+        -250.00196,
+        -243.999993,
+        296.999993
+      ],
+      "centre_delta_mm": [
+        -0.00196,
+        7e-06,
+        -7e-06
+      ],
+      "centres_agree_within_tol": true,
+      "usd_radial_stats_mm": {
+        "min": 62.999669,
+        "p50": 80.040063,
+        "p90": 98.705384,
+        "max": 103.000022,
+        "points_within_0p5mm_of_max": 192
+      }
+    }
+  ],
+  "hypotheses": {
+    "interpretation": "PASS = hypothesis supported by these measurements; FAIL = refuted; UNKNOWN = the measurements cannot decide it",
+    "unit_mismatch": {
+      "result": "FAIL",
+      "evidence": {
+        "step_declares_milli_metre": true,
+        "usd_stage_meters_per_unit": 0.001,
+        "in_plane_bracket_gaps_mm": [
+          48.208709,
+          48.208709,
+          48.208709,
+          48.208709
+        ],
+        "radius_residual_max_mm": 2.2e-05
+      },
+      "reasoning": "Both sides are in millimetres and the residuals are at tessellation scale, so a unit factor of 10, 100 or 1000 would have left an unmistakable mismatch."
+    },
+    "bbox_computation_method": {
+      "result": "PASS",
+      "evidence": {
+        "usd_inside_step_bracket_for_all_four": true,
+        "in_plane_gap_usd_minus_vertex_mm": [
+          48.208709,
+          48.208709,
+          48.208709,
+          48.208709
+        ],
+        "in_plane_bracket_width_mm": [
+          48.2173,
+          48.2173,
+          48.2173,
+          48.2173
+        ],
+        "max_in_plane_gap_mm": 48.208709,
+        "mesh_points_vs_step_cartesian_points": [
+          [
+            7763,
+            6354
+          ],
+          [
+            7763,
+            6354
+          ],
+          [
+            7763,
+            6354
+          ],
+          [
+            7763,
+            6354
+          ]
+        ]
+      },
+      "reasoning": "The STEP number is a VERTEX_POINT-only box (analytic circles are not tessellated in a BREP, so the extremities of a cylindrical tyre face are not vertices). The mesh number is a tessellated point box. The USD value lands inside the STEP bracket, so the gap is a method difference, not a disagreement about the solid."
+    },
+    "merged_multiple_entities": {
+      "result": "UNKNOWN",
+      "evidence": {
+        "usd_point_count_all_equal": true,
+        "usd_shell_counts": [
+          122,
+          122,
+          122,
+          122
+        ],
+        "step_advanced_faces": [
+          190,
+          190,
+          190,
+          190
+        ]
+      },
+      "reasoning": "A shell count above 1 comes from an unwelded tessellation and cannot separate physical parts. Nothing here shows a second independent part, but a bbox cannot exclude one either."
+    },
+    "mapping_candidate_mismatch": {
+      "result": "FAIL",
+      "evidence": {
+        "centres_agree_for_all_four": true,
+        "centre_tolerance_mm": 0.01,
+        "radius_residual_max_mm": 2.2e-05,
+        "tessellation_tolerance_mm": 0.5
+      },
+      "reasoning": "Each mapped prim sits at the same centre and carries the same largest circular radius as its STEP solid, so the pairing is geometrically consistent even though the mapping grade is only CANDIDATE."
+    },
+    "hub_vs_tyre_two_entities": {
+      "result": "UNKNOWN",
+      "evidence": {
+        "usd_radial_stats_mm": [
+          {
+            "min": 62.999669,
+            "p50": 80.040063,
+            "p90": 98.705384,
+            "max": 103.000022,
+            "points_within_0p5mm_of_max": 192
+          },
+          {
+            "min": 62.999669,
+            "p50": 80.04006,
+            "p90": 98.705384,
+            "max": 103.000022,
+            "points_within_0p5mm_of_max": 192
+          },
+          {
+            "min": 62.999669,
+            "p50": 80.04006,
+            "p90": 98.705384,
+            "max": 103.000022,
+            "points_within_0p5mm_of_max": 192
+          },
+          {
+            "min": 62.999669,
+            "p50": 80.040063,
+            "p90": 98.705384,
+            "max": 103.000022,
+            "points_within_0p5mm_of_max": 192
+          }
+        ],
+        "step_circle_count": [
+          136,
+          136,
+          136,
+          136
+        ],
+        "step_cylinder_count": [
+          124,
+          124,
+          124,
+          124
+        ]
+      },
+      "reasoning": "Each eid is a single BREP solid and a single mesh whose radius profile runs continuously from the bore to the outer band, so no bbox can say whether the outer 206 mm surface is the rolling surface or a flange."
+    },
+    "overall": "PARTIAL",
+    "overall_reasoning": "The 205.991 vs 180.782 gap is explained as a bounding-box method difference and the two sides agree on a 103.0 mm largest circular radius, but that is a CAD statement about two unnamed CANDIDATE-mapped solids, not a confirmed wheel diameter."
+  },
+  "notes": [
+    "step_vertex_bbox_* reproduces the size_x_mm/size_y_mm/size_z_mm of wheel_parts.csv",
+    "step_envelope_bbox_* is an UPPER bracket (full 360 deg envelope of analytic circles)",
+    "usd_bbox_* is the tessellated mesh point box, so it may sit slightly inside the analytic envelope by the chord sagitta",
+    "no wheel diameter, axle position or track width is concluded here"
+  ]
+}
