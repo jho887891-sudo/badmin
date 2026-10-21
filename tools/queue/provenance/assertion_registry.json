@@ -1,0 +1,372 @@
+{
+  "schema_version": 1,
+  "task": "A09",
+  "description": "Provenance of every gate assertion actually used in P2/P3 evidence. Line numbers were verified by reading the cited files at the cited ref.",
+  "generated": "2026-10-21",
+  "entries": {
+    "all_finite": {
+      "unit": "dimensionless (boolean)",
+      "data_file": "raw_poses.jsonl (every telemetry field of every step)",
+      "acceptance": "every recorded telemetry value is finite (no NaN/Inf anywhere)",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/p2_landing_gates.py",
+          "line": 59,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "contact_detected",
+          "note": "sibling sanity gate built in the same compute_landing_gates() dict; all_finite is asserted by p2_gate_runner read_json_gate on the JSONL"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 12,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "all_finite",
+          "clause": "G5 landing gate 1: all_finite"
+        },
+        {
+          "path": "management/morph_one_rs/PHASE_P2_WC_G6_PREREGISTRATION.md",
+          "line": 42,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "all_finite",
+          "clause": "G6 prereg 3: all_finite"
+        }
+      ],
+      "note": "added to the 11 seeded gates because every real result.json asserts it; without it no real evidence could validate"
+    },
+    "contact_detected": {
+      "unit": "N",
+      "data_file": "raw_poses.jsonl -> max_contact_force_n per step (contacts.jsonl for per-sensor)",
+      "acceptance": "whole-run peak contact force > 1.0 N",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/p2_landing_gates.py",
+          "line": 59,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "contact_detected",
+          "note": "compute_landing_gates(): peak > CONTACT_FORCE_THRESHOLD_N (line 18)"
+        },
+        {
+          "path": "scripts/simulation/p2_wc_g6_collision_variants.py",
+          "line": 408,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "contact_detected",
+          "note": "G6 inline gate, threshold hardcoded 1.0"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 13,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "contact_detected",
+          "clause": "1 contact_detected"
+        },
+        {
+          "path": "management/morph_one_rs/PHASE_P2_WC_G6_PREREGISTRATION.md",
+          "line": 43,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "contact_detected",
+          "clause": "3 contact_detected"
+        }
+      ]
+    },
+    "settles": {
+      "unit": "m/s (speed) and m (z span)",
+      "data_file": "raw_poses.jsonl tail 30 steps -> lin_vel, pos[2]",
+      "acceptance": "tail max|v| < 0.02 m/s AND chassis z span < 0.002 m",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/p2_landing_gates.py",
+          "line": 60,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "settles",
+          "note": "constants TAIL_SPEED_MAX_M_S=0.02, TAIL_Z_SPAN_MAX_M=0.002 at lines 20-21"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 14,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "settles",
+          "clause": "1 settles"
+        },
+        {
+          "path": "management/morph_one_rs/PHASE_P2_WC_G6_PREREGISTRATION.md",
+          "line": 46,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "settles",
+          "clause": "3 settles"
+        }
+      ]
+    },
+    "no_tip_over": {
+      "unit": "rad",
+      "data_file": "raw_poses.jsonl -> tilt_rad per step",
+      "acceptance": "whole-run max tilt < 0.05 rad (2.9 deg)",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/p2_landing_gates.py",
+          "line": 64,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "no_tip_over",
+          "note": "MAX_TILT_RAD = 0.05 at line 19; only asserted when tilt is measurable"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 15,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "no_tip_over",
+          "clause": "1 no_tip_over"
+        },
+        {
+          "path": "management/morph_one_rs/PHASE_P2_WC_G6_PREREGISTRATION.md",
+          "line": 45,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "no_tip_over",
+          "clause": "3 no_tip_over"
+        }
+      ]
+    },
+    "no_long_term_penetration": {
+      "unit": "m",
+      "data_file": "raw_poses.jsonl tail 30 steps -> wheel bottom = chassis_pos + R*wheel_center_local - 0.090",
+      "acceptance": "tail maximum wheel penetration < 0.002 m",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/p2_landing_gates.py",
+          "line": 61,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "no_long_term_penetration",
+          "note": "TAIL_PENETRATION_MAX_M = 0.002 at line 22"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 16,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "no_long_term_penetration",
+          "clause": "1 no_long_term_penetration"
+        },
+        {
+          "path": "management/morph_one_rs/PHASE_P2_WC_G6_PREREGISTRATION.md",
+          "line": 47,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "no_long_term_penetration",
+          "clause": "3 no_long_term_penetration"
+        }
+      ],
+      "note": "TEST_PROXY wheel half-height 0.090 m; the real tyre radius is still UNKNOWN (P1 open)"
+    },
+    "static_weight_supported": {
+      "unit": "N, judged as a relative error",
+      "data_file": "raw_poses.jsonl tail 30 steps -> mean contact force, plus mass_kg and |g|",
+      "acceptance": "|mean tail contact - m*|g|| / (m*|g|) <= 5 % (expected 196.2 N for 20 kg)",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/p2_landing_gates.py",
+          "line": 83,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "static_weight_supported",
+          "note": "WEIGHT_RELATIVE_TOL = 0.05 at line 23"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 17,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "static_weight_supported",
+          "clause": "1 static_weight_supported"
+        }
+      ]
+    },
+    "mount_stable_under_load": {
+      "unit": "m and rad (6-DoF relative mount pose)",
+      "data_file": "raw_poses.jsonl -> arm base pose relative to chassis, max deviation from step 0",
+      "acceptance": "max relative mount position <= 0.001 m AND rotation <= 0.001 rad under gravity load",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/p2_wc_g7b_arm_with_wheels.py",
+          "line": 382,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "mount_stable_under_load",
+          "note": "thresholds mount_position_m / mount_rotation_rad = 0.001 at line 356-357"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_GATE.md",
+          "line": 25,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "mount_stable",
+          "clause": "2 mount_stable (P3 pre-registered tolerance; g7b uses the same 0.001 m / 0.001 rad under gravity load)"
+        },
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 31,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "0.001",
+          "clause": "3 relative mount 0.001 m / 0.001 rad"
+        }
+      ],
+      "note": "the P3 document names it mount_stable; the P2 G7B implementation asserts it as mount_stable_under_load"
+    },
+    "arm_does_not_touch_ground": {
+      "unit": "N",
+      "data_file": "raw_poses.jsonl -> arm_contact_n per step (arm subtree contact sensors)",
+      "acceptance": "arm subtree peak contact force <= 1.0 N (when measurable)",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/p2_wc_g7b_arm_with_wheels.py",
+          "line": 386,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "arm_does_not_touch_ground",
+          "note": "arm_peak <= 1.0"
+        },
+        {
+          "path": "scripts/simulation/p3_dynamic_mount.py",
+          "line": 388,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "arm_does_not_touch_ground",
+          "note": "threshold arm_ground_contact_n"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_GATE.md",
+          "line": 29,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "arm_does_not_touch_ground",
+          "clause": "2 arm_does_not_touch_ground"
+        }
+      ]
+    },
+    "t0_world_position_within_tol": {
+      "unit": "m",
+      "data_file": "raw_poses.jsonl step 0 -> chassis world position vs commanded/reset position",
+      "acceptance": "world position error at t0 <= 0.001 m (static / zero-gravity settle scene only)",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/morph_one_p2_real_chassis.py",
+          "line": 287,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "t0_world_position_within_tol"
+        },
+        {
+          "path": "scripts/simulation/p2_wc_g7b_arm_with_wheels.py",
+          "line": 360,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "t0_world_position_within_tol"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 31,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "t0_world_pos",
+          "clause": "3 P2 zero-gravity static gate t0_world_pos <= 0.001 m"
+        },
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 5,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "t0",
+          "clause": "background: G5_r01 FAIL is this gate applied to free fall, which is invalid"
+        }
+      ],
+      "note": "not applicable to landing runs; that is exactly the historical G5_r01 FAIL"
+    },
+    "t0_world_rotation_within_tol": {
+      "unit": "rad",
+      "data_file": "raw_poses.jsonl step 0 -> chassis world rotation vs commanded/reset rotation",
+      "acceptance": "world rotation error at t0 <= 0.001 rad (static scene only)",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/morph_one_p2_real_chassis.py",
+          "line": 288,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "t0_world_rotation_within_tol"
+        },
+        {
+          "path": "scripts/simulation/p2_wc_g7b_arm_with_wheels.py",
+          "line": 361,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "t0_world_rotation_within_tol"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 31,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "t0_world_rot",
+          "clause": "3 P2 zero-gravity static gate t0_world_rot <= 0.001 rad"
+        }
+      ]
+    },
+    "settle_drift_within_tol": {
+      "unit": "m",
+      "data_file": "raw_poses.jsonl -> chassis displacement over the settle window",
+      "acceptance": "settle-window drift <= 0.001 m (static scene only)",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/morph_one_p2_real_chassis.py",
+          "line": 289,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "settle_drift_within_tol"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 5,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "60",
+          "clause": "background: zero-gravity settle drift threshold 0.001 m, deliberately NOT reused for landing"
+        }
+      ]
+    },
+    "max_drift_within_tol": {
+      "unit": "m",
+      "data_file": "raw_poses.jsonl -> max chassis world drift over the whole run",
+      "acceptance": "whole-run max drift <= 0.001 m (static scene only)",
+      "acceptance_decision": "pass_when_true",
+      "sources": [
+        {
+          "path": "scripts/simulation/p2_wc_g7b_arm_with_wheels.py",
+          "line": 366,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "max_drift_within_tol",
+          "note": "static_thresholds['drift_m'] = 0.001 at line 356"
+        }
+      ],
+      "spec_clauses": [
+        {
+          "path": "management/morph_one_rs/PHASE_P2_G5_LANDING_GATE.md",
+          "line": 31,
+          "ref": "dev/p2-wheel-contact-g1g4",
+          "line_contains": "60",
+          "clause": "3 60-step whole-run max drift <= 0.001 m"
+        }
+      ]
+    }
+  }
+}
