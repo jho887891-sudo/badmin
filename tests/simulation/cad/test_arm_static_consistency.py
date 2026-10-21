@@ -21,6 +21,10 @@ WHAT IT PINS
        effort, so "the asset asked for 100" never becomes a 57x error.
     7. Total rigid-body mass equals joint_limits.total_model_mass() even though merge-joints
        changes the per-link split (link6 = 0.75 = 0.1 + 0.65).
+    8. (P5B) reset.py takes the rest pose from simulation/badminton_scene/rest_pose.py instead of
+       carrying one arm-agnostic table, and the B601-RS rest pose is inside the documented limits.
+       The P5 version of this canary asserted the defect; P5B fixed it, so the canary now asserts
+       the fix (see management/morph_one_rs/P5B_RESET_POSE.md).
 
 WHERE THE ASSET LIVES
     The USD package is a 20 MB resource and is NOT in the repository (AGENTS.md: resources stay on
@@ -36,6 +40,7 @@ REFERENCE TABLE
 from __future__ import annotations
 
 import importlib.util
+import json
 import math
 import os
 import re
@@ -44,9 +49,16 @@ from pathlib import Path
 
 import pytest
 
-# pxr is the whole point of the file: without it there is nothing static to read.
-Usd = pytest.importorskip("pxr.Usd", reason="pxr (USD) not installed: the static USD checks need it")
-UsdPhysics = pytest.importorskip("pxr.UsdPhysics", reason="pxr.UsdPhysics not installed")
+# pxr is what reads the asset, so the stage-based checks below cannot run without it. It is imported
+# defensively instead of with importorskip because the P5B canary at the bottom of this file is a
+# text-plus-recorded-facts check: it must run - and be able to fail - on a machine that has no USD
+# at all, otherwise the fix it pins would only ever be verified on the host that owns the asset.
+try:  # pragma: no cover - the import itself is the branch
+    from pxr import Usd, UsdPhysics
+except ImportError:  # pragma: no cover
+    Usd = UsdPhysics = None
+
+PX_R_REASON = "pxr (USD) not installed: the static USD checks need it"
 
 DEFAULT_USDA = (
     "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs"
@@ -101,6 +113,8 @@ def limits():
 
 @pytest.fixture(scope="module")
 def stage():
+    if Usd is None:
+        pytest.skip(PX_R_REASON)
     if not USDA_PATH.is_file():
         pytest.skip("arm USD not staged at " + str(USDA_PATH) + " (set P5_ARM_USDA)")
     st = Usd.Stage.Open(str(USDA_PATH))
@@ -346,29 +360,91 @@ def test_formal_arm_rest_pose_is_inside_the_documented_limits(limits):
             % (name, value, lo, hi, layout))
 
 
-def test_reset_rest_joint_is_the_piper_pose_canary(limits):
-    """DEFECT CANARY (P5 finding): reset.py's arm-agnostic REST_JOINT is the PiPER pose.
+def _load_rest_pose_module():
+    """simulation/badminton_scene/rest_pose.py, loaded by path (it needs neither torch nor pxr)."""
+    path = REPO_ROOT / "simulation" / "badminton_scene" / "rest_pose.py"
+    if not path.is_file():
+        pytest.skip("no rest_pose.py in this tree: " + str(path))
+    spec = importlib.util.spec_from_file_location("_p5b_rest_pose_under_test", path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        sys.modules.pop(spec.name, None)
+    return module
 
-    simulation/badminton_scene/reset.py hardcodes joint2 = 1.5, joint3 = -1.5 and reset_idx() uses
-    it whenever no explicit joint_pos is passed - on the B601-RS joint3 is [0, 3.14], so that write
-    is a limit-violating state. The defect is recorded in management/morph_one_rs/
-    P5_ARM_STATIC_CONSISTENCY.md rather than silently patched from here (this branch is a read-only
-    audit of the asset). If someone fixes reset.py, THIS test fails on purpose: update the record
-    instead of deleting the canary.
+
+FACTS_JSON = (
+    REPO_ROOT / "outputs" / "simulation" / "rebot_b601_rs" / "morph_one" / "p5_static"
+    / "arm_joint_facts.json"
+)
+
+
+def _recorded_usd_limits():
+    """{joint: (lower, upper, unit)} from the committed pxr export, revolute values deg -> rad.
+
+    The canary may not take its limits from rest_pose.py (that would agree with itself), may not
+    need the live asset (it is a host resource that is not staged on a plain CI box), and may not use
+    joint_limits.py either: the B601-RS table lives on origin/feature/rebot-rs-sim-asset, not on this
+    branch. The export is the recorded middle ground - pxr wrote it, and it states its own sha256
+    before and after the read so "the asset was not touched" is checkable.
+    """
+    if not FACTS_JSON.is_file():
+        pytest.skip("no recorded pxr export at " + str(FACTS_JSON))
+    facts = json.loads(FACTS_JSON.read_text(encoding="utf-8"))
+    assert facts["asset"]["usda_sha256_before"] == facts["asset"]["usda_sha256_after"], (
+        "the export itself says the asset changed while it was read")
+    out = {}
+    for joint in facts["joints"]:
+        limits = joint.get("limits") or {}
+        lower, upper = limits.get("lower"), limits.get("upper")
+        if lower is None or upper is None:
+            continue  # root_joint is Fixed: no travel, so it is not a DOF
+        if limits.get("unit") == "degree":
+            # UsdPhysics authors revolute limits in DEGREES. Reading them as radians would be a
+            # 57.3x error, which is exactly the mistake this conversion exists to make impossible.
+            out[joint["name"]] = (math.radians(float(lower)), math.radians(float(upper)), "rad")
+        else:
+            out[joint["name"]] = (float(lower), float(upper), "m")
+    return out
+
+
+def test_reset_pose_is_model_aware_canary():
+    """P5B CANARY: reset.py may not carry one rest pose for every arm, and the RS pose must be legal.
+
+    P5 pinned the defect the other way round: its canary asserted that reset.py's joint3 = -1.5 was
+    still OUTSIDE the B601-RS limits, so any real fix turned the P5 suite red on purpose. P5B is
+    that fix, so the canary now asserts the fixed shape:
+
+      * reset.py takes its pose from simulation/badminton_scene/rest_pose.py and hardcodes no arm
+        angles of its own (against the unmodified reset.py this assertion fails - reverse control
+        recorded in management/morph_one_rs/P5B_RESET_POSE.md section 3);
+      * the B601-RS rest pose is strictly inside the documented limits, with the P5B margin, for
+        all 8 movable joints.
     """
     reset_py = REPO_ROOT / "simulation" / "badminton_scene" / "reset.py"
     if not reset_py.is_file():
         pytest.skip("no reset.py in this tree: " + str(reset_py))
     text = reset_py.read_text(encoding="utf-8")
-    m = re.search(r"REST_JOINT\s*=\s*\{([^}]*)\}", text)
-    assert m, "REST_JOINT not found in " + str(reset_py)
-    pairs = dict(re.findall(r'"(joint\d)"\s*:\s*(-?\d+(?:\.\d+)?)', m.group(1)))
-    offenders = []
-    for name, value in pairs.items():
-        lo, hi = limits.angle_range(name)
-        if not (lo - LIMIT_TOL_RAD <= float(value) <= hi + LIMIT_TOL_RAD):
-            offenders.append((name, float(value), lo, hi))
-    assert offenders == [("joint3", -1.5, 0.0, 3.14)] or (
-        len(offenders) == 1 and offenders[0][0] == "joint3" and offenders[0][1] == -1.5), (
-        "the recorded reset.py defect changed: offenders=%s - update "
-        "management/morph_one_rs/P5_ARM_STATIC_CONSISTENCY.md" % (offenders,))
+    assert "from .rest_pose import" in text, (
+        "reset.py does not take its rest pose from rest_pose.py: one pose for every arm is the P5 F1 "
+        "defect (joint3 = -1.5 rad is outside the B601-RS [0, 3.14])")
+    assert re.search(r"^REST_JOINT\s*=\s*\{", text, re.MULTILINE) is None, (
+        "reset.py still defines a module-level REST_JOINT table for every arm")
+
+    rest_pose = _load_rest_pose_module()
+    table = rest_pose.REST_POSES[rest_pose.MODEL_REBOT_RS]
+    recorded = _recorded_usd_limits()
+    assert set(table.joint_names) == set(recorded), (table.joint_names, sorted(recorded))
+    assert len(recorded) == 8, sorted(recorded)
+    for name in sorted(recorded):
+        lower, upper, unit = recorded[name]
+        value = table.rest[name]
+        assert lower < value < upper, (
+            "B601-RS rest %s = %r is outside the recorded USD limits [%r, %r] %s"
+            % (name, value, lower, upper, unit))
+        limit = rest_pose.JointLimit(
+            name=name, kind="prismatic" if unit == "m" else "revolute",
+            lower=lower, upper=upper, unit=unit, source="pxr export")
+        assert rest_pose.margin(limit, value) >= rest_pose.required_margin(limit), (name, value)
