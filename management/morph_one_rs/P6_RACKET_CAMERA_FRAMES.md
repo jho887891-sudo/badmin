@@ -176,7 +176,7 @@ python -m pytest tests/simulation/p6_frame_tree_test.py -q
 exit=0
 ```
 
-覆盖的四类错误（都是"不报错但结果错"的那种）：
+覆盖的五类错误（都是"不报错但结果错"的那种）：
 
 1. **米 vs 毫米**：球拍整体长必须落在 `0.5 < L < 1.0` 且 ≈0.6827；臂杆平移 `< 1 m`。若把米当毫米，236 mm 会变 236 m。另外单测了"视觉比真拍大"这一**事实**（682.7 > 680 BWF 上限、> 675 产品长），防止有人用容差把它抹平。
 2. **wxyz vs xyzw，按来源区分**：合同里每个旋转都写成 `{order, values}`，且 `usd_physics_and_usdgeom=wxyz`、`isaac_body_quat_w=xyzw`、`gltf=xyzw`、`racket.yaml:mount_transform.quaternion_xyzw=xyzw`；测试里 **wxyz 解码器与 xyzw 解码器是两个独立函数**。用 joint2 的真实值 `(-0.70710546, 0.7071081, 0, 0)` 断言：按 wxyz 解是绕 +X 的 **-90°**（`R22=0, R12=+1, R21=-1`），按 xyzw 解会变成绕 (-0.707,0.707,0) 的 **180°**（`R22=-1`）。另有一个不对称四元数验证两个解码器**必须**给出不同矩阵、且换序后互相复现。
