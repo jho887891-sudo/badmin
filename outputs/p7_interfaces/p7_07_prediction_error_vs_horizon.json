@@ -1,0 +1,90 @@
+{
+  "drag_mismatch_model_mismatch": {
+    "0.3": {
+      "ci_all_axes_coverage": 0.0,
+      "mean_error_bound_m": 0.01183580031270428,
+      "n_runs": 50,
+      "rmse_m": 0.13063327586241047
+    },
+    "0.4": {
+      "ci_all_axes_coverage": 0.0,
+      "mean_error_bound_m": 0.016806485962113295,
+      "n_runs": 50,
+      "rmse_m": 0.23365785591011903
+    },
+    "0.5": {
+      "ci_all_axes_coverage": 0.0,
+      "mean_error_bound_m": 0.022627415004211216,
+      "n_runs": 50,
+      "rmse_m": 0.37484931811412986
+    },
+    "0.6": {
+      "ci_all_axes_coverage": 0.0,
+      "mean_error_bound_m": 0.02929610333154555,
+      "n_runs": 50,
+      "rmse_m": 0.5716104030266687
+    },
+    "0.7": {
+      "ci_all_axes_coverage": 0.0,
+      "mean_error_bound_m": 0.03681135012924731,
+      "n_runs": 50,
+      "rmse_m": 0.823204445544831
+    },
+    "0.8": {
+      "ci_all_axes_coverage": 0.0,
+      "mean_error_bound_m": 0.04517251600653788,
+      "n_runs": 50,
+      "rmse_m": 1.1385870977170025
+    }
+  },
+  "horizon_window_s": [
+    0.3,
+    0.8
+  ],
+  "note": "synthetic truth + synthetic noise; no real detection or real flight data is involved - not a real-data accuracy claim",
+  "parabola_exact_model": {
+    "0.3": {
+      "ci_all_axes_coverage": 0.87,
+      "ci_per_axis_coverage": 0.955,
+      "mean_error_bound_m": 0.011835800312704281,
+      "n_runs": 200,
+      "rmse_m": 0.010605820092466097
+    },
+    "0.4": {
+      "ci_all_axes_coverage": 0.905,
+      "ci_per_axis_coverage": 0.9666666666666667,
+      "mean_error_bound_m": 0.016806485962113288,
+      "n_runs": 200,
+      "rmse_m": 0.014445874023385886
+    },
+    "0.5": {
+      "ci_all_axes_coverage": 0.82,
+      "ci_per_axis_coverage": 0.9366666666666666,
+      "mean_error_bound_m": 0.022627415004211223,
+      "n_runs": 200,
+      "rmse_m": 0.02091158417086287
+    },
+    "0.6": {
+      "ci_all_axes_coverage": 0.865,
+      "ci_per_axis_coverage": 0.9516666666666667,
+      "mean_error_bound_m": 0.029296103331545545,
+      "n_runs": 200,
+      "rmse_m": 0.025972591326269844
+    },
+    "0.7": {
+      "ci_all_axes_coverage": 0.88,
+      "ci_per_axis_coverage": 0.96,
+      "mean_error_bound_m": 0.03681135012924731,
+      "n_runs": 200,
+      "rmse_m": 0.03155880268029743
+    },
+    "0.8": {
+      "ci_all_axes_coverage": 0.86,
+      "ci_per_axis_coverage": 0.9533333333333334,
+      "mean_error_bound_m": 0.04517251600653788,
+      "n_runs": 200,
+      "rmse_m": 0.039554058736884924
+    }
+  },
+  "synthetic_only": true
+}
