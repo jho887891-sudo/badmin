@@ -303,23 +303,27 @@ def main():
     v_cmd = float(ARGS.velocity_cmd)
     commanded_v = min(abs(v_cmd), float(ARGS.speed_limit))
     clamped = bool(abs(v_cmd) > float(ARGS.speed_limit) + 1e-12)
-    sign = -1.0 if v_cmd > 0 else 1.0        # +Y command => wheels spin -X-sign (see axis note)
-    heading = 0.0
+    # Physics: a wheel spinning +omega about world +X drives the chassis along -Y
+    # (contact point moves +Y).  So chassis vy = -omega*r and omega = -vy/r.  v_cmd > 0 means
+    # "travel along -Y".  The first version got this sign wrong and the loop ran away to
+    # 0.914 m/s for a 0.30 m/s command (P4V_030_r03), which the gate caught.
+    vy_cmd_signed = -abs(v_cmd) if v_cmd > 0 else abs(v_cmd)
     for step in range(steps + 1):
         if step > 0 and closed_loop:
             # measured chassis speed along the roll axis (Y)
             e = target_tensor  # reuse the tensor object; values overwritten below
-            v_meas = 0.0
+            vy_meas = 0.0
             if frames:
                 prev = frames[-1]["chassis_pos"]
                 now = [float(v) for v in
                        _np(robot.data.body_pos_w[0, chassis_index]).reshape(-1)[:3]]
-                v_meas = sign * (now[1] - prev[1]) / DT
-            phase_v = commanded_v * min(1.0, step / max(1, ramp_steps))
+                vy_meas = (now[1] - prev[1]) / DT
+            phase_fraction = min(1.0, step / max(1, ramp_steps))
+            vy_target = vy_cmd_signed * phase_fraction
             if step > hold_end:
-                phase_v = 0.0                  # stop test
-            wheel_speed = sign * (phase_v + float(ARGS.velocity_kp)
-                                  * (phase_v - v_meas)) / float(ARGS.nominal_radius)
+                vy_target = 0.0                # stop test
+            vy_cmd_step = vy_target + float(ARGS.velocity_kp) * (vy_target - vy_meas)
+            wheel_speed = -vy_cmd_step / float(ARGS.nominal_radius)
             wheel_speed = max(-50.0, min(50.0, wheel_speed))
             values = [wheel_speed] * len(joint_names)
             target_tensor = torch.tensor([values], dtype=torch.float32, device=robot.device)
