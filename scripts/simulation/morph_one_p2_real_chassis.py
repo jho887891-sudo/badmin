@@ -53,6 +53,7 @@ import isaaclab.sim as sim_utils  # noqa: E402
 from isaaclab.assets import Articulation, ArticulationCfg  # noqa: E402
 from isaaclab_physx.physics import PhysxCfg  # noqa: E402
 from pxr import Gf, Sdf, Usd, UsdGeom, UsdPhysics  # noqa: E402
+from p2_chassis_frame_math import wheel_bottom_world_z  # noqa: E402
 
 
 def _np(values):
@@ -98,12 +99,21 @@ def author(path, lift):
     root.GetPrim().SetCustomDataByKey(
         "label", "TEST_PROXY chassis collision from measured Morph One geometry")
 
-    def collider(path, half, centre, mass=None):
+    def collider(path, half, centre, mass=None, geometry_local_offset=None):
+        """All body translations are in the PARENT coordinate system, not world.
+
+        Only the top-level /RC/Chassis receives world lift. Wheel children must
+        remain authored in chassis-local CAD coordinates, with no second lift.
+        """
         body = UsdGeom.Xform.Define(stage, Sdf.Path(path))
-        UsdGeom.Xformable(body).AddTranslateOp().Set(
-            Gf.Vec3f(centre[0], centre[1], centre[2] + lift))
+        UsdGeom.Xformable(body).AddTranslateOp().Set(Gf.Vec3f(*centre))
         cube = UsdGeom.Cube.Define(stage, Sdf.Path(path).AppendChild("geometry"))
         cube.CreateSizeAttr(1.0)
+        if geometry_local_offset is not None:
+            # USD xformOpOrder should be translate, scale: the CAD bbox centre
+            # must not be multiplied by the geometry box's scale.
+            UsdGeom.Xformable(cube.GetPrim()).AddTranslateOp().Set(
+                Gf.Vec3f(*geometry_local_offset))
         UsdGeom.Xformable(cube.GetPrim()).AddScaleOp().Set(
             Gf.Vec3f(2 * half[0], 2 * half[1], 2 * half[2]))
         UsdPhysics.CollisionAPI.Apply(cube.GetPrim())
@@ -115,13 +125,37 @@ def author(path, lift):
             mass_api.CreateCenterOfMassAttr(Gf.Vec3f(0.0))
         return prim
 
-    chassis = collider("/RC/Chassis", BODY_HALF, BODY_CENTRE, mass=20.0)
+    # The chassis CAD frame origin, not its geometry bbox centre, gets lifted.
+    chassis = collider("/RC/Chassis", BODY_HALF, (0.0, 0.0, lift),
+                       mass=20.0, geometry_local_offset=BODY_CENTRE)
     UsdPhysics.ArticulationRootAPI.Apply(chassis)
     for index, centre in enumerate(WHEEL_CENTRES, start=1):
         collider("/RC/Chassis/wheel%d" % index, WHEEL_HALF, centre, mass=None)
+    # Validate the *composed* USD world frame, not merely the local xform.
+    # Historical RC_lift0300 had chassis_z=0.2596, wheel-local_z=0.056,
+    # wheel world-bottom=0.2256m: it did NOT penetrate by 34mm.
+    cache = UsdGeom.XformCache(Usd.TimeCode.Default())
+    wheel_world_bottoms = []
+    for index in range(1, 5):
+        wheel_prim = stage.GetPrimAtPath("/RC/Chassis/wheel%d" % index)
+        if not wheel_prim or not wheel_prim.IsValid():
+            raise ValueError("missing authored wheel %d" % index)
+        world_z = float(cache.GetLocalToWorldTransform(
+            wheel_prim).ExtractTranslation()[2])
+        wheel_world_bottoms.append(world_z - WHEEL_HALF[2])
+    actual_min_bottom = min(wheel_world_bottoms)
+    expected_min_bottom = wheel_bottom_world_z(float(lift), WHEEL_CENTRES[0][2], WHEEL_HALF[2])
+    if abs(actual_min_bottom - expected_min_bottom) > 1e-5:
+        raise ValueError(
+            "Nested wheel frame mismatch: authored world bottom %.9f, "
+            "expected %.9f (possible double lift)" %
+            (actual_min_bottom, expected_min_bottom))
     stage.GetRootLayer().Save()
     return {"usd": os.path.abspath(path), "lift_m": float(lift),
             "measured_wheel_bottom_z_m": MEASURED_WHEEL_BOTTOM_Z_M,
+            "wheel_world_bottom_z_m": actual_min_bottom,
+            "per_wheel_world_bottom_z_m": wheel_world_bottoms,
+            "wheel_ground_clearance_m": actual_min_bottom,
             "root_api_target": str(chassis.GetPath())}
 
 def main():
@@ -211,19 +245,39 @@ def main():
 
     reset0 = frames[0]
     settle = frames[1:]
-    # the chassis body origin sits at BODY_CENTRE + lift, not at (0, 0, lift)
-    authored_pos = [BODY_CENTRE[0], BODY_CENTRE[1], BODY_CENTRE[2] + ARGS.lift]
+    # The chassis rigid-body origin now matches the CAD frame origin (0, 0, lift).
+    # BODY_CENTRE is only the collision geometry's local bounding-box offset.
+    authored_pos = [0.0, 0.0, ARGS.lift]
     world_pos_0 = float(np.linalg.norm(np.asarray(reset0["pos"]) - np.asarray(authored_pos)))
     world_rot_0 = angle_between(reset0["normalized_quat_wxyz"], [1.0, 0.0, 0.0, 0.0])
-    drift = float(np.linalg.norm(np.asarray(settle[-1]["pos"]) - np.asarray(reset0["pos"])))
+    drift = max(float(np.linalg.norm(np.asarray(frame["pos"]) -
+                                     np.asarray(reset0["pos"]))) for frame in settle)
     v0 = float(np.linalg.norm(np.asarray(reset0["lin_vel"])))
     thresholds = {"position_m": 0.001, "rotation_rad": 0.001, "settle_drift_m": 0.001}
+    # A negative nominal clearance is a collision-probe condition.  No solver
+    # motion AND no observed contact impulse means this probe was NOT verified;
+    # it must never be reported as a complete collision PASS.
+    nominal_clearance = wheel_bottom_world_z(float(ARGS.lift), WHEEL_CENTRES[0][2], WHEEL_HALF[2])
+    force_history = [frame["max_contact_force_n"] for frame in frames
+                     if frame["max_contact_force_n"] is not None]
+    peak_contact_force = max(force_history) if force_history else None
+    penetration_trial = bool(ARGS.include_ground and nominal_clearance < -1e-4)
+    penetration_response = (world_pos_0 > thresholds["position_m"]
+                            or drift > thresholds["settle_drift_m"]
+                            or v0 > 1e-3
+                            or (peak_contact_force is not None
+                                and peak_contact_force > 1e-6))
     verdict = {
         "t0_world_position_within_tol": world_pos_0 <= thresholds["position_m"],
         "t0_world_rotation_within_tol": world_rot_0 <= thresholds["rotation_rad"],
         "settle_drift_within_tol": drift <= thresholds["settle_drift_m"],
         "all_finite": all(row["finite"] for row in frames),
     }
+    if penetration_trial:
+        verdict["penetration_response_observed"] = bool(penetration_response)
+    # No contact force at zero gravity and zero overlap is NOT an error:
+    # an ordinary resting body with g=0 can have zero normal force.
+    # The penetration probe must instead be assessed independently.
     gate = "PASS" if all(verdict.values()) else "FAIL"
     result = {
         "run_id": ARGS.run_id, "scene_variant": "REAL_CHASSIS_SIMPLIFIED",
@@ -234,7 +288,12 @@ def main():
         "thresholds": thresholds, "gates": verdict,
         "diagnostics": {"lift_m": float(ARGS.lift),
                         "measured_wheel_bottom_z_m": MEASURED_WHEEL_BOTTOM_Z_M,
-                        "clearance_m": round(float(ARGS.lift) + MEASURED_WHEEL_BOTTOM_Z_M, 9),
+                        "clearance_m": round(nominal_clearance, 9),
+                        "clearance_basis": "authored wheel world-bottom after single parent lift",
+                        "usd_authoring_wheel_world_bottom_z_m": authored["wheel_world_bottom_z_m"],
+                        "penetration_trial": penetration_trial,
+                        "penetration_response_observed": (
+                            bool(penetration_response) if penetration_trial else None),
                         "root_lin_speed_at_step0_m_s": round(v0, 12),
                         "contact_api": contact_api,
                         "max_contact_force_step0_n": reset0.get("max_contact_force_n"),

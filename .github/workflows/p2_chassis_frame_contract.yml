@@ -1,0 +1,30 @@
+name: P2 Chassis Frame Contract
+
+on:
+  push:
+    branches:
+      - chatgpt/p2-chassis-world-frame-contact-20261021
+  pull_request:
+    paths:
+      - "scripts/simulation/morph_one_p2_real_chassis.py"
+      - "scripts/simulation/p2_chassis_frame_math.py"
+      - "tests/simulation/test_p2_chassis_world_frame.py"
+      - ".github/workflows/p2_chassis_frame_contract.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  offline-frames:
+    name: Real historic USDA frame regression (no Isaac)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile authored simulation script without Isaac imports
+        run: python -m py_compile scripts/simulation/morph_one_p2_real_chassis.py scripts/simulation/p2_chassis_frame_math.py
+      - name: Test actual pre-fix USDA nesting and corrected frame math
+        run: python -m unittest discover -s tests/simulation -p 'test_p2_chassis_world_frame.py' -v
