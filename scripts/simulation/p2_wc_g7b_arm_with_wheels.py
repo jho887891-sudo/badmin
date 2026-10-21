@@ -130,7 +130,11 @@ def author(path, lift):
     mass_api = UsdPhysics.MassAPI.Apply(chassis.GetPrim())
     mass_api.CreateMassAttr(CHASSIS_MASS_KG)
     mass_api.CreateCenterOfMassAttr(Gf.Vec3f(0.0))
-    UsdPhysics.ArticulationRootAPI.Apply(chassis.GetPrim())
+    # Do NOT add a second ArticulationRootAPI here: the real B601-RS asset already carries
+    # one at Arm/Geometry, and PhysX rejects two roots under the same articulation
+    # ("Expected exactly one ArticulationRootAPI prim ... found 2", G7B_static_r03).
+    # The chassis joins the existing articulation through the retargeted root_joint,
+    # exactly like the proven G7_r01 mount.
 
     for index, centre in enumerate(WHEEL_CENTRES, start=1):
         wheel = UsdGeom.Xform.Define(stage, Sdf.Path("/RW/Chassis/wheel%d" % index))
