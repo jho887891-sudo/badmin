@@ -310,7 +310,10 @@ def main():
     with open(os.path.join(out_dir, "manifest.json"), "w", encoding="utf-8") as handle:
         json.dump({"stage": "P2", "run_id": ARGS.run_id, "scene_variant": "REAL_CHASSIS_SIMPLIFIED",
                    "geometry_source": "measured CAD (wheel solids 435700/759491/773650/871375 + body module)",
-                   "physics_dt_s": DT, "gravity_m_s2": [0, 0, 0],
+                   # record the gravity that was ACTUALLY configured, not a constant:
+                   # G5 landed under g=-9.81 but the old manifest claimed [0,0,0].
+                   "physics_dt_s": DT,
+                   "gravity_m_s2": [0.0, 0.0, float(ARGS.gravity_z)],
                    "include_ground": bool(ARGS.include_ground), "lift_m": float(ARGS.lift),
                    "command": " ".join(os.sys.argv)}, handle, ensure_ascii=False, indent=1)
     print(json.dumps({k: result[k] for k in ("run_id", "gate_result", "metrics")},
