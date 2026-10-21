@@ -118,7 +118,13 @@ def author(path, lift):
     chassis = collider("/RC/Chassis", BODY_HALF, BODY_CENTRE, mass=20.0)
     UsdPhysics.ArticulationRootAPI.Apply(chassis)
     for index, centre in enumerate(WHEEL_CENTRES, start=1):
-        collider("/RC/Chassis/wheel%d" % index, WHEEL_HALF, centre, mass=None)
+        # children inherit the chassis transform, so the wheel offsets must be RELATIVE to the
+        # chassis body origin; passing absolute centres double-counted the offset and the lift,
+        # which is why the first version produced 0 N of contact even when it claimed penetration.
+        relative = (centre[0] - BODY_CENTRE[0],
+                    centre[1] - BODY_CENTRE[1],
+                    centre[2] - BODY_CENTRE[2])
+        collider("/RC/Chassis/wheel%d" % index, WHEEL_HALF, relative, mass=None)
     stage.GetRootLayer().Save()
     return {"usd": os.path.abspath(path), "lift_m": float(lift),
             "measured_wheel_bottom_z_m": MEASURED_WHEEL_BOTTOM_Z_M,

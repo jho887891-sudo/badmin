@@ -1,0 +1,18 @@
+{
+ "run_id": "RC_lift0334_r02",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/p2/morph_one_p2_real_chassis.py --run-id RC_lift0334_r02 --out-dir /home/dgut/runs/p2/RC_lift0334_r02 --lift 0.334 --read-contacts",
+ "child_returncode": 0,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "t0_world_position_error_m": 7.011e-09,
+  "t0_world_rotation_error_rad": 0.0,
+  "settle_60_step_chassis_drift_m": 0.0
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 21.967,
+ "child_stdout_log": "/home/dgut/runs/p2/RC_lift0334_r02/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/p2/RC_lift0334_r02/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}
