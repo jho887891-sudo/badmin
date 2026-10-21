@@ -343,20 +343,24 @@ def main():
         jsonl.flush()
         frames.append(row)
 
+    # EVERY frame, including step 0, is produced by "write the commanded root pose, then step
+    # once".  The chassis is a CHILD rigid body linked to the arm root by a FixedJoint, so a
+    # teleport of the root does not relocate it -- only the solver does.  Reading it before a
+    # solver step gave the flipped leftover pose: P3_static_r05 reported
+    # t0_pose_write_error_m = 0.2615 m even though the write itself used the now-confirmed
+    # xyzw order (probe: xyzw 0.199999853 rad vs commanded 0.2; wxyz 9.8e-08).
     for step in range(ARGS.steps + 1):
         commanded_pos, commanded_yaw, smooth = command_at(ARGS.profile, step)
-        if step > 0:
-            write_pose(commanded_pos, commanded_yaw)
-            set_joint_targets()
-            sim.step()
-            robot.update(DT)
-            for sensor in sensors.values():
-                try:
-                    sensor.update(DT)
-                except Exception:
-                    pass
-        capture("drive" if step else "after_reset_step0", step, commanded_pos, commanded_yaw,
-                smooth)
+        write_pose(commanded_pos, commanded_yaw)
+        set_joint_targets()
+        sim.step()
+        robot.update(DT)
+        for sensor in sensors.values():
+            try:
+                sensor.update(DT)
+            except Exception:
+                pass
+        capture("drive", step, commanded_pos, commanded_yaw, smooth)
     jsonl.close()
 
     chassis_pos = np.array([frame["bodies"]["Chassis"]["pos"] for frame in frames])
