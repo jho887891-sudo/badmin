@@ -1266,12 +1266,12 @@
       "dependencies": [
         "P2-10"
       ],
-      "status": "UNKNOWN",
-      "owner": null,
-      "head_sha": null,
-      "artifact": null,
+      "status": "DONE",
+      "owner": "subagent",
+      "head_sha": "0e87c5e",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/racket_collision_proxy.json",
       "latest_run_id": null,
-      "next_action": null,
+      "next_action": "43 primitive proxy, 20000-sample surface containment 1.000000 within 1 mm, max_uncovered 0.614 mm; CC-BY low-poly, not a vendor collision model",
       "blocker": null,
       "last_error": null
     },
