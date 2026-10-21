@@ -1,0 +1,1612 @@
+{
+ "axis_clusters_len": 2224,
+ "axis_clusters_keys": [
+  "role",
+  "axial_segment_count",
+  "vertical_dot",
+  "direction",
+  "axis_point_mm",
+  "axial_extent_mm",
+  "radius_mm",
+  "feature_count",
+  "feature_kinds",
+  "step_eids",
+  "modules",
+  "part_names",
+  "confidence",
+  "confidence_basis"
+ ],
+ "axis_segments_len": 2755,
+ "axis_segments_keys": [
+  "point_mm",
+  "projection_min_mm",
+  "projection_max_mm",
+  "radius_max_mm",
+  "feature_count",
+  "role",
+  "confidence",
+  "direction",
+  "step_eids",
+  "corner"
+ ],
+ "corners_type": "list",
+ "corners": [
+  {
+   "corner": "++",
+   "steering_candidates": 161,
+   "drive_candidates": 488,
+   "drive_axial_span_mm": [
+    -211.5695,
+    417.4496
+   ],
+   "best_steering": {
+    "point_mm": [
+     250.0,
+     -99.6124,
+     297.0
+    ],
+    "direction": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "radius_max_mm": 40.0,
+    "feature_count": 106,
+    "confidence": "HIGH",
+    "axial_span_mm": [
+     -214.0219,
+     -1.3
+    ],
+    "step_eids": [
+     69406,
+     894929
+    ],
+    "part_names": [
+     "M1.2.2.1-06V2 舵轮轴连接板-1-solid1",
+     "NONE"
+    ]
+   },
+   "best_drive": {
+    "point_mm": [
+     231.2635,
+     -244.0,
+     297.0
+    ],
+    "direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "radius_max_mm": 103.0,
+    "feature_count": 324,
+    "confidence": "HIGH",
+    "axial_span_mm": [
+     166.4,
+     284.6
+    ],
+    "step_eids": [
+     94196,
+     104794,
+     185156,
+     190464,
+     441032,
+     478417,
+     759491,
+     912621
+    ],
+    "part_names": [
+     "M1.2.2.1-09V2 轮毂电机固定板-1-solid1",
+     "NONE",
+     "NONE",
+     "NONE"
+    ]
+   },
+   "max_steering_circle_radius_mm": 40.0,
+   "max_drive_circle_radius_mm": 103.0,
+   "candidate_steering_axis_point_mm": [
+    250.0,
+    -99.6124,
+    297.0
+   ],
+   "candidate_drive_axis_point_mm": [
+    231.2635,
+    -244.0,
+    297.0
+   ],
+   "candidate_drive_direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "parts": 79,
+   "named_parts": 70,
+   "modules": [
+    "M1.1-00V3 主体模块-1",
+    "M1.2.2-00V3 舵轮前组件-2",
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "GB╱T 70.1-2008[内六角圆柱头螺钉M5×12]-19-solid1",
+    "GB╱T 70.1-2008[内六角圆柱头螺钉M5×12]-25-solid1",
+    "铭牌-1-solid1",
+    "SF-1F型无油复合铜套  10X12X7-1-solid1",
+    "M1.2.2-01V3 舵轮组件底板-1-solid1",
+    "GB╱T 70.1-2008[内六角圆柱头螺钉M5×12]-21-solid1"
+   ]
+  },
+  {
+   "corner": "+-",
+   "steering_candidates": 123,
+   "drive_candidates": 408,
+   "drive_axial_span_mm": [
+    -403.941,
+    372.0739
+   ],
+   "best_steering": {
+    "point_mm": [
+     250.0,
+     -99.6124,
+     -297.0
+    ],
+    "direction": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "radius_max_mm": 40.0,
+    "feature_count": 106,
+    "confidence": "HIGH",
+    "axial_span_mm": [
+     -214.0219,
+     -1.3
+    ],
+    "step_eids": [
+     889595,
+     894929
+    ],
+    "part_names": [
+     "M1.2.2.1-06V2 舵轮轴连接板-1-solid1",
+     "NONE"
+    ]
+   },
+   "best_drive": {
+    "point_mm": [
+     231.2388,
+     -244.0,
+     -297.0
+    ],
+    "direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "radius_max_mm": 103.0,
+    "feature_count": 324,
+    "confidence": "HIGH",
+    "axial_span_mm": [
+     166.4,
+     284.6
+    ],
+    "step_eids": [
+     88871,
+     432139,
+     433931,
+     435700,
+     787910,
+     807507,
+     858857,
+     898440
+    ],
+    "part_names": [
+     "NONE",
+     "NONE",
+     "NONE",
+     "NONE"
+    ]
+   },
+   "max_steering_circle_radius_mm": 40.0,
+   "max_drive_circle_radius_mm": 103.0,
+   "candidate_steering_axis_point_mm": [
+    250.0,
+    -99.6124,
+    -297.0
+   ],
+   "candidate_drive_axis_point_mm": [
+    231.2388,
+    -244.0,
+    -297.0
+   ],
+   "candidate_drive_direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "parts": 67,
+   "named_parts": 58,
+   "modules": [
+    "M1.1-00V3 主体模块-1",
+    "M1.2.2-00V3 舵轮前组件-1",
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "M1.2.2.1-13 舵轮模组挡板-1-solid1",
+    "M1.2.2-01V3 舵轮组件底板-1-solid6",
+    "GB╱T 70.1-2008[内六角圆柱头螺钉M5×12]-21-solid1",
+    "M1.2.2-01V3 舵轮组件底板-1-solid5",
+    "GB╱T 70.1-2008[内六角圆柱头螺钉M5×16]-4-solid1",
+    "NONE"
+   ]
+  },
+  {
+   "corner": "-+",
+   "steering_candidates": 144,
+   "drive_candidates": 409,
+   "drive_axial_span_mm": [
+    -372.0739,
+    406.342
+   ],
+   "best_steering": {
+    "point_mm": [
+     -250.0,
+     -100.6816,
+     297.0
+    ],
+    "direction": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "radius_max_mm": 40.0,
+    "feature_count": 107,
+    "confidence": "HIGH",
+    "axial_span_mm": [
+     -214.0219,
+     -1.3
+    ],
+    "step_eids": [
+     419756,
+     894929
+    ],
+    "part_names": [
+     "M1.2.2.1-06V2 舵轮轴连接板-1-solid1",
+     "NONE"
+    ]
+   },
+   "best_drive": {
+    "point_mm": [
+     -231.2388,
+     -244.0,
+     297.0
+    ],
+    "direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "radius_max_mm": 103.0,
+    "feature_count": 324,
+    "confidence": "HIGH",
+    "axial_span_mm": [
+     -284.6,
+     -166.4
+    ],
+    "step_eids": [
+     62326,
+     74734,
+     147445,
+     211797,
+     396729,
+     458838,
+     782571,
+     871375
+    ],
+    "part_names": [
+     "NONE",
+     "NONE",
+     "M1.2.2.1-09V2 轮毂电机固定板-1-solid1",
+     "NONE"
+    ]
+   },
+   "max_steering_circle_radius_mm": 40.0,
+   "max_drive_circle_radius_mm": 103.0,
+   "candidate_steering_axis_point_mm": [
+    -250.0,
+    -100.6816,
+    297.0
+   ],
+   "candidate_drive_axis_point_mm": [
+    -231.2388,
+    -244.0,
+    297.0
+   ],
+   "candidate_drive_direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "parts": 75,
+   "named_parts": 66,
+   "modules": [
+    "M1.1-00V3 主体模块-1",
+    "M1.2.2-00V3 舵轮前组件-2",
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "GB╱T 70.1-2008[内六角圆柱头螺钉M5×12]-3-solid1",
+    "减震器弹簧-1-solid1",
+    "铭牌-1-solid1",
+    "GB╱T 70.1-2008[内六角圆柱头螺钉M6×12]-6-solid1",
+    "GB╱T 70.1-2008[内六角圆柱头螺钉M5×12]-28-solid1",
+    "内螺纹圆柱销 8x18-1-solid1"
+   ]
+  },
+  {
+   "corner": "--",
+   "steering_candidates": 123,
+   "drive_candidates": 384,
+   "drive_axial_span_mm": [
+    -392.171,
+    116.1457
+   ],
+   "best_steering": {
+    "point_mm": [
+     -250.0,
+     -101.8934,
+     -297.0
+    ],
+    "direction": [
+     0.0,
+     1.0,
+     0.0
+    ],
+    "radius_max_mm": 40.0,
+    "feature_count": 110,
+    "confidence": "HIGH",
+    "axial_span_mm": [
+     -214.0219,
+     -1.3
+    ],
+    "step_eids": [
+     752405,
+     894929
+    ],
+    "part_names": [
+     "M1.2.2.1-06V2 舵轮轴连接板-1-solid1",
+     "NONE"
+    ]
+   },
+   "best_drive": {
+    "point_mm": [
+     -231.2635,
+     -244.0,
+     -297.0
+    ],
+    "direction": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "radius_max_mm": 103.0,
+    "feature_count": 324,
+    "confidence": "HIGH",
+    "axial_span_mm": [
+     -284.6,
+     -166.4
+    ],
+    "step_eids": [
+     106592,
+     129691,
+     551665,
+     562334,
+     773650,
+     809242,
+     826997,
+     925020
+    ],
+    "part_names": [
+     "NONE",
+     "NONE",
+     "NONE",
+     "M1.2.2.1-09V2 轮毂电机固定板-1-solid1"
+    ]
+   },
+   "max_steering_circle_radius_mm": 40.0,
+   "max_drive_circle_radius_mm": 103.0,
+   "candidate_steering_axis_point_mm": [
+    -250.0,
+    -101.8934,
+    -297.0
+   ],
+   "candidate_drive_axis_point_mm": [
+    -231.2635,
+    -244.0,
+    -297.0
+   ],
+   "candidate_drive_direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "parts": 67,
+   "named_parts": 58,
+   "modules": [
+    "M1.1-00V3 主体模块-1",
+    "M1.2.2-00V3 舵轮前组件-1",
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "M1.2.2-01V3 舵轮组件底板-1-solid2",
+    "M1.2.2.1-07V3 左舵轮立板-2-solid1",
+    "内螺纹圆柱销 8x18-1-solid1",
+    "GB╱T 70.1-2008[内六角圆柱头螺钉M4×12]-8-solid1",
+    "M1.2.2-01V3 舵轮组件底板-1-solid3",
+    "GB╱T 70.1-2008[内六角圆柱头螺钉M6×12]-5-solid1"
+   ]
+  }
+ ],
+ "symmetry": [
+  {
+   "corner_a": "++",
+   "corner_b": "-+",
+   "mirror_axis": "x",
+   "comparable": true,
+   "mirror_residual_mm": [
+    0.0,
+    1.0692,
+    0.0
+   ],
+   "mirror_residual_norm_mm": 1.0692,
+   "ground_projection_residual_mm": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ground_projection_residual_norm_mm": 0.0,
+   "anchor_up_offset_mm": 1.0692,
+   "symmetry_metric": "horizontal_axis_footprint",
+   "radius_a_mm": 40.0,
+   "radius_b_mm": 40.0,
+   "radius_delta_mm": 0.0,
+   "consistent": true
+  },
+  {
+   "corner_a": "+-",
+   "corner_b": "--",
+   "mirror_axis": "x",
+   "comparable": true,
+   "mirror_residual_mm": [
+    0.0,
+    2.281,
+    0.0
+   ],
+   "mirror_residual_norm_mm": 2.281,
+   "ground_projection_residual_mm": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ground_projection_residual_norm_mm": 0.0,
+   "anchor_up_offset_mm": 2.281,
+   "symmetry_metric": "horizontal_axis_footprint",
+   "radius_a_mm": 40.0,
+   "radius_b_mm": 40.0,
+   "radius_delta_mm": 0.0,
+   "consistent": true
+  },
+  {
+   "corner_a": "++",
+   "corner_b": "+-",
+   "mirror_axis": "z",
+   "comparable": true,
+   "mirror_residual_mm": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "mirror_residual_norm_mm": 0.0,
+   "ground_projection_residual_mm": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ground_projection_residual_norm_mm": 0.0,
+   "anchor_up_offset_mm": 0.0,
+   "symmetry_metric": "horizontal_axis_footprint",
+   "radius_a_mm": 40.0,
+   "radius_b_mm": 40.0,
+   "radius_delta_mm": 0.0,
+   "consistent": true
+  },
+  {
+   "corner_a": "-+",
+   "corner_b": "--",
+   "mirror_axis": "z",
+   "comparable": true,
+   "mirror_residual_mm": [
+    0.0,
+    1.2118,
+    0.0
+   ],
+   "mirror_residual_norm_mm": 1.2118,
+   "ground_projection_residual_mm": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ground_projection_residual_norm_mm": 0.0,
+   "anchor_up_offset_mm": 1.2118,
+   "symmetry_metric": "horizontal_axis_footprint",
+   "radius_a_mm": 40.0,
+   "radius_b_mm": 40.0,
+   "radius_delta_mm": 0.0,
+   "consistent": true
+  }
+ ],
+ "modules": [
+  {
+   "module": "M1.2.2-00V3 舵轮前组件-1",
+   "solids": 92,
+   "named_solids": 92,
+   "union_vertex_bbox_mm": {
+    "min": [
+     -273.444,
+     -277.0,
+     -383.0
+    ],
+    "max": [
+     273.832,
+     -73.594,
+     -205.0
+    ],
+    "size": [
+     547.276,
+     203.406,
+     178.0
+    ],
+    "center": [
+     0.194,
+     -175.297,
+     -294.0
+    ]
+   },
+   "step_eids": [
+    16123,
+    21420,
+    32083,
+    35643,
+    37429,
+    40976,
+    42759,
+    53423,
+    64098,
+    65817,
+    76464,
+    78278,
+    81755,
+    85340,
+    87049,
+    95978,
+    103015,
+    111928,
+    113643,
+    115431,
+    117269,
+    124335,
+    127906,
+    133242,
+    136770,
+    140329,
+    154563,
+    181596,
+    193993,
+    195792,
+    204666,
+    377126,
+    384271,
+    389648,
+    391388,
+    402072,
+    405619,
+    414437,
+    416204,
+    417968,
+    421545,
+    428623,
+    444558,
+    449902,
+    453492,
+    455263,
+    481986,
+    483747,
+    485529,
+    489078,
+    497892,
+    499677,
+    504981,
+    512114,
+    533813,
+    539165,
+    540969,
+    542735,
+    544518,
+    549868,
+    562334,
+    738292,
+    745341,
+    752405,
+    786155,
+    796823,
+    798599,
+    802172,
+    805732,
+    807507,
+    811050,
+    812846,
+    819913,
+    823518,
+    825231,
+    828796,
+    837600,
+    841104,
+    842902,
+    844704,
+    846399,
+    850012,
+    851742,
+    853535,
+    857060,
+    887782,
+    889595,
+    896721,
+    900250,
+    902039,
+    909067,
+    910857
+   ]
+  },
+  {
+   "module": "M1.2.2-00V3 舵轮前组件-2",
+   "solids": 92,
+   "named_solids": 92,
+   "union_vertex_bbox_mm": {
+    "min": [
+     -273.832,
+     -277.0,
+     205.0
+    ],
+    "max": [
+     273.444,
+     -73.594,
+     383.0
+    ],
+    "size": [
+     547.276,
+     203.406,
+     178.0
+    ],
+    "center": [
+     -0.194,
+     -175.297,
+     294.0
+    ]
+   },
+   "step_eids": [
+    23184,
+    28478,
+    33785,
+    49830,
+    51654,
+    57009,
+    58786,
+    60497,
+    69406,
+    80020,
+    83572,
+    92396,
+    94196,
+    99490,
+    120735,
+    122573,
+    131441,
+    135002,
+    143910,
+    145665,
+    147445,
+    150998,
+    152787,
+    156340,
+    158128,
+    174519,
+    183401,
+    186900,
+    197545,
+    208204,
+    368255,
+    371795,
+    393162,
+    394982,
+    407396,
+    419756,
+    425072,
+    430368,
+    446353,
+    457027,
+    462370,
+    464169,
+    467735,
+    469525,
+    471304,
+    473101,
+    476646,
+    492620,
+    501457,
+    503207,
+    506798,
+    508535,
+    510288,
+    535570,
+    548086,
+    555203,
+    556994,
+    558802,
+    567656,
+    571185,
+    729369,
+    734700,
+    747091,
+    748875,
+    764823,
+    766577,
+    768318,
+    770133,
+    775452,
+    780784,
+    784369,
+    789717,
+    791500,
+    793249,
+    800380,
+    803937,
+    814564,
+    816359,
+    821686,
+    832294,
+    834070,
+    839388,
+    848184,
+    855313,
+    860648,
+    862398,
+    867749,
+    905572,
+    907342,
+    917957,
+    926806,
+    928612
+   ]
+  },
+  {
+   "module": "M1.1-00V3 主体模块-1",
+   "solids": 63,
+   "named_solids": 63,
+   "union_vertex_bbox_mm": {
+    "min": [
+     -197.828,
+     -106.837,
+     -398.0
+    ],
+    "max": [
+     197.828,
+     26.0,
+     402.852
+    ],
+    "size": [
+     395.656,
+     132.837,
+     800.852
+    ],
+    "center": [
+     0.0,
+     -40.419,
+     2.426
+    ]
+   },
+   "step_eids": [
+    17849,
+    39158,
+    55171,
+    71149,
+    72959,
+    90666,
+    97719,
+    101290,
+    108324,
+    110130,
+    118984,
+    126077,
+    138570,
+    142106,
+    149241,
+    176263,
+    192201,
+    202871,
+    210025,
+    213564,
+    370006,
+    378925,
+    398461,
+    409139,
+    410897,
+    412697,
+    423294,
+    426859,
+    437468,
+    439244,
+    442808,
+    448150,
+    451676,
+    460603,
+    465933,
+    474899,
+    487320,
+    490850,
+    494387,
+    496149,
+    513843,
+    530216,
+    532016,
+    546321,
+    553443,
+    560558,
+    732969,
+    750643,
+    754186,
+    757710,
+    763019,
+    771905,
+    777230,
+    778998,
+    795031,
+    818195,
+    830523,
+    835803,
+    864194,
+    865996,
+    869570,
+    916161,
+    923303
+   ]
+  },
+  {
+   "module": "UNKNOWN",
+   "solids": 35,
+   "named_solids": 0,
+   "union_vertex_bbox_mm": {
+    "min": [
+     -290.0,
+     -334.391,
+     -400.0
+    ],
+    "max": [
+     290.0,
+     26.0,
+     400.0
+    ],
+    "size": [
+     580.0,
+     360.391,
+     800.0
+    ],
+    "center": [
+     0.0,
+     -154.196,
+     0.0
+    ]
+   },
+   "step_eids": [
+    62326,
+    67626,
+    74734,
+    88871,
+    104794,
+    106592,
+    129691,
+    185156,
+    188694,
+    190464,
+    211797,
+    396729,
+    432139,
+    433931,
+    435700,
+    441032,
+    458838,
+    478417,
+    480214,
+    551665,
+    565876,
+    727613,
+    759491,
+    773650,
+    782571,
+    787910,
+    809242,
+    826997,
+    858857,
+    871375,
+    894929,
+    898440,
+    903784,
+    912621,
+    925020
+   ]
+  }
+ ],
+ "notes": [
+  "a shared cylinder axis is a manufactured rotation feature, not a proven joint",
+  "a cylindrical surface is not necessarily a motor output shaft",
+  "no joint, mass, inertia or wheel radius is asserted by this report",
+  "role names describe the axis relative to the detected up axis, nothing more",
+  "co-axial features far apart along one line are reported as separate axial segments",
+  "corners are the four sign combinations of the two horizontal axes, not named wheels"
+ ],
+ "wheel_parts": [
+  {
+   "step_eid": 435700,
+   "step_type": "MANIFOLD_SOLID_BREP",
+   "name": "NONE",
+   "name_leaf": "NONE",
+   "module": "UNKNOWN",
+   "named": false,
+   "usd_mapping_grade": "CANDIDATE",
+   "vertex_bbox_mm": {
+    "min": [
+     225.616,
+     -334.391,
+     -375.892
+    ],
+    "max": [
+     274.269,
+     -153.609,
+     -218.11
+    ],
+    "size": [
+     48.653,
+     180.782,
+     157.783
+    ]
+   },
+   "circular_features": 260,
+   "max_circle_radius_mm": 103.0,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_15/Mesh"
+  },
+  {
+   "step_eid": 759491,
+   "step_type": "MANIFOLD_SOLID_BREP",
+   "name": "NONE",
+   "name_leaf": "NONE",
+   "module": "UNKNOWN",
+   "named": false,
+   "usd_mapping_grade": "CANDIDATE",
+   "vertex_bbox_mm": {
+    "min": [
+     225.616,
+     -334.391,
+     218.11
+    ],
+    "max": [
+     274.269,
+     -153.609,
+     375.892
+    ],
+    "size": [
+     48.653,
+     180.782,
+     157.783
+    ]
+   },
+   "circular_features": 260,
+   "max_circle_radius_mm": 103.0,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_23/Mesh"
+  },
+  {
+   "step_eid": 773650,
+   "step_type": "MANIFOLD_SOLID_BREP",
+   "name": "NONE",
+   "name_leaf": "NONE",
+   "module": "UNKNOWN",
+   "named": false,
+   "usd_mapping_grade": "CANDIDATE",
+   "vertex_bbox_mm": {
+    "min": [
+     -274.269,
+     -334.391,
+     -375.892
+    ],
+    "max": [
+     -225.616,
+     -153.609,
+     -218.11
+    ],
+    "size": [
+     48.653,
+     180.782,
+     157.783
+    ]
+   },
+   "circular_features": 260,
+   "max_circle_radius_mm": 103.0,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_7/Mesh"
+  },
+  {
+   "step_eid": 871375,
+   "step_type": "MANIFOLD_SOLID_BREP",
+   "name": "NONE",
+   "name_leaf": "NONE",
+   "module": "UNKNOWN",
+   "named": false,
+   "usd_mapping_grade": "CANDIDATE",
+   "vertex_bbox_mm": {
+    "min": [
+     -274.269,
+     -334.391,
+     218.11
+    ],
+    "max": [
+     -225.616,
+     -153.609,
+     375.892
+    ],
+    "size": [
+     48.653,
+     180.782,
+     157.783
+    ]
+   },
+   "circular_features": 260,
+   "max_circle_radius_mm": 103.0,
+   "usd_path": "/tn__M14WD4S_model2601_dev_VV0/Prototypes/tn__M1100V3_qAD/NONE_31/Mesh"
+  }
+ ],
+ "wheel_axis_clusters_count": 194,
+ "wheel_axis_clusters": [
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    0.0123,
+    -244.0,
+    297.0
+   ],
+   "axial_extent_mm": 569.2,
+   "radius_mm": [
+    4.0,
+    103.0
+   ],
+   "feature_count": 648,
+   "feature_kinds": {
+    "CIRCLE": 482,
+    "CYLINDRICAL_SURFACE": 166
+   },
+   "step_eids": [
+    62326,
+    74734,
+    94196,
+    104794,
+    147445,
+    185156,
+    190464,
+    211797,
+    396729,
+    441032,
+    458838,
+    478417,
+    759491,
+    782571,
+    871375,
+    912621
+   ],
+   "modules": [
+    "M1.2.2-00V3 舵轮前组件-2",
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "M1.2-00V3 底盘模块-1/M1.2.2-00V3 舵轮前组件-2/M1.2.2.1-00V3 舵轮转动组件-1/M1.2.2.1-09V2 轮毂电机固定板-1-solid1",
+    "M1.2-00V3 底盘模块-1/M1.2.2-00V3 舵轮前组件-2/M1.2.2.1-00V3 舵轮转动组件-2/M1.2.2.1-09V2 轮毂电机固定板-1-solid1",
+    "NONE"
+   ],
+   "confidence": "HIGH",
+   "confidence_basis": {
+    "features": 648,
+    "distinct_parts": 16,
+    "named_parts": 2,
+    "max_radius_mm": 103.0
+   }
+  },
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    -0.0123,
+    -244.0,
+    -297.0
+   ],
+   "axial_extent_mm": 569.2,
+   "radius_mm": [
+    4.0,
+    103.0
+   ],
+   "feature_count": 648,
+   "feature_kinds": {
+    "CYLINDRICAL_SURFACE": 166,
+    "CIRCLE": 482
+   },
+   "step_eids": [
+    88871,
+    106592,
+    129691,
+    432139,
+    433931,
+    435700,
+    551665,
+    562334,
+    773650,
+    787910,
+    807507,
+    809242,
+    826997,
+    858857,
+    898440,
+    925020
+   ],
+   "modules": [
+    "M1.2.2-00V3 舵轮前组件-1",
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "M1.2-00V3 底盘模块-1/M1.2.2-00V3 舵轮前组件-1/M1.2.2.1-00V3 舵轮转动组件-1/M1.2.2.1-09V2 轮毂电机固定板-1-solid1",
+    "M1.2-00V3 底盘模块-1/M1.2.2-00V3 舵轮前组件-1/M1.2.2.1-00V3 舵轮转动组件-2/M1.2.2.1-09V2 轮毂电机固定板-1-solid1",
+    "NONE"
+   ],
+   "confidence": "HIGH",
+   "confidence_basis": {
+    "features": 648,
+    "distinct_parts": 16,
+    "named_parts": 2,
+    "max_radius_mm": 103.0
+   }
+  },
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    0.0,
+    -322.0,
+    -297.0273
+   ],
+   "axial_extent_mm": 539.2,
+   "radius_mm": [
+    6.5,
+    6.5
+   ],
+   "feature_count": 10,
+   "feature_kinds": {
+    "CYLINDRICAL_SURFACE": 6,
+    "CIRCLE": 4
+   },
+   "step_eids": [
+    435700,
+    773650
+   ],
+   "modules": [
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "NONE"
+   ],
+   "confidence": "MEDIUM",
+   "confidence_basis": {
+    "features": 10,
+    "distinct_parts": 2,
+    "named_parts": 0,
+    "max_radius_mm": 6.5
+   }
+  },
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    0.0,
+    -322.0,
+    297.0272
+   ],
+   "axial_extent_mm": 539.2,
+   "radius_mm": [
+    6.5,
+    6.5
+   ],
+   "feature_count": 10,
+   "feature_kinds": {
+    "CIRCLE": 4,
+    "CYLINDRICAL_SURFACE": 6
+   },
+   "step_eids": [
+    759491,
+    871375
+   ],
+   "modules": [
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "NONE"
+   ],
+   "confidence": "MEDIUM",
+   "confidence_basis": {
+    "features": 10,
+    "distinct_parts": 2,
+    "named_parts": 0,
+    "max_radius_mm": 6.5
+   }
+  },
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    0.0,
+    -244.0,
+    -219.0
+   ],
+   "axial_extent_mm": 539.2,
+   "radius_mm": [
+    6.5,
+    6.5
+   ],
+   "feature_count": 10,
+   "feature_kinds": {
+    "CYLINDRICAL_SURFACE": 6,
+    "CIRCLE": 4
+   },
+   "step_eids": [
+    435700,
+    773650
+   ],
+   "modules": [
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "NONE"
+   ],
+   "confidence": "MEDIUM",
+   "confidence_basis": {
+    "features": 10,
+    "distinct_parts": 2,
+    "named_parts": 0,
+    "max_radius_mm": 6.5
+   }
+  },
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    0.0,
+    -244.0,
+    219.0
+   ],
+   "axial_extent_mm": 539.2,
+   "radius_mm": [
+    6.5,
+    6.5
+   ],
+   "feature_count": 10,
+   "feature_kinds": {
+    "CIRCLE": 4,
+    "CYLINDRICAL_SURFACE": 6
+   },
+   "step_eids": [
+    759491,
+    871375
+   ],
+   "modules": [
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "NONE"
+   ],
+   "confidence": "MEDIUM",
+   "confidence_basis": {
+    "features": 10,
+    "distinct_parts": 2,
+    "named_parts": 0,
+    "max_radius_mm": 6.5
+   }
+  },
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    0.0,
+    -166.0,
+    -297.0272
+   ],
+   "axial_extent_mm": 539.2,
+   "radius_mm": [
+    6.5,
+    6.5
+   ],
+   "feature_count": 10,
+   "feature_kinds": {
+    "CIRCLE": 4,
+    "CYLINDRICAL_SURFACE": 6
+   },
+   "step_eids": [
+    435700,
+    773650
+   ],
+   "modules": [
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "NONE"
+   ],
+   "confidence": "MEDIUM",
+   "confidence_basis": {
+    "features": 10,
+    "distinct_parts": 2,
+    "named_parts": 0,
+    "max_radius_mm": 6.5
+   }
+  },
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    0.0,
+    -166.0,
+    297.0273
+   ],
+   "axial_extent_mm": 539.2,
+   "radius_mm": [
+    6.5,
+    6.5
+   ],
+   "feature_count": 10,
+   "feature_kinds": {
+    "CIRCLE": 4,
+    "CYLINDRICAL_SURFACE": 6
+   },
+   "step_eids": [
+    759491,
+    871375
+   ],
+   "modules": [
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "NONE"
+   ],
+   "confidence": "MEDIUM",
+   "confidence_basis": {
+    "features": 10,
+    "distinct_parts": 2,
+    "named_parts": 0,
+    "max_radius_mm": 6.5
+   }
+  },
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    0.0,
+    -320.0495,
+    -279.6661
+   ],
+   "axial_extent_mm": 539.2,
+   "radius_mm": [
+    6.5,
+    6.5
+   ],
+   "feature_count": 8,
+   "feature_kinds": {
+    "CYLINDRICAL_SURFACE": 4,
+    "CIRCLE": 4
+   },
+   "step_eids": [
+    435700,
+    773650
+   ],
+   "modules": [
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "NONE"
+   ],
+   "confidence": "MEDIUM",
+   "confidence_basis": {
+    "features": 8,
+    "distinct_parts": 2,
+    "named_parts": 0,
+    "max_radius_mm": 6.5
+   }
+  },
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    0.0,
+    -320.0495,
+    279.6661
+   ],
+   "axial_extent_mm": 539.2,
+   "radius_mm": [
+    6.5,
+    6.5
+   ],
+   "feature_count": 8,
+   "feature_kinds": {
+    "CIRCLE": 4,
+    "CYLINDRICAL_SURFACE": 4
+   },
+   "step_eids": [
+    759491,
+    871375
+   ],
+   "modules": [
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "NONE"
+   ],
+   "confidence": "MEDIUM",
+   "confidence_basis": {
+    "features": 8,
+    "distinct_parts": 2,
+    "named_parts": 0,
+    "max_radius_mm": 6.5
+   }
+  },
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    0.0,
+    -320.0375,
+    -314.387
+   ],
+   "axial_extent_mm": 539.2,
+   "radius_mm": [
+    6.5,
+    6.5
+   ],
+   "feature_count": 8,
+   "feature_kinds": {
+    "CIRCLE": 4,
+    "CYLINDRICAL_SURFACE": 4
+   },
+   "step_eids": [
+    435700,
+    773650
+   ],
+   "modules": [
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "NONE"
+   ],
+   "confidence": "MEDIUM",
+   "confidence_basis": {
+    "features": 8,
+    "distinct_parts": 2,
+    "named_parts": 0,
+    "max_radius_mm": 6.5
+   }
+  },
+  {
+   "role": "drive_candidate_horizontal",
+   "axial_segment_count": 2,
+   "vertical_dot": 0.0,
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis_point_mm": [
+    0.0,
+    -320.0374,
+    314.387
+   ],
+   "axial_extent_mm": 539.2,
+   "radius_mm": [
+    6.5,
+    6.5
+   ],
+   "feature_count": 8,
+   "feature_kinds": {
+    "CYLINDRICAL_SURFACE": 4,
+    "CIRCLE": 4
+   },
+   "step_eids": [
+    759491,
+    871375
+   ],
+   "modules": [
+    "UNKNOWN"
+   ],
+   "part_names": [
+    "NONE"
+   ],
+   "confidence": "MEDIUM",
+   "confidence_basis": {
+    "features": 8,
+    "distinct_parts": 2,
+    "named_parts": 0,
+    "max_radius_mm": 6.5
+   }
+  }
+ ]
+}
