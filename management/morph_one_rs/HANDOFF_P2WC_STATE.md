@@ -118,3 +118,36 @@ Kit 单次启动从 ~40 s 退化到 **5–20 min 并多次停滞**（`omni.kit.e
 G6 全部 8 个 run 在此之前完成（每 run ~55 s），因此 G6 结论不受影响；G7B 组受影响（单次启动 6–12 min），
 但最终仍取得 `G7B_grav_r08` PASS。**新坑 #12**：`ContactSensor` 不调用 `update()` 时返回初始化零值，
 看起来像"没有接触"——`G7B_grav_r07` 因此误报 0 N，而位姿证据显示轮子确实挡住了整机。
+
+## 9. P3（动态挂载）本轮结果 · 2026-10-21 续
+
+| RUN_ID | 剖面 | 实测 | 安装漂移 max | 关节偏差 | gate |
+|---|---|---|---|---|---|
+| P3_static_r09 | static | 0 / 0 | 0.0 | 0.0 | PASS |
+| P3_xy_r09 | translate_xy | **0.299999984 m** / 0.30 | **2.98e-08 m** | 0.0 | PASS |
+| P3_z_r09 | translate_z | **0.100000024 m** / 0.10 | 0.0 | 0.0 | PASS |
+| P3_yaw_r09 | yaw | **0.349999844 rad** / 0.35 | **6.16e-08 m** | 0.0 | PASS |
+| P3_compound_r09 | compound | 0.18121759 m / 0.25（**门禁正确拦截**） | 6.66e-08 m | 0.0 | **FAIL** |
+| P3_static_r11 | static（offset 补偿） | 0.000102584 m | **3.00e-08 m** | 0.0347 | PASS |
+| P3_compound_r11 | compound（补偿） | **0.254393724 m** / 0.299997724 rad | **1.55e-08 m** | 0.0179 | PASS |
+| P3_yaw_r11 | yaw（补偿） | **0.345366605 rad** | **3.03e-08 m** | 0.0315 | PASS |
+
+**关键结论**：真实臂在**非零平移/偏航**下安装刚性保持到 **1.5e-8 – 6.2e-08 m**，关节保持 ≤0.0347 rad，手臂不触地。
+**关键新坑（#13）**：底盘是 articulation root 的**子刚体**，实测偏移 **0.261476607 m** → "写 root 位姿" ≠ "命令底盘"；
+必须按 `root = chassis_cmd − R(yaw)·offset` 反解，否则复合运动会少走 27% 并被门禁判 FAIL（`P3_compound_r09` 保留为证据）。
+**速度/jerk 在诊断传送下恒为 0**，不得当作平稳性证据。
+**覆盖缺口**：static / yaw 各 2 次；**translate_xy、translate_z 各只有 1 次** → P3-02 / P3-07 = PARTIAL。
+报告：`PHASE_P3_DYNAMIC_MOUNT_RESULTS.md`、`PHASE_P3_HARNESS_DEFECTS.md`；离线坐标系契约 PR #29（`p3/mount-frame-tree@0bbed19`）。
+
+### 本轮并行的 CPU 线（全部已 push + 各自 PR）
+| 线 | 分支 @ SHA | PR | 真实结果 |
+|---|---|---|---|
+| P3-01 离线安装坐标系 | `p3/mount-frame-tree` @ `0bbed19` | #29 | root_joint localPos/localRot = 0/单位；臂与底盘同点（无 CAD 安装偏移，UNKNOWN）；10 passed |
+| P8-01/02 训练准备（未训练） | `p8/rl-interface-schema` @ `c073d2c` | #30 | 观测 17 通道/70 维、9 维仿真专用动作、7 项 reward（缺失→masked）；70 passed；PPO/真机未授权 |
+| A05/A06/A09 溯源 | `queue/a05-a06-a09` @ `a3f4eb7` | #28 | A05 对真实 `G5_r01` 判 `GRAVITY_MISMATCH` exit 2；A06 重复 run 判 `DUPLICATE_RUN_ID` exit 2；A09 12 gate 逐行可验 exit 0 |
+| 队列数据修复 | `queue/a01-a03-a10` @ `d87b237` | #24 | 我写错的 5 处 artifact 路径已修（每处留 `repair_log`）；`check_consistency` exit 0、`pytest tests/queue` 60 passed exit 0 |
+
+### 下一步（READY，不需要重新设计）
+1. `translate_xy` / `translate_z` 各补第 2 次独立 run → P3-02 / P3-07 可 DONE。
+2. P3-04/P3-08 收尾（诊断驱动的合法性已在 JSON 标注，P3-08 需要 PASS/FAIL 录像/轨迹汇总）。
+3. P4 仍 **BLOCKED**：`P4-01 → P1-09`，轮径/轴心/轮距 UNKNOWN。
