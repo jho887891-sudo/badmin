@@ -1,0 +1,198 @@
+{
+  "schema": "p6_dynamic_fk_validation/1",
+  "task": "P6 item C3 -- dynamic forward kinematics",
+  "dof_order": [
+    "joint1",
+    "joint2",
+    "joint3",
+    "joint4",
+    "joint5",
+    "joint6",
+    "gripper_joint1",
+    "gripper_joint2"
+  ],
+  "frames": "arm root (/ReBot_Arm_RS) == chassis frame after the P3 retarget",
+  "units": "metre, radian; quaternion wxyz (USD)",
+  "zero_pose": {
+    "computed_position_m": [
+      0.3017101699988416,
+      2.62394596854716e-07,
+      0.21774671855448924
+    ],
+    "computed_quat_wxyz": [
+      0.9999999999999981,
+      -6.01136062714183e-08,
+      -1.2303629506361887e-08,
+      1.511056734995468e-13
+    ],
+    "pxr_committed_position_m": [
+      0.301710169999,
+      2.62633e-07,
+      0.217746720407
+    ],
+    "pxr_committed_quat_wxyz": [
+      1.0,
+      -6.9738e-08,
+      -1.7116e-08,
+      0.0
+    ],
+    "max_abs_position_delta_m": 1.8525107559064224e-09,
+    "geodesic_angle_rad": 1.2287812309317777e-07,
+    "det_R": 1.0000000000000002,
+    "note": "residual = float32 anchors in the USD layer, not a convention error"
+  },
+  "nonzero_pose": {
+    "A_mixed_signs": {
+      "q": {
+        "joint1": -0.7,
+        "joint2": 0.9,
+        "joint3": -1.2,
+        "joint4": 0.4,
+        "joint5": -0.9,
+        "joint6": 1.7,
+        "gripper_joint1": 0.02,
+        "gripper_joint2": 0.03
+      },
+      "within_limits": {
+        "joint1": true,
+        "joint2": true,
+        "joint3": false,
+        "joint4": true,
+        "joint5": true,
+        "joint6": true,
+        "gripper_joint1": true,
+        "gripper_joint2": true
+      },
+      "gripper_end_position_m": [
+        -0.05632566112611964,
+        -0.2544606584913066,
+        -0.1149026917832886
+      ],
+      "gripper_end_quat_wxyz": [
+        0.028511590757254845,
+        -0.8490461965613402,
+        0.3949490126751978,
+        0.3497469409217176
+      ],
+      "min_det_R": 1.0,
+      "max_det_R": 1.0000000000000009,
+      "max_orthonormality_error": 1.1102230246251565e-15
+    },
+    "B_all_positive_jaws_open": {
+      "q": {
+        "joint1": 0.3,
+        "joint2": 0.45,
+        "joint3": 0.6,
+        "joint4": 0.5,
+        "joint5": 0.35,
+        "joint6": 0.2,
+        "gripper_joint1": 0.05,
+        "gripper_joint2": 0.0715
+      },
+      "within_limits": {
+        "joint1": true,
+        "joint2": true,
+        "joint3": true,
+        "joint4": true,
+        "joint5": true,
+        "joint6": true,
+        "gripper_joint1": true,
+        "gripper_joint2": true
+      },
+      "gripper_end_position_m": [
+        0.25288161714811813,
+        -0.0055254400336814495,
+        0.5215439865050568
+      ],
+      "gripper_end_quat_wxyz": [
+        0.9324433388794856,
+        -0.1960261796582812,
+        -0.30344538088459,
+        -0.006637581461817455
+      ],
+      "min_det_R": 0.9999999999999999,
+      "max_det_R": 1.0000000000000013,
+      "max_orthonormality_error": 1.1102230246251565e-15
+    },
+    "C_near_limits_inside": {
+      "q": {
+        "joint1": 2.79,
+        "joint2": 3.13,
+        "joint3": 3.13,
+        "joint4": -1.56,
+        "joint5": 1.56,
+        "joint6": -3.13,
+        "gripper_joint1": 0.049,
+        "gripper_joint2": 0.07
+      },
+      "within_limits": {
+        "joint1": true,
+        "joint2": true,
+        "joint3": true,
+        "joint4": true,
+        "joint5": true,
+        "joint6": true,
+        "gripper_joint1": true,
+        "gripper_joint2": true
+      },
+      "gripper_end_position_m": [
+        -0.38579754397229327,
+        -0.35934211057387744,
+        0.1312978617207345
+      ],
+      "gripper_end_quat_wxyz": [
+        0.5753938990236246,
+        -0.5839966596942893,
+        0.4124772555296877,
+        -0.3971552292278172
+      ],
+      "min_det_R": 1.0,
+      "max_det_R": 1.0000000000000013,
+      "max_orthonormality_error": 1.5543122344752192e-15
+    }
+  },
+  "jacobian": {
+    "A_mixed_signs": {
+      "analytic_vs_central_max_abs": 1.063487076180536e-10,
+      "analytic_vs_forward_diff_max_abs": 2.2237706162608895e-07,
+      "central_step": 1e-06,
+      "forward_diff_step": 1e-06
+    },
+    "B_all_positive_jaws_open": {
+      "analytic_vs_central_max_abs": 1.1119111187340991e-10,
+      "analytic_vs_forward_diff_max_abs": 2.0797906441494263e-07,
+      "central_step": 1e-06,
+      "forward_diff_step": 1e-06
+    },
+    "C_near_limits_inside": {
+      "analytic_vs_central_max_abs": 1.4094125866392915e-10,
+      "analytic_vs_forward_diff_max_abs": 2.1813478939987363e-07,
+      "central_step": 1e-06,
+      "forward_diff_step": 1e-06
+    }
+  },
+  "reference_check": {
+    "A_mixed_signs": {
+      "pxr_xformcache_max_position_delta_m": 8.834515341504812e-10,
+      "pxr_xformcache_max_geodesic_angle_rad": 2.1073424255447017e-08,
+      "quaternion_algebra_max_abs_matrix_delta": 6.661338147750939e-16
+    },
+    "B_all_positive_jaws_open": {
+      "pxr_xformcache_max_position_delta_m": 1.4014189149424983e-09,
+      "pxr_xformcache_max_geodesic_angle_rad": 0.0,
+      "quaternion_algebra_max_abs_matrix_delta": 4.440892098500626e-16
+    },
+    "C_near_limits_inside": {
+      "pxr_xformcache_max_position_delta_m": 6.257481754978755e-10,
+      "pxr_xformcache_max_geodesic_angle_rad": 0.0,
+      "quaternion_algebra_max_abs_matrix_delta": 7.771561172376096e-16
+    }
+  },
+  "joint6_is_a_pure_roll": {
+    "numpy_delta_position_m": 0.0,
+    "numpy_delta_angle_rad": 0.1999999999999989,
+    "pxr_delta_position_m": 2.775854091264925e-17,
+    "pxr_delta_angle_rad": 0.19999999999999668,
+    "why": "the authored gripper_end frame is (0,0,0.16621) on link6, which lies ON the joint6 axis"
+  }
+}
