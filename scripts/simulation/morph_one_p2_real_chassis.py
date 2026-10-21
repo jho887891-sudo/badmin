@@ -129,9 +129,31 @@ def author(path, lift):
     UsdPhysics.ArticulationRootAPI.Apply(chassis)
     for index, centre in enumerate(WHEEL_CENTRES, start=1):
         collider("/RC/Chassis/wheel%d" % index, WHEEL_HALF, centre, mass=None)
+    # Validate the *composed* USD world frame, not merely the local xform.
+    # Historical RC_lift0300 had chassis_z=0.2596, wheel-local_z=0.056,
+    # wheel world-bottom=0.2256m: it did NOT penetrate by 34mm.
+    cache = UsdGeom.XformCache(Usd.TimeCode.Default())
+    wheel_world_bottoms = []
+    for index in range(1, 5):
+        wheel_prim = stage.GetPrimAtPath("/RC/Chassis/wheel%d" % index)
+        if not wheel_prim or not wheel_prim.IsValid():
+            raise ValueError("missing authored wheel %d" % index)
+        world_z = float(cache.GetLocalToWorldTransform(
+            wheel_prim).ExtractTranslation()[2])
+        wheel_world_bottoms.append(world_z - WHEEL_HALF[2])
+    actual_min_bottom = min(wheel_world_bottoms)
+    expected_min_bottom = float(lift) + MEASURED_WHEEL_BOTTOM_Z_M
+    if abs(actual_min_bottom - expected_min_bottom) > 1e-5:
+        raise ValueError(
+            "Nested wheel frame mismatch: authored world bottom %.9f, "
+            "expected %.9f (possible double lift)" %
+            (actual_min_bottom, expected_min_bottom))
     stage.GetRootLayer().Save()
     return {"usd": os.path.abspath(path), "lift_m": float(lift),
             "measured_wheel_bottom_z_m": MEASURED_WHEEL_BOTTOM_Z_M,
+            "wheel_world_bottom_z_m": actual_min_bottom,
+            "per_wheel_world_bottom_z_m": wheel_world_bottoms,
+            "wheel_ground_clearance_m": actual_min_bottom,
             "root_api_target": str(chassis.GetPath())}
 
 def main():
@@ -266,6 +288,7 @@ def main():
                         "measured_wheel_bottom_z_m": MEASURED_WHEEL_BOTTOM_Z_M,
                         "clearance_m": round(nominal_clearance, 9),
                         "clearance_basis": "authored wheel world-bottom after single parent lift",
+                        "usd_authoring_wheel_world_bottom_z_m": authored["wheel_world_bottom_z_m"],
                         "penetration_trial": penetration_trial,
                         "penetration_response_observed": (
                             bool(penetration_response) if penetration_trial else None),
