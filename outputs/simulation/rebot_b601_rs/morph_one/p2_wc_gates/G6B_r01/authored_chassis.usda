@@ -1,0 +1,150 @@
+#usda 1.0
+(
+    defaultPrim = "RC"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "RC" (
+    customData = {
+        string label = "P2-WC G6 collision variant box_child_rigid (TEST_PROXY geometry)"
+    }
+)
+{
+    def Xform "Chassis" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI", "PhysicsArticulationRootAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float physics:mass = 16
+        double3 xformOp:translate = (0, 0, 0.4000000059604645)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "geometry" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        )
+        {
+            double size = 1
+            float3 xformOp:scale = (0.396, 0.8, 0.132)
+            double3 xformOp:translate = (0, -0.002400000113993883, -0.04039999842643738)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Xform "wheel1" (
+            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+        )
+        {
+            point3f physics:centerOfMass = (0, 0, 0)
+            float physics:mass = 1
+            double3 xformOp:translate = (0.2500019967556, -0.296999990940094, -0.24400000274181366)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "geometry" (
+                prepend apiSchemas = ["PhysicsCollisionAPI"]
+            )
+            {
+                double size = 1
+                float3 xformOp:scale = (0.0486, 0.1578, 0.18)
+                uniform token[] xformOpOrder = ["xformOp:scale"]
+            }
+        }
+
+        def PhysicsFixedJoint "joint_wheel1"
+        {
+            rel physics:body0 = </RC/Chassis>
+            rel physics:body1 = </RC/Chassis/wheel1>
+            point3f physics:localPos0 = (0.250002, -0.297, -0.244)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+        }
+
+        def Xform "wheel2" (
+            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+        )
+        {
+            point3f physics:centerOfMass = (0, 0, 0)
+            float physics:mass = 1
+            double3 xformOp:translate = (0.2500019967556, 0.296999990940094, -0.24400000274181366)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "geometry" (
+                prepend apiSchemas = ["PhysicsCollisionAPI"]
+            )
+            {
+                double size = 1
+                float3 xformOp:scale = (0.0486, 0.1578, 0.18)
+                uniform token[] xformOpOrder = ["xformOp:scale"]
+            }
+        }
+
+        def PhysicsFixedJoint "joint_wheel2"
+        {
+            rel physics:body0 = </RC/Chassis>
+            rel physics:body1 = </RC/Chassis/wheel2>
+            point3f physics:localPos0 = (0.250002, 0.297, -0.244)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+        }
+
+        def Xform "wheel3" (
+            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+        )
+        {
+            point3f physics:centerOfMass = (0, 0, 0)
+            float physics:mass = 1
+            double3 xformOp:translate = (-0.2500019967556, -0.296999990940094, -0.24400000274181366)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "geometry" (
+                prepend apiSchemas = ["PhysicsCollisionAPI"]
+            )
+            {
+                double size = 1
+                float3 xformOp:scale = (0.0486, 0.1578, 0.18)
+                uniform token[] xformOpOrder = ["xformOp:scale"]
+            }
+        }
+
+        def PhysicsFixedJoint "joint_wheel3"
+        {
+            rel physics:body0 = </RC/Chassis>
+            rel physics:body1 = </RC/Chassis/wheel3>
+            point3f physics:localPos0 = (-0.250002, -0.297, -0.244)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+        }
+
+        def Xform "wheel4" (
+            prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+        )
+        {
+            point3f physics:centerOfMass = (0, 0, 0)
+            float physics:mass = 1
+            double3 xformOp:translate = (-0.2500019967556, 0.296999990940094, -0.24400000274181366)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+
+            def Cube "geometry" (
+                prepend apiSchemas = ["PhysicsCollisionAPI"]
+            )
+            {
+                double size = 1
+                float3 xformOp:scale = (0.0486, 0.1578, 0.18)
+                uniform token[] xformOpOrder = ["xformOp:scale"]
+            }
+        }
+
+        def PhysicsFixedJoint "joint_wheel4"
+        {
+            rel physics:body0 = </RC/Chassis>
+            rel physics:body1 = </RC/Chassis/wheel4>
+            point3f physics:localPos0 = (-0.250002, 0.297, -0.244)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 0, 0)
+            quatf physics:localRot1 = (1, 0, 0, 0)
+        }
+    }
+}
+

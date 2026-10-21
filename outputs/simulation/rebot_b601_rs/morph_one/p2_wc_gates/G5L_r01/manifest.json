@@ -1,0 +1,21 @@
+{
+ "stage": "P2-WC",
+ "run_id": "G5L_r01",
+ "scene_variant": "G6_COLLISION_VARIANT",
+ "impl": "box_child_xform",
+ "impl_definition": "chassis rigid body + 4 child Xform cube colliders",
+ "preregistration": "management/morph_one_rs/PHASE_P2_WC_G6_PREREGISTRATION.md",
+ "physics_dt_s": 0.008333333333333333,
+ "steps": 360,
+ "gate_mode": "landing",
+ "gravity_m_s2": [
+  0.0,
+  0.0,
+  -9.81
+ ],
+ "include_ground": true,
+ "lift_m": 0.4,
+ "geometry_source": "measured CAD wheel envelope 48.6 x 157.8 x 180.0 mm (TEST_PROXY simplification, not the real tyre)",
+ "solver": "PhysxCfg(solver_type=1=TGS, enable_external_forces_every_iteration=True)",
+ "command": "/home/dgut/runs/g/scripts/simulation/p2_wc_g6_collision_variants.py --run-id G5L_r01 --out-dir /home/dgut/runs/g/G5L_r01 --impl box_child_xform --lift 0.400 --gravity-z -9.81 --steps 360 --read-contacts --gate-mode landing"
+}

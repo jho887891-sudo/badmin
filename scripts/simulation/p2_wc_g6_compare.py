@@ -26,6 +26,45 @@ def load(path):
         return json.load(handle)
 
 
+def tail_support(run_dir, tail_steps=30, mass_kg=20.0, gravity_z=-9.81):
+    """SUPPLEMENTARY (post-hoc, NOT part of the pre-registered G6 gate set).
+
+    Compares the mean contact force of the last 30 steps with the static weight
+    m*|g|.  Reported separately so that a big landing impulse can never be sold as
+    load bearing, and so that the G5L runs (which DID pre-register this gate) can be
+    cross-checked against the G6 variants.
+    """
+    path = os.path.join(run_dir, "raw_poses.jsonl")
+    if not os.path.isfile(path):
+        return None
+    frames = []
+    with open(path, encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if line:
+                frames.append(json.loads(line))
+    tail = frames[-min(tail_steps, len(frames)):]
+    chassis = [frame.get("max_contact_force_n") for frame in tail
+               if frame.get("max_contact_force_n") is not None]
+    per_wheel = {}
+    for name in ("wheel1", "wheel2", "wheel3", "wheel4"):
+        values = [frame.get("contact_by_sensor_n", {}).get(name) for frame in tail]
+        values = [value for value in values if value is not None]
+        per_wheel[name] = ("UNKNOWN" if not values else round(sum(values) / len(values), 6))
+    expected = mass_kg * abs(gravity_z)
+    mean_chassis = (sum(chassis) / len(chassis)) if chassis else None
+    return {
+        "label": "SUPPLEMENTARY (post-hoc, not a pre-registered G6 gate)",
+        "tail_steps": min(tail_steps, len(frames)),
+        "tail_mean_chassis_contact_n": (round(mean_chassis, 6)
+                                       if mean_chassis is not None else None),
+        "expected_static_weight_n": round(expected, 6),
+        "relative_error": (round(abs(mean_chassis - expected) / expected, 9)
+                           if mean_chassis is not None else None),
+        "tail_mean_per_wheel_contact_n": per_wheel,
+    }
+
+
 def rel_delta(a, b):
     if a is None or b is None:
         return None
@@ -135,7 +174,10 @@ def main(argv=None):
     if args.baseline_g5 and args.equivalence_run:
         baseline = load(args.baseline_g5)
         candidate = runs[args.equivalence_run]["result"]
-        base_peak = baseline["metrics"]["peak_contact_force_n"]
+        # The historical G5 result stored the peak under diagnostics, not metrics.
+        base_peak = baseline.get("metrics", {}).get("peak_contact_force_n")
+        if base_peak is None:
+            base_peak = baseline.get("diagnostics", {}).get("max_contact_force_settle_n")
         cand_peak = candidate["metrics"]["peak_contact_force_n"]
         delta = rel_delta(base_peak, cand_peak)
         equivalence = {
@@ -158,6 +200,8 @@ def main(argv=None):
             "g5_equivalence_peak_rel": G5_EQUIV_PEAK_REL_TOL,
         },
         "table": table,
+        "supplementary_support": {run_id: tail_support(runs[run_id]["run_dir"])
+                                  for run_id in sorted(runs)},
         "determinism": determinism,
         "verdicts": verdicts,
         "g5_equivalence": equivalence,

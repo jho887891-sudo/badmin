@@ -1,0 +1,30 @@
+{
+ "run_id": "G6B_r06",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p2_wc_g6_collision_variants.py --run-id G6B_r06 --out-dir /home/dgut/runs/g/G6B_r06 --impl box_child_rigid --lift 0.400 --gravity-z -9.81 --steps 360 --read-contacts --gate-mode landing",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1200.0,
+ "quarantined_stale_result": null,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "peak_contact_force_n": 855.51348877,
+  "first_contact_step": 12,
+  "final_chassis_z_m": 0.33399990201,
+  "final_speed_m_s": 0.00046371,
+  "tail_speed_max_m_s": 0.000467113,
+  "tail_z_span_m": 0.0,
+  "tail_max_penetration_m": 9.8e-08,
+  "max_tilt_rad": 9.3463e-05,
+  "chassis_drift_m": 0.064623124,
+  "t0_static_position_error_m": 0.001383835,
+  "t0_tilt_rad": 0.0,
+  "steps": 360
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 55.344,
+ "child_stdout_log": "/home/dgut/runs/g/G6B_r06/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/G6B_r06/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}
