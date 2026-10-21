@@ -52,6 +52,9 @@ PARSER.add_argument("--profile", required=True, choices=sorted(PROFILES))
 PARSER.add_argument("--steps", type=int, default=360)
 PARSER.add_argument("--gravity-z", type=float, default=0.0)
 PARSER.add_argument("--read-contacts", action="store_true")
+PARSER.add_argument("--freeze-axis", choices=("none", "x", "y", "z", "yaw"), default="none",
+                    help="NEGATIVE CONTROL: deliberately drop this command component so the "
+                         "directed/yaw gate must FAIL. Recorded in manifest as negative_control.")
 AppLauncher.add_app_launcher_args(PARSER)
 ARGS = PARSER.parse_args()
 LAUNCHER = AppLauncher(ARGS)
@@ -63,7 +66,7 @@ from isaaclab.assets import Articulation, ArticulationCfg  # noqa: E402
 from isaaclab.actuators import ImplicitActuatorCfg  # noqa: E402
 from isaaclab_physx.physics import PhysxCfg  # noqa: E402
 from pxr import Gf, Sdf, Usd, UsdGeom, UsdPhysics  # noqa: E402
-from p3_motion_gate import directional_displacement_gate  # noqa: E402
+from p3_motion_gate import directed_displacement_track  # noqa: E402
 
 
 def _np(values):
@@ -243,6 +246,16 @@ def main():
 
     def write_pose(pos_cmd, yaw_cmd):
         """pos_cmd/yaw_cmd are absolute CHASSIS commands; converted to a root pose."""
+        pos_cmd = [float(pos_cmd[0]), float(pos_cmd[1]), float(pos_cmd[2])]
+        yaw_cmd = float(yaw_cmd)
+        if ARGS.freeze_axis == "x":
+            pos_cmd[0] = 0.0
+        elif ARGS.freeze_axis == "y":
+            pos_cmd[1] = 0.0
+        elif ARGS.freeze_axis == "z":
+            pos_cmd[2] = LIFT
+        elif ARGS.freeze_axis == "yaw":
+            yaw_cmd = 0.0
         yaw = base_root_yaw + float(yaw_cmd)
         half = 0.5 * yaw
         if quat_order["value"] == "wxyz":
@@ -425,9 +438,8 @@ def main():
     }
     # P3 v1.1: include Z and require directed displacement, not arbitrary
     # same-magnitude motion. The old hypot(x,y) skipped translate_z entirely.
-    directed = directional_displacement_gate(
-        [spec["x"], spec["y"], spec["z"]], chassis_pos[0], chassis_pos[-1],
-        thresholds["motion_ratio"])
+    directed = directed_displacement_track(
+        [spec["x"], spec["y"], spec["z"]], chassis_pos, thresholds["motion_ratio"])
     if directed is not None:
         gates["translation_actually_measured"] = directed["pass"]
     if abs(spec["yaw"]) > 1e-9:
@@ -464,6 +476,10 @@ def main():
         },
         "thresholds": thresholds, "gates": gates,
         "diagnostics": {
+            "negative_control": ({"frozen_axis": ARGS.freeze_axis,
+                                  "note": "command component dropped on purpose; the "
+                                          "corresponding motion gate MUST fail"}
+                                 if ARGS.freeze_axis != "none" else None),
             "quat_order_for_write_root_pose": quat_order,
             "t0_pose_write_error_m": round(start_error, 12),
             "root_to_chassis_offset_m": round(float(np.linalg.norm(offset_world)), 9),
@@ -490,6 +506,7 @@ def main():
                    "lift_m": LIFT, "arm_asset": REAL_ARM, "arm_sha256": arm_hash_after,
                    "arm_asset_unchanged": arm_hash_before == arm_hash_after,
                    "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+                   "freeze_axis": ARGS.freeze_axis,
                    "preregistration": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_GATE.md",
                    "command": " ".join(os.sys.argv)}, handle, ensure_ascii=False, indent=1)
     print(json.dumps({"run_id": ARGS.run_id, "profile": ARGS.profile, "gate_result": gate,
