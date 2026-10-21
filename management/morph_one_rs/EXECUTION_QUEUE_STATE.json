@@ -1096,14 +1096,31 @@
     "P2-10",
     "P3-08"
    ],
-   "status": "UNKNOWN",
-   "owner": null,
-   "head_sha": null,
-   "artifact": null,
-   "latest_run_id": null,
-   "next_action": null,
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "5e4e92e",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4V_030_r09/result.json",
+   "latest_run_id": "P4V_030_r09",
+   "next_action": "proxy speed loop: 0.30->0.31811 m/s (6.0%), 0.50->0.53007 (6.0%), 0.80 clamped to 0.50 and reached 0.53007, stop to 1e-4 m/s; three controller bugs caught by the gates before this pass",
    "blocker": null,
-   "last_error": null
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "P4-09 run evidence landed in 5e4e92e",
+     "old": {
+      "status": "UNKNOWN",
+      "artifact": null,
+      "head_sha": null,
+      "latest_run_id": null,
+      "owner": null
+     },
+     "new": {
+      "status": "DONE",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4V_030_r09/result.json",
+      "head_sha": "5e4e92e"
+     }
+    }
+   ]
   },
   {
    "task_id": "P4-10",
@@ -1148,14 +1165,31 @@
     "P2-10",
     "P3-08"
    ],
-   "status": "UNKNOWN",
-   "owner": null,
-   "head_sha": null,
-   "artifact": null,
-   "latest_run_id": null,
-   "next_action": null,
+   "status": "PARTIAL",
+   "owner": "main",
+   "head_sha": "5e4e92e",
+   "artifact": "management/morph_one_rs/PHASE_P4_09_RESULTS.md",
+   "latest_run_id": "P4V_clamp_r11",
+   "next_action": "control interface exercised closed-loop (speed command -> wheel target -> measured speed) but no formal unit-test suite or fail-closed input validation yet",
    "blocker": null,
-   "last_error": null
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "P4-09 run evidence landed in 5e4e92e",
+     "old": {
+      "status": "UNKNOWN",
+      "artifact": null,
+      "head_sha": null,
+      "latest_run_id": null,
+      "owner": null
+     },
+     "new": {
+      "status": "PARTIAL",
+      "artifact": "management/morph_one_rs/PHASE_P4_09_RESULTS.md",
+      "head_sha": "5e4e92e"
+     }
+    }
+   ]
   },
   {
    "task_id": "P5-01",
