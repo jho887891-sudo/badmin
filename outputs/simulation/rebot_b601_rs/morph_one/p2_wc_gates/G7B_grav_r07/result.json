@@ -1,0 +1,103 @@
+{
+ "run_id": "G7B_grav_r07",
+ "scene_variant": "REAL_ARM_ON_CORRECTED_WHEELS",
+ "gate_mode": "landing",
+ "gate_result": "FAIL",
+ "metrics": {
+  "peak_contact_force_n": 0.0,
+  "first_contact_step": null,
+  "tail_mean_contact_force_n": 0.0,
+  "tail_speed_max_m_s": 0.000596815,
+  "tail_z_span_m": 1.19e-07,
+  "tail_max_penetration_m": 6.74e-07,
+  "max_tilt_rad": 9.1707e-05,
+  "final_chassis_z_m": 0.333999723,
+  "mount_position_drift_max_m": 2.9803e-08,
+  "mount_rotation_drift_max_rad": 0.0,
+  "t0_mount_position_error_m": 2.9803e-08,
+  "t0_mount_rotation_error_rad": 0.0,
+  "arm_peak_contact_n": 0.0,
+  "t0_world_position_error_m": 0.001383835077,
+  "max_chassis_drift_m": 0.064618959136,
+  "steps": 360
+ },
+ "thresholds": {
+  "landing": "PHASE_P2_G5_LANDING_GATE.md",
+  "mount_position_m": 0.001,
+  "mount_rotation_rad": 0.001,
+  "arm_ground_contact_n": 1.0
+ },
+ "gates": {
+  "all_finite": true,
+  "contact_detected": false,
+  "settles": true,
+  "no_long_term_penetration": true,
+  "no_tip_over": true,
+  "mount_stable_under_load": true,
+  "arm_does_not_touch_ground": true
+ },
+ "diagnostics": {
+  "lift_m": 0.4,
+  "gravity_m_s2": [
+   0.0,
+   0.0,
+   -9.81
+  ],
+  "wheel_ground_clearance_m": 0.066000003,
+  "per_wheel_world_bottom_z_m": [
+   0.06600000321865082,
+   0.06600000321865082,
+   0.06600000321865082,
+   0.06600000321865082
+  ],
+  "contact_api": "isaaclab.sensors.ContactSensor(chassis,arm)",
+  "contact_reporter_present": {
+   "chassis": true,
+   "arm": true
+  },
+  "body_names": [
+   "link3",
+   "link4",
+   "link2",
+   "link5",
+   "link1",
+   "link6",
+   "base_link",
+   "gripper_left",
+   "gripper_right",
+   "Chassis"
+  ],
+  "joint_names": [
+   "joint4",
+   "joint3",
+   "joint5",
+   "joint2",
+   "joint6",
+   "joint1",
+   "gripper_joint1",
+   "gripper_joint2"
+  ],
+  "num_bodies": 10,
+  "dofs": 8,
+  "body_masses_kg": [
+   1.251999974,
+   0.460000008,
+   1.551999927,
+   0.201204568,
+   0.465499997,
+   0.75,
+   1.177399993,
+   0.075199999,
+   0.075199999,
+   20.0
+  ],
+  "total_mass_kg": 26.008504465,
+  "chassis_mass_kg": 20.0,
+  "chassis_in_articulation": true,
+  "arm_asset": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+  "arm_sha256_before": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+  "arm_sha256_after": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+  "arm_asset_unchanged": true,
+  "wheel_bottom_model": "chassis body origin + R*(wheel centre) - 0.090 (TEST_PROXY)"
+ }
+}

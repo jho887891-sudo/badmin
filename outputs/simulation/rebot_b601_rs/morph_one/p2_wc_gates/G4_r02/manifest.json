@@ -1,0 +1,13 @@
+{
+ "stage": "P2-WC",
+ "run_id": "G4_r02",
+ "scene_variant": "G4_CONTACT_CONTROL",
+ "gravity_m_s2": [
+  0,
+  0,
+  -9.81
+ ],
+ "physics_dt_s": 0.008333333333333333,
+ "steps": 120,
+ "command": "/home/dgut/runs/g/scripts/simulation/p2_wc_g4_contact_control.py --run-id G4_r02 --out-dir /home/dgut/runs/g/G4_r02"
+}

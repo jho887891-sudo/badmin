@@ -1,0 +1,18 @@
+{
+ "run_id": "G4_r02",
+ "scene_variant": "G4_CONTACT_CONTROL",
+ "gate_result": "PASS",
+ "metrics": {
+  "max_contact_force_n": 200.911575,
+  "first_contact_step": 19,
+  "final_z_m": 0.049999736,
+  "drop_height_m": 0.2
+ },
+ "expected_contact_n": 9.81,
+ "gates": {
+  "contact_reported": true,
+  "force_above_1n": true,
+  "cube_fell": true,
+  "all_finite": true
+ }
+}

@@ -1,0 +1,415 @@
+{
+ "preregistration": "management/morph_one_rs/PHASE_P2_WC_G6_PREREGISTRATION.md",
+ "tolerances": {
+  "peak_force_rel": 0.01,
+  "final_z_abs_m": 0.001,
+  "first_contact_step": 1,
+  "g5_equivalence_peak_rel": 0.01
+ },
+ "table": {
+  "G5L_r01": {
+   "impl": "box_child_xform",
+   "gate_result": "PASS",
+   "gates": {
+    "all_finite": true,
+    "contact_detected": true,
+    "no_tip_over": true,
+    "settles": true,
+    "no_long_term_penetration": true
+   },
+   "peak_contact_force_n": 2693.495361328,
+   "first_contact_step": 12,
+   "final_chassis_z_m": 0.333999693394,
+   "tail_speed_max_m_s": 0.000513395,
+   "tail_max_penetration_m": 3.36e-07,
+   "max_tilt_rad": 8.7677e-05,
+   "per_wheel_contact": "UNKNOWN",
+   "per_wheel_peak_contact_n": {
+    "wheel1": null,
+    "wheel2": null,
+    "wheel3": null,
+    "wheel4": null
+   },
+   "contact_api": "isaaclab.sensors.ContactSensor(1 prims)"
+  },
+  "G6A_eq_r01": {
+   "impl": "box_child_xform",
+   "gate_result": "PASS",
+   "gates": {
+    "all_finite": true,
+    "contact_detected": true
+   },
+   "peak_contact_force_n": 2693.495361328,
+   "first_contact_step": 12,
+   "final_chassis_z_m": 0.333999693394,
+   "tail_speed_max_m_s": 0.000513395,
+   "tail_max_penetration_m": 3.36e-07,
+   "max_tilt_rad": 8.7677e-05,
+   "per_wheel_contact": "UNKNOWN",
+   "per_wheel_peak_contact_n": {
+    "wheel1": null,
+    "wheel2": null,
+    "wheel3": null,
+    "wheel4": null
+   },
+   "contact_api": "isaaclab.sensors.ContactSensor(1 prims)"
+  },
+  "G6A_r01": {
+   "impl": "box_child_xform",
+   "gate_result": "PASS",
+   "gates": {
+    "all_finite": true,
+    "contact_detected": true,
+    "no_tip_over": true,
+    "settles": true,
+    "no_long_term_penetration": true
+   },
+   "peak_contact_force_n": 2693.495361328,
+   "first_contact_step": 12,
+   "final_chassis_z_m": 0.333999693394,
+   "tail_speed_max_m_s": 0.000513395,
+   "tail_max_penetration_m": 3.36e-07,
+   "max_tilt_rad": 8.7677e-05,
+   "per_wheel_contact": "UNKNOWN",
+   "per_wheel_peak_contact_n": {
+    "wheel1": null,
+    "wheel2": null,
+    "wheel3": null,
+    "wheel4": null
+   },
+   "contact_api": "isaaclab.sensors.ContactSensor(1 prims)"
+  },
+  "G6A_r02": {
+   "impl": "box_child_xform",
+   "gate_result": "PASS",
+   "gates": {
+    "all_finite": true,
+    "contact_detected": true,
+    "no_tip_over": true,
+    "settles": true,
+    "no_long_term_penetration": true
+   },
+   "peak_contact_force_n": 2693.495361328,
+   "first_contact_step": 12,
+   "final_chassis_z_m": 0.333999693394,
+   "tail_speed_max_m_s": 0.000513395,
+   "tail_max_penetration_m": 3.36e-07,
+   "max_tilt_rad": 8.7677e-05,
+   "per_wheel_contact": "UNKNOWN",
+   "per_wheel_peak_contact_n": {
+    "wheel1": null,
+    "wheel2": null,
+    "wheel3": null,
+    "wheel4": null
+   },
+   "contact_api": "isaaclab.sensors.ContactSensor(1 prims)"
+  },
+  "G6B_r05": {
+   "impl": "box_child_rigid",
+   "gate_result": "PASS",
+   "gates": {
+    "all_finite": true,
+    "contact_detected": true,
+    "no_tip_over": true,
+    "settles": true,
+    "no_long_term_penetration": true,
+    "per_wheel_contact_all_four": true
+   },
+   "peak_contact_force_n": 855.51348877,
+   "first_contact_step": 12,
+   "final_chassis_z_m": 0.33399990201,
+   "tail_speed_max_m_s": 0.000467113,
+   "tail_max_penetration_m": 9.8e-08,
+   "max_tilt_rad": 9.3463e-05,
+   "per_wheel_contact": "MEASURED",
+   "per_wheel_peak_contact_n": {
+    "wheel1": 855.51348877,
+    "wheel2": 534.948120117,
+    "wheel3": 740.066711426,
+    "wheel4": 316.476593018
+   },
+   "contact_api": "isaaclab.sensors.ContactSensor(5 prims)"
+  },
+  "G6B_r06": {
+   "impl": "box_child_rigid",
+   "gate_result": "PASS",
+   "gates": {
+    "all_finite": true,
+    "contact_detected": true,
+    "no_tip_over": true,
+    "settles": true,
+    "no_long_term_penetration": true,
+    "per_wheel_contact_all_four": true
+   },
+   "peak_contact_force_n": 855.51348877,
+   "first_contact_step": 12,
+   "final_chassis_z_m": 0.33399990201,
+   "tail_speed_max_m_s": 0.000467113,
+   "tail_max_penetration_m": 9.8e-08,
+   "max_tilt_rad": 9.3463e-05,
+   "per_wheel_contact": "MEASURED",
+   "per_wheel_peak_contact_n": {
+    "wheel1": 855.51348877,
+    "wheel2": 534.948120117,
+    "wheel3": 740.066711426,
+    "wheel4": 316.476593018
+   },
+   "contact_api": "isaaclab.sensors.ContactSensor(5 prims)"
+  },
+  "G6C_r01": {
+   "impl": "mesh_convex_hull",
+   "gate_result": "PASS",
+   "gates": {
+    "all_finite": true,
+    "contact_detected": true,
+    "no_tip_over": true,
+    "settles": true,
+    "no_long_term_penetration": true
+   },
+   "peak_contact_force_n": 2701.190917969,
+   "first_contact_step": 12,
+   "final_chassis_z_m": 0.333999663591,
+   "tail_speed_max_m_s": 0.000584411,
+   "tail_max_penetration_m": 3.36e-07,
+   "max_tilt_rad": 0.000187813,
+   "per_wheel_contact": "UNKNOWN",
+   "per_wheel_peak_contact_n": {
+    "wheel1": null,
+    "wheel2": null,
+    "wheel3": null,
+    "wheel4": null
+   },
+   "contact_api": "isaaclab.sensors.ContactSensor(1 prims)"
+  },
+  "G6C_r02": {
+   "impl": "mesh_convex_hull",
+   "gate_result": "PASS",
+   "gates": {
+    "all_finite": true,
+    "contact_detected": true,
+    "no_tip_over": true,
+    "settles": true,
+    "no_long_term_penetration": true
+   },
+   "peak_contact_force_n": 2701.190917969,
+   "first_contact_step": 12,
+   "final_chassis_z_m": 0.333999663591,
+   "tail_speed_max_m_s": 0.000584411,
+   "tail_max_penetration_m": 3.36e-07,
+   "max_tilt_rad": 0.000187813,
+   "per_wheel_contact": "UNKNOWN",
+   "per_wheel_peak_contact_n": {
+    "wheel1": null,
+    "wheel2": null,
+    "wheel3": null,
+    "wheel4": null
+   },
+   "contact_api": "isaaclab.sensors.ContactSensor(1 prims)"
+  }
+ },
+ "supplementary_support": {
+  "G5L_r01": {
+   "label": "SUPPLEMENTARY (post-hoc, not a pre-registered G6 gate)",
+   "tail_steps": 30,
+   "tail_mean_chassis_contact_n": 196.200016,
+   "expected_static_weight_n": 196.2,
+   "relative_error": 8e-08,
+   "tail_mean_per_wheel_contact_n": {
+    "wheel1": "UNKNOWN",
+    "wheel2": "UNKNOWN",
+    "wheel3": "UNKNOWN",
+    "wheel4": "UNKNOWN"
+   }
+  },
+  "G6A_eq_r01": {
+   "label": "SUPPLEMENTARY (post-hoc, not a pre-registered G6 gate)",
+   "tail_steps": 30,
+   "tail_mean_chassis_contact_n": 196.200017,
+   "expected_static_weight_n": 196.2,
+   "relative_error": 8.6e-08,
+   "tail_mean_per_wheel_contact_n": {
+    "wheel1": "UNKNOWN",
+    "wheel2": "UNKNOWN",
+    "wheel3": "UNKNOWN",
+    "wheel4": "UNKNOWN"
+   }
+  },
+  "G6A_r01": {
+   "label": "SUPPLEMENTARY (post-hoc, not a pre-registered G6 gate)",
+   "tail_steps": 30,
+   "tail_mean_chassis_contact_n": 196.200016,
+   "expected_static_weight_n": 196.2,
+   "relative_error": 8e-08,
+   "tail_mean_per_wheel_contact_n": {
+    "wheel1": "UNKNOWN",
+    "wheel2": "UNKNOWN",
+    "wheel3": "UNKNOWN",
+    "wheel4": "UNKNOWN"
+   }
+  },
+  "G6A_r02": {
+   "label": "SUPPLEMENTARY (post-hoc, not a pre-registered G6 gate)",
+   "tail_steps": 30,
+   "tail_mean_chassis_contact_n": 196.200016,
+   "expected_static_weight_n": 196.2,
+   "relative_error": 8e-08,
+   "tail_mean_per_wheel_contact_n": {
+    "wheel1": "UNKNOWN",
+    "wheel2": "UNKNOWN",
+    "wheel3": "UNKNOWN",
+    "wheel4": "UNKNOWN"
+   }
+  },
+  "G6B_r05": {
+   "label": "SUPPLEMENTARY (post-hoc, not a pre-registered G6 gate)",
+   "tail_steps": 30,
+   "tail_mean_chassis_contact_n": 60.809241,
+   "expected_static_weight_n": 196.2,
+   "relative_error": 0.690065032,
+   "tail_mean_per_wheel_contact_n": {
+    "wheel1": 60.809241,
+    "wheel2": 41.027462,
+    "wheel3": 49.87795,
+    "wheel4": 44.485503
+   }
+  },
+  "G6B_r06": {
+   "label": "SUPPLEMENTARY (post-hoc, not a pre-registered G6 gate)",
+   "tail_steps": 30,
+   "tail_mean_chassis_contact_n": 60.809241,
+   "expected_static_weight_n": 196.2,
+   "relative_error": 0.690065032,
+   "tail_mean_per_wheel_contact_n": {
+    "wheel1": 60.809241,
+    "wheel2": 41.027462,
+    "wheel3": 49.87795,
+    "wheel4": 44.485503
+   }
+  },
+  "G6C_r01": {
+   "label": "SUPPLEMENTARY (post-hoc, not a pre-registered G6 gate)",
+   "tail_steps": 30,
+   "tail_mean_chassis_contact_n": 196.200012,
+   "expected_static_weight_n": 196.2,
+   "relative_error": 6.2e-08,
+   "tail_mean_per_wheel_contact_n": {
+    "wheel1": "UNKNOWN",
+    "wheel2": "UNKNOWN",
+    "wheel3": "UNKNOWN",
+    "wheel4": "UNKNOWN"
+   }
+  },
+  "G6C_r02": {
+   "label": "SUPPLEMENTARY (post-hoc, not a pre-registered G6 gate)",
+   "tail_steps": 30,
+   "tail_mean_chassis_contact_n": 196.200012,
+   "expected_static_weight_n": 196.2,
+   "relative_error": 6.2e-08,
+   "tail_mean_per_wheel_contact_n": {
+    "wheel1": "UNKNOWN",
+    "wheel2": "UNKNOWN",
+    "wheel3": "UNKNOWN",
+    "wheel4": "UNKNOWN"
+   }
+  }
+ },
+ "determinism": {
+  "box_child_xform": {
+   "run_ids": [
+    "G5L_r01",
+    "G6A_eq_r01",
+    "G6A_r01",
+    "G6A_r02"
+   ],
+   "peak_force_rel_delta": 0.0,
+   "final_z_abs_delta_m": 0.0,
+   "first_contact_step_gap": 0,
+   "checks": {
+    "peak_force_within_rel_tol": true,
+    "final_z_within_abs_tol": true,
+    "first_contact_step_within_tol": true
+   },
+   "status": "PASS"
+  },
+  "box_child_rigid": {
+   "run_ids": [
+    "G6B_r05",
+    "G6B_r06"
+   ],
+   "peak_force_rel_delta": 0.0,
+   "final_z_abs_delta_m": 0.0,
+   "first_contact_step_gap": 0,
+   "checks": {
+    "peak_force_within_rel_tol": true,
+    "final_z_within_abs_tol": true,
+    "first_contact_step_within_tol": true
+   },
+   "status": "PASS"
+  },
+  "mesh_convex_hull": {
+   "run_ids": [
+    "G6C_r01",
+    "G6C_r02"
+   ],
+   "peak_force_rel_delta": 0.0,
+   "final_z_abs_delta_m": 0.0,
+   "first_contact_step_gap": 0,
+   "checks": {
+    "peak_force_within_rel_tol": true,
+    "final_z_within_abs_tol": true,
+    "first_contact_step_within_tol": true
+   },
+   "status": "PASS"
+  }
+ },
+ "verdicts": {
+  "box_child_rigid": {
+   "run_ids": [
+    "G6B_r05",
+    "G6B_r06"
+   ],
+   "verdict": "PASS",
+   "all_runs_gate_pass": true,
+   "contact_detected_all_runs": true,
+   "determinism": "PASS",
+   "failing_gates": [],
+   "per_wheel_contact_measured": true
+  },
+  "box_child_xform": {
+   "run_ids": [
+    "G5L_r01",
+    "G6A_eq_r01",
+    "G6A_r01",
+    "G6A_r02"
+   ],
+   "verdict": "PASS",
+   "all_runs_gate_pass": true,
+   "contact_detected_all_runs": true,
+   "determinism": "PASS",
+   "failing_gates": [],
+   "per_wheel_contact_measured": false
+  },
+  "mesh_convex_hull": {
+   "run_ids": [
+    "G6C_r01",
+    "G6C_r02"
+   ],
+   "verdict": "PASS",
+   "all_runs_gate_pass": true,
+   "contact_detected_all_runs": true,
+   "determinism": "PASS",
+   "failing_gates": [],
+   "per_wheel_contact_measured": false
+  }
+ },
+ "g5_equivalence": {
+  "baseline_run": "G5_r01",
+  "baseline_peak_contact_force_n": 2693.495361328,
+  "equivalence_run": "G6A_eq_r01",
+  "equivalence_peak_contact_force_n": 2693.495361328,
+  "rel_delta": 0.0,
+  "tolerance": 0.01,
+  "status": "PASS"
+ },
+ "overall": "PASS"
+}

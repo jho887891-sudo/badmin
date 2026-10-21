@@ -1,0 +1,469 @@
+{
+ "run_id": "G5_r01",
+ "scene_variant": "REAL_CHASSIS_SIMPLIFIED",
+ "gate_result": "FAIL",
+ "steps": 60,
+ "contact": {
+  "peak_contact_force_n": 2693.495361328,
+  "peak_at_steps": [
+   12
+  ],
+  "first_contact_step": 12,
+  "contact_steps_gt_1n": 49,
+  "contact_fraction": 0.816667,
+  "contact_sensor_available": true
+ },
+ "support": {
+  "final_chassis_z_m": 0.333999693,
+  "final_speed_m_s": 0.000513394,
+  "final_vz_m_s": 0.000313905,
+  "tail_window_steps": 30,
+  "tail_speed_max_m_s": 0.000513395,
+  "tail_z_span_m": 3e-08,
+  "tail_bounce_sign_changes": 0,
+  "steps_with_|vz|>0.02_after_first_contact": 1,
+  "min_chassis_z_m": 0.333999395,
+  "max_chassis_z_m": 0.398616195,
+  "initial_chassis_z_m": 0.398616195
+ },
+ "penetration": {
+  "wheel_bottom_offset_m": -0.334,
+  "initial_wheel_bottom_m": 0.064616195,
+  "min_wheel_bottom_m": -6.05e-07,
+  "max_penetration_any_step_m": 6.05e-07,
+  "tail_max_penetration_m": 3.36e-07
+ },
+ "tilt": {
+  "measured": false,
+  "max_tilt_rad": null
+ },
+ "per_step": [
+  {
+   "step": 0,
+   "z": 0.398616,
+   "vz": -0.1635,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 1,
+   "z": 0.396902,
+   "vz": -0.24525,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 2,
+   "z": 0.394507,
+   "vz": -0.327,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 3,
+   "z": 0.391431,
+   "vz": -0.40875,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 4,
+   "z": 0.387674,
+   "vz": -0.4905,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 5,
+   "z": 0.383235,
+   "vz": -0.57225,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 6,
+   "z": 0.378115,
+   "vz": -0.654001,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 7,
+   "z": 0.372314,
+   "vz": -0.735752,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 8,
+   "z": 0.365831,
+   "vz": -0.817503,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 9,
+   "z": 0.358667,
+   "vz": -0.899254,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 10,
+   "z": 0.350822,
+   "vz": -0.981005,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 11,
+   "z": 0.342296,
+   "vz": -1.062754,
+   "force_n": 0.0,
+   "tilt_rad": null
+  },
+  {
+   "step": 12,
+   "z": 0.334022,
+   "vz": -0.022213,
+   "force_n": 2693.495361328,
+   "tilt_rad": null
+  },
+  {
+   "step": 13,
+   "z": 0.334,
+   "vz": -1.5e-05,
+   "force_n": 249.475341797,
+   "tilt_rad": null
+  },
+  {
+   "step": 14,
+   "z": 0.333999,
+   "vz": -8e-05,
+   "force_n": 196.04586792,
+   "tilt_rad": null
+  },
+  {
+   "step": 15,
+   "z": 0.334,
+   "vz": 0.00015,
+   "force_n": 196.750289917,
+   "tilt_rad": null
+  },
+  {
+   "step": 16,
+   "z": 0.334,
+   "vz": 0.000186,
+   "force_n": 196.286804199,
+   "tilt_rad": null
+  },
+  {
+   "step": 17,
+   "z": 0.334,
+   "vz": 0.000191,
+   "force_n": 196.211471558,
+   "tilt_rad": null
+  },
+  {
+   "step": 18,
+   "z": 0.334,
+   "vz": 0.000319,
+   "force_n": 196.507675171,
+   "tilt_rad": null
+  },
+  {
+   "step": 19,
+   "z": 0.334,
+   "vz": 0.000308,
+   "force_n": 196.17388916,
+   "tilt_rad": null
+  },
+  {
+   "step": 20,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.203552246,
+   "tilt_rad": null
+  },
+  {
+   "step": 21,
+   "z": 0.334,
+   "vz": 0.000313,
+   "force_n": 196.20930481,
+   "tilt_rad": null
+  },
+  {
+   "step": 22,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.189086914,
+   "tilt_rad": null
+  },
+  {
+   "step": 23,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.20022583,
+   "tilt_rad": null
+  },
+  {
+   "step": 24,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 25,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187728882,
+   "tilt_rad": null
+  },
+  {
+   "step": 26,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200256348,
+   "tilt_rad": null
+  },
+  {
+   "step": 27,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 28,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187728882,
+   "tilt_rad": null
+  },
+  {
+   "step": 29,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200256348,
+   "tilt_rad": null
+  },
+  {
+   "step": 30,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 31,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187728882,
+   "tilt_rad": null
+  },
+  {
+   "step": 32,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200256348,
+   "tilt_rad": null
+  },
+  {
+   "step": 33,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 34,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187728882,
+   "tilt_rad": null
+  },
+  {
+   "step": 35,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200241089,
+   "tilt_rad": null
+  },
+  {
+   "step": 36,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 37,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187744141,
+   "tilt_rad": null
+  },
+  {
+   "step": 38,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200256348,
+   "tilt_rad": null
+  },
+  {
+   "step": 39,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 40,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187728882,
+   "tilt_rad": null
+  },
+  {
+   "step": 41,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200241089,
+   "tilt_rad": null
+  },
+  {
+   "step": 42,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 43,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187744141,
+   "tilt_rad": null
+  },
+  {
+   "step": 44,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200241089,
+   "tilt_rad": null
+  },
+  {
+   "step": 45,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 46,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187713623,
+   "tilt_rad": null
+  },
+  {
+   "step": 47,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200256348,
+   "tilt_rad": null
+  },
+  {
+   "step": 48,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 49,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187744141,
+   "tilt_rad": null
+  },
+  {
+   "step": 50,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200256348,
+   "tilt_rad": null
+  },
+  {
+   "step": 51,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 52,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187728882,
+   "tilt_rad": null
+  },
+  {
+   "step": 53,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200256348,
+   "tilt_rad": null
+  },
+  {
+   "step": 54,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 55,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187744141,
+   "tilt_rad": null
+  },
+  {
+   "step": 56,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200241089,
+   "tilt_rad": null
+  },
+  {
+   "step": 57,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  },
+  {
+   "step": 58,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.187728882,
+   "tilt_rad": null
+  },
+  {
+   "step": 59,
+   "z": 0.334,
+   "vz": 0.000309,
+   "force_n": 196.200256348,
+   "tilt_rad": null
+  },
+  {
+   "step": 60,
+   "z": 0.334,
+   "vz": 0.000314,
+   "force_n": 196.21206665,
+   "tilt_rad": null
+  }
+ ]
+}

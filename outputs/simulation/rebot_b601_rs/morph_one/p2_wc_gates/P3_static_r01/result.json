@@ -1,0 +1,78 @@
+{
+ "run_id": "P3_static_r01",
+ "scene_variant": "P3_DYNAMIC_MOUNT",
+ "profile": "static",
+ "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+ "gate_result": "FAIL",
+ "metrics": {
+  "command_amplitude": {
+   "x_m": 0.0,
+   "y_m": 0.0,
+   "z_m": 0.0,
+   "yaw_rad": 0.0,
+   "ramp_s": 1.0
+  },
+  "realized_translation_max_m": 0.026033616,
+  "realized_yaw_max_rad": 0.021483333,
+  "tracking_position_error_max_m": 0.26832601,
+  "tracking_yaw_error_max_rad": 0.021483322,
+  "t0_mount_position_error_m": 1.4901e-08,
+  "mount_position_deviation_max_m": 3.3381e-08,
+  "mount_rotation_deviation_max_rad": 8.6888e-08,
+  "joint_deviation_max_rad": 0.205084682,
+  "peak_lin_speed_m_s": 1.492728941,
+  "peak_ang_speed_rad_s": 3.703201464,
+  "peak_jerk_m_s3": 6209.069671,
+  "arm_peak_contact_n": 0.0,
+  "steps": 360
+ },
+ "thresholds": {
+  "mount_pos_m": 0.001,
+  "mount_rot_rad": 0.001,
+  "joint_hold_rad": 0.05,
+  "motion_ratio": 0.9,
+  "arm_ground_contact_n": 1.0
+ },
+ "gates": {
+  "all_finite": true,
+  "mount_stable": true,
+  "joint_hold": false,
+  "arm_does_not_touch_ground": true
+ },
+ "diagnostics": {
+  "quat_order_for_write_root_pose": {
+   "value": "xyzw",
+   "reason": "wxyz probe produced yaw 0.000000 rad instead of 0.2 rad; write_root_pose_to_sim takes xyzw in this build",
+   "wxyz_probe_yaw_rad": 9.8e-08
+  },
+  "contact_api": "isaaclab.sensors.ContactSensor(chassis,arm)",
+  "body_names": [
+   "link3",
+   "link4",
+   "link2",
+   "link5",
+   "link1",
+   "link6",
+   "base_link",
+   "gripper_left",
+   "gripper_right",
+   "Chassis"
+  ],
+  "joint_names": [
+   "joint4",
+   "joint3",
+   "joint5",
+   "joint2",
+   "joint6",
+   "joint1",
+   "gripper_joint1",
+   "gripper_joint2"
+  ],
+  "num_bodies": 10,
+  "dofs": 8,
+  "arm_sha256_before": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+  "arm_sha256_after": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+  "arm_asset_unchanged": true,
+  "note": "root-pose drive is diagnostic only; it must never be reported as P4 wheel-drive evidence"
+ }
+}

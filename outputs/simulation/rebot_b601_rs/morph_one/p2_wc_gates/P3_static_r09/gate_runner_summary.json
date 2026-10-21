@@ -1,0 +1,38 @@
+{
+ "run_id": "P3_static_r09",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_static_r09 --out-dir /home/dgut/runs/g/P3_static_r09 --profile static --steps 360 --read-contacts",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1500.0,
+ "quarantined_stale_result": null,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "command_amplitude": {
+   "x_m": 0.0,
+   "y_m": 0.0,
+   "z_m": 0.0,
+   "yaw_rad": 0.0,
+   "ramp_s": 1.0
+  },
+  "realized_translation_max_m": 0.0,
+  "realized_yaw_max_rad": 0.0,
+  "tracking_position_error_max_m": 0.208394531,
+  "tracking_yaw_error_max_rad": 1.1e-08,
+  "t0_mount_position_error_m": 1e-12,
+  "mount_position_deviation_max_m": 0.0,
+  "mount_rotation_deviation_max_rad": 0.0,
+  "joint_deviation_max_rad": 0.0,
+  "peak_lin_speed_m_s": 0.0,
+  "peak_ang_speed_rad_s": 0.0,
+  "peak_jerk_m_s3": 0.0,
+  "arm_peak_contact_n": 0.0,
+  "steps": 360
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 80.055,
+ "child_stdout_log": "/home/dgut/runs/g/P3_static_r09/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P3_static_r09/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}

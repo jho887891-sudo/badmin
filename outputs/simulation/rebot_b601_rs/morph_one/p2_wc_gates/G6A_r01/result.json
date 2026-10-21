@@ -1,0 +1,62 @@
+{
+ "run_id": "G6A_r01",
+ "impl": "box_child_xform",
+ "gate_mode": "landing",
+ "gate_result": "PASS",
+ "metrics": {
+  "peak_contact_force_n": 2693.495361328,
+  "first_contact_step": 12,
+  "final_chassis_z_m": 0.333999693394,
+  "final_speed_m_s": 0.000513394,
+  "tail_speed_max_m_s": 0.000513395,
+  "tail_z_span_m": 3e-08,
+  "tail_max_penetration_m": 3.36e-07,
+  "max_tilt_rad": 8.7677e-05,
+  "chassis_drift_m": 0.064618955,
+  "t0_static_position_error_m": 0.001383805,
+  "t0_tilt_rad": 0.0,
+  "steps": 360
+ },
+ "per_wheel_peak_contact_n": {
+  "wheel1": null,
+  "wheel2": null,
+  "wheel3": null,
+  "wheel4": null
+ },
+ "gates": {
+  "all_finite": true,
+  "contact_detected": true,
+  "no_tip_over": true,
+  "settles": true,
+  "no_long_term_penetration": true
+ },
+ "diagnostics": {
+  "lift_m": 0.4,
+  "gravity_m_s2": [
+   0.0,
+   0.0,
+   -9.81
+  ],
+  "include_ground": true,
+  "clearance_m": 0.066000003,
+  "usd_authoring_wheel_world_bottom_z_m": 0.06600000321865082,
+  "per_wheel_world_bottom_z_m": [
+   0.06600000321865082,
+   0.06600000321865082,
+   0.06600000321865082,
+   0.06600000321865082
+  ],
+  "chassis_mass_kg": 20.0,
+  "wheel_mass_kg": null,
+  "total_mass_kg": 20.0,
+  "contact_api": "isaaclab.sensors.ContactSensor(1 prims)",
+  "contact_sensor_prims": [
+   "chassis"
+  ],
+  "bodies": [
+   "Chassis"
+  ],
+  "wheel_bottom_model": "chassis body origin + R*(wheel centre local) - 0.090",
+  "cooked_shape_query": "UNKNOWN (no exposed PhysX cooked-geometry API in this build)"
+ }
+}

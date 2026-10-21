@@ -1,0 +1,90 @@
+{
+ "run_id": "P3_xy_r09",
+ "scene_variant": "P3_DYNAMIC_MOUNT",
+ "profile": "translate_xy",
+ "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+ "gate_result": "PASS",
+ "metrics": {
+  "command_amplitude": {
+   "x_m": 0.3,
+   "y_m": 0.0,
+   "z_m": 0.0,
+   "yaw_rad": 0.0,
+   "ramp_s": 1.5
+  },
+  "realized_translation_max_m": 0.299999984,
+  "realized_yaw_max_rad": 0.0,
+  "tracking_position_error_max_m": 0.208394531,
+  "tracking_yaw_error_max_rad": 1.1e-08,
+  "t0_mount_position_error_m": 1e-12,
+  "mount_position_deviation_max_m": 2.9803e-08,
+  "mount_rotation_deviation_max_rad": 0.0,
+  "joint_deviation_max_rad": 0.0,
+  "peak_lin_speed_m_s": 0.0,
+  "peak_ang_speed_rad_s": 0.0,
+  "peak_jerk_m_s3": 0.0,
+  "arm_peak_contact_n": 0.0,
+  "steps": 360
+ },
+ "thresholds": {
+  "mount_pos_m": 0.001,
+  "mount_rot_rad": 0.001,
+  "joint_hold_rad": 0.05,
+  "motion_ratio": 0.9,
+  "arm_ground_contact_n": 1.0
+ },
+ "gates": {
+  "all_finite": true,
+  "mount_stable": true,
+  "joint_hold": true,
+  "translation_actually_measured": true,
+  "arm_does_not_touch_ground": true
+ },
+ "diagnostics": {
+  "quat_order_for_write_root_pose": {
+   "value": "xyzw",
+   "reason": "both candidate orders were written and measured; xyzw reproduced the commanded 0.2 rad yaw",
+   "probe_measured_yaw_rad": {
+    "wxyz": 1.1e-07,
+    "xyzw": 0.199999865
+   },
+   "probe_commanded_yaw_rad": 0.2,
+   "probe_absolute_error_rad": {
+    "wxyz": 0.19999989,
+    "xyzw": 1.35e-07
+   }
+  },
+  "t0_pose_write_error_m": 0.208394530817,
+  "joint_targets_set_each_step": true,
+  "root_velocity_zeroed_with_each_teleport": true,
+  "contact_api": "isaaclab.sensors.ContactSensor(chassis,arm)",
+  "body_names": [
+   "link3",
+   "link4",
+   "link2",
+   "link5",
+   "link1",
+   "link6",
+   "base_link",
+   "gripper_left",
+   "gripper_right",
+   "Chassis"
+  ],
+  "joint_names": [
+   "joint4",
+   "joint3",
+   "joint5",
+   "joint2",
+   "joint6",
+   "joint1",
+   "gripper_joint1",
+   "gripper_joint2"
+  ],
+  "num_bodies": 10,
+  "dofs": 8,
+  "arm_sha256_before": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+  "arm_sha256_after": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+  "arm_asset_unchanged": true,
+  "note": "root-pose drive is diagnostic only; it must never be reported as P4 wheel-drive evidence"
+ }
+}

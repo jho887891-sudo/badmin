@@ -1,0 +1,47 @@
+{
+ "gate": "G0",
+ "method": "pure recomputation from committed USDA + frame math, no PhysX",
+ "historical_rev": "459cb12",
+ "usda": "outputs/simulation/rebot_b601_rs/morph_one/p2_real_chassis/RC_lift0300_r01/authored_chassis.usda",
+ "git_show_returncode": 0,
+ "historical_chassis_translate": [
+  0.0,
+  -0.002400000113993883,
+  0.2596000134944916
+ ],
+ "historical_wheel_translates": [
+  [
+   0.2500019967556,
+   -0.296999990940094,
+   0.0560000017285347
+  ]
+ ],
+ "expected_double_lift_m": 0.0404,
+ "rows": [
+  {
+   "lift_m": 0.3,
+   "historical_recomposed_wheel_bottom_z_m": 0.2256,
+   "corrected_wheel_bottom_z_m": -0.034,
+   "double_lift_error_m": 0.2596,
+   "historical_clearance_m": 0.2256,
+   "corrected_clearance_m": -0.034
+  },
+  {
+   "lift_m": 0.334,
+   "historical_recomposed_wheel_bottom_z_m": 0.2936,
+   "corrected_wheel_bottom_z_m": 0.0,
+   "double_lift_error_m": 0.2936,
+   "historical_clearance_m": 0.2936,
+   "corrected_clearance_m": 0.0
+  },
+  {
+   "lift_m": 0.35,
+   "historical_recomposed_wheel_bottom_z_m": 0.3256,
+   "corrected_wheel_bottom_z_m": 0.016,
+   "double_lift_error_m": 0.3096,
+   "historical_clearance_m": 0.3256,
+   "corrected_clearance_m": 0.016
+  }
+ ],
+ "note": "the historical authoring applied lift at the chassis AND at each wheel child, so the composed wheel height gained one extra lift; the corrected authoring applies lift once at the chassis"
+}
