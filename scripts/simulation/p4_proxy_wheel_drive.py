@@ -53,12 +53,19 @@ GROUND_CLEARANCE_M = 0.02
 DT = 1.0 / 120.0
 TAIL_STEPS = 60
 
+# IMPORTANT AXIS FACT: every wheel joint is authored about world +X, so the rolling
+# direction is world Y, not X, and a STRAIGHT drive needs the SAME sign on all four
+# wheels.  P1 v2's "outward normal" convention (+1/+1/-1/-1) is a MOTOR-CHANNEL
+# convention, not a joint-axis one: with a common +X axis the two differ by the
+# per-side sign, which is recorded as `motor_sign_mapping` in the result.
+# P4p_fwd_r02 proved this the hard way: the outward-sign pattern made the chassis
+# yaw 1.915 rad instead of translating.
 PROFILES = {
-    # name: (wheel velocity targets rad/s in wheel order, steps, description)
+    # name: (wheel joint velocity targets rad/s in wheel order, steps, description)
     "spin_single": ([2.0, 0.0, 0.0, 0.0], 240, "one wheel only"),
-    "forward": ([4.0, 4.0, 4.0, 4.0], 360, "all four, sign-corrected, +x expected"),
-    "backward": ([-4.0, -4.0, -4.0, -4.0], 360, "all four reversed, -x expected"),
-    "turn": ([-3.0, -3.0, 3.0, 3.0], 360, "left/right opposed, yaw expected"),
+    "roll_neg_y": ([4.0, 4.0, 4.0, 4.0], 360, "straight roll, chassis -Y expected"),
+    "roll_pos_y": ([-4.0, -4.0, -4.0, -4.0], 360, "straight roll reversed, chassis +Y expected"),
+    "turn": ([3.0, 3.0, -3.0, -3.0], 360, "left/right opposed, yaw expected"),
 }
 
 PARSER = argparse.ArgumentParser(description="P4 PROXY four-wheel drive (no root writes)")
@@ -226,7 +233,8 @@ def main():
 
     target_vector = [0.0] * len(joint_names)
     for wheel, joint_name in enumerate(wheel_joint_names):
-        target_vector[joint_index[joint_name]] = float(targets[wheel]) * WHEEL_SPIN_SIGN[wheel]
+        # joint-axis space: no outward-sign multiplication (see the axis note above)
+        target_vector[joint_index[joint_name]] = float(targets[wheel])
     target_tensor = torch.tensor([target_vector], dtype=torch.float32, device=robot.device)
 
     jsonl = open(os.path.join(out_dir, "raw_poses.jsonl"), "w", encoding="utf-8")
@@ -262,8 +270,8 @@ def main():
                "chassis_pos": [round(v, 12) for v in chassis_pos],
                "chassis_yaw_rad": round(yaw_of(raw_to_wxyz(raw)), 9),
                "wheel_omega_rad_s": wheel_omega,
-               "wheel_target_rad_s": {("wheel%d" % (i + 1)): (
-                   round(float(targets[i]) * WHEEL_SPIN_SIGN[i], 9)) for i in range(4)},
+               "wheel_target_rad_s": {("wheel%d" % (i + 1)): round(float(targets[i]), 9)
+                                       for i in range(4)},
                "contact_by_sensor_n": contacts,
                "root_writes": ROOT_WRITES["count"],
                "finite": all(math.isfinite(v) for v in chassis_pos + raw)}
@@ -284,7 +292,7 @@ def main():
     speed_tracking = {}
     for i in range(4):
         name = "wheel%d" % (i + 1)
-        commanded = float(targets[i]) * WHEEL_SPIN_SIGN[i]
+        commanded = float(targets[i])
         if abs(commanded) < 1e-9:
             speed_tracking[name] = None
         else:
@@ -306,10 +314,11 @@ def main():
             max(measured_tracking) <= thresholds["speed_tracking_rel"])
     if peak_contact is not None:
         gates["contact_detected"] = bool(peak_contact > thresholds["contact_force_n"])
-    if ARGS.profile in ("forward", "backward"):
-        sign = 1.0 if ARGS.profile == "forward" else -1.0
+    if ARGS.profile in ("roll_neg_y", "roll_pos_y"):
+        # wheels spin about +X, so rolling is along Y; sign follows the measured direction
+        sign = -1.0 if ARGS.profile == "roll_neg_y" else 1.0
         gates["chassis_displaced_along_command"] = bool(
-            sign * displacement[0] >= thresholds["min_displacement_m"])
+            sign * displacement[1] >= thresholds["min_displacement_m"])
     if ARGS.profile == "turn":
         gates["yaw_changed"] = bool(yaw_change >= 0.05)
     gate = "PASS" if all(gates.values()) else "FAIL"
@@ -329,7 +338,14 @@ def main():
             "mass_source": "TEST_PROXY, no vendor mass data",
             "ground_clearance_m": GROUND_CLEARANCE_M, "lift_m": lift,
             "axle_positions_m": WHEEL_AXLES,
-            "spin_signs": WHEEL_SPIN_SIGN,
+            "motor_sign_mapping": {
+                "joint_axis": "world +X for all four wheels",
+                "rolling_direction": "world Y (perpendicular to the axle)",
+                "p1_outward_normal_signs": WHEEL_SPIN_SIGN,
+                "joint_space_target_for_straight_roll": "same sign on all four wheels",
+                "note": "the P1 outward convention maps to MOTOR CHANNELS by multiplying "
+                        "by the per-side sign; it must not be applied to a common-axis joint",
+            },
         },
         "metrics": {
             "wheel_targets_rad_s_per_wheel": [round(float(t), 9) for t in targets],
