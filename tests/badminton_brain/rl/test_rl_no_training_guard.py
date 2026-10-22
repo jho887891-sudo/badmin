@@ -11,6 +11,7 @@ import ast
 import os
 import subprocess
 import sys
+import types
 from pathlib import Path
 
 import pytest
@@ -65,10 +66,17 @@ def test_package_sources_never_call_backward_or_build_an_optimiser():
 
 
 def test_public_namespace_contains_no_trainer_or_optimiser():
+    # A SUBMODULE is not a trainer.  P8-05 adds the enforcement module
+    # badminton_brain.rl.training_gate; importing any submodule sets it as an attribute of the
+    # package, so the name scan must look at the API (classes, functions, constants) and not at
+    # module objects -- otherwise the guard would forbid the gate module that enforces exactly
+    # what the guard is protecting.  The modules themselves are still AST-scanned by the tests
+    # above (no torch/gym import, no .backward()/.step()/.zero_grad() call anywhere).
     offenders = [name for name in dir(rl)
-                 if name.lower().startswith(FORBIDDEN_NAME_PREFIXES)
-                 or name.lower().endswith(("trainer", "optimizer", "policy"))
-                 and name.lower() != "ppo_policy"]
+                 if not isinstance(getattr(rl, name, None), types.ModuleType)
+                 and (name.lower().startswith(FORBIDDEN_NAME_PREFIXES)
+                      or name.lower().endswith(("trainer", "optimizer", "policy"))
+                      and name.lower() != "ppo_policy")]
     assert offenders == [], offenders
     assert not any(hasattr(rl, name) for name in ("PPO", "Trainer", "Optimizer", "ReplayBuffer"))
 
