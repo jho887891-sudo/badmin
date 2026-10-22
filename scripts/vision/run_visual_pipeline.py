@@ -53,6 +53,9 @@ from badminton_brain.estimation.shuttle_state_ekf import (  # noqa: E402
     ShuttleEKFError,
     ShuttleStateEKF,
 )
+from badminton_brain.prediction.position_uncertainty import (  # noqa: E402
+    position_uncertainty,
+)
 
 PX = "IMAGE_PLANE_2D"
 HORIZONS_S = (0.3, 0.5, 0.8)
@@ -64,6 +67,27 @@ def sha256_file(path: str) -> str:
         for chunk in iter(lambda: handle.read(1 << 20), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def hash_input_source(source: Any, *, max_frames: int = 0) -> Dict[str, Any]:
+    """Hash actual bytes of frame inputs, not only a .txt list of their paths.
+
+    A changed image must change the fingerprint even if the .txt manifest stays
+    identical.  Video files are hashed by complete bytes.  Image directories
+    are hashed in stable source order, including the unique ordinal.
+    """
+    if isinstance(source, ImageSequenceFrameSource):
+        paths = source.images[:max_frames] if max_frames else source.images
+        digest = hashlib.sha256()
+        for index, image_path in enumerate(paths):
+            item_sha = sha256_file(image_path)
+            digest.update(("%d:%s\n" % (index, item_sha)).encode("ascii"))
+        return {"kind": "REAL_RGB_FRAMES", "sha256": digest.hexdigest(),
+                "hashed_frame_count": len(paths),
+                "list_sha256": sha256_file(source.path)
+                if os.path.isfile(source.path) else None}
+    return {"kind": "REAL_RGB_VIDEO", "sha256": sha256_file(source.path),
+            "hashed_frame_count": None}
 
 
 def git_head(repo_root: str) -> str:
@@ -410,7 +434,11 @@ class ImagePlaneTracker:
             "timestamp_s": round(float(timestamp_s), 6),
             "centre_px": [round(float(v), 4) for v in np.asarray(self.ekf.position)],
             "velocity_px_s": [round(float(v), 4) for v in np.asarray(self.ekf.velocity)],
-            "covariance_px2": [[round(float(v), 6) for v in row] for row in covariance],
+            "state_covariance_mixed_units": [[round(float(v), 6) for v in row] for row in covariance],
+            "position_covariance_px2": [[round(float(v), 6) for v in row]
+                                        for row in covariance[:2, :2]],
+            "velocity_covariance_px2_s2": [[round(float(v), 6) for v in row]
+                                           for row in covariance[2:, 2:]],
             "steps_without_measurement": int(self.ekf.steps_without_measurement),
             "status": self.ekf.status,
         }
@@ -426,15 +454,20 @@ class ImagePlaneTracker:
             Q = self.ekf.process_noise(horizon_s)
             mean = F @ x
             cov = F @ P @ F.T + Q
-            sigma_major = float(np.sqrt(np.max(np.linalg.eigvalsh(0.5 * (cov + cov.T)))))
+            uncertainty = position_uncertainty(cov)
             out.append({
                 "mode": PX,
                 "horizon_s": horizon_s,
                 "centre_px": [round(float(mean[0]), 4), round(float(mean[1]), 4)],
                 "velocity_px_s": [round(float(mean[2]), 4), round(float(mean[3]), 4)],
-                "covariance_px2": [[round(float(v), 6) for v in row] for row in cov],
-                "sigma_major_px": round(sigma_major, 4),
-                "units": {"position": "px", "velocity": "px/s", "covariance": "px^2"},
+                "state_covariance_mixed_units": [[round(float(v), 6) for v in row] for row in cov],
+                "position_covariance_px2": uncertainty["position_covariance_px2"],
+                "velocity_covariance_px2_s2": uncertainty["velocity_covariance_px2_s2"],
+                "sigma_major_px": round(uncertainty["position_sigma_major_px"], 4),
+                "sigma_minor_px": round(uncertainty["position_sigma_minor_px"], 4),
+                "ellipse95": uncertainty["ellipse95"],
+                "units": {"position": "px", "velocity": "px/s",
+                          "position_covariance": "px^2", "velocity_covariance": "px^2/s^2"},
                 "usable_for_metric_control": False,
                 "reject_reason": "IMAGE_PLANE_2D_ONLY: no depth, no calibration",
             })
@@ -463,9 +496,12 @@ def draw_overlay(image: Any, *, detections: Sequence[DetectionObservation],
         point = (int(round(item["centre_px"][0])), int(round(item["centre_px"][1])))
         colour = colours[item["horizon_s"]]
         cv2.circle(canvas, point, 5, colour, 2)
-        radius = int(round(2.0 * item["sigma_major_px"]))
-        cv2.ellipse(canvas, point, (radius, radius), 0.0, 0.0, 360.0, colour, 1)
-        cv2.putText(canvas, "%.1fs" % item["horizon_s"], (point[0] + 7, point[1] - 7),
+        ellipse = item["ellipse95"]
+        axes = (max(1, int(round(ellipse["major_radius_px"]))),
+                max(1, int(round(ellipse["minor_radius_px"]))))
+        cv2.ellipse(canvas, point, axes, ellipse["angle_deg_image_xy"],
+                    0.0, 360.0, colour, 1)
+        cv2.putText(canvas, "%.1fs / xy 95%%" % item["horizon_s"], (point[0] + 7, point[1] - 7),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.45, colour, 1, cv2.LINE_AA)
     cv2.putText(canvas, status_text, (10, 24), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
                 (255, 255, 255), 2, cv2.LINE_AA)
@@ -573,7 +609,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 "timestamp_s": round(frame.timestamp_s, 6),
                 "timestamp_source": frame.timestamp_source,
                 "camera_id": frame.camera_id,
-                "input_source_class": "REAL_RGB_VIDEO",
+                "input_source_class": source.source_class,
                 "measurement_source": "YOLO_BOX",
                 "units": PX,
                 "association": track,
@@ -613,13 +649,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 "max": round(float(array.max()), 3)}
 
     metrics = {
-        "schema": "r11_vision_m1_metrics/v1",
+        "schema": "r11_vision_m1_metrics/v2",
         "source_class": getattr(source, "source_class", "REAL_RGB_VIDEO"),
         "measurement_source": "YOLO_BOX",
         "state_units": PX,
         "frames_processed": frames,
         "frames_with_detection": detected_frames,
         "detection_rate": round(detected_frames / frames, 6) if frames else None,
+        "detection_rate_definition": "FRAMES_WITH_ANY_BOX_DIVIDED_BY_FRAMES; NOT GT_RECALL",
         "detections_total": detection_count,
         "detections_per_frame": round(detection_count / frames, 6) if frames else None,
         "longest_miss_streak_frames": longest_miss,
@@ -647,16 +684,22 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     with open(os.path.join(out_dir, "metrics.json"), "w", encoding="utf-8") as handle:
         json.dump(metrics, handle, ensure_ascii=False, indent=1)
 
+    source_fingerprint = hash_input_source(source, max_frames=args.max_frames)
     manifest = {
-        "schema": "r11_vision_m1_manifest/v1",
+        "schema": "r11_vision_m1_manifest/v2",
         "run_id": os.path.basename(out_dir),
         "git_head": git_head(_REPO_ROOT),
+        "script_sha256": sha256_file(os.path.abspath(__file__)),
+        "position_uncertainty_sha256": sha256_file(
+            os.path.join(_REPO_ROOT, "src", "badminton_brain", "prediction",
+                         "position_uncertainty.py")),
         "python": platform.python_version(),
         "host": platform.node(),
         "command": " ".join(sys.argv),
         "source_video": {
             "path": source.path,
-            "sha256": sha256_file(source.path),
+            "sha256": source_fingerprint["sha256"],
+            "content_fingerprint": source_fingerprint,
             "fps": source.fps, "frame_count": source.frame_count,
             "width": source.width, "height": source.height,
         },
