@@ -1,0 +1,4603 @@
+{
+ "analysis": "R10-D P4 dynamics deviation root cause",
+ "runs_root": "E:\\具身智能\\badmin_wt_r10d\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p2_wc_gates",
+ "r_geometric_m": 0.103,
+ "dt_s": 0.008333333333333333,
+ "d1": [
+  {
+   "run_id": "P4V_030_r13",
+   "profile": "velocity_control",
+   "gate_result": "PASS",
+   "commanded_speed_m_s": 0.3,
+   "commanded_raw_speed_m_s": 0.3,
+   "clamped": false,
+   "steady_window_steps": [
+    180,
+    480
+   ],
+   "speed": {
+    "from_consecutive_positions_m_s": 0.3181103110312021,
+    "from_endpoints_m_s": 0.31811031103119997,
+    "from_least_squares_m_s": 0.3190472390430825,
+    "lstsq_rms_residual_m": 0.0005754345268709975,
+    "lstsq_samples": 301,
+    "committed_steady_mean_m_s": 0.318110311
+   },
+   "achieved_over_commanded": 1.0603677034373333,
+   "steady_relative_error_recomputed": 0.06036770343733333,
+   "steady_relative_error_committed": 0.060367703,
+   "per_wheel": {
+    "wheel1": {
+     "delta_theta_rad": 7.722656966000001,
+     "omega_mean_rad_s": 3.0880015585315634,
+     "sign_consistent": true,
+     "r_eff_m": 0.10297955497431839,
+     "r_from_v_over_omega_m": 0.1030149451033538,
+     "achieved_over_commanded": 1.0603677034373333
+    },
+    "wheel2": {
+     "delta_theta_rad": 7.722894668,
+     "omega_mean_rad_s": 3.08506430188372,
+     "sign_consistent": true,
+     "r_eff_m": 0.10297638537959662,
+     "r_from_v_over_omega_m": 0.10311302452819668,
+     "achieved_over_commanded": 1.0603677034373333
+    },
+    "wheel3": {
+     "delta_theta_rad": 7.722713946999999,
+     "omega_mean_rad_s": 3.0888690742491702,
+     "sign_consistent": true,
+     "r_eff_m": 0.10297879515360484,
+     "r_from_v_over_omega_m": 0.10298601312796818,
+     "achieved_over_commanded": 1.0603677034373333
+    },
+    "wheel4": {
+     "delta_theta_rad": 7.723003149,
+     "omega_mean_rad_s": 3.084670604661131,
+     "sign_consistent": true,
+     "r_eff_m": 0.10297493892398256,
+     "r_from_v_over_omega_m": 0.10312618486736162,
+     "achieved_over_commanded": 1.0603677034373333
+    }
+   },
+   "r_eff_spread_m": 4.6160503358316785e-06,
+   "r_eff_spread_rel": 4.482585015467311e-05,
+   "r_eff_mean_m": 0.1029774186078756,
+   "r_eff_stdev_m": 2.135051334936714e-06,
+   "r_implied_from_v_over_omega_m": 0.10306000625612481,
+   "r_pure_radius_hypothesis_m": 0.09719270581520079,
+   "r_feedforward_m": 0.101459,
+   "r_geometric_m": 0.103,
+   "odometry": {
+    "delta_theta_mean_rad": 7.7228171825,
+    "ground_truth_distance_m": 0.7952757775779999,
+    "feedforward_odom_m": 0.7835493085192674,
+    "feedforward_odom_error_mm": -11.726469058732537,
+    "feedforward_odom_error_rel": -0.014745160596296936,
+    "geometric_odom_m": 0.7954501697974999,
+    "geometric_odom_error_mm": 0.17439221949999695,
+    "geometric_odom_error_rel": 0.0002192852145341817,
+    "slip_estimate_geometric": -0.0005825850109206776
+   },
+   "decomposition": {
+    "omega_feedforward_rad_s": 2.9568594210469255,
+    "omega_mean_measured_rad_s": 3.086651384831396,
+    "trim_added_rad_s": 0.12979196378447044,
+    "trim_limit_rad_s": 0.14784297105234628,
+    "trim_fraction_of_limit": 0.8779041902405723,
+    "factor_trim": 1.0438952095120286,
+    "factor_radius": 1.0157798347719258,
+    "factor_product": 1.0603677034373333,
+    "measured_ratio": 1.0603677034373333,
+    "closure": 1.0,
+    "trim_contribution_rel": 0.04389520951202863,
+    "radius_contribution_rel": 0.015779834771925794,
+    "total_rel": 0.06036770343733333
+   },
+   "feedback": {
+    "assumption": "trim += 0.5*kp*dt*(vy_meas - vy_target); if vy_meas == 0 the trim is a staircase of slope 0.5*kp*dt*v_cmd",
+    "ramp_rate_measured_rad_s2": 0.3003410548602768,
+    "ramp_rate_expected_if_vy_meas_zero_rad_s2": 0.3,
+    "ramp_rate_measured_rad_s_per_step": 0.00250284212383564,
+    "ramp_rate_expected_rad_s_per_step": 0.0025,
+    "ramp_rate_ratio": 1.001136849534256,
+    "steps_to_saturate_expected": 59.137188420938514,
+    "plateau_target_omega_rad_s": 3.104702392099272,
+    "model_rms_rel_error": 0.0008507092308103437,
+    "model_max_rel_error": 0.007356550939906587,
+    "plateau": {
+     "steps": [
+      240,
+      480
+     ],
+     "duration_s": 2.0,
+     "speed_m_s": 0.31955654919149995,
+     "achieved_over_commanded": 1.0651884973049999,
+     "steady_relative_error": 0.06518849730499987,
+     "r_eff_m": 0.10297817874197986,
+     "omega_mean_rad_s": 3.100954309040456,
+     "factor_trim": 1.0487324108031189,
+     "factor_radius": 1.0149733265849246
+    }
+   },
+   "committed": {
+    "wheel_delta_theta_rad": {
+     "wheel1": 10.035821915,
+     "wheel2": 10.052541733,
+     "wheel3": 10.038961411,
+     "wheel4": 10.053636551
+    },
+    "measured_rolling_radius_m": {
+     "wheel1": 0.103731,
+     "wheel2": 0.103559,
+     "wheel3": 0.103699,
+     "wheel4": 0.103547
+    },
+    "measured_rolling_radius_rel_error": [
+     0.007097,
+     0.005427,
+     0.006786,
+     0.005311
+    ]
+   },
+   "gates": {
+    "all_finite": true,
+    "no_root_pose_write": true,
+    "contact_detected": true,
+    "steady_speed_tracks_command": true,
+    "stops_after_zero_command": true,
+    "speed_limit_respected": true
+   },
+   "thresholds": {
+    "speed_tracking_rel": 0.2,
+    "min_displacement_m": 0.01,
+    "contact_force_n": 1.0,
+    "tail_speed_max_m_s": 5.0,
+    "hold_still_m": 0.001,
+    "hold_still_rad": 0.001,
+    "rolling_radius_rel": 0.1
+   },
+   "diagnostics": {
+    "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+    "root_writes": 0,
+    "friction_coefficient": 0.8,
+    "payload_kg": 0.0
+   }
+  },
+  {
+   "run_id": "P4V_030_r14",
+   "profile": "velocity_control",
+   "gate_result": "PASS",
+   "commanded_speed_m_s": 0.3,
+   "commanded_raw_speed_m_s": 0.3,
+   "clamped": false,
+   "steady_window_steps": [
+    180,
+    480
+   ],
+   "speed": {
+    "from_consecutive_positions_m_s": 0.3181103110312021,
+    "from_endpoints_m_s": 0.31811031103119997,
+    "from_least_squares_m_s": 0.3190472390430825,
+    "lstsq_rms_residual_m": 0.0005754345268709975,
+    "lstsq_samples": 301,
+    "committed_steady_mean_m_s": 0.318110311
+   },
+   "achieved_over_commanded": 1.0603677034373333,
+   "steady_relative_error_recomputed": 0.06036770343733333,
+   "steady_relative_error_committed": 0.060367703,
+   "per_wheel": {
+    "wheel1": {
+     "delta_theta_rad": 7.722656966000001,
+     "omega_mean_rad_s": 3.0880015585315634,
+     "sign_consistent": true,
+     "r_eff_m": 0.10297955497431839,
+     "r_from_v_over_omega_m": 0.1030149451033538,
+     "achieved_over_commanded": 1.0603677034373333
+    },
+    "wheel2": {
+     "delta_theta_rad": 7.722894668,
+     "omega_mean_rad_s": 3.08506430188372,
+     "sign_consistent": true,
+     "r_eff_m": 0.10297638537959662,
+     "r_from_v_over_omega_m": 0.10311302452819668,
+     "achieved_over_commanded": 1.0603677034373333
+    },
+    "wheel3": {
+     "delta_theta_rad": 7.722713946999999,
+     "omega_mean_rad_s": 3.0888690742491702,
+     "sign_consistent": true,
+     "r_eff_m": 0.10297879515360484,
+     "r_from_v_over_omega_m": 0.10298601312796818,
+     "achieved_over_commanded": 1.0603677034373333
+    },
+    "wheel4": {
+     "delta_theta_rad": 7.723003149,
+     "omega_mean_rad_s": 3.084670604661131,
+     "sign_consistent": true,
+     "r_eff_m": 0.10297493892398256,
+     "r_from_v_over_omega_m": 0.10312618486736162,
+     "achieved_over_commanded": 1.0603677034373333
+    }
+   },
+   "r_eff_spread_m": 4.6160503358316785e-06,
+   "r_eff_spread_rel": 4.482585015467311e-05,
+   "r_eff_mean_m": 0.1029774186078756,
+   "r_eff_stdev_m": 2.135051334936714e-06,
+   "r_implied_from_v_over_omega_m": 0.10306000625612481,
+   "r_pure_radius_hypothesis_m": 0.09719270581520079,
+   "r_feedforward_m": 0.101459,
+   "r_geometric_m": 0.103,
+   "odometry": {
+    "delta_theta_mean_rad": 7.7228171825,
+    "ground_truth_distance_m": 0.7952757775779999,
+    "feedforward_odom_m": 0.7835493085192674,
+    "feedforward_odom_error_mm": -11.726469058732537,
+    "feedforward_odom_error_rel": -0.014745160596296936,
+    "geometric_odom_m": 0.7954501697974999,
+    "geometric_odom_error_mm": 0.17439221949999695,
+    "geometric_odom_error_rel": 0.0002192852145341817,
+    "slip_estimate_geometric": -0.0005825850109206776
+   },
+   "decomposition": {
+    "omega_feedforward_rad_s": 2.9568594210469255,
+    "omega_mean_measured_rad_s": 3.086651384831396,
+    "trim_added_rad_s": 0.12979196378447044,
+    "trim_limit_rad_s": 0.14784297105234628,
+    "trim_fraction_of_limit": 0.8779041902405723,
+    "factor_trim": 1.0438952095120286,
+    "factor_radius": 1.0157798347719258,
+    "factor_product": 1.0603677034373333,
+    "measured_ratio": 1.0603677034373333,
+    "closure": 1.0,
+    "trim_contribution_rel": 0.04389520951202863,
+    "radius_contribution_rel": 0.015779834771925794,
+    "total_rel": 0.06036770343733333
+   },
+   "feedback": {
+    "assumption": "trim += 0.5*kp*dt*(vy_meas - vy_target); if vy_meas == 0 the trim is a staircase of slope 0.5*kp*dt*v_cmd",
+    "ramp_rate_measured_rad_s2": 0.3003410548602768,
+    "ramp_rate_expected_if_vy_meas_zero_rad_s2": 0.3,
+    "ramp_rate_measured_rad_s_per_step": 0.00250284212383564,
+    "ramp_rate_expected_rad_s_per_step": 0.0025,
+    "ramp_rate_ratio": 1.001136849534256,
+    "steps_to_saturate_expected": 59.137188420938514,
+    "plateau_target_omega_rad_s": 3.104702392099272,
+    "model_rms_rel_error": 0.0008507092308103437,
+    "model_max_rel_error": 0.007356550939906587,
+    "plateau": {
+     "steps": [
+      240,
+      480
+     ],
+     "duration_s": 2.0,
+     "speed_m_s": 0.31955654919149995,
+     "achieved_over_commanded": 1.0651884973049999,
+     "steady_relative_error": 0.06518849730499987,
+     "r_eff_m": 0.10297817874197986,
+     "omega_mean_rad_s": 3.100954309040456,
+     "factor_trim": 1.0487324108031189,
+     "factor_radius": 1.0149733265849246
+    }
+   },
+   "committed": {
+    "wheel_delta_theta_rad": {
+     "wheel1": 10.035821915,
+     "wheel2": 10.052541733,
+     "wheel3": 10.038961411,
+     "wheel4": 10.053636551
+    },
+    "measured_rolling_radius_m": {
+     "wheel1": 0.103731,
+     "wheel2": 0.103559,
+     "wheel3": 0.103699,
+     "wheel4": 0.103547
+    },
+    "measured_rolling_radius_rel_error": [
+     0.007097,
+     0.005427,
+     0.006786,
+     0.005311
+    ]
+   },
+   "gates": {
+    "all_finite": true,
+    "no_root_pose_write": true,
+    "contact_detected": true,
+    "steady_speed_tracks_command": true,
+    "stops_after_zero_command": true,
+    "speed_limit_respected": true
+   },
+   "thresholds": {
+    "speed_tracking_rel": 0.2,
+    "min_displacement_m": 0.01,
+    "contact_force_n": 1.0,
+    "tail_speed_max_m_s": 5.0,
+    "hold_still_m": 0.001,
+    "hold_still_rad": 0.001,
+    "rolling_radius_rel": 0.1
+   },
+   "diagnostics": {
+    "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+    "root_writes": 0,
+    "friction_coefficient": 0.8,
+    "payload_kg": 0.0
+   }
+  },
+  {
+   "run_id": "P4V_050_r13",
+   "profile": "velocity_control",
+   "gate_result": "PASS",
+   "commanded_speed_m_s": 0.5,
+   "commanded_raw_speed_m_s": 0.5,
+   "clamped": false,
+   "steady_window_steps": [
+    180,
+    480
+   ],
+   "speed": {
+    "from_consecutive_positions_m_s": 0.5300743699072001,
+    "from_endpoints_m_s": 0.5300743699072,
+    "from_least_squares_m_s": 0.5316218689927255,
+    "lstsq_rms_residual_m": 0.0009568343968227374,
+    "lstsq_samples": 301,
+    "committed_steady_mean_m_s": 0.53007437
+   },
+   "achieved_over_commanded": 1.0601487398144,
+   "steady_relative_error_recomputed": 0.060148739814400054,
+   "steady_relative_error_committed": 0.06014874,
+   "per_wheel": {
+    "wheel1": {
+     "delta_theta_rad": 12.874597548999999,
+     "omega_mean_rad_s": 5.148025622009969,
+     "sign_consistent": true,
+     "r_eff_m": 0.10293027954655798,
+     "r_from_v_over_omega_m": 0.10296653684878912,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel2": {
+     "delta_theta_rad": 12.874827861999998,
+     "omega_mean_rad_s": 5.145057960225912,
+     "sign_consistent": true,
+     "r_eff_m": 0.1029284382651267,
+     "r_from_v_over_omega_m": 0.10302592779419831,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel3": {
+     "delta_theta_rad": 12.874652148000001,
+     "omega_mean_rad_s": 5.148829943328907,
+     "sign_consistent": true,
+     "r_eff_m": 0.102929843038428,
+     "r_from_v_over_omega_m": 0.10295045199424233,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel4": {
+     "delta_theta_rad": 12.874910593000001,
+     "omega_mean_rad_s": 5.144636090790701,
+     "sign_consistent": true,
+     "r_eff_m": 0.10292777687236868,
+     "r_from_v_over_omega_m": 0.10303437610603292,
+     "achieved_over_commanded": 1.0601487398144
+    }
+   },
+   "r_eff_spread_m": 2.5026741893030557e-06,
+   "r_eff_spread_rel": 2.431454824598183e-05,
+   "r_eff_mean_m": 0.10292908443062035,
+   "r_eff_stdev_m": 1.1734601735776933e-06,
+   "r_implied_from_v_over_omega_m": 0.10299431032115638,
+   "r_pure_radius_hypothesis_m": 0.09715081144103192,
+   "r_feedforward_m": 0.101459,
+   "r_geometric_m": 0.103,
+   "odometry": {
+    "delta_theta_mean_rad": 12.874747038,
+    "ground_truth_distance_m": 1.325185924768,
+    "feedforward_odom_m": 1.306258959728442,
+    "feedforward_odom_error_mm": -18.92696503955804,
+    "feedforward_odom_error_rel": -0.014282497788279502,
+    "geometric_odom_m": 1.326098944914,
+    "geometric_odom_error_mm": 0.913020145999921,
+    "geometric_odom_error_rel": 0.0006889751309120395,
+    "slip_estimate_geometric": 5.523960042330689e-05
+   },
+   "decomposition": {
+    "omega_feedforward_rad_s": 4.928099035078209,
+    "omega_mean_measured_rad_s": 5.146637404088872,
+    "trim_added_rad_s": 0.2185383690106626,
+    "trim_limit_rad_s": 0.24640495175391047,
+    "trim_fraction_of_limit": 0.8869073752581126,
+    "factor_trim": 1.0443453687629056,
+    "factor_radius": 1.0151323226244728,
+    "factor_product": 1.0601487398144,
+    "measured_ratio": 1.0601487398144,
+    "closure": 1.0,
+    "trim_contribution_rel": 0.044345368762905624,
+    "radius_contribution_rel": 0.015132322624472838,
+    "total_rel": 0.060148739814400054
+   },
+   "feedback": {
+    "assumption": "trim += 0.5*kp*dt*(vy_meas - vy_target); if vy_meas == 0 the trim is a staircase of slope 0.5*kp*dt*v_cmd",
+    "ramp_rate_measured_rad_s2": 0.5005588734588724,
+    "ramp_rate_expected_if_vy_meas_zero_rad_s2": 0.5,
+    "ramp_rate_measured_rad_s_per_step": 0.0041713239454906036,
+    "ramp_rate_expected_rad_s_per_step": 0.004166666666666667,
+    "ramp_rate_ratio": 1.0011177469177448,
+    "steps_to_saturate_expected": 59.137188420938514,
+    "plateau_target_omega_rad_s": 5.17450398683212,
+    "model_rms_rel_error": 0.0006600812152994887,
+    "model_max_rel_error": 0.007388916631464021,
+    "plateau": {
+     "steps": [
+      240,
+      480
+     ],
+     "duration_s": 2.0,
+     "speed_m_s": 0.5324800908564999,
+     "achieved_over_commanded": 1.0649601817129999,
+     "steady_relative_error": 0.06496018171299989,
+     "r_eff_m": 0.10292714200058242,
+     "omega_mean_rad_s": 5.170443240541494,
+     "factor_trim": 1.0491760014841989,
+     "factor_radius": 1.0144702983528562
+    }
+   },
+   "committed": {
+    "wheel_delta_theta_rad": {
+     "wheel1": 16.730955124,
+     "wheel2": 16.760297775,
+     "wheel3": 16.73690033,
+     "wheel4": 16.761127472
+    },
+    "measured_rolling_radius_m": {
+     "wheel1": 0.104221,
+     "wheel2": 0.104038,
+     "wheel3": 0.104184,
+     "wheel4": 0.104033
+    },
+    "measured_rolling_radius_rel_error": [
+     0.011854,
+     0.010078,
+     0.011495,
+     0.010029
+    ]
+   },
+   "gates": {
+    "all_finite": true,
+    "no_root_pose_write": true,
+    "contact_detected": true,
+    "steady_speed_tracks_command": true,
+    "stops_after_zero_command": true,
+    "speed_limit_respected": true
+   },
+   "thresholds": {
+    "speed_tracking_rel": 0.2,
+    "min_displacement_m": 0.01,
+    "contact_force_n": 1.0,
+    "tail_speed_max_m_s": 5.0,
+    "hold_still_m": 0.001,
+    "hold_still_rad": 0.001,
+    "rolling_radius_rel": 0.1
+   },
+   "diagnostics": {
+    "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+    "root_writes": 0,
+    "friction_coefficient": 0.8,
+    "payload_kg": 0.0
+   }
+  },
+  {
+   "run_id": "P4V_050_r14",
+   "profile": "velocity_control",
+   "gate_result": "PASS",
+   "commanded_speed_m_s": 0.5,
+   "commanded_raw_speed_m_s": 0.5,
+   "clamped": false,
+   "steady_window_steps": [
+    180,
+    480
+   ],
+   "speed": {
+    "from_consecutive_positions_m_s": 0.5300743699072001,
+    "from_endpoints_m_s": 0.5300743699072,
+    "from_least_squares_m_s": 0.5316218689927255,
+    "lstsq_rms_residual_m": 0.0009568343968227374,
+    "lstsq_samples": 301,
+    "committed_steady_mean_m_s": 0.53007437
+   },
+   "achieved_over_commanded": 1.0601487398144,
+   "steady_relative_error_recomputed": 0.060148739814400054,
+   "steady_relative_error_committed": 0.06014874,
+   "per_wheel": {
+    "wheel1": {
+     "delta_theta_rad": 12.874597548999999,
+     "omega_mean_rad_s": 5.148025622009969,
+     "sign_consistent": true,
+     "r_eff_m": 0.10293027954655798,
+     "r_from_v_over_omega_m": 0.10296653684878912,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel2": {
+     "delta_theta_rad": 12.874827861999998,
+     "omega_mean_rad_s": 5.145057960225912,
+     "sign_consistent": true,
+     "r_eff_m": 0.1029284382651267,
+     "r_from_v_over_omega_m": 0.10302592779419831,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel3": {
+     "delta_theta_rad": 12.874652148000001,
+     "omega_mean_rad_s": 5.148829943328907,
+     "sign_consistent": true,
+     "r_eff_m": 0.102929843038428,
+     "r_from_v_over_omega_m": 0.10295045199424233,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel4": {
+     "delta_theta_rad": 12.874910593000001,
+     "omega_mean_rad_s": 5.144636090790701,
+     "sign_consistent": true,
+     "r_eff_m": 0.10292777687236868,
+     "r_from_v_over_omega_m": 0.10303437610603292,
+     "achieved_over_commanded": 1.0601487398144
+    }
+   },
+   "r_eff_spread_m": 2.5026741893030557e-06,
+   "r_eff_spread_rel": 2.431454824598183e-05,
+   "r_eff_mean_m": 0.10292908443062035,
+   "r_eff_stdev_m": 1.1734601735776933e-06,
+   "r_implied_from_v_over_omega_m": 0.10299431032115638,
+   "r_pure_radius_hypothesis_m": 0.09715081144103192,
+   "r_feedforward_m": 0.101459,
+   "r_geometric_m": 0.103,
+   "odometry": {
+    "delta_theta_mean_rad": 12.874747038,
+    "ground_truth_distance_m": 1.325185924768,
+    "feedforward_odom_m": 1.306258959728442,
+    "feedforward_odom_error_mm": -18.92696503955804,
+    "feedforward_odom_error_rel": -0.014282497788279502,
+    "geometric_odom_m": 1.326098944914,
+    "geometric_odom_error_mm": 0.913020145999921,
+    "geometric_odom_error_rel": 0.0006889751309120395,
+    "slip_estimate_geometric": 5.523960042330689e-05
+   },
+   "decomposition": {
+    "omega_feedforward_rad_s": 4.928099035078209,
+    "omega_mean_measured_rad_s": 5.146637404088872,
+    "trim_added_rad_s": 0.2185383690106626,
+    "trim_limit_rad_s": 0.24640495175391047,
+    "trim_fraction_of_limit": 0.8869073752581126,
+    "factor_trim": 1.0443453687629056,
+    "factor_radius": 1.0151323226244728,
+    "factor_product": 1.0601487398144,
+    "measured_ratio": 1.0601487398144,
+    "closure": 1.0,
+    "trim_contribution_rel": 0.044345368762905624,
+    "radius_contribution_rel": 0.015132322624472838,
+    "total_rel": 0.060148739814400054
+   },
+   "feedback": {
+    "assumption": "trim += 0.5*kp*dt*(vy_meas - vy_target); if vy_meas == 0 the trim is a staircase of slope 0.5*kp*dt*v_cmd",
+    "ramp_rate_measured_rad_s2": 0.5005588734588724,
+    "ramp_rate_expected_if_vy_meas_zero_rad_s2": 0.5,
+    "ramp_rate_measured_rad_s_per_step": 0.0041713239454906036,
+    "ramp_rate_expected_rad_s_per_step": 0.004166666666666667,
+    "ramp_rate_ratio": 1.0011177469177448,
+    "steps_to_saturate_expected": 59.137188420938514,
+    "plateau_target_omega_rad_s": 5.17450398683212,
+    "model_rms_rel_error": 0.0006600812152994887,
+    "model_max_rel_error": 0.007388916631464021,
+    "plateau": {
+     "steps": [
+      240,
+      480
+     ],
+     "duration_s": 2.0,
+     "speed_m_s": 0.5324800908564999,
+     "achieved_over_commanded": 1.0649601817129999,
+     "steady_relative_error": 0.06496018171299989,
+     "r_eff_m": 0.10292714200058242,
+     "omega_mean_rad_s": 5.170443240541494,
+     "factor_trim": 1.0491760014841989,
+     "factor_radius": 1.0144702983528562
+    }
+   },
+   "committed": {
+    "wheel_delta_theta_rad": {
+     "wheel1": 16.730955124,
+     "wheel2": 16.760297775,
+     "wheel3": 16.73690033,
+     "wheel4": 16.761127472
+    },
+    "measured_rolling_radius_m": {
+     "wheel1": 0.104221,
+     "wheel2": 0.104038,
+     "wheel3": 0.104184,
+     "wheel4": 0.104033
+    },
+    "measured_rolling_radius_rel_error": [
+     0.011854,
+     0.010078,
+     0.011495,
+     0.010029
+    ]
+   },
+   "gates": {
+    "all_finite": true,
+    "no_root_pose_write": true,
+    "contact_detected": true,
+    "steady_speed_tracks_command": true,
+    "stops_after_zero_command": true,
+    "speed_limit_respected": true
+   },
+   "thresholds": {
+    "speed_tracking_rel": 0.2,
+    "min_displacement_m": 0.01,
+    "contact_force_n": 1.0,
+    "tail_speed_max_m_s": 5.0,
+    "hold_still_m": 0.001,
+    "hold_still_rad": 0.001,
+    "rolling_radius_rel": 0.1
+   },
+   "diagnostics": {
+    "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+    "root_writes": 0,
+    "friction_coefficient": 0.8,
+    "payload_kg": 0.0
+   }
+  },
+  {
+   "run_id": "P4V_clamp_r13",
+   "profile": "velocity_control",
+   "gate_result": "PASS",
+   "commanded_speed_m_s": 0.5,
+   "commanded_raw_speed_m_s": 0.8,
+   "clamped": true,
+   "steady_window_steps": [
+    180,
+    480
+   ],
+   "speed": {
+    "from_consecutive_positions_m_s": 0.5300743699072001,
+    "from_endpoints_m_s": 0.5300743699072,
+    "from_least_squares_m_s": 0.5316218689927255,
+    "lstsq_rms_residual_m": 0.0009568343968227374,
+    "lstsq_samples": 301,
+    "committed_steady_mean_m_s": 0.53007437
+   },
+   "achieved_over_commanded": 1.0601487398144,
+   "steady_relative_error_recomputed": 0.060148739814400054,
+   "steady_relative_error_committed": 0.06014874,
+   "per_wheel": {
+    "wheel1": {
+     "delta_theta_rad": 12.874597548999999,
+     "omega_mean_rad_s": 5.148025622009969,
+     "sign_consistent": true,
+     "r_eff_m": 0.10293027954655798,
+     "r_from_v_over_omega_m": 0.10296653684878912,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel2": {
+     "delta_theta_rad": 12.874827861999998,
+     "omega_mean_rad_s": 5.145057960225912,
+     "sign_consistent": true,
+     "r_eff_m": 0.1029284382651267,
+     "r_from_v_over_omega_m": 0.10302592779419831,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel3": {
+     "delta_theta_rad": 12.874652148000001,
+     "omega_mean_rad_s": 5.148829943328907,
+     "sign_consistent": true,
+     "r_eff_m": 0.102929843038428,
+     "r_from_v_over_omega_m": 0.10295045199424233,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel4": {
+     "delta_theta_rad": 12.874910593000001,
+     "omega_mean_rad_s": 5.144636090790701,
+     "sign_consistent": true,
+     "r_eff_m": 0.10292777687236868,
+     "r_from_v_over_omega_m": 0.10303437610603292,
+     "achieved_over_commanded": 1.0601487398144
+    }
+   },
+   "r_eff_spread_m": 2.5026741893030557e-06,
+   "r_eff_spread_rel": 2.431454824598183e-05,
+   "r_eff_mean_m": 0.10292908443062035,
+   "r_eff_stdev_m": 1.1734601735776933e-06,
+   "r_implied_from_v_over_omega_m": 0.10299431032115638,
+   "r_pure_radius_hypothesis_m": 0.09715081144103192,
+   "r_feedforward_m": 0.101459,
+   "r_geometric_m": 0.103,
+   "odometry": {
+    "delta_theta_mean_rad": 12.874747038,
+    "ground_truth_distance_m": 1.325185924768,
+    "feedforward_odom_m": 1.306258959728442,
+    "feedforward_odom_error_mm": -18.92696503955804,
+    "feedforward_odom_error_rel": -0.014282497788279502,
+    "geometric_odom_m": 1.326098944914,
+    "geometric_odom_error_mm": 0.913020145999921,
+    "geometric_odom_error_rel": 0.0006889751309120395,
+    "slip_estimate_geometric": 5.523960042330689e-05
+   },
+   "decomposition": {
+    "omega_feedforward_rad_s": 4.928099035078209,
+    "omega_mean_measured_rad_s": 5.146637404088872,
+    "trim_added_rad_s": 0.2185383690106626,
+    "trim_limit_rad_s": 0.24640495175391047,
+    "trim_fraction_of_limit": 0.8869073752581126,
+    "factor_trim": 1.0443453687629056,
+    "factor_radius": 1.0151323226244728,
+    "factor_product": 1.0601487398144,
+    "measured_ratio": 1.0601487398144,
+    "closure": 1.0,
+    "trim_contribution_rel": 0.044345368762905624,
+    "radius_contribution_rel": 0.015132322624472838,
+    "total_rel": 0.060148739814400054
+   },
+   "feedback": {
+    "assumption": "trim += 0.5*kp*dt*(vy_meas - vy_target); if vy_meas == 0 the trim is a staircase of slope 0.5*kp*dt*v_cmd",
+    "ramp_rate_measured_rad_s2": 0.5005588734588724,
+    "ramp_rate_expected_if_vy_meas_zero_rad_s2": 0.5,
+    "ramp_rate_measured_rad_s_per_step": 0.0041713239454906036,
+    "ramp_rate_expected_rad_s_per_step": 0.004166666666666667,
+    "ramp_rate_ratio": 1.0011177469177448,
+    "steps_to_saturate_expected": 59.137188420938514,
+    "plateau_target_omega_rad_s": 5.17450398683212,
+    "model_rms_rel_error": 0.0006600812152994887,
+    "model_max_rel_error": 0.007388916631464021,
+    "plateau": {
+     "steps": [
+      240,
+      480
+     ],
+     "duration_s": 2.0,
+     "speed_m_s": 0.5324800908564999,
+     "achieved_over_commanded": 1.0649601817129999,
+     "steady_relative_error": 0.06496018171299989,
+     "r_eff_m": 0.10292714200058242,
+     "omega_mean_rad_s": 5.170443240541494,
+     "factor_trim": 1.0491760014841989,
+     "factor_radius": 1.0144702983528562
+    }
+   },
+   "committed": {
+    "wheel_delta_theta_rad": {
+     "wheel1": 16.730955124,
+     "wheel2": 16.760297775,
+     "wheel3": 16.73690033,
+     "wheel4": 16.761127472
+    },
+    "measured_rolling_radius_m": {
+     "wheel1": 0.104221,
+     "wheel2": 0.104038,
+     "wheel3": 0.104184,
+     "wheel4": 0.104033
+    },
+    "measured_rolling_radius_rel_error": [
+     0.011854,
+     0.010078,
+     0.011495,
+     0.010029
+    ]
+   },
+   "gates": {
+    "all_finite": true,
+    "no_root_pose_write": true,
+    "contact_detected": true,
+    "steady_speed_tracks_command": true,
+    "stops_after_zero_command": true,
+    "speed_limit_respected": true
+   },
+   "thresholds": {
+    "speed_tracking_rel": 0.2,
+    "min_displacement_m": 0.01,
+    "contact_force_n": 1.0,
+    "tail_speed_max_m_s": 5.0,
+    "hold_still_m": 0.001,
+    "hold_still_rad": 0.001,
+    "rolling_radius_rel": 0.1
+   },
+   "diagnostics": {
+    "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+    "root_writes": 0,
+    "friction_coefficient": 0.8,
+    "payload_kg": 0.0
+   }
+  },
+  {
+   "run_id": "P4V_clamp_r14",
+   "profile": "velocity_control",
+   "gate_result": "PASS",
+   "commanded_speed_m_s": 0.5,
+   "commanded_raw_speed_m_s": 0.8,
+   "clamped": true,
+   "steady_window_steps": [
+    180,
+    480
+   ],
+   "speed": {
+    "from_consecutive_positions_m_s": 0.5300743699072001,
+    "from_endpoints_m_s": 0.5300743699072,
+    "from_least_squares_m_s": 0.5316218689927255,
+    "lstsq_rms_residual_m": 0.0009568343968227374,
+    "lstsq_samples": 301,
+    "committed_steady_mean_m_s": 0.53007437
+   },
+   "achieved_over_commanded": 1.0601487398144,
+   "steady_relative_error_recomputed": 0.060148739814400054,
+   "steady_relative_error_committed": 0.06014874,
+   "per_wheel": {
+    "wheel1": {
+     "delta_theta_rad": 12.874597548999999,
+     "omega_mean_rad_s": 5.148025622009969,
+     "sign_consistent": true,
+     "r_eff_m": 0.10293027954655798,
+     "r_from_v_over_omega_m": 0.10296653684878912,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel2": {
+     "delta_theta_rad": 12.874827861999998,
+     "omega_mean_rad_s": 5.145057960225912,
+     "sign_consistent": true,
+     "r_eff_m": 0.1029284382651267,
+     "r_from_v_over_omega_m": 0.10302592779419831,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel3": {
+     "delta_theta_rad": 12.874652148000001,
+     "omega_mean_rad_s": 5.148829943328907,
+     "sign_consistent": true,
+     "r_eff_m": 0.102929843038428,
+     "r_from_v_over_omega_m": 0.10295045199424233,
+     "achieved_over_commanded": 1.0601487398144
+    },
+    "wheel4": {
+     "delta_theta_rad": 12.874910593000001,
+     "omega_mean_rad_s": 5.144636090790701,
+     "sign_consistent": true,
+     "r_eff_m": 0.10292777687236868,
+     "r_from_v_over_omega_m": 0.10303437610603292,
+     "achieved_over_commanded": 1.0601487398144
+    }
+   },
+   "r_eff_spread_m": 2.5026741893030557e-06,
+   "r_eff_spread_rel": 2.431454824598183e-05,
+   "r_eff_mean_m": 0.10292908443062035,
+   "r_eff_stdev_m": 1.1734601735776933e-06,
+   "r_implied_from_v_over_omega_m": 0.10299431032115638,
+   "r_pure_radius_hypothesis_m": 0.09715081144103192,
+   "r_feedforward_m": 0.101459,
+   "r_geometric_m": 0.103,
+   "odometry": {
+    "delta_theta_mean_rad": 12.874747038,
+    "ground_truth_distance_m": 1.325185924768,
+    "feedforward_odom_m": 1.306258959728442,
+    "feedforward_odom_error_mm": -18.92696503955804,
+    "feedforward_odom_error_rel": -0.014282497788279502,
+    "geometric_odom_m": 1.326098944914,
+    "geometric_odom_error_mm": 0.913020145999921,
+    "geometric_odom_error_rel": 0.0006889751309120395,
+    "slip_estimate_geometric": 5.523960042330689e-05
+   },
+   "decomposition": {
+    "omega_feedforward_rad_s": 4.928099035078209,
+    "omega_mean_measured_rad_s": 5.146637404088872,
+    "trim_added_rad_s": 0.2185383690106626,
+    "trim_limit_rad_s": 0.24640495175391047,
+    "trim_fraction_of_limit": 0.8869073752581126,
+    "factor_trim": 1.0443453687629056,
+    "factor_radius": 1.0151323226244728,
+    "factor_product": 1.0601487398144,
+    "measured_ratio": 1.0601487398144,
+    "closure": 1.0,
+    "trim_contribution_rel": 0.044345368762905624,
+    "radius_contribution_rel": 0.015132322624472838,
+    "total_rel": 0.060148739814400054
+   },
+   "feedback": {
+    "assumption": "trim += 0.5*kp*dt*(vy_meas - vy_target); if vy_meas == 0 the trim is a staircase of slope 0.5*kp*dt*v_cmd",
+    "ramp_rate_measured_rad_s2": 0.5005588734588724,
+    "ramp_rate_expected_if_vy_meas_zero_rad_s2": 0.5,
+    "ramp_rate_measured_rad_s_per_step": 0.0041713239454906036,
+    "ramp_rate_expected_rad_s_per_step": 0.004166666666666667,
+    "ramp_rate_ratio": 1.0011177469177448,
+    "steps_to_saturate_expected": 59.137188420938514,
+    "plateau_target_omega_rad_s": 5.17450398683212,
+    "model_rms_rel_error": 0.0006600812152994887,
+    "model_max_rel_error": 0.007388916631464021,
+    "plateau": {
+     "steps": [
+      240,
+      480
+     ],
+     "duration_s": 2.0,
+     "speed_m_s": 0.5324800908564999,
+     "achieved_over_commanded": 1.0649601817129999,
+     "steady_relative_error": 0.06496018171299989,
+     "r_eff_m": 0.10292714200058242,
+     "omega_mean_rad_s": 5.170443240541494,
+     "factor_trim": 1.0491760014841989,
+     "factor_radius": 1.0144702983528562
+    }
+   },
+   "committed": {
+    "wheel_delta_theta_rad": {
+     "wheel1": 16.730955124,
+     "wheel2": 16.760297775,
+     "wheel3": 16.73690033,
+     "wheel4": 16.761127472
+    },
+    "measured_rolling_radius_m": {
+     "wheel1": 0.104221,
+     "wheel2": 0.104038,
+     "wheel3": 0.104184,
+     "wheel4": 0.104033
+    },
+    "measured_rolling_radius_rel_error": [
+     0.011854,
+     0.010078,
+     0.011495,
+     0.010029
+    ]
+   },
+   "gates": {
+    "all_finite": true,
+    "no_root_pose_write": true,
+    "contact_detected": true,
+    "steady_speed_tracks_command": true,
+    "stops_after_zero_command": true,
+    "speed_limit_respected": true
+   },
+   "thresholds": {
+    "speed_tracking_rel": 0.2,
+    "min_displacement_m": 0.01,
+    "contact_force_n": 1.0,
+    "tail_speed_max_m_s": 5.0,
+    "hold_still_m": 0.001,
+    "hold_still_rad": 0.001,
+    "rolling_radius_rel": 0.1
+   },
+   "diagnostics": {
+    "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+    "root_writes": 0,
+    "friction_coefficient": 0.8,
+    "payload_kg": 0.0
+   }
+  }
+ ],
+ "d1_open_loop_reference": {
+  "run_id": "P4f_base_r11",
+  "full_run_r_eff_m": 0.10145862109165812,
+  "committed_r_eff_m": 0.10145850000000001,
+  "steady_window_r_eff_m": 0.10295888103958256,
+  "steady_window_steps": [
+   60,
+   360
+  ],
+  "subwindow_radii": [
+   {
+    "steps": [
+     0,
+     1
+    ],
+    "delta_y_m": 2.2996024e-05,
+    "delta_theta_mean_rad": 0.0328162155,
+    "r_eff_m": 0.0007007518584828893
+   },
+   {
+    "steps": [
+     1,
+     30
+    ],
+    "delta_y_m": -0.083325590745,
+    "delta_theta_mean_rad": 0.950831116,
+    "r_eff_m": 0.08763448034340517
+   },
+   {
+    "steps": [
+     30,
+     60
+    ],
+    "delta_y_m": -0.10292220860799998,
+    "delta_theta_mean_rad": 0.99964289375,
+    "r_eff_m": 0.10295897590178811
+   },
+   {
+    "steps": [
+     60,
+     120
+    ],
+    "delta_y_m": -0.205843999981,
+    "delta_theta_mean_rad": 1.99929431075,
+    "r_eff_m": 0.10295832828323372
+   },
+   {
+    "steps": [
+     120,
+     180
+    ],
+    "delta_y_m": -0.20584440231399997,
+    "delta_theta_mean_rad": 1.999295056,
+    "r_eff_m": 0.10295849114228989
+   },
+   {
+    "steps": [
+     180,
+     240
+    ],
+    "delta_y_m": -0.20584225654600008,
+    "delta_theta_mean_rad": 1.9992810487500001,
+    "r_eff_m": 0.10295813921444298
+   },
+   {
+    "steps": [
+     240,
+     300
+    ],
+    "delta_y_m": -0.20583957433700006,
+    "delta_theta_mean_rad": 1.9992265699999998,
+    "r_eff_m": 0.10295960319144823
+   },
+   {
+    "steps": [
+     300,
+     360
+    ],
+    "delta_y_m": -0.20584034919699978,
+    "delta_theta_mean_rad": 1.9992294312500003,
+    "r_eff_m": 0.10295984341742105
+   }
+  ]
+ },
+ "d2": {
+  "runs": [
+   {
+    "run_id": "P4L_0_r01",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4L_0_r02",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4L_0_r11",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4L_0_r12",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4L_10_r01",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 10.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000229956,
+     -1.214778543,
+     -0.018616527
+    ],
+    "yaw_change_rad": 0.000100817,
+    "measured_rolling_radius_mean_m": 0.101479,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101592,
+     "wheel2": 0.101336,
+     "wheel3": 0.101586,
+     "wheel4": 0.101402
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4L_10_r02",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 10.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000229956,
+     -1.214778543,
+     -0.018616527
+    ],
+    "yaw_change_rad": 0.000100817,
+    "measured_rolling_radius_mean_m": 0.101479,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101592,
+     "wheel2": 0.101336,
+     "wheel3": 0.101586,
+     "wheel4": 0.101402
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4L_10_r11",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 10.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000229956,
+     -1.214778543,
+     -0.018616527
+    ],
+    "yaw_change_rad": 0.000100817,
+    "measured_rolling_radius_mean_m": 0.101479,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101592,
+     "wheel2": 0.101336,
+     "wheel3": 0.101586,
+     "wheel4": 0.101402
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4L_10_r12",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 10.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000229956,
+     -1.214778543,
+     -0.018616527
+    ],
+    "yaw_change_rad": 0.000100817,
+    "measured_rolling_radius_mean_m": 0.101479,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101592,
+     "wheel2": 0.101336,
+     "wheel3": 0.101586,
+     "wheel4": 0.101402
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4N_still_r01",
+    "profile": "hold_still",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 0.0,
+     "profile": "hold_still"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     7.4e-08,
+     0.000301458,
+     -0.018616408
+    ],
+    "yaw_change_rad": 1.02e-07,
+    "measured_rolling_radius_mean_m": null,
+    "measured_rolling_radius_m": {
+     "wheel1": null,
+     "wheel2": null,
+     "wheel3": null,
+     "wheel4": null
+    },
+    "steps": 240
+   },
+   {
+    "run_id": "P4N_still_r02",
+    "profile": "hold_still",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 0.0,
+     "profile": "hold_still"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     7.4e-08,
+     0.000301458,
+     -0.018616408
+    ],
+    "yaw_change_rad": 1.02e-07,
+    "measured_rolling_radius_mean_m": null,
+    "measured_rolling_radius_m": {
+     "wheel1": null,
+     "wheel2": null,
+     "wheel3": null,
+     "wheel4": null
+    },
+    "steps": 240
+   },
+   {
+    "run_id": "P4N_still_r11",
+    "profile": "hold_still",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 0.0,
+     "profile": "hold_still"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     7.4e-08,
+     0.000301458,
+     -0.018616408
+    ],
+    "yaw_change_rad": 1.02e-07,
+    "measured_rolling_radius_mean_m": null,
+    "measured_rolling_radius_m": {
+     "wheel1": null,
+     "wheel2": null,
+     "wheel3": null,
+     "wheel4": null
+    },
+    "steps": 240
+   },
+   {
+    "run_id": "P4N_still_r12",
+    "profile": "hold_still",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 0.0,
+     "profile": "hold_still"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     7.4e-08,
+     0.000301458,
+     -0.018616408
+    ],
+    "yaw_change_rad": 1.02e-07,
+    "measured_rolling_radius_mean_m": null,
+    "measured_rolling_radius_m": {
+     "wheel1": null,
+     "wheel2": null,
+     "wheel3": null,
+     "wheel4": null
+    },
+    "steps": 240
+   },
+   {
+    "run_id": "P4R_pos_r01",
+    "profile": "roll_pos_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": -4.0,
+     "profile": "roll_pos_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000177057,
+     1.216358423,
+     -0.018616438
+    ],
+    "yaw_change_rad": 7.85e-05,
+    "measured_rolling_radius_mean_m": 0.1014615,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101361,
+     "wheel2": 0.101538,
+     "wheel3": 0.101361,
+     "wheel4": 0.101586
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4R_pos_r02",
+    "profile": "roll_pos_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": -4.0,
+     "profile": "roll_pos_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000177057,
+     1.216358423,
+     -0.018616438
+    ],
+    "yaw_change_rad": 7.85e-05,
+    "measured_rolling_radius_mean_m": 0.1014615,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101361,
+     "wheel2": 0.101538,
+     "wheel3": 0.101361,
+     "wheel4": 0.101586
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4R_pos_r11",
+    "profile": "roll_pos_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": -4.0,
+     "profile": "roll_pos_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000177057,
+     1.216358423,
+     -0.018616438
+    ],
+    "yaw_change_rad": 7.85e-05,
+    "measured_rolling_radius_mean_m": 0.1014615,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101361,
+     "wheel2": 0.101538,
+     "wheel3": 0.101361,
+     "wheel4": 0.101586
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4R_pos_r12",
+    "profile": "roll_pos_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": -4.0,
+     "profile": "roll_pos_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000177057,
+     1.216358423,
+     -0.018616438
+    ],
+    "yaw_change_rad": 7.85e-05,
+    "measured_rolling_radius_mean_m": 0.1014615,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101361,
+     "wheel2": 0.101538,
+     "wheel3": 0.101361,
+     "wheel4": 0.101586
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4S_1_r01",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 1.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     1.899e-05,
+     -0.303993493,
+     -0.018616349
+    ],
+    "yaw_change_rad": 1.231e-06,
+    "measured_rolling_radius_mean_m": 0.1016115,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101612,
+     "wheel2": 0.101612,
+     "wheel3": 0.101612,
+     "wheel4": 0.10161
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4S_1_r02",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 1.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     1.899e-05,
+     -0.303993493,
+     -0.018616349
+    ],
+    "yaw_change_rad": 1.231e-06,
+    "measured_rolling_radius_mean_m": 0.1016115,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101612,
+     "wheel2": 0.101612,
+     "wheel3": 0.101612,
+     "wheel4": 0.10161
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4S_1_r11",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 1.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     1.899e-05,
+     -0.303993493,
+     -0.018616349
+    ],
+    "yaw_change_rad": 1.231e-06,
+    "measured_rolling_radius_mean_m": 0.1016115,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101612,
+     "wheel2": 0.101612,
+     "wheel3": 0.101612,
+     "wheel4": 0.10161
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4S_1_r12",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 1.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     1.899e-05,
+     -0.303993493,
+     -0.018616349
+    ],
+    "yaw_change_rad": 1.231e-06,
+    "measured_rolling_radius_mean_m": 0.1016115,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101612,
+     "wheel2": 0.101612,
+     "wheel3": 0.101612,
+     "wheel4": 0.10161
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4S_4_r01",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4S_4_r02",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4S_4_r11",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4S_4_r12",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_base_r01",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_base_r02",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_base_r11",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_base_r12",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.8,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000196701,
+     -1.215435386,
+     -0.018616438
+    ],
+    "yaw_change_rad": 8.2577e-05,
+    "measured_rolling_radius_mean_m": 0.10145850000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101535,
+     "wheel2": 0.101363,
+     "wheel3": 0.101579,
+     "wheel4": 0.101357
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_high_r01",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 1.4,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     2.7582e-05,
+     -1.21579361,
+     -0.018616408
+    ],
+    "yaw_change_rad": 1.696e-05,
+    "measured_rolling_radius_mean_m": 0.10148625000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101598,
+     "wheel2": 0.101375,
+     "wheel3": 0.101598,
+     "wheel4": 0.101374
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_high_r02",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 1.4,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     2.7582e-05,
+     -1.21579361,
+     -0.018616408
+    ],
+    "yaw_change_rad": 1.696e-05,
+    "measured_rolling_radius_mean_m": 0.10148625000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101598,
+     "wheel2": 0.101375,
+     "wheel3": 0.101598,
+     "wheel4": 0.101374
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_high_r11",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 1.4,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     2.7582e-05,
+     -1.21579361,
+     -0.018616408
+    ],
+    "yaw_change_rad": 1.696e-05,
+    "measured_rolling_radius_mean_m": 0.10148625000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101598,
+     "wheel2": 0.101375,
+     "wheel3": 0.101598,
+     "wheel4": 0.101374
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_high_r12",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 1.4,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     2.7582e-05,
+     -1.21579361,
+     -0.018616408
+    ],
+    "yaw_change_rad": 1.696e-05,
+    "measured_rolling_radius_mean_m": 0.10148625000000001,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101598,
+     "wheel2": 0.101375,
+     "wheel3": 0.101598,
+     "wheel4": 0.101374
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_low_r01",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.2,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000285255,
+     -1.210260153,
+     -0.018616498
+    ],
+    "yaw_change_rad": 0.000142561,
+    "measured_rolling_radius_mean_m": 0.10103,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101091,
+     "wheel2": 0.100947,
+     "wheel3": 0.101068,
+     "wheel4": 0.101014
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_low_r02",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.2,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000285255,
+     -1.210260153,
+     -0.018616498
+    ],
+    "yaw_change_rad": 0.000142561,
+    "measured_rolling_radius_mean_m": 0.10103,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101091,
+     "wheel2": 0.100947,
+     "wheel3": 0.101068,
+     "wheel4": 0.101014
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_low_r11",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.2,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000285255,
+     -1.210260153,
+     -0.018616498
+    ],
+    "yaw_change_rad": 0.000142561,
+    "measured_rolling_radius_mean_m": 0.10103,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101091,
+     "wheel2": 0.100947,
+     "wheel3": 0.101068,
+     "wheel4": 0.101014
+    },
+    "steps": 360
+   },
+   {
+    "run_id": "P4f_low_r12",
+    "profile": "roll_neg_y",
+    "knob": {
+     "friction": 0.2,
+     "payload_kg": 0.0,
+     "wheel_target_rad_s": 4.0,
+     "profile": "roll_neg_y"
+    },
+    "gate_result": "PASS",
+    "root_writes": 0,
+    "displacement_m": [
+     0.000285255,
+     -1.210260153,
+     -0.018616498
+    ],
+    "yaw_change_rad": 0.000142561,
+    "measured_rolling_radius_mean_m": 0.10103,
+    "measured_rolling_radius_m": {
+     "wheel1": 0.101091,
+     "wheel2": 0.100947,
+     "wheel3": 0.101068,
+     "wheel4": 0.101014
+    },
+    "steps": 360
+   }
+  ],
+  "run_count": 36,
+  "recorded_radius_min_m": 0.10103,
+  "recorded_radius_max_m": 0.1016115,
+  "recorded_radius_span_m": 0.0005814999999999987,
+  "recorded_radius_span_rel": 0.005732991350293827,
+  "measured_relative_deviation": 0.060221727688711146,
+  "explanation_ratio": 10.504416282718562,
+  "steady_window_radius": {
+   "P4L_0_r01": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4L_0_r02": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4L_0_r11": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4L_0_r12": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4L_10_r01": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.0291395038370001,
+    "delta_theta_mean_rad": 9.9959008695,
+    "r_eff_m": 0.10295615345457886
+   },
+   "P4L_10_r02": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.0291395038370001,
+    "delta_theta_mean_rad": 9.9959008695,
+    "r_eff_m": 0.10295615345457886
+   },
+   "P4L_10_r11": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.0291395038370001,
+    "delta_theta_mean_rad": 9.9959008695,
+    "r_eff_m": 0.10295615345457886
+   },
+   "P4L_10_r12": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.0291395038370001,
+    "delta_theta_mean_rad": 9.9959008695,
+    "r_eff_m": 0.10295615345457886
+   },
+   "P4R_pos_r01": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": 1.029970958829,
+    "delta_theta_mean_rad": -10.0036131145,
+    "r_eff_m": 0.10295989529383953
+   },
+   "P4R_pos_r02": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": 1.029970958829,
+    "delta_theta_mean_rad": -10.0036131145,
+    "r_eff_m": 0.10295989529383953
+   },
+   "P4R_pos_r11": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": 1.029970958829,
+    "delta_theta_mean_rad": -10.0036131145,
+    "r_eff_m": 0.10295989529383953
+   },
+   "P4R_pos_r12": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": 1.029970958829,
+    "delta_theta_mean_rad": -10.0036131145,
+    "r_eff_m": 0.10295989529383953
+   },
+   "P4S_1_r01": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -0.25704147294199997,
+    "delta_theta_mean_rad": 2.49660325825,
+    "r_eff_m": 0.10295647580071406
+   },
+   "P4S_1_r02": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -0.25704147294199997,
+    "delta_theta_mean_rad": 2.49660325825,
+    "r_eff_m": 0.10295647580071406
+   },
+   "P4S_1_r11": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -0.25704147294199997,
+    "delta_theta_mean_rad": 2.49660325825,
+    "r_eff_m": 0.10295647580071406
+   },
+   "P4S_1_r12": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -0.25704147294199997,
+    "delta_theta_mean_rad": 2.49660325825,
+    "r_eff_m": 0.10295647580071406
+   },
+   "P4S_4_r01": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4S_4_r02": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4S_4_r11": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4S_4_r12": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4f_base_r01": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4f_base_r02": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4f_base_r11": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4f_base_r12": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029210582375,
+    "delta_theta_mean_rad": 9.996326416750001,
+    "r_eff_m": 0.10295888103958256
+   },
+   "P4f_high_r01": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029275134206,
+    "delta_theta_mean_rad": 9.99699142575,
+    "r_eff_m": 0.10295848924655661
+   },
+   "P4f_high_r02": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029275134206,
+    "delta_theta_mean_rad": 9.99699142575,
+    "r_eff_m": 0.10295848924655661
+   },
+   "P4f_high_r11": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029275134206,
+    "delta_theta_mean_rad": 9.99699142575,
+    "r_eff_m": 0.10295848924655661
+   },
+   "P4f_high_r12": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029275134206,
+    "delta_theta_mean_rad": 9.99699142575,
+    "r_eff_m": 0.10295848924655661
+   },
+   "P4f_low_r01": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029248014093,
+    "delta_theta_mean_rad": 9.996281445,
+    "r_eff_m": 0.10296308880016734
+   },
+   "P4f_low_r02": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029248014093,
+    "delta_theta_mean_rad": 9.996281445,
+    "r_eff_m": 0.10296308880016734
+   },
+   "P4f_low_r11": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029248014093,
+    "delta_theta_mean_rad": 9.996281445,
+    "r_eff_m": 0.10296308880016734
+   },
+   "P4f_low_r12": {
+    "window_steps": [
+     60,
+     360
+    ],
+    "delta_y_m": -1.029248014093,
+    "delta_theta_mean_rad": 9.996281445,
+    "r_eff_m": 0.10296308880016734
+   }
+  },
+  "steady_radius_span_rel": 6.736036820121334e-05,
+  "knob_consistency": {
+   "hold_still": {
+    "runs": [
+     "P4N_still_r01",
+     "P4N_still_r02",
+     "P4N_still_r11",
+     "P4N_still_r12"
+    ],
+    "knobs": {
+     "friction": [
+      0.8
+     ],
+     "payload_kg": [
+      0.0
+     ],
+     "wheel_target_rad_s": [
+      0.0
+     ]
+    }
+   },
+   "roll_neg_y": {
+    "runs": [
+     "P4L_0_r01",
+     "P4L_0_r02",
+     "P4L_0_r11",
+     "P4L_0_r12",
+     "P4L_10_r01",
+     "P4L_10_r02",
+     "P4L_10_r11",
+     "P4L_10_r12",
+     "P4S_1_r01",
+     "P4S_1_r02",
+     "P4S_1_r11",
+     "P4S_1_r12",
+     "P4S_4_r01",
+     "P4S_4_r02",
+     "P4S_4_r11",
+     "P4S_4_r12",
+     "P4f_base_r01",
+     "P4f_base_r02",
+     "P4f_base_r11",
+     "P4f_base_r12",
+     "P4f_high_r01",
+     "P4f_high_r02",
+     "P4f_high_r11",
+     "P4f_high_r12",
+     "P4f_low_r01",
+     "P4f_low_r02",
+     "P4f_low_r11",
+     "P4f_low_r12"
+    ],
+    "knobs": {
+     "friction": [
+      0.2,
+      0.8,
+      1.4
+     ],
+     "payload_kg": [
+      0.0,
+      10.0
+     ],
+     "wheel_target_rad_s": [
+      1.0,
+      4.0
+     ]
+    }
+   },
+   "roll_pos_y": {
+    "runs": [
+     "P4R_pos_r01",
+     "P4R_pos_r02",
+     "P4R_pos_r11",
+     "P4R_pos_r12"
+    ],
+    "knobs": {
+     "friction": [
+      0.8
+     ],
+     "payload_kg": [
+      0.0
+     ],
+     "wheel_target_rad_s": [
+      -4.0
+     ]
+    }
+   }
+  }
+ },
+ "d3": {
+  "findings": [
+   {
+    "run_id": "P4L_0_r01",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4L_0_r02",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4L_0_r11",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4L_0_r12",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4L_10_r01",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974706292,
+     "wheel2": 3.9930678486999995,
+     "wheel3": 3.9986121296499997,
+     "wheel4": 3.991912555649999
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.000854492,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.2316164569899999,
+    "radius_consistent": 0.013671394121470922
+   },
+   {
+    "run_id": "P4L_10_r02",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974706292,
+     "wheel2": 3.9930678486999995,
+     "wheel3": 3.9986121296499997,
+     "wheel4": 3.991912555649999
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.000854492,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.2316164569899999,
+    "radius_consistent": 0.013671394121470922
+   },
+   {
+    "run_id": "P4L_10_r11",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974706292,
+     "wheel2": 3.9930678486999995,
+     "wheel3": 3.9986121296499997,
+     "wheel4": 3.991912555649999
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.000854492,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.2316164569899999,
+    "radius_consistent": 0.013671394121470922
+   },
+   {
+    "run_id": "P4L_10_r12",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974706292,
+     "wheel2": 3.9930678486999995,
+     "wheel3": 3.9986121296499997,
+     "wheel4": 3.991912555649999
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.000854492,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.2316164569899999,
+    "radius_consistent": 0.013671394121470922
+   },
+   {
+    "run_id": "P4N_still_r01",
+    "profile": "hold_still",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0026396722,
+     "wheel2": -0.005403048999999999,
+     "wheel3": -0.0018857484000000002,
+     "wheel4": -0.00600375915
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 0.015652124,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4N_still_r02",
+    "profile": "hold_still",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0026396722,
+     "wheel2": -0.005403048999999999,
+     "wheel3": -0.0018857484000000002,
+     "wheel4": -0.00600375915
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 0.015652124,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4N_still_r11",
+    "profile": "hold_still",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0026396722,
+     "wheel2": -0.005403048999999999,
+     "wheel3": -0.0018857484000000002,
+     "wheel4": -0.00600375915
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 0.015652124,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4N_still_r12",
+    "profile": "hold_still",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0026396722,
+     "wheel2": -0.005403048999999999,
+     "wheel3": -0.0018857484000000002,
+     "wheel4": -0.00600375915
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 0.015652124,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4R_pos_r01",
+    "profile": "roll_pos_y",
+    "commanded_targets": [
+     -4.0,
+     -4.0,
+     -4.0,
+     -4.0
+    ],
+    "tail_omega": {
+     "wheel1": -4.00192115315,
+     "wheel2": -4.00497779855,
+     "wheel3": -4.0014589547999995,
+     "wheel4": -4.0055617331999995
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.006597996,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     -4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": -1.236027209304,
+    "radius_consistent": 0.01591290722076851
+   },
+   {
+    "run_id": "P4R_pos_r02",
+    "profile": "roll_pos_y",
+    "commanded_targets": [
+     -4.0,
+     -4.0,
+     -4.0,
+     -4.0
+    ],
+    "tail_omega": {
+     "wheel1": -4.00192115315,
+     "wheel2": -4.00497779855,
+     "wheel3": -4.0014589547999995,
+     "wheel4": -4.0055617331999995
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.006597996,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     -4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": -1.236027209304,
+    "radius_consistent": 0.01591290722076851
+   },
+   {
+    "run_id": "P4R_pos_r11",
+    "profile": "roll_pos_y",
+    "commanded_targets": [
+     -4.0,
+     -4.0,
+     -4.0,
+     -4.0
+    ],
+    "tail_omega": {
+     "wheel1": -4.00192115315,
+     "wheel2": -4.00497779855,
+     "wheel3": -4.0014589547999995,
+     "wheel4": -4.0055617331999995
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.006597996,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     -4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": -1.236027209304,
+    "radius_consistent": 0.01591290722076851
+   },
+   {
+    "run_id": "P4R_pos_r12",
+    "profile": "roll_pos_y",
+    "commanded_targets": [
+     -4.0,
+     -4.0,
+     -4.0,
+     -4.0
+    ],
+    "tail_omega": {
+     "wheel1": -4.00192115315,
+     "wheel2": -4.00497779855,
+     "wheel3": -4.0014589547999995,
+     "wheel4": -4.0055617331999995
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.006597996,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     -4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": -1.236027209304,
+    "radius_consistent": 0.01591290722076851
+   },
+   {
+    "run_id": "P4S_1_r01",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "tail_omega": {
+     "wheel1": 0.9975514083,
+     "wheel2": 0.9947398335,
+     "wheel3": 0.99879747925,
+     "wheel4": 0.9945410043499999
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 1.300348282,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     1.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 0.308146026382,
+    "radius_consistent": 0.013475862177278988
+   },
+   {
+    "run_id": "P4S_1_r02",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "tail_omega": {
+     "wheel1": 0.9975514083,
+     "wheel2": 0.9947398335,
+     "wheel3": 0.99879747925,
+     "wheel4": 0.9945410043499999
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 1.300348282,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     1.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 0.308146026382,
+    "radius_consistent": 0.013475862177278988
+   },
+   {
+    "run_id": "P4S_1_r11",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "tail_omega": {
+     "wheel1": 0.9975514083,
+     "wheel2": 0.9947398335,
+     "wheel3": 0.99879747925,
+     "wheel4": 0.9945410043499999
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 1.300348282,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     1.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 0.308146026382,
+    "radius_consistent": 0.013475862177278988
+   },
+   {
+    "run_id": "P4S_1_r12",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "tail_omega": {
+     "wheel1": 0.9975514083,
+     "wheel2": 0.9947398335,
+     "wheel3": 0.99879747925,
+     "wheel4": 0.9945410043499999
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 1.300348282,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     1.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 0.308146026382,
+    "radius_consistent": 0.013475862177278988
+   },
+   {
+    "run_id": "P4S_4_r01",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4S_4_r02",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4S_4_r11",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4S_4_r12",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4V_030_r03",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.00218932515,
+     "wheel2": -0.0049245055499999996,
+     "wheel3": -0.0006955618,
+     "wheel4": -0.005081924700000001
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 8.877051353,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_030_r07",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0022868469000000002,
+     "wheel2": -0.00520988555,
+     "wheel3": -0.00176704105,
+     "wheel4": -0.005909268199999999
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 3.547500849,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_030_r09",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0017546754500000002,
+     "wheel2": -0.004809595399999999,
+     "wheel3": -0.0011334784,
+     "wheel4": -0.005274017450000001
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 3.104115725,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_030_r10",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0017546754500000002,
+     "wheel2": -0.004809595399999999,
+     "wheel3": -0.0011334784,
+     "wheel4": -0.005274017450000001
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 3.104115725,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_030_r13",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0017546754500000002,
+     "wheel2": -0.004809595399999999,
+     "wheel3": -0.0011334784,
+     "wheel4": -0.005274017450000001
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 3.104115725,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_030_r14",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0017546754500000002,
+     "wheel2": -0.004809595399999999,
+     "wheel3": -0.0011334784,
+     "wheel4": -0.005274017450000001
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 3.104115725,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_050_r09",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0019287783500000003,
+     "wheel2": -0.004975332000000001,
+     "wheel3": -0.00150067125,
+     "wheel4": -0.0055584528000000005
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 5.173996925,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_050_r10",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0019287783500000003,
+     "wheel2": -0.004975332000000001,
+     "wheel3": -0.00150067125,
+     "wheel4": -0.0055584528000000005
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 5.173996925,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_050_r13",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0019287783500000003,
+     "wheel2": -0.004975332000000001,
+     "wheel3": -0.00150067125,
+     "wheel4": -0.0055584528000000005
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 5.173996925,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_050_r14",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0019287783500000003,
+     "wheel2": -0.004975332000000001,
+     "wheel3": -0.00150067125,
+     "wheel4": -0.0055584528000000005
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 5.173996925,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_clamp_r11",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0019287783500000003,
+     "wheel2": -0.004975332000000001,
+     "wheel3": -0.00150067125,
+     "wheel4": -0.0055584528000000005
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 5.173996925,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_clamp_r12",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0019287783500000003,
+     "wheel2": -0.004975332000000001,
+     "wheel3": -0.00150067125,
+     "wheel4": -0.0055584528000000005
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 5.173996925,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_clamp_r13",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0019287783500000003,
+     "wheel2": -0.004975332000000001,
+     "wheel3": -0.00150067125,
+     "wheel4": -0.0055584528000000005
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 5.173996925,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4V_clamp_r14",
+    "profile": "velocity_control",
+    "commanded_targets": [
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0019287783500000003,
+     "wheel2": -0.004975332000000001,
+     "wheel3": -0.00150067125,
+     "wheel4": -0.0055584528000000005
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 5.173996925,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0
+    ],
+    "logged_target_is_stale_stub": true,
+    "logs_joint_displacement": true,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4f_base_r01",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4f_base_r02",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4f_base_r11",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4f_base_r12",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9974785446,
+     "wheel2": 3.994530487050001,
+     "wheel3": 3.9983068705,
+     "wheel4": 3.99407325985
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.318039894,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232971027397,
+    "radius_consistent": 0.014222265574253212
+   },
+   {
+    "run_id": "P4f_high_r01",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.99777963165,
+     "wheel2": 3.9948425531499994,
+     "wheel3": 3.99866656085,
+     "wheel4": 3.9944584727000008
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.021811008,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232572318105,
+    "radius_consistent": 0.013612757530362288
+   },
+   {
+    "run_id": "P4f_high_r02",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.99777963165,
+     "wheel2": 3.9948425531499994,
+     "wheel3": 3.99866656085,
+     "wheel4": 3.9944584727000008
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.021811008,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232572318105,
+    "radius_consistent": 0.013612757530362288
+   },
+   {
+    "run_id": "P4f_high_r11",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.99777963165,
+     "wheel2": 3.9948425531499994,
+     "wheel3": 3.99866656085,
+     "wheel4": 3.9944584727000008
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.021811008,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232572318105,
+    "radius_consistent": 0.013612757530362288
+   },
+   {
+    "run_id": "P4f_high_r12",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.99777963165,
+     "wheel2": 3.9948425531499994,
+     "wheel3": 3.99866656085,
+     "wheel4": 3.9944584727000008
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.021811008,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.232572318105,
+    "radius_consistent": 0.013612757530362288
+   },
+   {
+    "run_id": "P4f_low_r01",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9972848177499998,
+     "wheel2": 3.994609057899999,
+     "wheel3": 3.997874414849999,
+     "wheel4": 3.994054675250001
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.779942036,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.2331154232,
+    "radius_consistent": 0.018534574922994124
+   },
+   {
+    "run_id": "P4f_low_r02",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9972848177499998,
+     "wheel2": 3.994609057899999,
+     "wheel3": 3.997874414849999,
+     "wheel4": 3.994054675250001
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.779942036,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.2331154232,
+    "radius_consistent": 0.018534574922994124
+   },
+   {
+    "run_id": "P4f_low_r11",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9972848177499998,
+     "wheel2": 3.994609057899999,
+     "wheel3": 3.997874414849999,
+     "wheel4": 3.994054675250001
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.779942036,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.2331154232,
+    "radius_consistent": 0.018534574922994124
+   },
+   {
+    "run_id": "P4f_low_r12",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9972848177499998,
+     "wheel2": 3.994609057899999,
+     "wheel3": 3.997874414849999,
+     "wheel4": 3.994054675250001
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.779942036,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": true,
+    "slip_free_projection": 1.2331154232,
+    "radius_consistent": 0.018534574922994124
+   },
+   {
+    "run_id": "P4p_back_r02",
+    "profile": "backward",
+    "commanded_targets": [
+     -4.0,
+     -4.0,
+     -4.0,
+     -4.0
+    ],
+    "tail_omega": {
+     "wheel1": -3.86047482495,
+     "wheel2": -3.8971609950499997,
+     "wheel3": 3.873608923,
+     "wheel4": 3.8385559797000006
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.000003338,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     -4.0,
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_fwd_r01",
+    "profile": "forward",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0012621918,
+     "wheel2": -0.0034829826499999995,
+     "wheel3": -0.0007315077,
+     "wheel4": -0.003910720899999999
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 0.012856364,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     -4.0,
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_fwd_r02",
+    "profile": "forward",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.8646369100499998,
+     "wheel2": 3.8745411993000003,
+     "wheel3": -3.8359321237,
+     "wheel4": -3.90256574155
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.000002861,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     -4.0,
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_rollneg_r01",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9977969288999993,
+     "wheel2": 3.994837331699999,
+     "wheel3": 3.9986501455499996,
+     "wheel4": 3.9944392203999994
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.38740778,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_rollneg_r02",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9977969288999993,
+     "wheel2": 3.994837331699999,
+     "wheel3": 3.9986501455499996,
+     "wheel4": 3.9944392203999994
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.38740778,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_rollneg_r03",
+    "profile": "roll_neg_y",
+    "commanded_targets": [
+     4.0,
+     4.0,
+     4.0,
+     4.0
+    ],
+    "tail_omega": {
+     "wheel1": 3.9977969288999993,
+     "wheel2": 3.994837331699999,
+     "wheel3": 3.9986501455499996,
+     "wheel4": 3.9944392203999994
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 4.38740778,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_rollpos_r01",
+    "profile": "roll_pos_y",
+    "commanded_targets": [
+     -4.0,
+     -4.0,
+     -4.0,
+     -4.0
+    ],
+    "tail_omega": {
+     "wheel1": -4.001763486850001,
+     "wheel2": -4.0047853709,
+     "wheel3": -4.001181244850001,
+     "wheel4": -4.005423474350001
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 6.615655899,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     -4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_rollpos_r02",
+    "profile": "roll_pos_y",
+    "commanded_targets": [
+     -4.0,
+     -4.0,
+     -4.0,
+     -4.0
+    ],
+    "tail_omega": {
+     "wheel1": -4.001763486850001,
+     "wheel2": -4.0047853709,
+     "wheel3": -4.001181244850001,
+     "wheel4": -4.005423474350001
+    },
+    "all_wheels_same_sign": true,
+    "differential": false,
+    "max_abs_omega_rad_s": 6.615655899,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     -4.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_spin1_r01",
+    "profile": "spin_single",
+    "commanded_targets": [
+     2.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": -0.0013030987499999998,
+     "wheel2": -0.0035213755,
+     "wheel3": -0.0007864918999999999,
+     "wheel4": -0.003954145050000001
+    },
+    "all_wheels_same_sign": false,
+    "differential": true,
+    "max_abs_omega_rad_s": 0.012856364,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0,
+     2.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_spin1_r02",
+    "profile": "spin_single",
+    "commanded_targets": [
+     2.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": 1.77217000735,
+     "wheel2": 0.07383854134999998,
+     "wheel3": 0.07772026655,
+     "wheel4": 0.0729793434
+    },
+    "all_wheels_same_sign": false,
+    "differential": true,
+    "max_abs_omega_rad_s": 2.0,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0,
+     2.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_spin1_r03",
+    "profile": "spin_single",
+    "commanded_targets": [
+     2.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_omega": {
+     "wheel1": 1.77217000735,
+     "wheel2": 0.07383854134999998,
+     "wheel3": 0.07772026655,
+     "wheel4": 0.0729793434
+    },
+    "all_wheels_same_sign": false,
+    "differential": true,
+    "max_abs_omega_rad_s": 2.0,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     0.0,
+     2.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_turn_r03",
+    "profile": "turn",
+    "commanded_targets": [
+     3.0,
+     3.0,
+     -3.0,
+     -3.0
+    ],
+    "tail_omega": {
+     "wheel1": 2.870997119,
+     "wheel2": 2.8688285947499996,
+     "wheel3": -2.8311183691,
+     "wheel4": -2.9109126091
+    },
+    "all_wheels_same_sign": false,
+    "differential": true,
+    "max_abs_omega_rad_s": 3.000002384,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     -3.0,
+     3.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   },
+   {
+    "run_id": "P4p_turn_r04",
+    "profile": "turn",
+    "commanded_targets": [
+     3.0,
+     3.0,
+     -3.0,
+     -3.0
+    ],
+    "tail_omega": {
+     "wheel1": 2.870997119,
+     "wheel2": 2.8688285947499996,
+     "wheel3": -2.8311183691,
+     "wheel4": -2.9109126091
+    },
+    "all_wheels_same_sign": false,
+    "differential": true,
+    "max_abs_omega_rad_s": 3.000002384,
+    "clamp_rad_s": 50.0,
+    "at_clamp": false,
+    "over_clamp": false,
+    "root_writes_nonzero_frames": 0,
+    "logged_target_values": [
+     -3.0,
+     3.0
+    ],
+    "logged_target_is_stale_stub": false,
+    "logs_joint_displacement": false,
+    "slip_free_projection": null,
+    "radius_consistent": null
+   }
+  ],
+  "clamp_rad_s": 50.0,
+  "runs_at_clamp": [],
+  "runs_over_clamp": [],
+  "root_writes_total": 0,
+  "stale_target_logs": [
+   "P4N_still_r01",
+   "P4N_still_r02",
+   "P4N_still_r11",
+   "P4N_still_r12",
+   "P4V_030_r03",
+   "P4V_030_r07",
+   "P4V_030_r09",
+   "P4V_030_r10",
+   "P4V_030_r13",
+   "P4V_030_r14",
+   "P4V_050_r09",
+   "P4V_050_r10",
+   "P4V_050_r13",
+   "P4V_050_r14",
+   "P4V_clamp_r11",
+   "P4V_clamp_r12",
+   "P4V_clamp_r13",
+   "P4V_clamp_r14"
+  ],
+  "straight_roll_same_sign": {
+   "P4L_0_r01": true,
+   "P4L_0_r02": true,
+   "P4L_0_r11": true,
+   "P4L_0_r12": true,
+   "P4L_10_r01": true,
+   "P4L_10_r02": true,
+   "P4L_10_r11": true,
+   "P4L_10_r12": true,
+   "P4R_pos_r01": true,
+   "P4R_pos_r02": true,
+   "P4R_pos_r11": true,
+   "P4R_pos_r12": true,
+   "P4S_1_r01": true,
+   "P4S_1_r02": true,
+   "P4S_1_r11": true,
+   "P4S_1_r12": true,
+   "P4S_4_r01": true,
+   "P4S_4_r02": true,
+   "P4S_4_r11": true,
+   "P4S_4_r12": true,
+   "P4f_base_r01": true,
+   "P4f_base_r02": true,
+   "P4f_base_r11": true,
+   "P4f_base_r12": true,
+   "P4f_high_r01": true,
+   "P4f_high_r02": true,
+   "P4f_high_r11": true,
+   "P4f_high_r12": true,
+   "P4f_low_r01": true,
+   "P4f_low_r02": true,
+   "P4f_low_r11": true,
+   "P4f_low_r12": true,
+   "P4p_rollneg_r01": true,
+   "P4p_rollneg_r02": true,
+   "P4p_rollneg_r03": true,
+   "P4p_rollpos_r01": true,
+   "P4p_rollpos_r02": true
+  },
+  "turn_differential": {
+   "P4p_spin1_r01": true,
+   "P4p_spin1_r02": true,
+   "P4p_spin1_r03": true,
+   "P4p_turn_r03": true,
+   "P4p_turn_r04": true
+  }
+ },
+ "d4": {
+  "acceptance": [
+   {
+    "run_id": "P4V_030_r13",
+    "commanded_m_s": 0.3,
+    "measured_m_s": 0.31811031103119997,
+    "peak_m_s": 0.31960487364000034,
+    "since_zero_max_m_s": 8.583072002465997e-05,
+    "since_zero_first_half_max_m_s": 0.2922821044800106,
+    "stop_settle_time_s": 0.058333333333333334,
+    "committed_since_zero_max_m_s": 8.5831e-05,
+    "steady_relative_error": 0.06036770343733333,
+    "prereg_tolerance": 0.15,
+    "prereg_pass": true,
+    "stop_tolerance_m_s": 0.02,
+    "stop_pass": true,
+    "stop_pass_literal_prereg_window": false,
+    "limit_rhs_m_s": 0.35000000000000003,
+    "limit_pass": true,
+    "odom_error_rel": -0.014745160596296936,
+    "odom_error_mm": -11.726469058732537,
+    "gates": {
+     "all_finite": true,
+     "no_root_pose_write": true,
+     "contact_detected": true,
+     "steady_speed_tracks_command": true,
+     "stops_after_zero_command": true,
+     "speed_limit_respected": true
+    },
+    "committed_gate_result": "PASS"
+   },
+   {
+    "run_id": "P4V_030_r14",
+    "commanded_m_s": 0.3,
+    "measured_m_s": 0.31811031103119997,
+    "peak_m_s": 0.31960487364000034,
+    "since_zero_max_m_s": 8.583072002465997e-05,
+    "since_zero_first_half_max_m_s": 0.2922821044800106,
+    "stop_settle_time_s": 0.058333333333333334,
+    "committed_since_zero_max_m_s": 8.5831e-05,
+    "steady_relative_error": 0.06036770343733333,
+    "prereg_tolerance": 0.15,
+    "prereg_pass": true,
+    "stop_tolerance_m_s": 0.02,
+    "stop_pass": true,
+    "stop_pass_literal_prereg_window": false,
+    "limit_rhs_m_s": 0.35000000000000003,
+    "limit_pass": true,
+    "odom_error_rel": -0.014745160596296936,
+    "odom_error_mm": -11.726469058732537,
+    "gates": {
+     "all_finite": true,
+     "no_root_pose_write": true,
+     "contact_detected": true,
+     "steady_speed_tracks_command": true,
+     "stops_after_zero_command": true,
+     "speed_limit_respected": true
+    },
+    "committed_gate_result": "PASS"
+   },
+   {
+    "run_id": "P4V_050_r13",
+    "commanded_m_s": 0.5,
+    "measured_m_s": 0.5300743699072,
+    "peak_m_s": 0.5326366424400142,
+    "since_zero_max_m_s": 0.00011444100000979063,
+    "since_zero_first_half_max_m_s": 0.5038118362800059,
+    "stop_settle_time_s": 0.09166666666666666,
+    "committed_since_zero_max_m_s": 0.000114441,
+    "steady_relative_error": 0.060148739814400054,
+    "prereg_tolerance": 0.15,
+    "prereg_pass": true,
+    "stop_tolerance_m_s": 0.02,
+    "stop_pass": true,
+    "stop_pass_literal_prereg_window": false,
+    "limit_rhs_m_s": 0.5700000000000001,
+    "limit_pass": true,
+    "odom_error_rel": -0.014282497788279502,
+    "odom_error_mm": -18.92696503955804,
+    "gates": {
+     "all_finite": true,
+     "no_root_pose_write": true,
+     "contact_detected": true,
+     "steady_speed_tracks_command": true,
+     "stops_after_zero_command": true,
+     "speed_limit_respected": true
+    },
+    "committed_gate_result": "PASS"
+   },
+   {
+    "run_id": "P4V_050_r14",
+    "commanded_m_s": 0.5,
+    "measured_m_s": 0.5300743699072,
+    "peak_m_s": 0.5326366424400142,
+    "since_zero_max_m_s": 0.00011444100000979063,
+    "since_zero_first_half_max_m_s": 0.5038118362800059,
+    "stop_settle_time_s": 0.09166666666666666,
+    "committed_since_zero_max_m_s": 0.000114441,
+    "steady_relative_error": 0.060148739814400054,
+    "prereg_tolerance": 0.15,
+    "prereg_pass": true,
+    "stop_tolerance_m_s": 0.02,
+    "stop_pass": true,
+    "stop_pass_literal_prereg_window": false,
+    "limit_rhs_m_s": 0.5700000000000001,
+    "limit_pass": true,
+    "odom_error_rel": -0.014282497788279502,
+    "odom_error_mm": -18.92696503955804,
+    "gates": {
+     "all_finite": true,
+     "no_root_pose_write": true,
+     "contact_detected": true,
+     "steady_speed_tracks_command": true,
+     "stops_after_zero_command": true,
+     "speed_limit_respected": true
+    },
+    "committed_gate_result": "PASS"
+   },
+   {
+    "run_id": "P4V_clamp_r13",
+    "commanded_m_s": 0.5,
+    "measured_m_s": 0.5300743699072,
+    "peak_m_s": 0.5326366424400142,
+    "since_zero_max_m_s": 0.00011444100000979063,
+    "since_zero_first_half_max_m_s": 0.5038118362800059,
+    "stop_settle_time_s": 0.09166666666666666,
+    "committed_since_zero_max_m_s": 0.000114441,
+    "steady_relative_error": 0.060148739814400054,
+    "prereg_tolerance": 0.15,
+    "prereg_pass": true,
+    "stop_tolerance_m_s": 0.02,
+    "stop_pass": true,
+    "stop_pass_literal_prereg_window": false,
+    "limit_rhs_m_s": 0.5700000000000001,
+    "limit_pass": true,
+    "odom_error_rel": -0.014282497788279502,
+    "odom_error_mm": -18.92696503955804,
+    "gates": {
+     "all_finite": true,
+     "no_root_pose_write": true,
+     "contact_detected": true,
+     "steady_speed_tracks_command": true,
+     "stops_after_zero_command": true,
+     "speed_limit_respected": true
+    },
+    "committed_gate_result": "PASS"
+   },
+   {
+    "run_id": "P4V_clamp_r14",
+    "commanded_m_s": 0.5,
+    "measured_m_s": 0.5300743699072,
+    "peak_m_s": 0.5326366424400142,
+    "since_zero_max_m_s": 0.00011444100000979063,
+    "since_zero_first_half_max_m_s": 0.5038118362800059,
+    "stop_settle_time_s": 0.09166666666666666,
+    "committed_since_zero_max_m_s": 0.000114441,
+    "steady_relative_error": 0.060148739814400054,
+    "prereg_tolerance": 0.15,
+    "prereg_pass": true,
+    "stop_tolerance_m_s": 0.02,
+    "stop_pass": true,
+    "stop_pass_literal_prereg_window": false,
+    "limit_rhs_m_s": 0.5700000000000001,
+    "limit_pass": true,
+    "odom_error_rel": -0.014282497788279502,
+    "odom_error_mm": -18.92696503955804,
+    "gates": {
+     "all_finite": true,
+     "no_root_pose_write": true,
+     "contact_detected": true,
+     "steady_speed_tracks_command": true,
+     "stops_after_zero_command": true,
+     "speed_limit_respected": true
+    },
+    "committed_gate_result": "PASS"
+   }
+  ],
+  "prereg_tolerance": 0.2,
+  "stop_window_convention": {
+   "prereg": "PHASE_P4_09_PREREG.md: max speed within 0.5 s after the command reaches zero (steps 481..541)",
+   "implementation": "p4_proxy_wheel_drive.py: max over the LAST 0.5 s of the run (steps 541..600)",
+   "note": "the two windows overlap in conclusion: the ONLY sample above 0.02 m/s inside the literal window is the single step-481 boundary sample, which still averages the pre-zero motion; the chassis is below 0.02 m/s after the settle times listed per run in the table",
+   "boundary_samples_m_s": {
+    "P4V_030_r13": 0.2922821044800106,
+    "P4V_030_r14": 0.2922821044800106,
+    "P4V_050_r13": 0.5038118362800059,
+    "P4V_050_r14": 0.5038118362800059,
+    "P4V_clamp_r13": 0.5038118362800059,
+    "P4V_clamp_r14": 0.5038118362800059
+   },
+   "settle_time_s": {
+    "P4V_030_r13": 0.058333333333333334,
+    "P4V_030_r14": 0.058333333333333334,
+    "P4V_050_r13": 0.09166666666666666,
+    "P4V_050_r14": 0.09166666666666666,
+    "P4V_clamp_r13": 0.09166666666666666,
+    "P4V_clamp_r14": 0.09166666666666666
+   }
+  },
+  "p4_real_gaps": [
+   {
+    "gap": "loaded rolling radius",
+    "why": "0.103 m is the unloaded P1 v2 torus equator; the loaded radius of the real wheel is not measured",
+    "status": "UNKNOWN"
+   },
+   {
+    "gap": "contact tread",
+    "why": "the proxy uses a CYLINDER r=0.103, not the crowned toroidal tread, so the contact patch and pressure distribution are wrong",
+    "status": "PROXY"
+   },
+   {
+    "gap": "mass and inertia",
+    "why": "16 kg chassis + 1 kg/wheel are TEST_PROXY values; no vendor mass data (P4-02 only proves the proxy is self-consistent)",
+    "status": "PROXY"
+   },
+   {
+    "gap": "friction levels",
+    "why": "0.2 / 0.8 / 1.4 are arbitrary gear values on the ground material, not measured tyre-road coefficients",
+    "status": "PROXY"
+   },
+   {
+    "gap": "motor model",
+    "why": "joint velocity targets, no torque/current limit, no back-EMF, no battery sag, no thermal derating",
+    "status": "MISSING"
+   },
+   {
+    "gap": "encoder and latency",
+    "why": "joint state is read at the physics rate with no encoder quantisation, noise or communication delay",
+    "status": "MISSING"
+   },
+   {
+    "gap": "closed-loop feedback tap",
+    "why": "the chassis speed fed back to the trim is identically zero (see D1); a real loop needs a live measurement",
+    "status": "DEFECT"
+   },
+   {
+    "gap": "slope / side-slip / one wheel airborne",
+    "why": "only flat straight-line and turn cases were run",
+    "status": "MISSING"
+   },
+   {
+    "gap": "emergency stop",
+    "why": "the stop test only shows that a zero command decays; there is no E-stop hardware or safety relay",
+    "status": "MISSING"
+   },
+   {
+    "gap": "wheel_target_rad_s logging",
+    "why": "the closed-loop runs log a stale 0 target, so the applied wheel command is not in raw_poses.jsonl",
+    "status": "DEFECT"
+   }
+  ]
+ },
+ "problems": [],
+ "verdict": "CONSISTENT"
+}
