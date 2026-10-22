@@ -1,0 +1,555 @@
+{
+  "schema": "badmin.r10f.backend_compare",
+  "schema_version": 1,
+  "layer": "TRAJECTORY_REACHABLE",
+  "note": "kinematics only: no contact, no ball, no hit rate. The proxy answers for a 6-DOF racket-face point that does not exist on the real asset; the verified backend answers for the authored gripper_end frame of link6. The two are compared, never merged.",
+  "scenarios": [
+    {
+      "name": "proxy_convergent",
+      "intercept_point_m": [
+        0.45,
+        0.0,
+        1.0
+      ],
+      "approach_direction": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "time_to_target_s": 0.3,
+      "position_sigma_m": null,
+      "note": "the point the P7-09 proxy tests converge to"
+    },
+    {
+      "name": "base_column_proxy",
+      "intercept_point_m": [
+        0.2,
+        0.0,
+        1.0
+      ],
+      "approach_direction": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "time_to_target_s": 0.3,
+      "position_sigma_m": null,
+      "note": "inside the self-collision proxy cylinder"
+    },
+    {
+      "name": "outside_box",
+      "intercept_point_m": [
+        2.4,
+        0.0,
+        1.0
+      ],
+      "approach_direction": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "time_to_target_s": 0.3,
+      "position_sigma_m": null,
+      "note": "outside the workspace box"
+    },
+    {
+      "name": "low_confidence",
+      "intercept_point_m": [
+        0.45,
+        0.0,
+        1.0
+      ],
+      "approach_direction": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "time_to_target_s": 0.3,
+      "position_sigma_m": 0.2,
+      "note": "sigma above the 0.05 m threshold"
+    }
+  ],
+  "backends": {
+    "proxy_dh": {
+      "backend": "proxy_dh",
+      "status": "OK",
+      "provenance": {
+        "backend": "proxy_dh",
+        "source_class": "PROXY_DH_ENGINEERING_V0_1",
+        "frame_name": "racket_face_proxy",
+        "target_kind": "RACKET_FACE_PROXY",
+        "dof": 6,
+        "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+        "detail": {
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6"
+          ],
+          "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6"
+        }
+      },
+      "limits": {
+        "dof": 6,
+        "joint_names": [
+          "joint1",
+          "joint2",
+          "joint3",
+          "joint4",
+          "joint5",
+          "joint6"
+        ],
+        "joint_margin_rad": 0.05,
+        "workspace_min_m": [
+          0.1,
+          -0.85,
+          0.05
+        ],
+        "workspace_max_m": [
+          1.25,
+          0.85,
+          1.9
+        ]
+      },
+      "decisions": {
+        "REACHABLE": 0,
+        "NOT_REACHABLE": 4,
+        "UNKNOWN": 0
+      },
+      "verdicts": [
+        {
+          "scenario": "proxy_convergent",
+          "backend": "proxy_dh",
+          "backend_ids": [
+            "proxy_dh"
+          ],
+          "provenance": {
+            "backend": "proxy_dh",
+            "source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "frame_name": "racket_face_proxy",
+            "target_kind": "RACKET_FACE_PROXY",
+            "dof": 6,
+            "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+            "detail": {
+              "joint_names": [
+                "joint1",
+                "joint2",
+                "joint3",
+                "joint4",
+                "joint5",
+                "joint6"
+              ],
+              "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6"
+            }
+          },
+          "seed_rad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "decision": "NOT_REACHABLE",
+          "reason": "TIME_TO_TARGET",
+          "detail": "required slew 0.6815 s exceeds the 0.2800 s available (t=0.3000 s, margin 0.0200 s) at the P5-05 velocity cap; lower bound only, base travel excluded",
+          "frame_name": "racket_face_proxy",
+          "target_kind": "RACKET_FACE_PROXY",
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "joint_margin_rad": 0.3683706531480829,
+          "required_slew_s": 0.6814535892896303
+        },
+        {
+          "scenario": "base_column_proxy",
+          "backend": "proxy_dh",
+          "backend_ids": [
+            "proxy_dh"
+          ],
+          "provenance": {
+            "backend": "proxy_dh",
+            "source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "frame_name": "racket_face_proxy",
+            "target_kind": "RACKET_FACE_PROXY",
+            "dof": 6,
+            "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+            "detail": {
+              "joint_names": [
+                "joint1",
+                "joint2",
+                "joint3",
+                "joint4",
+                "joint5",
+                "joint6"
+              ],
+              "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6"
+            }
+          },
+          "seed_rad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "decision": "NOT_REACHABLE",
+          "reason": "SELF_COLLISION_PROXY",
+          "detail": "face centre is 0.200 m from the base column axis, inside the 0.240 m proxy (racket would sit inside the base); PROXY, not a collision check",
+          "frame_name": "racket_face_proxy",
+          "target_kind": "RACKET_FACE_PROXY",
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "joint_margin_rad": null,
+          "required_slew_s": null
+        },
+        {
+          "scenario": "outside_box",
+          "backend": "proxy_dh",
+          "backend_ids": [
+            "proxy_dh"
+          ],
+          "provenance": {
+            "backend": "proxy_dh",
+            "source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "frame_name": "racket_face_proxy",
+            "target_kind": "RACKET_FACE_PROXY",
+            "dof": 6,
+            "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+            "detail": {
+              "joint_names": [
+                "joint1",
+                "joint2",
+                "joint3",
+                "joint4",
+                "joint5",
+                "joint6"
+              ],
+              "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6"
+            }
+          },
+          "seed_rad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "decision": "NOT_REACHABLE",
+          "reason": "WORKSPACE_BOUND",
+          "detail": "face centre (2.4, 0.0, 1.0) is outside the workspace box on ['x']",
+          "frame_name": "racket_face_proxy",
+          "target_kind": "RACKET_FACE_PROXY",
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "joint_margin_rad": null,
+          "required_slew_s": null
+        },
+        {
+          "scenario": "low_confidence",
+          "backend": "proxy_dh",
+          "backend_ids": [
+            "proxy_dh"
+          ],
+          "provenance": {
+            "backend": "proxy_dh",
+            "source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "frame_name": "racket_face_proxy",
+            "target_kind": "RACKET_FACE_PROXY",
+            "dof": 6,
+            "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+            "detail": {
+              "joint_names": [
+                "joint1",
+                "joint2",
+                "joint3",
+                "joint4",
+                "joint5",
+                "joint6"
+              ],
+              "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6"
+            }
+          },
+          "seed_rad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "decision": "NOT_REACHABLE",
+          "reason": "COVARIANCE_ABOVE_THRESHOLD",
+          "detail": "position sigma 0.200 m exceeds the 0.050 m decision threshold: the intercept is not localised well enough to commit",
+          "frame_name": "racket_face_proxy",
+          "target_kind": "RACKET_FACE_PROXY",
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "joint_margin_rad": null,
+          "required_slew_s": null
+        }
+      ]
+    },
+    "verified_p6_fk": {
+      "backend": "verified_p6_fk",
+      "status": "OK",
+      "provenance": {
+        "backend": "verified_p6_fk",
+        "source_class": "VERIFIED_ASSET_KINEMATICS",
+        "frame_name": "gripper_end",
+        "target_kind": "ARM_END_FRAME",
+        "dof": 8,
+        "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+        "detail": {
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
+            "gripper_joint1",
+            "gripper_joint2"
+          ],
+          "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+          "fk_module_path": "E:\\具身智能\\badmin_wt_p6d\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+          "fk_module_sha256": "6c087c6d0f15280685c709d65eb6f3a022c5d116a1f7c3f5a4797ed09592e05f",
+          "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only"
+        }
+      },
+      "limits": {
+        "dof": 8,
+        "joint_names": [
+          "joint1",
+          "joint2",
+          "joint3",
+          "joint4",
+          "joint5",
+          "joint6",
+          "gripper_joint1",
+          "gripper_joint2"
+        ],
+        "joint_margin_rad": 0.01,
+        "workspace_min_m": [
+          0.1,
+          -0.85,
+          0.05
+        ],
+        "workspace_max_m": [
+          1.25,
+          0.85,
+          1.9
+        ]
+      },
+      "decisions": {
+        "REACHABLE": 0,
+        "NOT_REACHABLE": 4,
+        "UNKNOWN": 0
+      },
+      "verdicts": [
+        {
+          "scenario": "proxy_convergent",
+          "backend": "verified_p6_fk",
+          "backend_ids": [
+            "verified_p6_fk"
+          ],
+          "provenance": {
+            "backend": "verified_p6_fk",
+            "source_class": "VERIFIED_ASSET_KINEMATICS",
+            "frame_name": "gripper_end",
+            "target_kind": "ARM_END_FRAME",
+            "dof": 8,
+            "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+            "detail": {
+              "joint_names": [
+                "joint1",
+                "joint2",
+                "joint3",
+                "joint4",
+                "joint5",
+                "joint6",
+                "gripper_joint1",
+                "gripper_joint2"
+              ],
+              "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+              "fk_module_path": "E:\\具身智能\\badmin_wt_p6d\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+              "fk_module_sha256": "6c087c6d0f15280685c709d65eb6f3a022c5d116a1f7c3f5a4797ed09592e05f",
+              "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only"
+            }
+          },
+          "seed_rad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "decision": "NOT_REACHABLE",
+          "reason": "IK_NOT_CONVERGED",
+          "detail": "IK did not converge: residual 0.3856 m / 0.0000 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+          "frame_name": "gripper_end",
+          "target_kind": "ARM_END_FRAME",
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "joint_margin_rad": null,
+          "required_slew_s": null
+        },
+        {
+          "scenario": "base_column_proxy",
+          "backend": "verified_p6_fk",
+          "backend_ids": [
+            "verified_p6_fk"
+          ],
+          "provenance": {
+            "backend": "verified_p6_fk",
+            "source_class": "VERIFIED_ASSET_KINEMATICS",
+            "frame_name": "gripper_end",
+            "target_kind": "ARM_END_FRAME",
+            "dof": 8,
+            "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+            "detail": {
+              "joint_names": [
+                "joint1",
+                "joint2",
+                "joint3",
+                "joint4",
+                "joint5",
+                "joint6",
+                "gripper_joint1",
+                "gripper_joint2"
+              ],
+              "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+              "fk_module_path": "E:\\具身智能\\badmin_wt_p6d\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+              "fk_module_sha256": "6c087c6d0f15280685c709d65eb6f3a022c5d116a1f7c3f5a4797ed09592e05f",
+              "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only"
+            }
+          },
+          "seed_rad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "decision": "NOT_REACHABLE",
+          "reason": "SELF_COLLISION_PROXY",
+          "detail": "face centre is 0.200 m from the base column axis, inside the 0.240 m proxy (racket would sit inside the base); PROXY, not a collision check",
+          "frame_name": "gripper_end",
+          "target_kind": "ARM_END_FRAME",
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "joint_margin_rad": null,
+          "required_slew_s": null
+        },
+        {
+          "scenario": "outside_box",
+          "backend": "verified_p6_fk",
+          "backend_ids": [
+            "verified_p6_fk"
+          ],
+          "provenance": {
+            "backend": "verified_p6_fk",
+            "source_class": "VERIFIED_ASSET_KINEMATICS",
+            "frame_name": "gripper_end",
+            "target_kind": "ARM_END_FRAME",
+            "dof": 8,
+            "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+            "detail": {
+              "joint_names": [
+                "joint1",
+                "joint2",
+                "joint3",
+                "joint4",
+                "joint5",
+                "joint6",
+                "gripper_joint1",
+                "gripper_joint2"
+              ],
+              "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+              "fk_module_path": "E:\\具身智能\\badmin_wt_p6d\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+              "fk_module_sha256": "6c087c6d0f15280685c709d65eb6f3a022c5d116a1f7c3f5a4797ed09592e05f",
+              "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only"
+            }
+          },
+          "seed_rad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "decision": "NOT_REACHABLE",
+          "reason": "WORKSPACE_BOUND",
+          "detail": "face centre (2.4, 0.0, 1.0) is outside the workspace box on ['x']",
+          "frame_name": "gripper_end",
+          "target_kind": "ARM_END_FRAME",
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "joint_margin_rad": null,
+          "required_slew_s": null
+        },
+        {
+          "scenario": "low_confidence",
+          "backend": "verified_p6_fk",
+          "backend_ids": [
+            "verified_p6_fk"
+          ],
+          "provenance": {
+            "backend": "verified_p6_fk",
+            "source_class": "VERIFIED_ASSET_KINEMATICS",
+            "frame_name": "gripper_end",
+            "target_kind": "ARM_END_FRAME",
+            "dof": 8,
+            "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+            "detail": {
+              "joint_names": [
+                "joint1",
+                "joint2",
+                "joint3",
+                "joint4",
+                "joint5",
+                "joint6",
+                "gripper_joint1",
+                "gripper_joint2"
+              ],
+              "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+              "fk_module_path": "E:\\具身智能\\badmin_wt_p6d\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+              "fk_module_sha256": "6c087c6d0f15280685c709d65eb6f3a022c5d116a1f7c3f5a4797ed09592e05f",
+              "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only"
+            }
+          },
+          "seed_rad": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "decision": "NOT_REACHABLE",
+          "reason": "COVARIANCE_ABOVE_THRESHOLD",
+          "detail": "position sigma 0.200 m exceeds the 0.050 m decision threshold: the intercept is not localised well enough to commit",
+          "frame_name": "gripper_end",
+          "target_kind": "ARM_END_FRAME",
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "joint_margin_rad": null,
+          "required_slew_s": null
+        }
+      ]
+    }
+  },
+  "p6_root": "E:\\具身智能\\badmin_wt_p6d",
+  "status_by_backend": {
+    "proxy_dh": "OK",
+    "verified_p6_fk": "OK"
+  },
+  "markdown_table": "| backend | frame | scenario | decision | reason | margin rad |\n|---|---|---|---|---|---|\n| proxy_dh | racket_face_proxy | proxy_convergent | NOT_REACHABLE | TIME_TO_TARGET | 0.3684 |\n| proxy_dh | racket_face_proxy | base_column_proxy | NOT_REACHABLE | SELF_COLLISION_PROXY | null |\n| proxy_dh | racket_face_proxy | outside_box | NOT_REACHABLE | WORKSPACE_BOUND | null |\n| proxy_dh | racket_face_proxy | low_confidence | NOT_REACHABLE | COVARIANCE_ABOVE_THRESHOLD | null |\n| verified_p6_fk | gripper_end | proxy_convergent | NOT_REACHABLE | IK_NOT_CONVERGED | null |\n| verified_p6_fk | gripper_end | base_column_proxy | NOT_REACHABLE | SELF_COLLISION_PROXY | null |\n| verified_p6_fk | gripper_end | outside_box | NOT_REACHABLE | WORKSPACE_BOUND | null |\n| verified_p6_fk | gripper_end | low_confidence | NOT_REACHABLE | COVARIANCE_ABOVE_THRESHOLD | null |"
+}

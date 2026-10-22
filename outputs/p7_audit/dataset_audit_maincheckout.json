@@ -1,0 +1,389 @@
+{
+  "caveats": [
+    "A missing file is counted as DANGLING and never raised; a dangling row cannot be judged for content.",
+    "Grouping is derived from the RECORDED PATH (session directory + filename clip prefix). It is a heuristic, not dataset metadata: two recordings sharing a directory look like one session.",
+    "No detector accuracy is measured or implied by this file."
+  ],
+  "checks_not_performed": [
+    "image-content duplicates (needs image bytes: scope is manifest-only)",
+    "label-content errors (bbox out of range, wrong class: needs label bytes)",
+    "native-pixel object sizes (the recorded size column has no in-repo definition)",
+    "test-split leakage with a test split (no committed manifest has a test split)"
+  ],
+  "evidence_class": "COMMITTED_MANIFESTS",
+  "leakage_summary": {
+    "clip_crossings": [],
+    "known_crossings_absent_now": [],
+    "known_session_crossings": {
+      "_eth_data/eth_shuttle_detection/old/iphone_20251015": {
+        "status": "OPEN_LEAK_UNRESOLVED",
+        "why": "One iPhone recording session (old/iphone_20251015) has frames in both train and val. Per-clip identities do not cross, so this is session level, not frame-duplicate level, but the scene/lighting of that recording is shared by both sides. Resolving it requires re-splitting the committed v1 manifest (a dataset change, out of scope for a CPU-only audit slice) or excluding the session; both must be decided by the dataset owner."
+      }
+    },
+    "session_crossings": [
+      "_eth_data/eth_shuttle_detection/old/iphone_20251015"
+    ],
+    "unexplained_clip_crossings": [],
+    "unexplained_session_crossings": []
+  },
+  "manifests": [
+    {
+      "cross_split_path_count": 0,
+      "cross_split_paths": [],
+      "dangling": {
+        "label_dangling": 0,
+        "present": 30321,
+        "rows": 0,
+        "sample": []
+      },
+      "frame_identities": 30321,
+      "group_leakage": {
+        "clip": [],
+        "declared_group": [
+          {
+            "group": "declared:backgrounds",
+            "rows": 31,
+            "splits": {
+              "train": 25,
+              "val": 6
+            }
+          },
+          {
+            "group": "declared:iphone_20251015",
+            "rows": 2368,
+            "splits": {
+              "train": 2133,
+              "val": 235
+            }
+          },
+          {
+            "group": "declared:synthetic",
+            "rows": 817,
+            "splits": {
+              "train": 673,
+              "val": 144
+            }
+          }
+        ],
+        "session": [
+          {
+            "group": "session:_eth_data/eth_shuttle_detection/old/iphone_20251015",
+            "rows": 2368,
+            "splits": {
+              "train": 2133,
+              "val": 235
+            }
+          }
+        ]
+      },
+      "groups": {
+        "clip": {
+          "crossings": [],
+          "n_groups": 6674
+        },
+        "declared_group": {
+          "crossings": [
+            "declared:backgrounds",
+            "declared:iphone_20251015",
+            "declared:synthetic"
+          ],
+          "n_groups": 18
+        },
+        "session": {
+          "crossings": [
+            "session:_eth_data/eth_shuttle_detection/old/iphone_20251015"
+          ],
+          "n_groups": 42
+        }
+      },
+      "kind": "v1_dataset",
+      "manifest": "outputs\\shuttle_capability\\v1_dataset\\v1_dataset_manifest.csv",
+      "manifest_sha256": "11d850263b370fc67b78b1264609a5a3d2f79d9f235f9d943bfb322de91ed539",
+      "missing_columns": [],
+      "negative_bucket_disagreements": 0,
+      "negatives": {
+        "train": 6932,
+        "val": 1153
+      },
+      "negatives_total": 8085,
+      "overlaps": {
+        "same_basename_cross_split": [],
+        "same_basename_repeated_rows": 0,
+        "same_clip_frame_index_cross_split": [],
+        "same_path_cross_split": []
+      },
+      "positives": {
+        "train": 18976,
+        "val": 3260
+      },
+      "rows": 30321,
+      "scope": {
+        "file_existence_checked": true,
+        "image_content_checked": false,
+        "native_px_sizes": false
+      },
+      "size_distribution": {
+        "10-20px": 7926,
+        "4-6px": 1738,
+        "6-10px": 11275,
+        "<4px": 386,
+        ">20px": 911,
+        "unknown": 8085
+      },
+      "size_distribution_by_split": {
+        "train": {
+          "10-20px": 6209,
+          "4-6px": 1667,
+          "6-10px": 10020,
+          "<4px": 362,
+          ">20px": 718,
+          "unknown": 0
+        },
+        "val": {
+          "10-20px": 1717,
+          "4-6px": 71,
+          "6-10px": 1255,
+          "<4px": 24,
+          ">20px": 193,
+          "unknown": 0
+        }
+      },
+      "size_stats": {
+        "basis": "eq640_min",
+        "basis_definition_in_repo": "UNDOCUMENTED (no code or doc defines the column)",
+        "max": 538.287,
+        "min": 1.633,
+        "n": 22236,
+        "p50": 9.154,
+        "p95": 18.5733,
+        "unknown": 8085
+      },
+      "source_by_split": {
+        "bg_negative": {
+          "train": 25,
+          "val": 6
+        },
+        "coco_bg": {
+          "train": 5500,
+          "val": 1000
+        },
+        "eth_iphone": {
+          "train": 2133,
+          "val": 235
+        },
+        "eth_main": {
+          "train": 17481,
+          "val": 3028
+        },
+        "hard_negative": {
+          "train": 96
+        },
+        "synthetic": {
+          "train": 673,
+          "val": 144
+        }
+      },
+      "sources": {
+        "bg_negative": 31,
+        "coco_bg": 6500,
+        "eth_iphone": 2368,
+        "eth_main": 20509,
+        "hard_negative": 96,
+        "synthetic": 817
+      },
+      "splits": {
+        "train": 25908,
+        "val": 4413
+      },
+      "test_split_present": false
+    },
+    {
+      "cross_split_path_count": 0,
+      "cross_split_paths": [],
+      "dangling": {
+        "label_dangling": 0,
+        "present": 400,
+        "rows": 0,
+        "sample": []
+      },
+      "frame_identities": 400,
+      "group_leakage": {
+        "clip": [],
+        "declared_group": [],
+        "session": []
+      },
+      "groups": {
+        "clip": {
+          "crossings": [],
+          "n_groups": 1
+        },
+        "declared_group": {
+          "crossings": [],
+          "n_groups": 25
+        },
+        "session": {
+          "crossings": [],
+          "n_groups": 1
+        }
+      },
+      "kind": "synthetic_render",
+      "manifest": "outputs\\shuttle_capability\\train_data\\manifest_train.csv",
+      "manifest_sha256": "982f01fb442e01983b1b2ed82a2c5e48e3c37c84fc05f2d9117646d90d680788",
+      "missing_columns": [
+        "image_root"
+      ],
+      "negative_bucket_disagreements": 0,
+      "negatives": {},
+      "negatives_total": 0,
+      "overlaps": {
+        "same_basename_cross_split": [],
+        "same_basename_repeated_rows": 0,
+        "same_clip_frame_index_cross_split": [],
+        "same_path_cross_split": []
+      },
+      "positives": {},
+      "rows": 400,
+      "scope": {
+        "file_existence_checked": true,
+        "image_content_checked": false,
+        "native_px_sizes": false
+      },
+      "size_distribution": {
+        "10-20px": 134,
+        "4-6px": 69,
+        "6-10px": 169,
+        "<4px": 15,
+        ">20px": 13,
+        "unknown": 0
+      },
+      "size_distribution_by_split": {
+        "train": {
+          "10-20px": 134,
+          "4-6px": 69,
+          "6-10px": 169,
+          "<4px": 15,
+          ">20px": 13,
+          "unknown": 0
+        }
+      },
+      "size_stats": {
+        "basis": "equiv_size_px",
+        "basis_definition_in_repo": "UNDOCUMENTED (no code or doc defines the column)",
+        "max": 32.863,
+        "min": 2.449,
+        "n": 400,
+        "p50": 8.944,
+        "p95": 18.0165,
+        "unknown": 0
+      },
+      "source_by_split": {
+        "SYNTHETIC_HIFI_3D": {
+          "train": 400
+        }
+      },
+      "sources": {
+        "SYNTHETIC_HIFI_3D": 400
+      },
+      "splits": {
+        "train": 400
+      },
+      "test_split_present": false
+    },
+    {
+      "cross_split_path_count": 0,
+      "cross_split_paths": [],
+      "dangling": {
+        "label_dangling": 0,
+        "present": 120,
+        "rows": 0,
+        "sample": []
+      },
+      "frame_identities": 120,
+      "group_leakage": {
+        "clip": [],
+        "declared_group": [],
+        "session": []
+      },
+      "groups": {
+        "clip": {
+          "crossings": [],
+          "n_groups": 1
+        },
+        "declared_group": {
+          "crossings": [],
+          "n_groups": 6
+        },
+        "session": {
+          "crossings": [],
+          "n_groups": 1
+        }
+      },
+      "kind": "synthetic_render",
+      "manifest": "outputs\\shuttle_capability\\train_data\\manifest_val.csv",
+      "manifest_sha256": "9f88d8548af718b312cbff59114a9b03c0ce68df7ccb64bee0ed1c1ba67052b8",
+      "missing_columns": [
+        "image_root"
+      ],
+      "negative_bucket_disagreements": 0,
+      "negatives": {},
+      "negatives_total": 0,
+      "overlaps": {
+        "same_basename_cross_split": [],
+        "same_basename_repeated_rows": 0,
+        "same_clip_frame_index_cross_split": [],
+        "same_path_cross_split": []
+      },
+      "positives": {},
+      "rows": 120,
+      "scope": {
+        "file_existence_checked": true,
+        "image_content_checked": false,
+        "native_px_sizes": false
+      },
+      "size_distribution": {
+        "10-20px": 41,
+        "4-6px": 18,
+        "6-10px": 48,
+        "<4px": 5,
+        ">20px": 8,
+        "unknown": 0
+      },
+      "size_distribution_by_split": {
+        "val": {
+          "10-20px": 41,
+          "4-6px": 18,
+          "6-10px": 48,
+          "<4px": 5,
+          ">20px": 8,
+          "unknown": 0
+        }
+      },
+      "size_stats": {
+        "basis": "equiv_size_px",
+        "basis_definition_in_repo": "UNDOCUMENTED (no code or doc defines the column)",
+        "max": 31.401,
+        "min": 2.449,
+        "n": 120,
+        "p50": 9.1625,
+        "p95": 21.633,
+        "unknown": 0
+      },
+      "source_by_split": {
+        "SYNTHETIC_HIFI_3D": {
+          "val": 120
+        }
+      },
+      "sources": {
+        "SYNTHETIC_HIFI_3D": 120
+      },
+      "splits": {
+        "val": 120
+      },
+      "test_split_present": false
+    }
+  ],
+  "repo_root": "E:\\具身智能\\badmin_project",
+  "schema": "badmin.p7.dataset_audit",
+  "schema_version": 1,
+  "scope": "COMMITTED_MANIFEST_ONLY"
+}

@@ -1,0 +1,704 @@
+{
+  "approaches": [
+    [
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      -1.0
+    ]
+  ],
+  "disagreements": [
+    {
+      "case": "[0.36, 0.05, 0.45]|[1.0, 0.0, 0.0]",
+      "decisions": {
+        "proxy_dh": "IK_NOT_CONVERGED",
+        "verified_p6_fk": "IK_CONVERGED"
+      }
+    }
+  ],
+  "evidence_class": "SIMULATION-ONLY",
+  "ik_residual_position_m": {
+    "proxy_dh": null,
+    "verified_p6_fk": {
+      "count": 1,
+      "max": 2.1212688670831165e-06,
+      "min": 2.1212688670831165e-06,
+      "p50": 2.1212688670831165e-06
+    }
+  },
+  "note": "the two backends answer for DIFFERENT frames: the proxy answers for a proxy racket-face centre, the verified backend for the authored gripper_end frame. The racket face is UNKNOWN on the verified chain.",
+  "rows": [
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.1726 m / 0.5585 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        0.35,
+        0.05,
+        1.35
+      ]
+    },
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.7240 m / 0.0301 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        0.35,
+        0.05,
+        1.35
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.3198 m / 0.6968 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        0.35,
+        0.05,
+        1.35
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.8305 m / 0.9442 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        0.35,
+        0.05,
+        1.35
+      ]
+    },
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.0073 m / 0.0031 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        0.42,
+        0.05,
+        1.05
+      ]
+    },
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.4317 m / 0.0248 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        0.42,
+        0.05,
+        1.05
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.2595 m / 0.9093 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        0.42,
+        0.05,
+        1.05
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.5595 m / 0.9150 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        0.42,
+        0.05,
+        1.05
+      ]
+    },
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.4610 m / 0.8040 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        0.46,
+        0.06,
+        0.75
+      ]
+    },
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.1480 m / 0.0122 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        0.46,
+        0.06,
+        0.75
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.5254 m / 0.9816 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        0.46,
+        0.06,
+        0.75
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.3045 m / 0.8635 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        0.46,
+        0.06,
+        0.75
+      ]
+    },
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 1.1844 m / 0.9920 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        0.36,
+        0.05,
+        0.45
+      ]
+    },
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "REACHABLE",
+      "detail": "IK converged (residual 2.12e-06 m / 5.34e-08 rad) with joint margin 0.0250 rad and 0.1534 s of slew inside a 0.4480 s target",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": 2.1212688670831165e-06,
+      "ik_residual_rotation_rad": 5.343852276214542e-08,
+      "joint_margin": 0.025,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_CONVERGED",
+      "required_slew_s": 0.1534304612072264,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        0.36,
+        0.05,
+        0.45
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.7804 m / 0.1626 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        0.36,
+        0.05,
+        0.45
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.0616 m / 0.7969 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        0.36,
+        0.05,
+        0.45
+      ]
+    },
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.1435 m / 0.0821 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        0.7,
+        0.0,
+        0.9
+      ]
+    },
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.3709 m / 0.0208 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        0.7,
+        0.0,
+        0.9
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.1117 m / 0.4088 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        0.7,
+        0.0,
+        0.9
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.5658 m / 0.7824 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        0.7,
+        0.0,
+        0.9
+      ]
+    },
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.6552 m / 0.0354 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        1.1,
+        0.0,
+        1.2
+      ]
+    },
+    {
+      "approach": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.8388 m / 0.0259 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        1.1,
+        0.0,
+        1.2
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "proxy_dh",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.4777 m / 0.4765 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 6,
+      "frame_name": "racket_face_proxy",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 1.266,
+      "reach_bound_sampled_m": 1.245684,
+      "reach_bound_source": "P7-09 MAX_FACE_REACH_M = sum(|a|+|d|) + 0.50 m tool",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "PROXY_DH_ENGINEERING_V0_1",
+      "target_m": [
+        1.1,
+        0.0,
+        1.2
+      ]
+    },
+    {
+      "approach": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "backend": "verified_p6_fk",
+      "decision": "NOT_REACHABLE",
+      "detail": "IK did not converge: residual 0.9797 m / 0.8768 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+      "dof": 8,
+      "frame_name": "gripper_end",
+      "ik_residual_position_m": null,
+      "ik_residual_rotation_rad": null,
+      "joint_margin": null,
+      "reach_bound_analytic_m": 0.958716,
+      "reach_bound_sampled_m": 0.90708,
+      "reach_bound_source": "P6 q=0 chain: sum of consecutive arm_root->gripper_end link distances from the loaded module",
+      "reason": "IK_NOT_CONVERGED",
+      "required_slew_s": null,
+      "source_class": "VERIFIED_ASSET_KINEMATICS",
+      "target_m": [
+        1.1,
+        0.0,
+        1.2
+      ]
+    }
+  ],
+  "schema": "badmin.p7.backend_comparison",
+  "schema_version": 1,
+  "targets": [
+    [
+      0.35,
+      0.05,
+      1.35
+    ],
+    [
+      0.42,
+      0.05,
+      1.05
+    ],
+    [
+      0.46,
+      0.06,
+      0.75
+    ],
+    [
+      0.36,
+      0.05,
+      0.45
+    ],
+    [
+      0.7,
+      0.0,
+      0.9
+    ],
+    [
+      1.1,
+      0.0,
+      1.2
+    ]
+  ],
+  "time_to_target_s": 0.448,
+  "verdict_counts": {
+    "proxy_dh": {
+      "NOT_REACHABLE:IK_NOT_CONVERGED": 12
+    },
+    "verified_p6_fk": {
+      "NOT_REACHABLE:IK_NOT_CONVERGED": 11,
+      "REACHABLE:IK_CONVERGED": 1
+    }
+  }
+}
