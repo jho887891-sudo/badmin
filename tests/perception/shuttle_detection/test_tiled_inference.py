@@ -1,7 +1,7 @@
 """CPU tests for non-oracle image tiling, model adapter and global NMS."""
 import numpy as np
 import pytest
-from perception.shuttle_detection.tiled_inference import (
+from src.perception.shuttle_detection.tiled_inference import (
     generate_tiles, map_and_filter, predict_tiled, class_aware_nms, TileDetection,
 )
 
