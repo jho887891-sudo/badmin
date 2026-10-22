@@ -1,0 +1,32 @@
+{
+ "config": {
+  "gravity_m_s2": [
+   0.0,
+   0.0,
+   -9.81
+  ],
+  "impl": "box_child_xform",
+  "lift_m": 0.4,
+  "physics_dt_s": 0.008333333333333333,
+  "run_id": "B3_r01_kind_conflict",
+  "steps": 360
+ },
+ "config_sha256": "e7c924d9cd6353a12160bbe66e73aa9d0e2beb7f07097003bd6c49769c0ef81e",
+ "env_fingerprint": {
+  "isaac_sim_version": "4.5.0",
+  "platform": "Linux-5.15.0-x86_64",
+  "python_version": "3.11.9",
+  "sim_backend": "isaac_sim_4.5_kit"
+ },
+ "files": {
+  "child_stderr.txt": "97350562e0324f8ddeb6ed382070ca210a553836ba9ecc5aaf938e9d9ac34886",
+  "child_stdout.txt": "39692ecbba1a3eefeaf1e3affc4767987f24d21daec29f00aec0443218ee9c88",
+  "fault_record.json": "3b1f876322d1a2ef59e20dbba0905feef39e8dec5e20a682fc68737355a8111b",
+  "gate_runner_summary.json": "92e20bfd24bc0de6b4483b87340f9a8e3cf1c14b35bfd5cef868ef51c04c23bd",
+  "raw_poses.jsonl": "6c1ad659af523ac0c939c91f7477b789d42bab77d53a0e5afc346d1f1234818d",
+  "result.json": "3a62a77e303c70bf5c21a27b9cf682921b88eda9abe7984207236e9e4caa624c"
+ },
+ "kind": "NORMAL",
+ "run_id": "B3_r01_kind_conflict",
+ "schema_version": "1.0"
+}

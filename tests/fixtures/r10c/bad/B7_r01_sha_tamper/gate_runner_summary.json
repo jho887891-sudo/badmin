@@ -1,0 +1,11 @@
+{
+ "child_returncode": 0,
+ "child_stderr_log": "child_stderr.txt",
+ "child_stdout_log": "child_stdout.txt",
+ "command": "python scripts/simulation/fixture_gate.py --run-id B7_r01_sha_tamper",
+ "json_gate": "PASS",
+ "outer_exit": 0,
+ "run_id": "B7_r01_sha_tamper",
+ "timed_out": false,
+ "timeout_s": 1200.0
+}

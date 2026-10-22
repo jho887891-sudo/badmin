@@ -1,0 +1,14 @@
+{
+ "gate_result": "PASS",
+ "gates": {
+  "all_finite": true,
+  "contact_detected": true,
+  "settles": true
+ },
+ "metrics": {
+  "final_chassis_z_m": 0.333999693394,
+  "steps": 360,
+  "tail_speed_max_m_s": 0.000513395
+ },
+ "run_id": "B3_r01_kind_conflict"
+}

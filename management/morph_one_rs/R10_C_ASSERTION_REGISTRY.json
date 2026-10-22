@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0",
+  "batch": "R10 (2026-10-22)",
+  "workstream": "C · 证据契约和断言溯源",
+  "spec": "management/morph_one_rs/EXECUTION_BATCH_R10_32_20261022.md",
+  "spec_commit": "14f339f",
+  "checker": "tools/queue/assertion_registry.py",
+  "note": "ASSERTED 条目必须带 source{file,line,quote} + spec_clause + unit + evidence{run_id|trace_path} + 预注册阈值；UNKNOWN 条目不得携带任何数值。",
+  "entries": [
+    {
+      "id": "AS-R10C-C1-01",
+      "task": "P0-07",
+      "status": "ASSERTED",
+      "spec_clause": "C1",
+      "claim": "声明为故障 Run 且 fault_record.json 携带类型化 fault_code 时，缺 result.json 不判失效",
+      "source": {
+        "file": "tools/queue/evidence_contract.py",
+        "line": 128,
+        "quote": "def classify_run(run_dir: Path):"
+      },
+      "unit": "boolean (契约判定)",
+      "evidence": {
+        "trace_path": "tests/fixtures/r10c/good/F1_r01"
+      },
+      "threshold": {
+        "value": "violations == 0",
+        "unit": "violation count",
+        "pre_registered": true,
+        "registered_commit": "14f339f"
+      }
+    },
+    {
+      "id": "AS-R10C-C1-02",
+      "task": "P0-07",
+      "status": "ASSERTED",
+      "spec_clause": "C1",
+      "claim": "普通 Run 缺 result.json 且无 fault_record.json 时判 FAIL，缺文件不得自证故障",
+      "source": {
+        "file": "tools/queue/evidence_contract.py",
+        "line": 153,
+        "quote": "KIND_UNDECLARED_UNPROVEN"
+      },
+      "unit": "boolean (契约判定)",
+      "evidence": {
+        "trace_path": "tests/fixtures/r10c/bad/B1_r01_no_result"
+      },
+      "threshold": {
+        "value": "violations >= 1 且含 KIND_UNDECLARED_UNPROVEN",
+        "unit": "violation count",
+        "pre_registered": true,
+        "registered_commit": "14f339f"
+      }
+    },
+    {
+      "id": "AS-R10C-C2-01",
+      "task": "A05",
+      "status": "ASSERTED",
+      "spec_clause": "C2",
+      "claim": "manifest 的 config_sha256 必须等于由 config 块重算的哈希，否则 FAIL",
+      "source": {
+        "file": "tools/queue/evidence_contract.py",
+        "line": 238,
+        "quote": "def check_parameter_hash(run_dir: Path, manifest: dict, violations: list):"
+      },
+      "unit": "boolean (哈希一致)",
+      "evidence": {
+        "trace_path": "tests/fixtures/r10c/bad/B5_r01_param_hash"
+      },
+      "threshold": {
+        "value": "violations == 1 且含 PARAM_HASH_MISMATCH",
+        "unit": "violation count",
+        "pre_registered": true,
+        "registered_commit": "14f339f"
+      }
+    },
+    {
+      "id": "AS-R10C-C2-02",
+      "task": "A05",
+      "status": "ASSERTED",
+      "spec_clause": "C2",
+      "claim": "被索引文件的 SHA256 与实测值不符时 FAIL",
+      "source": {
+        "file": "tools/queue/evidence_contract.py",
+        "line": 307,
+        "quote": "def check_file_index(run_dir: Path, manifest: dict, violations: list):"
+      },
+      "unit": "boolean (摘要一致)",
+      "evidence": {
+        "trace_path": "tests/fixtures/r10c/bad/B7_r01_sha_tamper"
+      },
+      "threshold": {
+        "value": "violations == 1 且含 SHA256_MISMATCH",
+        "unit": "violation count",
+        "pre_registered": true,
+        "registered_commit": "14f339f"
+      }
+    },
+    {
+      "id": "AS-R10C-C2-03",
+      "task": "A05",
+      "status": "ASSERTED",
+      "spec_clause": "C2",
+      "claim": "同一 RUN_ID 出现在两个证据目录时 FAIL（唯一性）",
+      "source": {
+        "file": "tools/queue/evidence_contract.py",
+        "line": 375,
+        "quote": "RUN_ID_DUPLICATE"
+      },
+      "unit": "boolean (RUN_ID 唯一)",
+      "evidence": {
+        "trace_path": "tests/fixtures/r10c/bad_dup/a/DUP_r01"
+      },
+      "threshold": {
+        "value": "violations == 1 且含 RUN_ID_DUPLICATE",
+        "unit": "violation count",
+        "pre_registered": true,
+        "registered_commit": "14f339f"
+      }
+    },
+    {
+      "id": "AS-R10C-C2-04",
+      "task": "A05",
+      "status": "ASSERTED",
+      "spec_clause": "C2",
+      "claim": "原始子进程日志路径指向 Run 目录之外时 FAIL（真实 3a366e7 形状）",
+      "source": {
+        "file": "tools/queue/evidence_contract.py",
+        "line": 298,
+        "quote": "LOG_OUTSIDE_RUN"
+      },
+      "unit": "boolean (日志在目录内)",
+      "evidence": {
+        "trace_path": "tests/fixtures/r10c/bad/B11_r01_log_outside"
+      },
+      "threshold": {
+        "value": "violations == 1 且含 LOG_OUTSIDE_RUN",
+        "unit": "violation count",
+        "pre_registered": true,
+        "registered_commit": "14f339f"
+      }
+    },
+    {
+      "id": "AS-R10C-P5-07-01",
+      "task": "P5-07",
+      "status": "UNKNOWN",
+      "spec_clause": "B2",
+      "claim": "P5-07 多环境：尚无真实 Isaac 双 articulation 可独立寻址的原始 Run，真实 Run 数与 env 数保持 UNKNOWN",
+      "source": null,
+      "unit": null,
+      "evidence": null,
+      "threshold": null
+    },
+    {
+      "id": "AS-R10C-P5-08-01",
+      "task": "P5-08",
+      "status": "UNKNOWN",
+      "spec_clause": "B4",
+      "claim": "P5-08 种子/吞吐/峰值显存：本地无带环境指纹的真实 Isaac 指标，数值不填充",
+      "source": null,
+      "unit": null,
+      "evidence": null,
+      "threshold": null
+    },
+    {
+      "id": "AS-R10C-P5-07-02",
+      "task": "P5-07",
+      "status": "NOT_RUN",
+      "spec_clause": "B2",
+      "claim": "本工作线无 GPU 权限，未启动真实 Isaac/Kit：隔离为 CPU 证据契约工作",
+      "source": null,
+      "unit": null,
+      "evidence": null,
+      "threshold": null
+    }
+  ]
+}

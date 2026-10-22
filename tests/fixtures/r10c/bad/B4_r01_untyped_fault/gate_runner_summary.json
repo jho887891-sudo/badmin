@@ -1,0 +1,10 @@
+{
+ "child_returncode": 0,
+ "child_stderr_log": "child_stderr.txt",
+ "child_stdout_log": "child_stdout.txt",
+ "command": "python scripts/simulation/fixture_gate.py --inject fault",
+ "json_gate": null,
+ "outer_exit": 1,
+ "run_id": "B4_r01_untyped_fault",
+ "timed_out": false
+}

@@ -1,0 +1,28 @@
+{
+ "command": "python scripts/simulation/fixture_gate.py --run-id B6_r01_no_env",
+ "config": {
+  "gravity_m_s2": [
+   0.0,
+   0.0,
+   -9.81
+  ],
+  "impl": "box_child_xform",
+  "lift_m": 0.4,
+  "physics_dt_s": 0.008333333333333333,
+  "run_id": "B6_r01_no_env",
+  "steps": 360
+ },
+ "config_sha256": "087eb882a8bb7fceaa671af99b5d7d4b402472ae72d8c83fdabea9d335d65c8d",
+ "files": {
+  "child_stderr.txt": "97350562e0324f8ddeb6ed382070ca210a553836ba9ecc5aaf938e9d9ac34886",
+  "child_stdout.txt": "39692ecbba1a3eefeaf1e3affc4767987f24d21daec29f00aec0443218ee9c88",
+  "gate_runner_summary.json": "92edb062ea7837d26b7fe29f2f8eab3eb3bb9280b25faab4a6a4c8eb82d6c969",
+  "raw_poses.jsonl": "6c1ad659af523ac0c939c91f7477b789d42bab77d53a0e5afc346d1f1234818d",
+  "result.json": "056bd3b18a3b989a0abca257e9e9c46f4c38df0b59bf55eedf38590c5f5d9928"
+ },
+ "kind": "NORMAL",
+ "preregistration": "management/morph_one_rs/R10_C_EVIDENCE_CONTRACTS.md",
+ "run_id": "B6_r01_no_env",
+ "schema_version": "1.0",
+ "stage": "P2-WC"
+}

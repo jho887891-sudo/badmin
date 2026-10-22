@@ -1,0 +1,34 @@
+{
+ "command": "python scripts/simulation/fixture_gate.py --run-id DUP_r01",
+ "config": {
+  "gravity_m_s2": [
+   0.0,
+   0.0,
+   -9.81
+  ],
+  "impl": "box_child_xform",
+  "lift_m": 0.4,
+  "physics_dt_s": 0.008333333333333333,
+  "run_id": "DUP_r01",
+  "steps": 360
+ },
+ "config_sha256": "5bc3d7bd9ce5923cad9d8363e0cf68fa27fa9eab2a98ee468a4b26f37f5a939c",
+ "env_fingerprint": {
+  "isaac_sim_version": "4.5.0",
+  "platform": "Linux-5.15.0-x86_64",
+  "python_version": "3.11.9",
+  "sim_backend": "isaac_sim_4.5_kit"
+ },
+ "files": {
+  "child_stderr.txt": "97350562e0324f8ddeb6ed382070ca210a553836ba9ecc5aaf938e9d9ac34886",
+  "child_stdout.txt": "39692ecbba1a3eefeaf1e3affc4767987f24d21daec29f00aec0443218ee9c88",
+  "gate_runner_summary.json": "5153884a1805fb9645fda7f716ebd14efed21e4b555af7f3d860b949b1bae723",
+  "raw_poses.jsonl": "6c1ad659af523ac0c939c91f7477b789d42bab77d53a0e5afc346d1f1234818d",
+  "result.json": "0b6eb97d1fe1449ffa9863a46d1c7cf9558794116a99b1990790d2a292f8a4f9"
+ },
+ "kind": "NORMAL",
+ "preregistration": "management/morph_one_rs/R10_C_EVIDENCE_CONTRACTS.md",
+ "run_id": "DUP_r01",
+ "schema_version": "1.0",
+ "stage": "P2-WC"
+}
