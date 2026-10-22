@@ -1526,14 +1526,29 @@
    "dependencies": [
     "P2-10"
    ],
-   "status": "UNKNOWN",
-   "owner": null,
-   "head_sha": null,
-   "artifact": null,
-   "latest_run_id": null,
-   "next_action": null,
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "e330785",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/upstream/PROVENANCE.json",
+   "latest_run_id": "",
+   "next_action": "frame consistency auditor 99/99 checks PASS exit 0; 19 tests exit 0; 5 UNKNOWN edges still carry no number; mounted_chain.json keeps its historical 0.33242 m",
    "blocker": null,
-   "last_error": null
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "P6-05 slice landed in e330785",
+     "old": {
+      "status": "UNKNOWN",
+      "artifact": null,
+      "head_sha": null,
+      "owner": null
+     },
+     "new": {
+      "status": "DONE",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/upstream/PROVENANCE.json"
+     }
+    }
+   ]
   },
   {
    "task_id": "P6-06",
