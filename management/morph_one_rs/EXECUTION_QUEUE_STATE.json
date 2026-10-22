@@ -847,7 +847,7 @@
    "owner": "main",
    "head_sha": "780b487",
    "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/p3_summary.json",
-   "latest_run_id": null,
+   "latest_run_id": "",
    "next_action": "auto summary over 27 runs (11 v1.0 / 16 v1.1), 6 negative controls audited, vacuous controls rejected; v1.1 coverage complete (every profile >=2 independent PASS); 3 remaining gaps are legacy v1.0 single runs",
    "blocker": null,
    "last_error": null,
@@ -865,6 +865,9 @@
       "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/p3_summary.json",
       "head_sha": "780b487"
      }
+    },
+    {
+     "reason": "P3-08 is a summary task with no run directory; latest_run_id cleared"
     }
    ]
   },
