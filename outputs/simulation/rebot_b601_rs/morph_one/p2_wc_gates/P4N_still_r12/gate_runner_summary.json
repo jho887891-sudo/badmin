@@ -1,0 +1,61 @@
+{
+ "run_id": "P4N_still_r12",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p4_proxy_wheel_drive.py --run-id P4N_still_r12 --out-dir /home/dgut/runs/g/P4N_still_r12 --profile hold_still --read-contacts --gravity-z -9.81",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1500.0,
+ "quarantined_stale_result": null,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "wheel_targets_rad_s_per_wheel": [
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "tail_wheel_omega_rad_s": {
+   "wheel1": -0.002624373,
+   "wheel2": -0.005393286,
+   "wheel3": -0.001871316,
+   "wheel4": -0.005993324
+  },
+  "wheel_speed_relative_error": {
+   "wheel1": null,
+   "wheel2": null,
+   "wheel3": null,
+   "wheel4": null
+  },
+  "chassis_displacement_m": [
+   7.4e-08,
+   0.000301458,
+   -0.018616408
+  ],
+  "tail_chassis_speed_m_s": 0.000164646,
+  "yaw_change_rad": 1.02e-07,
+  "peak_contact_force_n": 430.733123779,
+  "distance_per_wheel_revolution_m_deprecated": "UNKNOWN (old field was wrong)",
+  "velocity_control": null,
+  "wheel_delta_theta_rad": {
+   "wheel1": -0.002921121,
+   "wheel2": -0.002877406,
+   "wheel3": -0.002878601,
+   "wheel4": -0.002877504
+  },
+  "measured_rolling_radius_m": {
+   "wheel1": null,
+   "wheel2": null,
+   "wheel3": null,
+   "wheel4": null
+  },
+  "measured_rolling_radius_rel_error": [],
+  "measured_rolling_radius_basis": "|delta chassis Y| / |delta MEASURED joint angle|; includes any slip, so it is an effective radius, not the tyre radius",
+  "steps": 240
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 34.202,
+ "child_stdout_log": "/home/dgut/runs/g/P4N_still_r12/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P4N_still_r12/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}

@@ -1,0 +1,14 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792648731.730520 3785760 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792648731.730598 3785760 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+[ISAACLAB] AppLauncher initialization complete
+/home/dgut/runs/g/scripts/simulation/p5_multienv_isaac.py:170: DeprecationWarning: The function 'set_joint_position_target' will be deprecated in a future release. Please use 'set_joint_position_target_index' instead.
+  robot.set_joint_position_target(target)
+/home/dgut/runs/g/scripts/simulation/p5_multienv_isaac.py:178: DeprecationWarning: Reading the root state directly is deprecated since IsaacLab 3.0 and will be removed in a future version. Please use the default_root_pose and default_root_vel properties instead.
+  root_state = robot.data.default_root_state.clone()
+/home/dgut/runs/g/scripts/simulation/p5_multienv_isaac.py:181: DeprecationWarning: The function 'write_root_pose_to_sim' will be deprecated in a future release. Please use 'write_root_pose_to_sim_index' instead.
+  robot.write_root_pose_to_sim(root_state[:, :7])
+/home/dgut/runs/g/scripts/simulation/p5_multienv_isaac.py:182: DeprecationWarning: The function 'write_root_velocity_to_sim' will be deprecated in a future release. Please use 'write_root_velocity_to_sim_index' instead.
+  robot.write_root_velocity_to_sim(root_state[:, 7:])
+/home/dgut/runs/g/scripts/simulation/p5_multienv_isaac.py:185: DeprecationWarning: The function 'write_joint_state_to_sim' will be deprecated in a future release. Please use 'write_joint_position_to_sim_index' and 'write_joint_velocity_to_sim_index' instead.
+  robot.write_joint_state_to_sim(joint_pos, joint_vel)

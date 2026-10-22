@@ -1,0 +1,44 @@
+{
+ "run_id": "P5N2_cross_r07",
+ "profile": "cross",
+ "dof": {
+  "0": 8,
+  "1": 8
+ },
+ "joint_names_match": true,
+ "joint_names": [
+  "joint4",
+  "joint3",
+  "joint5",
+  "joint2",
+  "joint6",
+  "joint1",
+  "gripper_joint1",
+  "gripper_joint2"
+ ],
+ "env_offset_y_m": [
+  0.0,
+  1.0
+ ],
+ "steps": 240,
+ "physics_dt_s": 0.008333333333333333,
+ "gates": {
+  "two_articulations_present": true,
+  "state_finite": true,
+  "no_root_pose_write": true
+ },
+ "metrics": {
+  "env0_max_joint_deviation_rad": 1.316722238,
+  "env1_max_joint_deviation_rad": 3.139966787,
+  "throughput_env_steps_per_s": 113.406,
+  "wall_s": 4.25
+ },
+ "diagnostics": {
+  "root_writes": 0,
+  "root_write_scope": "none",
+  "note": "REAL Isaac Sim: two articulations in one stage, each addressing its own joint targets. Not a mock.",
+  "arm_asset": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+  "arm_sha256_before": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+  "gpu_peak_allocated_mib": 0.01
+ }
+}

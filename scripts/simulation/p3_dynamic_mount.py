@@ -45,6 +45,8 @@ PROFILES = {
     "compound": {"ramp_s": 2.0, "x": 0.20, "y": -0.15, "z": 0.05, "yaw": 0.30},
 }
 
+GATE_VERSION = "v1.1"
+
 PARSER = argparse.ArgumentParser(description="P3 dynamic mount stability (diagnostic root drive)")
 PARSER.add_argument("--run-id", required=True)
 PARSER.add_argument("--out-dir", required=True)
@@ -52,6 +54,15 @@ PARSER.add_argument("--profile", required=True, choices=sorted(PROFILES))
 PARSER.add_argument("--steps", type=int, default=360)
 PARSER.add_argument("--gravity-z", type=float, default=0.0)
 PARSER.add_argument("--read-contacts", action="store_true")
+PARSER.add_argument("--freeze-axis", choices=("none", "x", "y", "z", "yaw"), default="none",
+                    help="NEGATIVE CONTROL: deliberately drop this command component so the "
+                         "directed/yaw gate must FAIL. Recorded in manifest as negative_control.")
+PARSER.add_argument("--inject-fault", choices=("none", "joint_limit", "python_exception"),
+                    default="none",
+                    help="P0-07/P3-05 fault injection. 'joint_limit' submits a joint target "
+                         "outside the USD limit and must be REFUSED before any write; "
+                         "'python_exception' raises inside the stepping loop so the gate runner "
+                         "must report a non-zero child code instead of a false PASS.")
 AppLauncher.add_app_launcher_args(PARSER)
 ARGS = PARSER.parse_args()
 LAUNCHER = AppLauncher(ARGS)
@@ -63,6 +74,7 @@ from isaaclab.assets import Articulation, ArticulationCfg  # noqa: E402
 from isaaclab.actuators import ImplicitActuatorCfg  # noqa: E402
 from isaaclab_physx.physics import PhysxCfg  # noqa: E402
 from pxr import Gf, Sdf, Usd, UsdGeom, UsdPhysics  # noqa: E402
+from p3_motion_gate import directed_displacement_track  # noqa: E402
 
 
 def _np(values):
@@ -240,8 +252,38 @@ def main():
     base_rotation = rotation_matrix(base_root_quat)
     offset_root_frame = base_rotation.T @ offset_world
 
+    def negative_control_record(spec):
+        """A negative control is only meaningful if the frozen component was non-zero.
+
+        P3_neg_frozen_y_r01 froze Y on the translate_xy profile, whose command is
+        x=0.3, y=0.0: the freeze was a no-op, the run was bit-identical to P3_xy_r14 and
+        the gate PASSED. That is a VACUOUS negative control, not a gate hole, so it is
+        recorded as such and forced to FAIL (a vacuous control may never count as PASS).
+        """
+        component = {"x": float(spec["x"]), "y": float(spec["y"]), "z": float(spec["z"]),
+                     "yaw": float(spec["yaw"])}.get(ARGS.freeze_axis, 0.0)
+        vacuous = abs(component) < 1e-9
+        return {"frozen_axis": ARGS.freeze_axis,
+                "frozen_command_component": component,
+                "vacuous": vacuous,
+                "note": ("the frozen command component was ZERO, so dropping it changes "
+                         "nothing: this run cannot serve as a negative control"
+                         if vacuous else
+                         "command component dropped on purpose; the corresponding motion "
+                         "gate MUST fail")}
+
     def write_pose(pos_cmd, yaw_cmd):
         """pos_cmd/yaw_cmd are absolute CHASSIS commands; converted to a root pose."""
+        pos_cmd = [float(pos_cmd[0]), float(pos_cmd[1]), float(pos_cmd[2])]
+        yaw_cmd = float(yaw_cmd)
+        if ARGS.freeze_axis == "x":
+            pos_cmd[0] = 0.0
+        elif ARGS.freeze_axis == "y":
+            pos_cmd[1] = 0.0
+        elif ARGS.freeze_axis == "z":
+            pos_cmd[2] = LIFT
+        elif ARGS.freeze_axis == "yaw":
+            yaw_cmd = 0.0
         yaw = base_root_yaw + float(yaw_cmd)
         half = 0.5 * yaw
         if quat_order["value"] == "wxyz":
@@ -317,12 +359,9 @@ def main():
                                        device=robot.device)
 
     def set_joint_targets():
-        # The P3 joint_hold gate asks whether the IMPLICIT drive holds the target while the
-        # root is driven, so the target must be commanded explicitly every step.
-        try:
-            robot.set_joint_position_target(joint_target_tensor)
-        except Exception:
-            pass
+        # Fail closed. Previously exceptions here were silently swallowed,
+        # allowing "joint_hold PASS" when no joint target had been submitted.
+        robot.set_joint_position_target(joint_target_tensor)
 
     def capture(tag, step, commanded_pos, commanded_yaw, smooth):
         row = {"run_id": ARGS.run_id, "profile": ARGS.profile, "tag": tag, "step": step,
@@ -376,10 +415,59 @@ def main():
     # solver step gave the flipped leftover pose: P3_static_r05 reported
     # t0_pose_write_error_m = 0.2615 m even though the write itself used the now-confirmed
     # xyzw order (probe: xyzw 0.199999853 rad vs commanded 0.2; wxyz 9.8e-08).
+    def write_fault_record(code, detail):
+        try:
+            with open(os.path.join(ARGS.out_dir, "fault_record.json"), "w",
+                      encoding="utf-8") as handle:
+                json.dump({"run_id": ARGS.run_id, "fault": ARGS.inject_fault,
+                           "code": code, "detail": detail,
+                           "sim_steps_taken": len(frames),
+                           "note": ("typed refusal: the gate runner must surface this as a "
+                                    "non-zero child code, never as a PASS")},
+                          handle, ensure_ascii=False, indent=1)
+        except Exception:
+            pass
+
+    if ARGS.inject_fault == "joint_limit":
+        # Refuse BEFORE the loop.  Raising SystemExit from inside the stepping callback made
+        # Kit die with SIGSEGV (child rc 139, P0F_jointlimit_r01) - fail-closed but ugly and
+        # not a typed refusal, so the check is done once, up front, with a clean exit code.
+        index = 2 if len(joint_names) > 2 else 0
+        upper = float(_np(robot.data.joint_pos_limits[0, index, 1]))
+        bad_target = upper + 0.5
+        if bad_target > upper:
+            write_fault_record("JOINT_LIMIT_REFUSED",
+                               {"joint": joint_names[index], "target_rad": bad_target,
+                                "upper_limit_rad": upper, "targets_written": 0})
+            print("JOINT_LIMIT_REFUSED: joint %r target %.6f rad exceeds the upper limit "
+                  "%.6f rad; refusing before any write" % (joint_names[index], bad_target,
+                                                           upper), flush=True)
+            jsonl.close()
+            # P0-07 finding 2: returning from main() WITHOUT closing the Kit app left the
+            # process exiting 0 (child_returncode 0 in P0F_jointlimit_r02), so any tool keyed
+            # on the child code would read a false PASS.  Close, then raise.
+            try:
+                SIMULATION_APP.close()
+            except Exception:
+                pass
+            raise SystemExit(3)
+
     for step in range(ARGS.steps + 1):
         commanded_pos, commanded_yaw, smooth = command_at(ARGS.profile, step)
         write_pose(commanded_pos, commanded_yaw)
         set_joint_targets()
+        if ARGS.inject_fault == "python_exception" and step == 60:
+            # P0-07 finding: an exception raised inside the loop was caught by Kit, the
+            # traceback printed, and the process still exited 0 (P0F_exception_r01 child rc 0).
+            # The script therefore records a typed fault and exits non-zero itself.
+            write_fault_record("INJECTED_PYTHON_EXCEPTION", {"step": step})
+            print("INJECTED_PYTHON_EXCEPTION at step %d" % step, flush=True)
+            jsonl.close()
+            try:
+                SIMULATION_APP.close()
+            except Exception:
+                pass
+            raise SystemExit(4)
         sim.step()
         robot.update(DT)
         for sensor in sensors.values():
@@ -425,15 +513,21 @@ def main():
                              and mount_rot_max <= thresholds["mount_rot_rad"]),
         "joint_hold": bool(joint_dev <= thresholds["joint_hold_rad"]),
     }
-    translation_amplitude = math.hypot(spec["x"], spec["y"])
-    if translation_amplitude > 1e-9:
-        gates["translation_actually_measured"] = bool(
-            realized_translation >= thresholds["motion_ratio"] * translation_amplitude)
+    # P3 v1.1: include Z and require directed displacement, not arbitrary
+    # same-magnitude motion. The old hypot(x,y) skipped translate_z entirely.
+    directed = directed_displacement_track(
+        [spec["x"], spec["y"], spec["z"]], chassis_pos, thresholds["motion_ratio"])
+    if directed is not None:
+        gates["translation_actually_measured"] = directed["pass"]
     if abs(spec["yaw"]) > 1e-9:
         gates["yaw_actually_measured"] = bool(
             realized_yaw >= thresholds["motion_ratio"] * abs(spec["yaw"]))
     if arm_peak is not None:
         gates["arm_does_not_touch_ground"] = bool(arm_peak <= thresholds["arm_ground_contact_n"])
+    if ARGS.freeze_axis != "none" and negative_control_record(spec)["vacuous"]:
+        # a negative control whose frozen component was already zero proves nothing, so it
+        # may never be counted as a PASS (P3_neg_frozen_y_r01 was exactly this case)
+        gates["negative_control_is_meaningful"] = False
     gate = "PASS" if all(gates.values()) else "FAIL"
 
     arm_hash_after = sha256(REAL_ARM)
@@ -445,6 +539,7 @@ def main():
             "command_amplitude": {"x_m": spec["x"], "y_m": spec["y"], "z_m": spec["z"],
                                   "yaw_rad": spec["yaw"], "ramp_s": spec["ramp_s"]},
             "realized_translation_max_m": round(realized_translation, 9),
+            "directed_translation": directed,
             "realized_yaw_max_rad": round(realized_yaw, 9),
             "tracking_position_error_max_m": round(tracking_pos_max, 9),
             "tracking_yaw_error_max_rad": round(tracking_yaw_max, 9),
@@ -461,7 +556,13 @@ def main():
             "steps": ARGS.steps,
         },
         "thresholds": thresholds, "gates": gates,
+        # explicit generation tag: P3_EVIDENCE_SUMMARY had to guess v1.0 vs v1.1 from the
+        # metrics shape, and mis-classified the yaw profile (no directed_translation block).
+        "gate_version": GATE_VERSION,
+        "gate_preregistration": "management/morph_one_rs/PHASE_P3_GATE_V1_1_AMENDMENT.md",
         "diagnostics": {
+            "negative_control": (negative_control_record(spec) if ARGS.freeze_axis != "none"
+                                 else None),
             "quat_order_for_write_root_pose": quat_order,
             "t0_pose_write_error_m": round(start_error, 12),
             "root_to_chassis_offset_m": round(float(np.linalg.norm(offset_world)), 9),
@@ -488,6 +589,7 @@ def main():
                    "lift_m": LIFT, "arm_asset": REAL_ARM, "arm_sha256": arm_hash_after,
                    "arm_asset_unchanged": arm_hash_before == arm_hash_after,
                    "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+                   "freeze_axis": ARGS.freeze_axis,
                    "preregistration": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_GATE.md",
                    "command": " ".join(os.sys.argv)}, handle, ensure_ascii=False, indent=1)
     print(json.dumps({"run_id": ARGS.run_id, "profile": ARGS.profile, "gate_result": gate,

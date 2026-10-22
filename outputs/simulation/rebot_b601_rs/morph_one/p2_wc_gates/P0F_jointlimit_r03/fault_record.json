@@ -1,0 +1,13 @@
+{
+ "run_id": "P0F_jointlimit_r03",
+ "fault": "joint_limit",
+ "code": "JOINT_LIMIT_REFUSED",
+ "detail": {
+  "joint": "joint5",
+  "target_rad": 2.0700000524520874,
+  "upper_limit_rad": 1.5700000524520874,
+  "targets_written": 0
+ },
+ "sim_steps_taken": 0,
+ "note": "typed refusal: the gate runner must surface this as a non-zero child code, never as a PASS"
+}

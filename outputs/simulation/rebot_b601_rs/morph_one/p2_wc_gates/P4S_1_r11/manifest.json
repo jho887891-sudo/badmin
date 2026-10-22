@@ -1,0 +1,23 @@
+{
+ "stage": "P4_PROXY",
+ "run_id": "P4S_1_r11",
+ "scene_variant": "P4_PROXY_WHEEL_DRIVE",
+ "profile": "roll_neg_y",
+ "physics_dt_s": 0.008333333333333333,
+ "steps": 360,
+ "friction_coefficient": 0.8,
+ "payload_kg": 0.0,
+ "single_factor_note": "exactly one of friction / payload / wheel speed may differ between two runs of the P4-08 matrix",
+ "gravity_explicit_on_command_line": true,
+ "applied_gravity_argv": [
+  "--gravity-z"
+ ],
+ "gravity_m_s2": [
+  0.0,
+  0.0,
+  -9.81
+ ],
+ "preregistration": "management/morph_one_rs/PHASE_P4_PROXY_PREREG.md",
+ "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+ "command": "/home/dgut/runs/g/scripts/simulation/p4_proxy_wheel_drive.py --run-id P4S_1_r11 --out-dir /home/dgut/runs/g/P4S_1_r11 --profile roll_neg_y --read-contacts --gravity-z -9.81 --wheel-speed 1.0"
+}

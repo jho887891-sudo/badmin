@@ -1,0 +1,10 @@
+{
+ "run_id": "P0F_exception_r03",
+ "fault": "python_exception",
+ "code": "INJECTED_PYTHON_EXCEPTION",
+ "detail": {
+  "step": 60
+ },
+ "sim_steps_taken": 60,
+ "note": "typed refusal: the gate runner must surface this as a non-zero child code, never as a PASS"
+}

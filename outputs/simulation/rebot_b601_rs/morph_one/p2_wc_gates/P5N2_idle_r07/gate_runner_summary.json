@@ -1,0 +1,22 @@
+{
+ "run_id": "P5N2_idle_r07",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p5_multienv_isaac.py --run-id P5N2_idle_r07 --out-dir /home/dgut/runs/g/P5N2_idle_r07 --profile idle --steps 240 --gravity-z -9.81 --read-contacts",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1800.0,
+ "quarantined_stale_result": null,
+ "json_gate": "MISSING",
+ "json_metrics": {
+  "env0_max_joint_deviation_rad": 1.406429732,
+  "env1_max_joint_deviation_rad": 2.654797854,
+  "throughput_env_steps_per_s": 125.259,
+  "wall_s": 3.848
+ },
+ "child_ok": true,
+ "gates_ok": false,
+ "outer_exit": 1,
+ "elapsed_s": 41.37,
+ "child_stdout_log": "/home/dgut/runs/g/P5N2_idle_r07/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P5N2_idle_r07/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}

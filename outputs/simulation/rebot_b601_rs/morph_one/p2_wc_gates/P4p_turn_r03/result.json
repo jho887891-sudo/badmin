@@ -1,0 +1,126 @@
+{
+ "run_id": "P4p_turn_r03",
+ "scene_variant": "P4_PROXY_WHEEL_DRIVE",
+ "profile": "turn",
+ "profile_description": "left/right opposed, yaw expected",
+ "gate_result": "PASS",
+ "proxy_parameters": {
+  "wheel_radius_m": 0.103,
+  "wheel_radius_source": "P1 v2 torus equator R+r = 103.000000 mm (geometric unloaded); NOT a loaded radius",
+  "wheel_collision_shape": "CYLINDER (TEST_PROXY simplification of the toroidal tread)",
+  "wheel_half_width_m": 0.0243,
+  "wheel_mass_kg": 1.0,
+  "chassis_mass_kg": 16.0,
+  "total_mass_kg": 20.0,
+  "mass_source": "TEST_PROXY, no vendor mass data",
+  "ground_clearance_m": 0.02,
+  "lift_m": 0.367,
+  "axle_positions_m": [
+   [
+    0.250002,
+    0.297,
+    -0.244
+   ],
+   [
+    0.250002,
+    -0.297,
+    -0.244
+   ],
+   [
+    -0.250002,
+    0.297,
+    -0.244
+   ],
+   [
+    -0.250002,
+    -0.297,
+    -0.244
+   ]
+  ],
+  "motor_sign_mapping": {
+   "joint_axis": "world +X for all four wheels",
+   "rolling_direction": "world Y (perpendicular to the axle)",
+   "p1_outward_normal_signs": [
+    1.0,
+    1.0,
+    -1.0,
+    -1.0
+   ],
+   "joint_space_target_for_straight_roll": "same sign on all four wheels",
+   "note": "the P1 outward convention maps to MOTOR CHANNELS by multiplying by the per-side sign; it must not be applied to a common-axis joint"
+  }
+ },
+ "metrics": {
+  "wheel_targets_rad_s_per_wheel": [
+   3.0,
+   3.0,
+   -3.0,
+   -3.0
+  ],
+  "tail_wheel_omega_rad_s": {
+   "wheel1": 2.867881298,
+   "wheel2": 2.871986691,
+   "wheel3": -2.833897761,
+   "wheel4": -2.906850187
+  },
+  "wheel_speed_relative_error": {
+   "wheel1": 0.044039567,
+   "wheel2": 0.042671103,
+   "wheel3": 0.055367413,
+   "wheel4": 0.031049938
+  },
+  "chassis_displacement_m": [
+   0.000126119,
+   0.002530481,
+   -0.018613726
+  ],
+  "tail_chassis_speed_m_s": 0.000158498,
+  "yaw_change_rad": 1.417513835,
+  "peak_contact_force_n": 490.065734863,
+  "distance_per_wheel_revolution_m": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "steps": 360
+ },
+ "thresholds": {
+  "speed_tracking_rel": 0.2,
+  "min_displacement_m": 0.01,
+  "contact_force_n": 1.0,
+  "tail_speed_max_m_s": 5.0
+ },
+ "gates": {
+  "all_finite": true,
+  "no_root_pose_write": true,
+  "wheel_speed_tracks_target": true,
+  "contact_detected": true,
+  "yaw_changed": true
+ },
+ "diagnostics": {
+  "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+  "root_writes": 0,
+  "contact_api": "isaaclab.sensors.ContactSensor(chassis,wheels)",
+  "body_names": [
+   "Chassis",
+   "wheel1",
+   "wheel2",
+   "wheel3",
+   "wheel4"
+  ],
+  "joint_names": [
+   "joint_wheel1",
+   "joint_wheel2",
+   "joint_wheel3",
+   "joint_wheel4"
+  ],
+  "dofs": 4,
+  "gravity_m_s2": [
+   0.0,
+   0.0,
+   -9.81
+  ],
+  "note": "P4_PROXY only: verified axle/radius geometry with a CYLINDER tread proxy and proxy masses. Not P4_REAL, not the vendor physical model."
+ }
+}

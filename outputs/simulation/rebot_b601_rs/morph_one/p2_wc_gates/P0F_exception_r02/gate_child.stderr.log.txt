@@ -1,0 +1,10 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792642725.425972 3677418 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792642725.426042 3677418 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+[ISAACLAB] AppLauncher initialization complete
+/home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py:298: DeprecationWarning: The function 'write_root_pose_to_sim' will be deprecated in a future release. Please use 'write_root_pose_to_sim_index' instead.
+  robot.write_root_pose_to_sim(
+/home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py:303: DeprecationWarning: The function 'write_root_velocity_to_sim' will be deprecated in a future release. Please use 'write_root_velocity_to_sim_index' instead.
+  robot.write_root_velocity_to_sim(
+/home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py:364: DeprecationWarning: The function 'set_joint_position_target' will be deprecated in a future release. Please use 'set_joint_position_target_index' instead.
+  robot.set_joint_position_target(joint_target_tensor)
