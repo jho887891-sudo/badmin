@@ -31,16 +31,42 @@ Fail-closed details (each one is regression tested in tests/simulation/test_p2_g
     match --run-id all become an INVALID gate and outer exit 1 instead of raising out of
     main().
 
+OUTCOME VOCABULARY (R10-A, normative, see management/morph_one_rs/
+R10_A_RUNNER_FAULT_SEMANTICS.md):
+
+  SUCCESS           the run is a usable simulation result (outer exit 0)
+  EXPECTED_FAULT    a *declared* fault was injected and observed; the test PASSES, the
+                    simulation is NOT a success (outer exit 10 -- never 0, never 1)
+  UNEXPECTED_FAULT  a fault/failure signal no declaration covers: typed fault artifact,
+                    traceback, non-zero child rc, or a fault run claiming PASS (exit 1)
+  CRASH             abnormal termination (signal exit / Kit crash reporter / segfault)
+                    (exit 1)
+  INCOMPLETE        no fault signal, but the run did not deliver an acceptable completion
+                    certificate: timeout, missing/corrupt result.json, self-reported
+                    GATE_SAYS_FAIL, metadata/JSONL violation (exit 1)
+
+The classification is a PURE function of collected evidence (classify_run), so committed
+runs can be re-classified offline (tools/simulation/replay_p0f_fault_evidence.py).
+
+Kit swallows Python exceptions and still reports child rc 0 (P0-07, six real runs), so a
+fault artifact or a traceback is a HARD non-success signal even when child_rc == 0.
+
 Usage:
     python p2_gate_runner.py --script <experiment.py> --run-id R1 --out-dir <dir> -- --lift 0.4
 """
 
-from __future__ import annotations
-
+# NOTE (R10-A): "from __future__ import annotations" was removed on purpose.  This module is
+# loaded by PATH by the regression fixture (importlib.util.module_from_spec WITHOUT
+# registering it in sys.modules), and under PEP 563 the dataclass decorator resolves string
+# annotations through sys.modules[cls.__module__] -- which is None on that load path.  The
+# module has no other annotations, so dropping the future import changes nothing else.
 import argparse
+import dataclasses
+import enum
 import json
 import math
 import os
+import re
 import subprocess
 import sys
 import time
@@ -610,6 +636,522 @@ def read_json_gate(result_path, requested_run_id=None):
 
 
 # ---------------------------------------------------------------------------------------
+# R10-A: normative outcome vocabulary and the PURE classifier (A3/A2)
+# ---------------------------------------------------------------------------------------
+EXIT_EXPECTED_FAULT = 10  # a fault-injection TEST passed; it is NOT a simulation SUCCESS
+
+
+class Outcome(enum.Enum):
+    """The only five run outcomes this runner is allowed to report (A3 contract).
+
+    The values are the normative strings written to summary["outcome"]; consumers MUST
+    read the pair (outcome, outcome_reason) and never infer a class from the raw child
+    return code (Kit reports 0 for runs that raised -- see P0-07).
+    """
+
+    SUCCESS = "SUCCESS"
+    EXPECTED_FAULT = "EXPECTED_FAULT"
+    UNEXPECTED_FAULT = "UNEXPECTED_FAULT"
+    CRASH = "CRASH"
+    INCOMPLETE = "INCOMPLETE"
+
+
+# SUCCESS is the ONLY outcome that may exit 0.  EXPECTED_FAULT gets its own code so a
+# CI consumer that only checks the exit status can never confuse "the fault injection
+# test passed" with "the simulation succeeded".
+OUTCOME_EXIT_CODES = {
+    Outcome.SUCCESS: EXIT_PASS,
+    Outcome.EXPECTED_FAULT: EXIT_EXPECTED_FAULT,
+    Outcome.UNEXPECTED_FAULT: EXIT_FAIL,
+    Outcome.CRASH: EXIT_FAIL,
+    Outcome.INCOMPLETE: EXIT_FAIL,
+}
+
+# Typed fault artifacts.  fault_record.json is the P0-07 de-facto name; failure.json is
+# the name PR #17 proposed.  A file's PRESENCE is already a fault signal: an unparseable
+# fault record is UNEXPECTED_FAULT, not silence.
+FAULT_RECORD_NAMES = ("fault_record.json", "failure.json")
+FAULT_QUARANTINE_PREFIX = "fault_record.json.prev-"
+
+# 128+N for the fatal POSIX signals a Kit child realistically dies from.  TIMEOUT_RETURNCODE
+# (124) is deliberately NOT in this map: it is our own "we killed it" sentinel.
+CRASH_SIGNAL_RETURNCODES = {
+    132: "SIGILL",
+    133: "SIGTRAP",
+    134: "SIGABRT",
+    135: "SIGBUS",
+    136: "SIGFPE",
+    137: "SIGKILL",
+    139: "SIGSEGV",
+}
+# Windows NTSTATUS values surfacing as the (huge) signed process status.
+CRASH_NTSTATUS_RETURNCODES = {
+    -1073741819: "NTSTATUS_ACCESS_VIOLATION",
+    -1073741571: "NTSTATUS_STACK_OVERFLOW",
+    -1073740791: "NTSTATUS_STACK_BUFFER_OVERRUN",
+    3221225477: "NTSTATUS_ACCESS_VIOLATION",
+    3221225725: "NTSTATUS_STACK_OVERFLOW",
+    3221226505: "NTSTATUS_STACK_BUFFER_OVERRUN",
+}
+# Kit's breakpad crash reporter prints these BEFORE it dies; P0F_jointlimit_r01 is the
+# committed example of "[carb.crashreporter-breakpad.plugin] ... terminating this process
+# with exit code 139." on stderr together with child rc 139.
+CRASH_STDERR_SIGNATURES = (
+    ("KIT_CRASH_REPORTER_LOG", re.compile(r"\[carb\.crashreporter-breakpad\.plugin\]", re.I)),
+    ("KIT_TERMINATING_WITH_EXIT_CODE",
+     re.compile(r"terminating this process with exit code\s+(\d+)", re.I)),
+    ("KIT_BACKTRACE_FOLLOWS", re.compile(r"backtrace follows", re.I)),
+    ("SEGMENTATION_FAULT_TEXT", re.compile(r"\bsegmentation fault\b", re.I)),
+    ("CORE_DUMPED_TEXT", re.compile(r"\bcore dumped\b", re.I)),
+)
+
+# ---- traceback detection (A2b) -------------------------------------------------------
+# The exact pattern PAIR, documented because the naive "ExceptionName: msg" line alone
+# produces FALSE POSITIVES on Kit stderr: P0F_exception_r01 contains
+#     /path/p3_dynamic_mount.py:298: DeprecationWarning: The function ... is deprecated
+# which matches the terminator shape at column 0 and is NOT a fault.  A traceback requires
+# BOTH of:
+#   (1) the header line "Traceback (most recent call last):" (optional leading spaces), and
+#   (2) one of
+#       a. an exception terminator line at column 0 AFTER the header, shaped
+#              ExceptionType: message     (e.g. "RuntimeError: INJECTED_... at step 60")
+#          -> tier TRACEBACK_PAIR  (strongest, the exception type is extractable)
+#       b. at least one frame line of shape  File "<path>", line <N>  and no terminator
+#          (stderr was truncated by the dying process or the pipe)
+#          -> tier TRACEBACK_TRUNCATED
+#       c. "Fatal Python error:" at column 0 -> tier FATAL_PYTHON_ERROR
+TRACEBACK_HEADER_RE = re.compile(r"^\s*Traceback \(most recent call last\)\s*:\s*$")
+TRACEBACK_FRAME_RE = re.compile(r'^\s*File "[^"]*",\s*line \d+')
+EXCEPTION_TERMINATOR_RE = re.compile(
+    r"^([A-Za-z_][A-Za-z0-9_.]*(?:Error|Exception|Interrupt|Exit|Warning)?):(?:\s|$)")
+FATAL_PYTHON_RE = re.compile(r"^Fatal Python error:", re.MULTILINE)
+
+
+def normalize_fault_token(value):
+    """Lower-case token form used to compare a DECLARED fault with an OBSERVED one."""
+    return "_".join(part for part in
+                    re.sub(r"[^0-9A-Za-z]+", "_", str(value or "")).strip("_").lower().split("_")
+                    if part)
+
+
+def detect_traceback(stderr_text):
+    """Return the traceback evidence of a child stderr stream (never raises).
+
+    Deliberately conservative: a lone "DeprecationWarning:" / "OSError:" line is NOT a
+    traceback.  See the pattern block above for the exact rule and the false positive it
+    exists to avoid.
+    """
+    report = {"detected": False, "tier": None, "exception_type": None, "exception_line": None,
+              "header_line_number": None, "frame_count": 0, "patterns": []}
+    text = stderr_text or ""
+    if not isinstance(text, str):
+        text = str(text)
+    lines = text.splitlines()
+    header_index = None
+    for index, line in enumerate(lines):
+        if TRACEBACK_HEADER_RE.match(line):
+            header_index = index
+            break
+    if header_index is not None:
+        report["header_line_number"] = header_index + 1
+        report["patterns"].append("TRACEBACK_HEADER")
+        frame_count = 0
+        for line in lines[header_index + 1:]:
+            if TRACEBACK_FRAME_RE.match(line):
+                frame_count += 1
+                continue
+            match = EXCEPTION_TERMINATOR_RE.match(line)
+            if match:
+                report.update({"detected": True, "tier": "TRACEBACK_PAIR",
+                               "exception_type": match.group(1),
+                               "exception_line": line.strip()[:400],
+                               "frame_count": frame_count})
+                report["patterns"].append("EXCEPTION_TERMINATOR")
+                return report
+        report["frame_count"] = frame_count
+        if frame_count:
+            report.update({"detected": True, "tier": "TRACEBACK_TRUNCATED"})
+            report["patterns"].append("TRACEBACK_FRAME_WITHOUT_TERMINATOR")
+            return report
+        return report  # a bare header proves nothing yet
+    fatal = FATAL_PYTHON_RE.search(text)
+    if fatal:
+        line = text[fatal.start():].splitlines()[0].strip()[:400]
+        report.update({"detected": True, "tier": "FATAL_PYTHON_ERROR",
+                       "exception_type": "FatalPythonError", "exception_line": line})
+        report["patterns"].append("FATAL_PYTHON_ERROR")
+        return report
+    return report
+
+
+def detect_crash(child_returncode, stderr_text, timed_out=False):
+    """Abnormal-termination evidence: signal exit status or Kit's crash reporter output."""
+    report = {"crash": False, "signals": [], "returncode": child_returncode,
+              "signal": None, "timed_out": bool(timed_out)}
+    if timed_out:
+        report["signals"].append("SUPPRESSED_BY_TIMEOUT")
+        return report
+    try:
+        code = int(child_returncode)
+    except (TypeError, ValueError):
+        code = None
+    if code is not None:
+        if code in CRASH_SIGNAL_RETURNCODES:
+            report["signals"].append("RETURNCODE_%d_%s" % (code, CRASH_SIGNAL_RETURNCODES[code]))
+            report["signal"] = CRASH_SIGNAL_RETURNCODES[code]
+        elif code in CRASH_NTSTATUS_RETURNCODES:
+            report["signals"].append("RETURNCODE_%d_%s"
+                                     % (code, CRASH_NTSTATUS_RETURNCODES[code]))
+            report["signal"] = CRASH_NTSTATUS_RETURNCODES[code]
+    text = stderr_text or ""
+    if not isinstance(text, str):
+        text = str(text)
+    for name, pattern in CRASH_STDERR_SIGNATURES:
+        if pattern.search(text):
+            report["signals"].append("STDERR_%s" % name)
+    report["crash"] = bool(report["signals"] and "SUPPRESSED_BY_TIMEOUT" not in report["signals"])
+    return report
+
+
+def read_fault_record(out_dir):
+    """Read a typed fault artifact.  Presence alone is a fault signal; never raises.
+
+    typed=True requires a JSON object with non-empty string "fault" AND "code" (the
+    P0-07 shape).  An unparsable / untyped record stays a fault signal with
+    typed=False and an explicit error, so a corrupted fault record cannot degrade into
+    "no fault".
+    """
+    report = {"present": False, "path": None, "name": None, "typed": False, "fault": None,
+              "code": None, "run_id": None, "sim_steps_taken": None, "error": None,
+              "record": None}
+    for name in FAULT_RECORD_NAMES:
+        candidate = os.path.join(out_dir, name)
+        if not os.path.isfile(candidate):
+            continue
+        report.update({"present": True, "path": candidate, "name": name})
+        try:
+            with open(candidate, encoding="utf-8") as handle:
+                payload = json.load(handle)
+        except (OSError, ValueError, UnicodeDecodeError) as exc:
+            report["error"] = "unreadable fault record: %r" % (exc,)
+            return report
+        if not isinstance(payload, dict):
+            report["error"] = "fault record top-level is %s, expected an object" \
+                % type(payload).__name__
+            return report
+        report["record"] = payload
+        fault = payload.get("fault")
+        code = payload.get("code")
+        report["fault"] = fault if isinstance(fault, str) and fault.strip() else None
+        report["code"] = code if isinstance(code, str) and code.strip() else None
+        run_id = payload.get("run_id")
+        report["run_id"] = run_id if isinstance(run_id, str) and run_id.strip() else None
+        report["sim_steps_taken"] = payload.get("sim_steps_taken")
+        report["typed"] = bool(report["fault"] and report["code"])
+        if not report["typed"]:
+            report["error"] = ("fault record is present but not typed: both \"fault\" and "
+                               "\"code\" must be non-empty strings")
+        return report
+    return report
+
+
+def _quarantine_stale_fault_record(out_dir):
+    """Move a previous attempt's fault artifact aside (same reason as result.json).
+
+    Only reachable through --allow-reused-out-dir: without it the strict out-dir contract
+    refuses a used directory before the child starts.  Without this, a stale
+    fault_record.json from an earlier attempt would be attributed to THIS child.
+    """
+    for name in FAULT_RECORD_NAMES:
+        path = os.path.join(out_dir, name)
+        if not os.path.isfile(path):
+            continue
+        stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+        target = os.path.join(out_dir, FAULT_QUARANTINE_PREFIX + "%s-%s" % (stamp, name))
+        try:
+            os.replace(path, target)
+        except OSError:  # pragma: no cover - unwritable directory
+            return None
+        return target
+    return None
+
+
+def declared_faults_from_extra(extra):
+    """Faults the run DECLARED by forwarding --inject-fault/--fault-injection to the child.
+
+    A fault-injection run must never be judged by the simulation contract alone: if the
+    child was started with --inject-fault X, X is a declared fault and the run is a test.
+    """
+    declared = []
+    tokens = list(extra or [])
+    for index, token in enumerate(tokens):
+        text = str(token)
+        for flag in ("--inject-fault", "--fault-injection", "--inject_fault"):
+            if text == flag and index + 1 < len(tokens):
+                value = str(tokens[index + 1])
+                if normalize_fault_token(value):
+                    declared.append(value)
+            elif text.startswith(flag + "="):
+                value = text.split("=", 1)[1]
+                if normalize_fault_token(value):
+                    declared.append(value)
+    return declared
+
+
+def declared_faults_from_command(command):
+    """Same declaration rule for a RECORDED command line (offline replay of evidence)."""
+    if not command:
+        return []
+    if isinstance(command, (list, tuple)):
+        tokens = [str(item) for item in command]
+    else:
+        try:
+            import shlex
+            tokens = shlex.split(str(command))
+        except ValueError:
+            tokens = str(command).split()
+    return declared_faults_from_extra(tokens)
+
+
+@dataclasses.dataclass(frozen=True)
+class RunEvidence:
+    """Everything the classifier is allowed to look at.  Pure data, no I/O."""
+
+    run_id: str
+    child_returncode: object
+    timed_out: bool
+    stderr_text: str
+    gate: dict
+    metadata_consistent: bool
+    jsonl_valid: bool
+    fault_record: dict
+    declared_faults: tuple = ()
+
+    def gate_is_pass(self):
+        gate = self.gate or {}
+        return bool(gate.get("json_gate_status") == GATE_STATUS_OK
+                    and gate.get("json_gate") == "PASS"
+                    and gate.get("gates_all_true")
+                    and self.metadata_consistent
+                    and self.jsonl_valid)
+
+
+@dataclasses.dataclass(frozen=True)
+class OutcomeVerdict:
+    outcome: Outcome
+    rule: str
+    reason_code: str
+    reason: str
+    exit_code: int
+    declared_faults: tuple
+    observed_faults: tuple
+    traceback: dict
+    crash: dict
+    fault_record: dict
+
+    def as_dict(self):
+        return {
+            "outcome": self.outcome.value,
+            "outcome_rule": self.rule,
+            "outcome_reason_code": self.reason_code,
+            "outcome_reason": self.reason,
+            "outcome_exit": self.exit_code,
+            "declared_faults": list(self.declared_faults),
+            "observed_faults": list(self.observed_faults),
+            "traceback": self.traceback,
+            "crash": self.crash,
+            "fault_record": {key: value for key, value in self.fault_record.items()
+                             if key != "record"},
+        }
+
+
+def _fault_matches(declared, observed_tokens, stderr_blob):
+    """Token-containment match: declared fault vs typed record tokens / stderr text.
+
+    Both sides are normalised to lower-case underscore tokens, so a declared
+    "python_exception" matches fault_record.code "INJECTED_PYTHON_EXCEPTION" and the
+    traceback terminator "RuntimeError: INJECTED_PYTHON_EXCEPTION at step 60".
+    LIMITATION (documented): containment can over-match for very short fault names;
+    a mismatch is always fail-closed (UNEXPECTED_FAULT), so over-matching never turns a
+    fault into SUCCESS.
+    """
+    token = normalize_fault_token(declared)
+    if not token:
+        return False
+    if token in observed_tokens:
+        return True
+    return token in stderr_blob
+
+
+def classify_run(evidence):
+    """THE classifier (A3).  Pure, ordered, fail-closed: the first matching rule wins.
+
+    Rule order and rationale:
+      R1 timeout            -> INCOMPLETE (we killed it; its artifacts are not completion)
+      R2 crash              -> CRASH      (a dead process cannot certify anything)
+      R3 typed fault record -> EXPECTED_FAULT only when declared AND matched AND the run
+                               does not also claim a PASS; otherwise UNEXPECTED_FAULT
+      R4 traceback          -> same logic; a declared fault may be proven by stderr alone
+      R5 declared-but-absent-> INCOMPLETE (the injection did not happen: test FAILED)
+      R6 non-zero child rc  -> UNEXPECTED_FAULT (even with a valid-looking PASS artifact)
+      R7 gate MISSING       -> INCOMPLETE (Kit swallowed the run: rc 0, nothing written)
+      R8 gate INVALID       -> INCOMPLETE (corrupt/inconsistent evidence)
+      R9 gate FAIL          -> INCOMPLETE (honest simulation FAIL; see reason code)
+      R10 metadata/JSONL    -> INCOMPLETE
+      R11 everything green  -> SUCCESS
+    """
+    declared = tuple(sorted({normalize_fault_token(item) for item in evidence.declared_faults}))
+    declared_display = tuple(sorted({str(item) for item in evidence.declared_faults}))
+    stderr_blob = normalize_fault_token(evidence.stderr_text or "")
+    traceback = detect_traceback(evidence.stderr_text)
+    crash = detect_crash(evidence.child_returncode, evidence.stderr_text, evidence.timed_out)
+    record = evidence.fault_record or {"present": False, "typed": False}
+    observed_tokens = set()
+    observed = []
+    if record.get("present"):
+        for value in (record.get("fault"), record.get("code")):
+            token = normalize_fault_token(value)
+            if token:
+                observed_tokens.add(token)
+                observed.append(str(value))
+    if traceback.get("exception_type"):
+        observed.append("%s: %s" % (traceback["exception_type"],
+                                    traceback.get("exception_line") or ""))
+    gate = evidence.gate or {}
+
+    def verdict(outcome, rule, reason_code, reason):
+        return OutcomeVerdict(outcome=outcome, rule=rule, reason_code=reason_code,
+                              reason=reason, exit_code=OUTCOME_EXIT_CODES[outcome],
+                              declared_faults=declared_display,
+                              observed_faults=tuple(dict.fromkeys(observed)),
+                              traceback=traceback, crash=crash, fault_record=record)
+
+    # R1 -- timeout: our own kill, so nothing about completion can be asserted
+    if evidence.timed_out:
+        return verdict(Outcome.INCOMPLETE, "R1_TIMEOUT", "TIMEOUT",
+                       "the child exceeded --timeout and its process tree was killed; a "
+                       "killed run is not a completed run (child rc is the runner sentinel "
+                       "%d, not a child status)" % TIMEOUT_RETURNCODE)
+    # R2 -- crash
+    if crash.get("crash"):
+        note = ""
+        if declared_display:
+            note = (" | a fault was declared (%s) but an abnormal termination is not the "
+                    "typed fault the test asked for" % ", ".join(declared_display))
+        return verdict(Outcome.CRASH, "R2_CRASH", "CRASH_ABNORMAL_TERMINATION",
+                       "abnormal termination evidence: %s (child rc=%r)%s"
+                       % (", ".join(crash["signals"]), evidence.child_returncode, note))
+    # R3 -- typed fault artifact
+    if record.get("present"):
+        if record.get("run_id") and evidence.run_id and record["run_id"] != evidence.run_id:
+            return verdict(Outcome.UNEXPECTED_FAULT, "R3A_FOREIGN_FAULT_RECORD",
+                           "FAULT_RECORD_RUN_ID_MISMATCH",
+                           "fault artifact belongs to run_id %r but this run is %r; foreign "
+                           "evidence cannot certify (or excuse) this run"
+                           % (record["run_id"], evidence.run_id))
+        if not declared:
+            return verdict(Outcome.UNEXPECTED_FAULT, "R3B_UNDECLARED_FAULT_RECORD",
+                           "FAULT_RECORD_WITHOUT_EXPECTATION",
+                           "%s was written by the child but no fault was declared expected, "
+                           "so the fault is unexpected -- a fault artifact is NEVER SUCCESS "
+                           "and never depends on the child return code (child rc was %r)"
+                           % (record.get("name"), evidence.child_returncode))
+        if not any(_fault_matches(item, observed_tokens, stderr_blob) for item in declared):
+            return verdict(Outcome.UNEXPECTED_FAULT, "R3C_FAULT_MISMATCH",
+                           "FAULT_RECORD_MISMATCH",
+                           "declared fault(s) %s do not match the record (fault=%r code=%r)"
+                           % (list(declared_display), record.get("fault"), record.get("code")))
+        if evidence.gate_is_pass():
+            return verdict(Outcome.UNEXPECTED_FAULT, "R3D_FAULT_RUN_CLAIMED_PASS",
+                           "FAULT_RUN_CLAIMED_PASS",
+                           "the child declared fault %r AND a fully passing result.json; one "
+                           "of the two is false, so the run cannot be accepted"
+                           % (record.get("fault"),))
+        return verdict(Outcome.EXPECTED_FAULT,
+                       "R3E_DECLARED_FAULT_TYPED" if record.get("typed")
+                       else "R3E_DECLARED_FAULT_UNTYPED",
+                       "FAULT_RECORD_TYPED" if record.get("typed")
+                       else "FAULT_RECORD_UNTYPED",
+                       "declared fault %s observed as a %s fault artifact"
+                       % (list(declared_display), "typed" if record.get("typed")
+                          else "present-but-untyped"))
+    # R4 -- traceback on stderr (A2b: Kit reports rc 0, the traceback is the only witness)
+    if traceback.get("detected"):
+        if not declared:
+            return verdict(Outcome.UNEXPECTED_FAULT, "R4A_UNDECLARED_TRACEBACK",
+                           "TRACEBACK_WITHOUT_EXPECTATION",
+                           "child stderr carries a %s (%s at line %r) and no fault was "
+                           "declared expected; child rc was %r, which is exactly the Kit "
+                           "false-success case"
+                           % (traceback.get("tier"), traceback.get("exception_type"),
+                              traceback.get("header_line_number"), evidence.child_returncode))
+        if not any(_fault_matches(item, observed_tokens, stderr_blob) for item in declared):
+            return verdict(Outcome.UNEXPECTED_FAULT, "R4B_TRACEBACK_MISMATCH",
+                           "TRACEBACK_MISMATCH",
+                           "declared fault(s) %s do not name the observed traceback %r"
+                           % (list(declared_display), traceback.get("exception_line")))
+        if evidence.gate_is_pass():
+            return verdict(Outcome.UNEXPECTED_FAULT, "R4C_FAULT_RUN_CLAIMED_PASS",
+                           "FAULT_RUN_CLAIMED_PASS",
+                           "a traceback for the declared fault AND a fully passing "
+                           "result.json: contradictory evidence")
+        return verdict(Outcome.EXPECTED_FAULT, "R4D_DECLARED_FAULT_TRACEBACK",
+                       "TRACEBACK_ONLY",
+                       "declared fault %s proven by the stderr traceback only (no typed "
+                       "fault artifact): weaker evidence, recorded as such"
+                       % (list(declared_display),))
+    # R5 -- a declared fault that never happened is a failed test, not a success
+    if declared:
+        return verdict(Outcome.INCOMPLETE, "R5_EXPECTED_FAULT_ABSENT",
+                       "EXPECTED_FAULT_NOT_OBSERVED",
+                       "fault(s) %s were declared expected but no fault artifact, traceback "
+                       "or crash was observed: the injection did not fire, so neither the "
+                       "test nor the simulation contract is satisfied"
+                       % (list(declared_display),))
+    # R6 -- non-zero child status without any declaration
+    try:
+        child_rc = int(evidence.child_returncode)
+    except (TypeError, ValueError):
+        child_rc = None
+    if child_rc is not None and child_rc != 0:
+        if evidence.gate_is_pass():
+            return verdict(Outcome.UNEXPECTED_FAULT, "R6B_NONZERO_RC_WITH_PASS_ARTIFACT",
+                           "CHILD_NONZERO_EXIT_WITH_PASS_ARTIFACT",
+                           "the child exited %d while result.json is a fully passing gate; "
+                           "a structurally perfect artifact cannot overrule a non-zero "
+                           "process status (fail-closed)" % child_rc)
+        return verdict(Outcome.UNEXPECTED_FAULT, "R6A_NONZERO_RC", "CHILD_NONZERO_EXIT",
+                       "the child exited %d and no fault was declared expected" % child_rc)
+    # R7/R8/R9 -- artifact contract
+    gate_status = gate.get("json_gate_status")
+    if gate_status == GATE_STATUS_MISSING:
+        return verdict(Outcome.INCOMPLETE, "R7_RESULT_JSON_MISSING", "RESULT_JSON_MISSING",
+                       "child rc was 0 but result.json was never written: the run has no "
+                       "completion certificate (Kit swallows the failure, so rc 0 proves "
+                       "nothing)")
+    if gate_status != GATE_STATUS_OK:
+        return verdict(Outcome.INCOMPLETE, "R8_RESULT_JSON_INVALID", "RESULT_JSON_INVALID",
+                       "result.json is not an acceptable gate: %s"
+                       % (gate.get("json_gate_reason") or "INVALID",))
+    if gate.get("json_gate") != "PASS":
+        return verdict(Outcome.INCOMPLETE, "R9_GATE_SAYS_FAIL", "GATE_SAYS_FAIL",
+                       "the run is COMPLETE and its gate_result is %r: an honest negative "
+                       "simulation result (the residual non-success class is INCOMPLETE; "
+                       "read outcome_reason_code, not the class name, to tell an honest "
+                       "FAIL from a truncated run)" % (gate.get("json_gate"),))
+    if not evidence.metadata_consistent:
+        return verdict(Outcome.INCOMPLETE, "R10_METADATA_INCONSISTENT",
+                       "METADATA_INCONSISTENT",
+                       "manifest.json does not agree with the command that was executed")
+    if not evidence.jsonl_valid:
+        return verdict(Outcome.INCOMPLETE, "R10_JSONL_INVALID", "JSONL_INVALID",
+                       "raw_poses.jsonl failed the per-frame integrity contract")
+    return verdict(Outcome.SUCCESS, "R11_ALL_CHECKS_GREEN", "ALL_CHECKS_GREEN",
+                   "child rc 0, no fault artifact, no traceback, result.json PASS with all "
+                   "boolean gates true, manifest consistent, JSONL valid")
+
+
+# ---------------------------------------------------------------------------------------
 # metadata consistency (P0-05): the manifest must not lie about what was actually run
 # ---------------------------------------------------------------------------------------
 GRAVITY_TOL = 1e-6
@@ -897,6 +1439,11 @@ def main(argv=None):
     parser.add_argument("--check-jsonl", default=None, metavar="PATH",
                         help="standalone mode: validate a raw_poses.jsonl and exit 0/1 "
                              "(no child is started)")
+    parser.add_argument("--expect-fault", action="append", default=None, metavar="NAME",
+                        help="declare a fault the child is expected to inject (R10-A). A "
+                             "declared+observed fault is EXPECTED_FAULT (exit 10: the test "
+                             "passed, the simulation did NOT). Forwarding --inject-fault "
+                             "after -- declares it automatically.")
     args, extra = parser.parse_known_args(argv)
     if extra and extra[0] == "--":
         extra = extra[1:]
@@ -922,6 +1469,19 @@ def main(argv=None):
     os.makedirs(out_dir, exist_ok=True)
     result_path = os.path.join(out_dir, "result.json")
     quarantined = _quarantine_stale_result(out_dir, result_path, args.run_id)
+    # A stale fault artifact must not be attributed to THIS child (same reason as result.json)
+    quarantined_fault = _quarantine_stale_fault_record(out_dir)
+    declared_from_cli = [str(item) for item in (args.expect_fault or [])]
+    declared_from_extra = declared_faults_from_extra(extra)
+    declared_faults = list(declared_from_cli)
+    for item in declared_from_extra:
+        if normalize_fault_token(item) not in {normalize_fault_token(x)
+                                              for x in declared_faults}:
+            declared_faults.append(item)
+    declared_source = ("cli+forwarded_child_args"
+                       if declared_from_cli and declared_from_extra else
+                       "cli" if declared_from_cli else
+                       "forwarded_child_args" if declared_from_extra else None)
     prior_evidence = plan["evidence"]
     prior_attempt = 1
     for item in prior_evidence:
@@ -1006,8 +1566,23 @@ def main(argv=None):
     child_ok = child_returncode == 0
     gates_ok = (gate_report["json_gate_status"] == GATE_STATUS_OK) and gate == "PASS"
     metadata_ok = bool(metadata["metadata_consistent"])
-    outer_exit = EXIT_PASS if (child_ok and gates_ok and metadata_ok and jsonl_valid) \
-        else EXIT_FAIL
+
+    # R10-A (A3/A2): the outcome is decided HERE by the pure classifier, not by
+    # (child_ok and gates_ok) alone -- child_ok is exactly the signal Kit lies about.
+    fault_record = read_fault_record(out_dir)
+    verdict = classify_run(RunEvidence(
+        run_id=args.run_id,
+        child_returncode=child_returncode,
+        timed_out=timed_out,
+        stderr_text=stderr_text,
+        gate=gate_report,
+        metadata_consistent=metadata_ok,
+        jsonl_valid=jsonl_valid,
+        fault_record=fault_record,
+        declared_faults=tuple(declared_faults),
+    ))
+    fault_verdict = verdict.as_dict()
+    outer_exit = verdict.exit_code
     summary = {
         "run_id": args.run_id,
         "command": " ".join(command),
@@ -1015,6 +1590,15 @@ def main(argv=None):
         "timed_out": timed_out,
         "timeout_s": args.timeout,
         "quarantined_stale_result": quarantined,
+        "quarantined_stale_fault_record": quarantined_fault,
+        "outcome": verdict.outcome.value,
+        "outcome_rule": verdict.rule,
+        "outcome_reason_code": verdict.reason_code,
+        "outcome_reason": verdict.reason,
+        "outcome_exit": verdict.exit_code,
+        "declared_faults": list(declared_faults),
+        "declared_fault_source": declared_source,
+        "fault_verdict": fault_verdict,
         "json_gate": gate,
         "json_gate_status": gate_report["json_gate_status"],
         "json_gate_reason": gate_report["json_gate_reason"],
@@ -1051,8 +1635,10 @@ def main(argv=None):
         "out_dir_marker": marker_path,
         "descendant_kill": kill_record,
         "residual_risk": _RESIDUAL_RISK if timed_out else None,
-        "note": ("outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; "
-                 "the raw child status is kept so Kit swallowing failures stays visible"),
+        "note": ("outer exit is 0 only for SUCCESS; EXPECTED_FAULT exits %d (the fault "
+                 "injection test passed, the simulation did NOT); every other outcome exits 1. "
+                 "The raw child status is kept so Kit swallowing failures stays visible."
+                 % EXIT_EXPECTED_FAULT),
     }
     summary, summary_non_finite = _json_safe(summary)
     summary["summary_non_finite_paths"] = summary_non_finite
@@ -1063,7 +1649,8 @@ def main(argv=None):
         json.dump(summary, handle, ensure_ascii=False, indent=1, allow_nan=False)
     print(json.dumps({k: summary[k] for k in
                       ("run_id", "child_returncode", "json_gate", "json_gate_status",
-                       "outer_exit", "timed_out", "elapsed_s")},
+                       "outcome", "outcome_reason_code", "outer_exit", "timed_out",
+                       "elapsed_s")},
                      ensure_ascii=False, indent=1))
     return outer_exit
 
