@@ -1,0 +1,39 @@
+{
+ "run_id": "P3_yaw_r13",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_yaw_r13 --out-dir /home/dgut/runs/g/P3_yaw_r13 --profile yaw --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis none",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1500.0,
+ "quarantined_stale_result": null,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "command_amplitude": {
+   "x_m": 0.0,
+   "y_m": 0.0,
+   "z_m": 0.0,
+   "yaw_rad": 0.35,
+   "ramp_s": 1.5
+  },
+  "realized_translation_max_m": 0.001255749,
+  "directed_translation": null,
+  "realized_yaw_max_rad": 0.345357438,
+  "tracking_position_error_max_m": 0.002711065,
+  "tracking_yaw_error_max_rad": 0.013543014,
+  "t0_mount_position_error_m": 5.588e-09,
+  "mount_position_deviation_max_m": 3.0825e-08,
+  "mount_rotation_deviation_max_rad": 9.1857e-08,
+  "joint_deviation_max_rad": 0.036755629,
+  "peak_lin_speed_m_s": 0.033834715,
+  "peak_ang_speed_rad_s": 0.156382146,
+  "peak_jerk_m_s3": 826.686404,
+  "arm_peak_contact_n": 0.0,
+  "steps": 360
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 32.809,
+ "child_stdout_log": "/home/dgut/runs/g/P3_yaw_r13/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P3_yaw_r13/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}
