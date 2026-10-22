@@ -22,7 +22,7 @@ import os
 import time
 
 REAL_ARM = ("/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs"
-            "/usd/rebot_b601_rs.usd")
+            "/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda")
 ARM_DIGEST = "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510"
 DT = 1.0 / 120.0
 ENV_OFFSET_Y = 1.0
