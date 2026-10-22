@@ -1,0 +1,211 @@
+{
+  "bucket_edges": {
+    "10-20px": [
+      10.0,
+      20.0
+    ],
+    "4-6px": [
+      4.0,
+      6.0
+    ],
+    "6-10px": [
+      6.0,
+      10.0
+    ],
+    ">20px": [
+      20.0,
+      null
+    ]
+  },
+  "buckets": {},
+  "claim": "OFFLINE-SYNTHETIC",
+  "counts": {
+    "gt_frames": 120,
+    "gt_negative_frames": 13,
+    "gt_objects": 153,
+    "predicted_frames": 85,
+    "predictions": 98,
+    "rejected_frames": 0
+  },
+  "detection_schema_source": "FALLBACK_COMPAT",
+  "inputs": {
+    "ground_truth": {
+      "path": "E:\\具身智能\\badmin_wt_p7b\\outputs\\p7_eval\\fixtures\\ground_truth.jsonl",
+      "records": 120
+    },
+    "predictions": {
+      "path": "E:\\具身智能\\badmin_wt_p7b\\outputs\\p7_eval\\fixtures\\predictions.jsonl",
+      "records": 98
+    }
+  },
+  "latency": {
+    "max_ms": 65.2583,
+    "mean_ms": 24.7849,
+    "min_ms": 8.5459,
+    "n": 98,
+    "note": "offline batch latency of the FIXTURE files, not camera-to-command latency",
+    "p50_ms": 22.9356,
+    "p90_ms": 37.0428,
+    "p95_ms": 43.2692,
+    "p99_ms": 58.7595
+  },
+  "matching_rules": {
+    "centre": {
+      "overall": {
+        "ap": 0.5932,
+        "fn": 61,
+        "fp": 6,
+        "mean_iou": 0.92,
+        "precision": 0.9388,
+        "recall": 0.6013,
+        "tp": 92
+      },
+      "per_bucket": {
+        "10-20px": {
+          "ap": 0.8081,
+          "detections": 37,
+          "fn": 8,
+          "fp": 2,
+          "gt_objects": 43,
+          "mean_iou": 0.9251,
+          "precision": 0.9459,
+          "recall": 0.814,
+          "status": "SCORED",
+          "tp": 35
+        },
+        "4-6px": {
+          "ap": 0.2,
+          "detections": 5,
+          "fn": 15,
+          "fp": 1,
+          "gt_objects": 19,
+          "mean_iou": 0.8526,
+          "precision": 0.8,
+          "recall": 0.2105,
+          "status": "SCORED",
+          "tp": 4
+        },
+        "6-10px": {
+          "ap": 0.611,
+          "detections": 22,
+          "fn": 13,
+          "fp": 1,
+          "gt_objects": 34,
+          "mean_iou": 0.8874,
+          "precision": 0.9545,
+          "recall": 0.6176,
+          "status": "SCORED",
+          "tp": 21
+        },
+        "<4px": {
+          "ap": 0.0833,
+          "detections": 3,
+          "fn": 22,
+          "fp": 1,
+          "gt_objects": 24,
+          "mean_iou": 0.7495,
+          "precision": 0.6667,
+          "recall": 0.0833,
+          "status": "SCORED",
+          "tp": 2
+        },
+        ">20px": {
+          "ap": 0.9091,
+          "detections": 31,
+          "fn": 3,
+          "fp": 1,
+          "gt_objects": 33,
+          "mean_iou": 0.9572,
+          "precision": 0.9677,
+          "recall": 0.9091,
+          "status": "SCORED",
+          "tp": 30
+        }
+      }
+    },
+    "iou50": {
+      "overall": {
+        "ap": 0.5932,
+        "fn": 61,
+        "fp": 6,
+        "mean_iou": 0.92,
+        "precision": 0.9388,
+        "recall": 0.6013,
+        "tp": 92
+      },
+      "per_bucket": {
+        "10-20px": {
+          "ap": 0.8081,
+          "detections": 37,
+          "fn": 8,
+          "fp": 2,
+          "gt_objects": 43,
+          "mean_iou": 0.9251,
+          "precision": 0.9459,
+          "recall": 0.814,
+          "status": "SCORED",
+          "tp": 35
+        },
+        "4-6px": {
+          "ap": 0.2,
+          "detections": 5,
+          "fn": 15,
+          "fp": 1,
+          "gt_objects": 19,
+          "mean_iou": 0.8526,
+          "precision": 0.8,
+          "recall": 0.2105,
+          "status": "SCORED",
+          "tp": 4
+        },
+        "6-10px": {
+          "ap": 0.611,
+          "detections": 22,
+          "fn": 13,
+          "fp": 1,
+          "gt_objects": 34,
+          "mean_iou": 0.8874,
+          "precision": 0.9545,
+          "recall": 0.6176,
+          "status": "SCORED",
+          "tp": 21
+        },
+        "<4px": {
+          "ap": 0.0833,
+          "detections": 3,
+          "fn": 22,
+          "fp": 1,
+          "gt_objects": 24,
+          "mean_iou": 0.7495,
+          "precision": 0.6667,
+          "recall": 0.0833,
+          "status": "SCORED",
+          "tp": 2
+        },
+        ">20px": {
+          "ap": 0.9091,
+          "detections": 31,
+          "fn": 3,
+          "fp": 1,
+          "gt_objects": 33,
+          "mean_iou": 0.9572,
+          "precision": 0.9677,
+          "recall": 0.9091,
+          "status": "SCORED",
+          "tp": 30
+        }
+      }
+    }
+  },
+  "notes": [
+    "No model was run by this harness; it only scores two JSONL files.",
+    "This is NOT a real-detector accuracy claim, NOT a closed-loop result and NOT measured D455 data."
+  ],
+  "p7_schema_module": null,
+  "primary_matching_rule": "iou50",
+  "provenance": "SYNTHETIC_FIXTURE",
+  "real_detector_accuracy": false,
+  "schema": "badmin.p7.size_bucket_eval",
+  "schema_version": 1,
+  "split": "val"
+}

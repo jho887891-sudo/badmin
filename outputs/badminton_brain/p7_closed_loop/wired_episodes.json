@@ -1,0 +1,4168 @@
+{
+  "episode_reports": {},
+  "hit_rate": null,
+  "proxy_dh": {
+    "backend": "proxy_dh",
+    "episode_reports": [
+      {
+        "backend": "proxy_dh",
+        "backend_provenance": {
+          "backend": "proxy_dh",
+          "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6",
+          "dof": 6,
+          "frame_name": "racket_face_proxy",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6"
+          ],
+          "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+          "source_class": "PROXY_DH_ENGINEERING_V0_1",
+          "target_kind": "RACKET_FACE_PROXY"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 0,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 0,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.8945 m / 0.9996 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 3,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.8945 m / 0.9996 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.05,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 2.0
+          }
+        },
+        "geometry": [],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 0,
+        "geometry_evaluations": 0,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": null,
+        "ik_residual_rotation_rad": null,
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:IK_NOT_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": null,
+        "robot": null,
+        "scenario": "FIXED_BALL",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 20261022,
+        "states_entered": {
+          "HOLD": 1,
+          "PREDICT": 1,
+          "SEARCH": 1,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 0,
+        "steps_requested": 12,
+        "time_to_target_margin_s": null,
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "proxy_dh",
+            "backend_source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "racket_face_proxy",
+            "intercept_point_m": [
+              0.347545,
+              0.050412,
+              0.403795
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.002490533,
+            "reason": "IK_NOT_CONVERGED",
+            "required_slew_s": null,
+            "step": 0,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      },
+      {
+        "backend": "proxy_dh",
+        "backend_provenance": {
+          "backend": "proxy_dh",
+          "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6",
+          "dof": 6,
+          "frame_name": "racket_face_proxy",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6"
+          ],
+          "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+          "source_class": "PROXY_DH_ENGINEERING_V0_1",
+          "target_kind": "RACKET_FACE_PROXY"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 0,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 0,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.9939 m / 0.9999 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 3,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.9939 m / 0.9999 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.05,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 2.0
+          }
+        },
+        "geometry": [],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 0,
+        "geometry_evaluations": 0,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": null,
+        "ik_residual_rotation_rad": null,
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:IK_NOT_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": null,
+        "robot": null,
+        "scenario": "FIXED_BALL",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 7,
+        "states_entered": {
+          "HOLD": 1,
+          "PREDICT": 1,
+          "SEARCH": 1,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 0,
+        "steps_requested": 12,
+        "time_to_target_margin_s": null,
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "proxy_dh",
+            "backend_source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "racket_face_proxy",
+            "intercept_point_m": [
+              0.347881,
+              0.050111,
+              0.404055
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.002130761,
+            "reason": "IK_NOT_CONVERGED",
+            "required_slew_s": null,
+            "step": 0,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      },
+      {
+        "backend": "proxy_dh",
+        "backend_provenance": {
+          "backend": "proxy_dh",
+          "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6",
+          "dof": 6,
+          "frame_name": "racket_face_proxy",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6"
+          ],
+          "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+          "source_class": "PROXY_DH_ENGINEERING_V0_1",
+          "target_kind": "RACKET_FACE_PROXY"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 0,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 0,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_NOT_CONVERGED: IK did not converge: residual 1.0491 m / 0.9991 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 3,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "IK_NOT_CONVERGED: IK did not converge: residual 1.0491 m / 0.9991 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.05,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 2.0
+          }
+        },
+        "geometry": [],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 0,
+        "geometry_evaluations": 0,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": null,
+        "ik_residual_rotation_rad": null,
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:IK_NOT_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": null,
+        "robot": null,
+        "scenario": "FIXED_BALL",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 8,
+        "states_entered": {
+          "HOLD": 1,
+          "PREDICT": 1,
+          "SEARCH": 1,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 0,
+        "steps_requested": 12,
+        "time_to_target_margin_s": null,
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "proxy_dh",
+            "backend_source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "racket_face_proxy",
+            "intercept_point_m": [
+              0.352778,
+              0.052029,
+              0.405167
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.003678053,
+            "reason": "IK_NOT_CONVERGED",
+            "required_slew_s": null,
+            "step": 0,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      },
+      {
+        "backend": "proxy_dh",
+        "backend_provenance": {
+          "backend": "proxy_dh",
+          "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6",
+          "dof": 6,
+          "frame_name": "racket_face_proxy",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6"
+          ],
+          "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+          "source_class": "PROXY_DH_ENGINEERING_V0_1",
+          "target_kind": "RACKET_FACE_PROXY"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 0,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 0,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.8945 m / 0.9996 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 3,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.8945 m / 0.9996 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.05,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 2.0
+          }
+        },
+        "geometry": [],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 0,
+        "geometry_evaluations": 0,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": null,
+        "ik_residual_rotation_rad": null,
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:IK_NOT_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": null,
+        "robot": null,
+        "scenario": "LOW_SPEED_INCOMING",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 20261022,
+        "states_entered": {
+          "HOLD": 1,
+          "PREDICT": 1,
+          "SEARCH": 1,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 0,
+        "steps_requested": 12,
+        "time_to_target_margin_s": null,
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "proxy_dh",
+            "backend_source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "racket_face_proxy",
+            "intercept_point_m": [
+              0.347545,
+              0.050412,
+              0.403795
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.002490533,
+            "reason": "IK_NOT_CONVERGED",
+            "required_slew_s": null,
+            "step": 0,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      },
+      {
+        "backend": "proxy_dh",
+        "backend_provenance": {
+          "backend": "proxy_dh",
+          "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6",
+          "dof": 6,
+          "frame_name": "racket_face_proxy",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6"
+          ],
+          "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+          "source_class": "PROXY_DH_ENGINEERING_V0_1",
+          "target_kind": "RACKET_FACE_PROXY"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 0,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 0,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.9939 m / 0.9999 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 3,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.9939 m / 0.9999 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.05,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 2.0
+          }
+        },
+        "geometry": [],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 0,
+        "geometry_evaluations": 0,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": null,
+        "ik_residual_rotation_rad": null,
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:IK_NOT_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": null,
+        "robot": null,
+        "scenario": "LOW_SPEED_INCOMING",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 7,
+        "states_entered": {
+          "HOLD": 1,
+          "PREDICT": 1,
+          "SEARCH": 1,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 0,
+        "steps_requested": 12,
+        "time_to_target_margin_s": null,
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "proxy_dh",
+            "backend_source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "racket_face_proxy",
+            "intercept_point_m": [
+              0.347881,
+              0.050111,
+              0.404055
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.002130761,
+            "reason": "IK_NOT_CONVERGED",
+            "required_slew_s": null,
+            "step": 0,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      },
+      {
+        "backend": "proxy_dh",
+        "backend_provenance": {
+          "backend": "proxy_dh",
+          "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6",
+          "dof": 6,
+          "frame_name": "racket_face_proxy",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6"
+          ],
+          "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+          "source_class": "PROXY_DH_ENGINEERING_V0_1",
+          "target_kind": "RACKET_FACE_PROXY"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 0,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 0,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_NOT_CONVERGED: IK did not converge: residual 1.0491 m / 0.9991 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 3,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "IK_NOT_CONVERGED: IK did not converge: residual 1.0491 m / 0.9991 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.05,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 2.0
+          }
+        },
+        "geometry": [],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 0,
+        "geometry_evaluations": 0,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": null,
+        "ik_residual_rotation_rad": null,
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:IK_NOT_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": null,
+        "robot": null,
+        "scenario": "LOW_SPEED_INCOMING",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 8,
+        "states_entered": {
+          "HOLD": 1,
+          "PREDICT": 1,
+          "SEARCH": 1,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 0,
+        "steps_requested": 12,
+        "time_to_target_margin_s": null,
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "proxy_dh",
+            "backend_source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "racket_face_proxy",
+            "intercept_point_m": [
+              0.352778,
+              0.052029,
+              0.405167
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.003678053,
+            "reason": "IK_NOT_CONVERGED",
+            "required_slew_s": null,
+            "step": 0,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      },
+      {
+        "backend": "proxy_dh",
+        "backend_provenance": {
+          "backend": "proxy_dh",
+          "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6",
+          "dof": 6,
+          "frame_name": "racket_face_proxy",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6"
+          ],
+          "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+          "source_class": "PROXY_DH_ENGINEERING_V0_1",
+          "target_kind": "RACKET_FACE_PROXY"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 0,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 0,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0024785849844483113,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0024785849844483113,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.6956 m / 0.9976 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 3,
+              "sigma_m": 0.0024785849844483113,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.6956 m / 0.9976 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.05,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 2.0
+          }
+        },
+        "geometry": [],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 0,
+        "geometry_evaluations": 0,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": null,
+        "ik_residual_rotation_rad": null,
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:IK_NOT_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": null,
+        "robot": null,
+        "scenario": "PERTURBED",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 20261022,
+        "states_entered": {
+          "HOLD": 1,
+          "PREDICT": 1,
+          "SEARCH": 1,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 0,
+        "steps_requested": 12,
+        "time_to_target_margin_s": null,
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "proxy_dh",
+            "backend_source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "racket_face_proxy",
+            "intercept_point_m": [
+              0.346654,
+              0.050284,
+              0.401611
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.002487772,
+            "reason": "IK_NOT_CONVERGED",
+            "required_slew_s": null,
+            "step": 0,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      },
+      {
+        "backend": "proxy_dh",
+        "backend_provenance": {
+          "backend": "proxy_dh",
+          "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6",
+          "dof": 6,
+          "frame_name": "racket_face_proxy",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6"
+          ],
+          "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+          "source_class": "PROXY_DH_ENGINEERING_V0_1",
+          "target_kind": "RACKET_FACE_PROXY"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 0,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 0,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.002124942154382318,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.002124942154382318,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.9116 m / 0.9998 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 3,
+              "sigma_m": 0.002124942154382318,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.9116 m / 0.9998 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.05,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 2.0
+          }
+        },
+        "geometry": [],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 0,
+        "geometry_evaluations": 0,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": null,
+        "ik_residual_rotation_rad": null,
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:IK_NOT_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": null,
+        "robot": null,
+        "scenario": "PERTURBED",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 7,
+        "states_entered": {
+          "HOLD": 1,
+          "PREDICT": 1,
+          "SEARCH": 1,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 0,
+        "steps_requested": 12,
+        "time_to_target_margin_s": null,
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "proxy_dh",
+            "backend_source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "racket_face_proxy",
+            "intercept_point_m": [
+              0.347886,
+              0.051305,
+              0.402959
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.002130722,
+            "reason": "IK_NOT_CONVERGED",
+            "required_slew_s": null,
+            "step": 0,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      },
+      {
+        "backend": "proxy_dh",
+        "backend_provenance": {
+          "backend": "proxy_dh",
+          "detail": "P7-09 proxy DH table, 6 revolute joints, tool = face centre 0.50 m along +z of link6",
+          "dof": 6,
+          "frame_name": "racket_face_proxy",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6"
+          ],
+          "limit_source": "ENGINEERING_V0_1 PROXY. The PiPER/B601-RS URDF is not in this repository and no unit has been measured. Link lengths below are placeholders chosen to match the published PiPER class geometry (about 1.25 m to the racket face centre); they are NOT measured and NOT verified. Replace with URDF-derived values before any real reachability claim.",
+          "source_class": "PROXY_DH_ENGINEERING_V0_1",
+          "target_kind": "RACKET_FACE_PROXY"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 0,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 0,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.003617511486686196,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.003617511486686196,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.6944 m / 0.9987 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 3,
+              "sigma_m": 0.003617511486686196,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "IK_NOT_CONVERGED: IK did not converge: residual 0.6944 m / 0.9987 rad (tol 1.0e-04 m / 1.0e-03 rad); no approximate pose is emitted",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.05,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 2.0
+          }
+        },
+        "geometry": [],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 0,
+        "geometry_evaluations": 0,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": null,
+        "ik_residual_rotation_rad": null,
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:IK_NOT_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": null,
+        "robot": null,
+        "scenario": "PERTURBED",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 8,
+        "states_entered": {
+          "HOLD": 1,
+          "PREDICT": 1,
+          "SEARCH": 1,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 0,
+        "steps_requested": 12,
+        "time_to_target_margin_s": null,
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "proxy_dh",
+            "backend_source_class": "PROXY_DH_ENGINEERING_V0_1",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "racket_face_proxy",
+            "intercept_point_m": [
+              0.345802,
+              0.046665,
+              0.399708
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.003646254,
+            "reason": "IK_NOT_CONVERGED",
+            "required_slew_s": null,
+            "step": 0,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      }
+    ],
+    "episodes": 9,
+    "episodes_ending_in_hold": 9,
+    "episodes_refused": 0,
+    "evidence_class": "SIMULATION-ONLY",
+    "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+    "geometry_contacts": 0,
+    "geometry_evaluations": 0,
+    "hit_rate": null,
+    "hold_reasons_total": {
+      "UNREACHABLE_TARGET": 9
+    },
+    "ik_residual_position_m": null,
+    "reachability_verdicts_total": {
+      "NOT_REACHABLE:IK_NOT_CONVERGED": 9
+    },
+    "real_hit_rate_claimed": false,
+    "revolute_joint_margin_rad": null,
+    "schema": "badmin.p7.wired_closed_loop.summary",
+    "schema_version": 1,
+    "states_entered_total": {
+      "HOLD": 9,
+      "PREDICT": 9,
+      "SEARCH": 9,
+      "TRACK": 9
+    },
+    "time_to_target_margin_s": null
+  },
+  "real_hit_rate_claimed": false,
+  "schema": "badmin.p7.wired_episodes",
+  "schema_version": 1,
+  "seeds": [
+    20261022,
+    7,
+    8
+  ],
+  "status": "WIRED_RUN_COMPLETE",
+  "verified_p6_fk": {
+    "backend": "verified_p6_fk",
+    "episode_reports": [
+      {
+        "backend": "verified_p6_fk",
+        "backend_provenance": {
+          "backend": "verified_p6_fk",
+          "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+          "dof": 8,
+          "fk_module_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+          "fk_module_sha256": "3901939ba3a71f6dc6f78aac195f5b132120221950c760ca7be872c2eb3c34ac",
+          "frame_name": "gripper_end",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
+            "gripper_joint1",
+            "gripper_joint2"
+          ],
+          "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+          "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only",
+          "source_class": "VERIFIED_ASSET_KINEMATICS",
+          "target_kind": "ARM_END_FRAME"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 1,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 1,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_CONVERGED: IK converged (residual 2.39e-05 m / 7.11e-07 rad) with joint margin 0.0250 rad and 0.1670 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 3,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "command accepted by the P5-05 envelope",
+              "from": "PLAN",
+              "reason": null,
+              "seq": 4,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "EXECUTE",
+              "trigger": "COMMAND"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "frame 1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 5,
+              "sigma_m": 0.005167842949976571,
+              "time_to_hit_s": null,
+              "to": "EXECUTE",
+              "trigger": "FRAME_UPDATE"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "prediction ekf+physics-1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 6,
+              "sigma_m": 0.005167842949976571,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "IK_CONVERGED: IK converged (residual 8.58e-05 m / 1.43e-06 rad) with joint margin 0.0250 rad and 0.3965 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 7,
+              "sigma_m": 0.005167842949976571,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "setpoint rate 47.5851 rad/s > P5-05 cap 0.0500 rad/s",
+              "from": "PLAN",
+              "reason": "COMMAND_OVER_CAP",
+              "seq": 8,
+              "sigma_m": null,
+              "time_to_hit_s": null,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "setpoint rate 47.5851 rad/s > P5-05 cap 0.0500 rad/s",
+            "latched": true,
+            "reason": "COMMAND_OVER_CAP"
+          },
+          "hold_reasons_seen": {
+            "COMMAND_OVER_CAP": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.01,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 0.05
+          }
+        },
+        "geometry": [
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.030986504304964076,
+            "contacted": true,
+            "face_position_m": [
+              0.347531,
+              0.050431,
+              0.403787
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 0
+          },
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.030963503065081277,
+            "contacted": true,
+            "face_position_m": [
+              0.543288,
+              -0.006275,
+              0.373442
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 1
+          }
+        ],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 2,
+        "geometry_evaluations": 2,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "COMMAND_OVER_CAP": 1
+        },
+        "ik_residual_position_m": {
+          "count": 2,
+          "max": 8.575397561236079e-05,
+          "mean": 5.4826333398574014e-05,
+          "min": 2.3898691184787245e-05,
+          "p50": 5.4826333398574014e-05,
+          "p90": 7.956844716960344e-05
+        },
+        "ik_residual_rotation_rad": {
+          "count": 2,
+          "max": 1.4317693321857506e-06,
+          "mean": 1.071182532583525e-06,
+          "min": 7.105957329812995e-07,
+          "p50": 1.071182532583525e-06,
+          "p90": 1.3596519722653055e-06
+        },
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "REACHABLE:IK_CONVERGED": 2
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": {
+          "count": 2,
+          "max": 1.2069469878846775,
+          "mean": 0.9804860045198855,
+          "min": 0.7540250211550935,
+          "p50": 0.9804860045198855,
+          "p90": 1.161654791211719
+        },
+        "robot": null,
+        "scenario": "FIXED_BALL",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 20261022,
+        "states_entered": {
+          "EXECUTE": 2,
+          "HOLD": 1,
+          "PLAN": 2,
+          "PREDICT": 2,
+          "SEARCH": 2,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 1,
+        "steps_requested": 12,
+        "time_to_target_margin_s": {
+          "count": 2,
+          "max": 0.281000456064791,
+          "mean": 0.16622887120865118,
+          "min": 0.051457286352511344,
+          "p50": 0.16622887120865118,
+          "p90": 0.25804613909356305
+        },
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.030986504304964076,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 4,
+            "ik_residual_position_m": 2.3898691184787245e-05,
+            "ik_residual_rotation_rad": 7.105957329812995e-07,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.347545,
+              0.050412,
+              0.403795
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.002490533,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.16699954393520955,
+            "revolute_joint_margin": 0.7540250211550935,
+            "step": 0,
+            "time_to_target_margin_s": 0.281000456064791,
+            "time_to_target_s": 0.44800000000000056
+          },
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.030963503065081277,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 6,
+            "ik_residual_position_m": 8.575397561236079e-05,
+            "ik_residual_rotation_rad": 1.4317693321857506e-06,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.543324,
+              -0.00628,
+              0.37352
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.00604808,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.3965427136474892,
+            "revolute_joint_margin": 1.2069469878846775,
+            "step": 1,
+            "time_to_target_margin_s": 0.051457286352511344,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      },
+      {
+        "backend": "verified_p6_fk",
+        "backend_provenance": {
+          "backend": "verified_p6_fk",
+          "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+          "dof": 8,
+          "fk_module_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+          "fk_module_sha256": "3901939ba3a71f6dc6f78aac195f5b132120221950c760ca7be872c2eb3c34ac",
+          "frame_name": "gripper_end",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
+            "gripper_joint1",
+            "gripper_joint2"
+          ],
+          "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+          "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only",
+          "source_class": "VERIFIED_ASSET_KINEMATICS",
+          "target_kind": "ARM_END_FRAME"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 1,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 1,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_CONVERGED: IK converged (residual 2.23e-05 m / 6.82e-07 rad) with joint margin 0.0250 rad and 0.1657 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 3,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "command accepted by the P5-05 envelope",
+              "from": "PLAN",
+              "reason": null,
+              "seq": 4,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "EXECUTE",
+              "trigger": "COMMAND"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "frame 1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 5,
+              "sigma_m": 0.0036227742713837085,
+              "time_to_hit_s": null,
+              "to": "EXECUTE",
+              "trigger": "FRAME_UPDATE"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "prediction ekf+physics-1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 6,
+              "sigma_m": 0.0036227742713837085,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "IK_CONVERGED: IK converged (residual 8.82e-08 m / 4.26e-08 rad) with joint margin 0.0250 rad and 0.3032 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 7,
+              "sigma_m": 0.0036227742713837085,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "setpoint rate 36.3819 rad/s > P5-05 cap 0.0500 rad/s",
+              "from": "PLAN",
+              "reason": "COMMAND_OVER_CAP",
+              "seq": 8,
+              "sigma_m": null,
+              "time_to_hit_s": null,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "setpoint rate 36.3819 rad/s > P5-05 cap 0.0500 rad/s",
+            "latched": true,
+            "reason": "COMMAND_OVER_CAP"
+          },
+          "hold_reasons_seen": {
+            "COMMAND_OVER_CAP": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.01,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 0.05
+          }
+        },
+        "geometry": [
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.03098754327716543,
+            "contacted": true,
+            "face_position_m": [
+              0.347868,
+              0.050128,
+              0.404048
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 0
+          },
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.030999913186117646,
+            "contacted": true,
+            "face_position_m": [
+              0.495835,
+              0.045105,
+              0.358438
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 1
+          }
+        ],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 2,
+        "geometry_evaluations": 2,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "COMMAND_OVER_CAP": 1
+        },
+        "ik_residual_position_m": {
+          "count": 2,
+          "max": 2.2303388679831023e-05,
+          "mean": 1.119577468537222e-05,
+          "min": 8.81606909134149e-08,
+          "p50": 1.119577468537222e-05,
+          "p90": 2.0081865880939262e-05
+        },
+        "ik_residual_rotation_rad": {
+          "count": 2,
+          "max": 6.81657617256247e-07,
+          "mean": 3.621056280675684e-07,
+          "min": 4.255363887888974e-08,
+          "p50": 3.621056280675684e-07,
+          "p90": 6.177472194185113e-07
+        },
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "REACHABLE:IK_CONVERGED": 2
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": {
+          "count": 2,
+          "max": 0.9800553780669051,
+          "mean": 0.8677391923010639,
+          "min": 0.7554230065352227,
+          "p50": 0.8677391923010639,
+          "p90": 0.9575921409137369
+        },
+        "robot": null,
+        "scenario": "FIXED_BALL",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 7,
+        "states_entered": {
+          "EXECUTE": 2,
+          "HOLD": 1,
+          "PLAN": 2,
+          "PREDICT": 2,
+          "SEARCH": 2,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 1,
+        "steps_requested": 12,
+        "time_to_target_margin_s": {
+          "count": 2,
+          "max": 0.28228489478883245,
+          "mean": 0.2135512217376626,
+          "min": 0.14481754868649277,
+          "p50": 0.2135512217376626,
+          "p90": 0.2685381601785985
+        },
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.03098754327716543,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 4,
+            "ik_residual_position_m": 2.2303388679831023e-05,
+            "ik_residual_rotation_rad": 6.81657617256247e-07,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.347881,
+              0.050111,
+              0.404055
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.002130761,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.16571510521116814,
+            "revolute_joint_margin": 0.7554230065352227,
+            "step": 0,
+            "time_to_target_margin_s": 0.28228489478883245,
+            "time_to_target_s": 0.44800000000000056
+          },
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.030999913186117646,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 6,
+            "ik_residual_position_m": 8.81606909134149e-08,
+            "ik_residual_rotation_rad": 4.255363887888974e-08,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.495835,
+              0.045105,
+              0.358438
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.003894947,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.3031824513135078,
+            "revolute_joint_margin": 0.9800553780669051,
+            "step": 1,
+            "time_to_target_margin_s": 0.14481754868649277,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      },
+      {
+        "backend": "verified_p6_fk",
+        "backend_provenance": {
+          "backend": "verified_p6_fk",
+          "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+          "dof": 8,
+          "fk_module_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+          "fk_module_sha256": "3901939ba3a71f6dc6f78aac195f5b132120221950c760ca7be872c2eb3c34ac",
+          "frame_name": "gripper_end",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
+            "gripper_joint1",
+            "gripper_joint2"
+          ],
+          "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+          "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only",
+          "source_class": "VERIFIED_ASSET_KINEMATICS",
+          "target_kind": "ARM_END_FRAME"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 1,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 1,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_CONVERGED: IK converged (residual 8.64e-06 m / 3.26e-07 rad) with joint margin 0.0250 rad and 0.1664 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 3,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "command accepted by the P5-05 envelope",
+              "from": "PLAN",
+              "reason": null,
+              "seq": 4,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "EXECUTE",
+              "trigger": "COMMAND"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "frame 1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 5,
+              "sigma_m": 0.007392730718812617,
+              "time_to_hit_s": null,
+              "to": "EXECUTE",
+              "trigger": "FRAME_UPDATE"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "prediction ekf+physics-1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 6,
+              "sigma_m": 0.007392730718812617,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "IK_CONVERGED: IK converged (residual 2.80e-05 m / 8.30e-07 rad) with joint margin 0.0250 rad and 0.3490 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 7,
+              "sigma_m": 0.007392730718812617,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "setpoint rate 41.8744 rad/s > P5-05 cap 0.0500 rad/s",
+              "from": "PLAN",
+              "reason": "COMMAND_OVER_CAP",
+              "seq": 8,
+              "sigma_m": null,
+              "time_to_hit_s": null,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "setpoint rate 41.8744 rad/s > P5-05 cap 0.0500 rad/s",
+            "latched": true,
+            "reason": "COMMAND_OVER_CAP"
+          },
+          "hold_reasons_seen": {
+            "COMMAND_OVER_CAP": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.01,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 0.05
+          }
+        },
+        "geometry": [
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.030996827553269036,
+            "contacted": true,
+            "face_position_m": [
+              0.352775,
+              0.052035,
+              0.405162
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 0
+          },
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.030972739185767324,
+            "contacted": true,
+            "face_position_m": [
+              0.510738,
+              0.018213,
+              0.310252
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 1
+          }
+        ],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 2,
+        "geometry_evaluations": 2,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "COMMAND_OVER_CAP": 1
+        },
+        "ik_residual_position_m": {
+          "count": 2,
+          "max": 2.8037845408515043e-05,
+          "mean": 1.8339740216971392e-05,
+          "min": 8.641635025427737e-06,
+          "p50": 1.8339740216971392e-05,
+          "p90": 2.6098224370206313e-05
+        },
+        "ik_residual_rotation_rad": {
+          "count": 2,
+          "max": 8.298416904627736e-07,
+          "mean": 5.77699919969126e-07,
+          "min": 3.255581494754784e-07,
+          "p50": 5.77699919969126e-07,
+          "p90": 7.794133363640441e-07
+        },
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "REACHABLE:IK_CONVERGED": 2
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": {
+          "count": 2,
+          "max": 0.8520939062492199,
+          "mean": 0.8158338991293839,
+          "min": 0.7795738920095477,
+          "p50": 0.8158338991293839,
+          "p90": 0.8448419048252527
+        },
+        "robot": null,
+        "scenario": "FIXED_BALL",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 8,
+        "states_entered": {
+          "EXECUTE": 2,
+          "HOLD": 1,
+          "PLAN": 2,
+          "PREDICT": 2,
+          "SEARCH": 2,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 1,
+        "steps_requested": 12,
+        "time_to_target_margin_s": {
+          "count": 2,
+          "max": 0.28163650365790105,
+          "mean": 0.19034153880891697,
+          "min": 0.09904657395993288,
+          "p50": 0.19034153880891697,
+          "p90": 0.2633775106881042
+        },
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.030996827553269036,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 4,
+            "ik_residual_position_m": 8.641635025427737e-06,
+            "ik_residual_rotation_rad": 3.255581494754784e-07,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.352778,
+              0.052029,
+              0.405167
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.003678053,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.16636349634209954,
+            "revolute_joint_margin": 0.7795738920095477,
+            "step": 0,
+            "time_to_target_margin_s": 0.28163650365790105,
+            "time_to_target_s": 0.44800000000000056
+          },
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.030972739185767324,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 6,
+            "ik_residual_position_m": 2.8037845408515043e-05,
+            "ik_residual_rotation_rad": 8.298416904627736e-07,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.510765,
+              0.018211,
+              0.310247
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.010616169,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.3489534260400677,
+            "revolute_joint_margin": 0.8520939062492199,
+            "step": 1,
+            "time_to_target_margin_s": 0.09904657395993288,
+            "time_to_target_s": 0.44800000000000056
+          }
+        ]
+      },
+      {
+        "backend": "verified_p6_fk",
+        "backend_provenance": {
+          "backend": "verified_p6_fk",
+          "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+          "dof": 8,
+          "fk_module_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+          "fk_module_sha256": "3901939ba3a71f6dc6f78aac195f5b132120221950c760ca7be872c2eb3c34ac",
+          "frame_name": "gripper_end",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
+            "gripper_joint1",
+            "gripper_joint2"
+          ],
+          "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+          "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only",
+          "source_class": "VERIFIED_ASSET_KINEMATICS",
+          "target_kind": "ARM_END_FRAME"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 1,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 1,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_CONVERGED: IK converged (residual 2.39e-05 m / 7.11e-07 rad) with joint margin 0.0250 rad and 0.1670 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 3,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "command accepted by the P5-05 envelope",
+              "from": "PLAN",
+              "reason": null,
+              "seq": 4,
+              "sigma_m": 0.0024813155217735692,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "EXECUTE",
+              "trigger": "COMMAND"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "frame 1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 5,
+              "sigma_m": 0.005169203519973166,
+              "time_to_hit_s": null,
+              "to": "EXECUTE",
+              "trigger": "FRAME_UPDATE"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "prediction ekf+physics-1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 6,
+              "sigma_m": 0.005169203519973166,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "WORKSPACE_BOUND: face centre (0.7147820128143, 0.08130636651671497, -0.3582894048701592) is outside the workspace box on ['z']",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 7,
+              "sigma_m": 0.005169203519973166,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "WORKSPACE_BOUND: face centre (0.7147820128143, 0.08130636651671497, -0.3582894048701592) is outside the workspace box on ['z']",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.01,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 0.05
+          }
+        },
+        "geometry": [
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.030986504304964076,
+            "contacted": true,
+            "face_position_m": [
+              0.347531,
+              0.050431,
+              0.403787
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 0
+          }
+        ],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 1,
+        "geometry_evaluations": 1,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": {
+          "count": 1,
+          "max": 2.3898691184787245e-05,
+          "mean": 2.3898691184787245e-05,
+          "min": 2.3898691184787245e-05,
+          "p50": 2.3898691184787245e-05,
+          "p90": 2.3898691184787245e-05
+        },
+        "ik_residual_rotation_rad": {
+          "count": 1,
+          "max": 7.105957329812995e-07,
+          "mean": 7.105957329812995e-07,
+          "min": 7.105957329812995e-07,
+          "p50": 7.105957329812995e-07,
+          "p90": 7.105957329812995e-07
+        },
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:WORKSPACE_BOUND": 1,
+          "REACHABLE:IK_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": {
+          "count": 1,
+          "max": 0.7540250211550935,
+          "mean": 0.7540250211550935,
+          "min": 0.7540250211550935,
+          "p50": 0.7540250211550935,
+          "p90": 0.7540250211550935
+        },
+        "robot": null,
+        "scenario": "LOW_SPEED_INCOMING",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 20261022,
+        "states_entered": {
+          "EXECUTE": 2,
+          "HOLD": 1,
+          "PLAN": 1,
+          "PREDICT": 2,
+          "SEARCH": 2,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 1,
+        "steps_requested": 12,
+        "time_to_target_margin_s": {
+          "count": 1,
+          "max": 0.281000456064791,
+          "mean": 0.281000456064791,
+          "min": 0.281000456064791,
+          "p50": 0.281000456064791,
+          "p90": 0.281000456064791
+        },
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.030986504304964076,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 4,
+            "ik_residual_position_m": 2.3898691184787245e-05,
+            "ik_residual_rotation_rad": 7.105957329812995e-07,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.347545,
+              0.050412,
+              0.403795
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.002490533,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.16699954393520955,
+            "revolute_joint_margin": 0.7540250211550935,
+            "step": 0,
+            "time_to_target_margin_s": 0.281000456064791,
+            "time_to_target_s": 0.44800000000000056
+          },
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "gripper_end",
+            "intercept_point_m": [
+              0.714782,
+              0.081306,
+              -0.358289
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.006050262,
+            "reason": "WORKSPACE_BOUND",
+            "required_slew_s": null,
+            "step": 1,
+            "time_to_target_s": null
+          }
+        ]
+      },
+      {
+        "backend": "verified_p6_fk",
+        "backend_provenance": {
+          "backend": "verified_p6_fk",
+          "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+          "dof": 8,
+          "fk_module_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+          "fk_module_sha256": "3901939ba3a71f6dc6f78aac195f5b132120221950c760ca7be872c2eb3c34ac",
+          "frame_name": "gripper_end",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
+            "gripper_joint1",
+            "gripper_joint2"
+          ],
+          "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+          "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only",
+          "source_class": "VERIFIED_ASSET_KINEMATICS",
+          "target_kind": "ARM_END_FRAME"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 1,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 1,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_CONVERGED: IK converged (residual 2.23e-05 m / 6.82e-07 rad) with joint margin 0.0250 rad and 0.1657 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 3,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "command accepted by the P5-05 envelope",
+              "from": "PLAN",
+              "reason": null,
+              "seq": 4,
+              "sigma_m": 0.0021249801048749024,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "EXECUTE",
+              "trigger": "COMMAND"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "frame 1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 5,
+              "sigma_m": 0.0036323363068908386,
+              "time_to_hit_s": null,
+              "to": "EXECUTE",
+              "trigger": "FRAME_UPDATE"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "prediction ekf+physics-1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 6,
+              "sigma_m": 0.0036323363068908386,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "WORKSPACE_BOUND: face centre (0.6350395735983085, 0.09593065119675856, -0.4028979632444886) is outside the workspace box on ['z']",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 7,
+              "sigma_m": 0.0036323363068908386,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "WORKSPACE_BOUND: face centre (0.6350395735983085, 0.09593065119675856, -0.4028979632444886) is outside the workspace box on ['z']",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.01,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 0.05
+          }
+        },
+        "geometry": [
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.03098754327716543,
+            "contacted": true,
+            "face_position_m": [
+              0.347868,
+              0.050128,
+              0.404048
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 0
+          }
+        ],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 1,
+        "geometry_evaluations": 1,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": {
+          "count": 1,
+          "max": 2.2303388679831023e-05,
+          "mean": 2.2303388679831023e-05,
+          "min": 2.2303388679831023e-05,
+          "p50": 2.2303388679831023e-05,
+          "p90": 2.2303388679831023e-05
+        },
+        "ik_residual_rotation_rad": {
+          "count": 1,
+          "max": 6.81657617256247e-07,
+          "mean": 6.81657617256247e-07,
+          "min": 6.81657617256247e-07,
+          "p50": 6.81657617256247e-07,
+          "p90": 6.81657617256247e-07
+        },
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:WORKSPACE_BOUND": 1,
+          "REACHABLE:IK_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": {
+          "count": 1,
+          "max": 0.7554230065352227,
+          "mean": 0.7554230065352227,
+          "min": 0.7554230065352227,
+          "p50": 0.7554230065352227,
+          "p90": 0.7554230065352227
+        },
+        "robot": null,
+        "scenario": "LOW_SPEED_INCOMING",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 7,
+        "states_entered": {
+          "EXECUTE": 2,
+          "HOLD": 1,
+          "PLAN": 1,
+          "PREDICT": 2,
+          "SEARCH": 2,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 1,
+        "steps_requested": 12,
+        "time_to_target_margin_s": {
+          "count": 1,
+          "max": 0.28228489478883245,
+          "mean": 0.28228489478883245,
+          "min": 0.28228489478883245,
+          "p50": 0.28228489478883245,
+          "p90": 0.28228489478883245
+        },
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.03098754327716543,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 4,
+            "ik_residual_position_m": 2.2303388679831023e-05,
+            "ik_residual_rotation_rad": 6.81657617256247e-07,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.347881,
+              0.050111,
+              0.404055
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.002130761,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.16571510521116814,
+            "revolute_joint_margin": 0.7554230065352227,
+            "step": 0,
+            "time_to_target_margin_s": 0.28228489478883245,
+            "time_to_target_s": 0.44800000000000056
+          },
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "gripper_end",
+            "intercept_point_m": [
+              0.63504,
+              0.095931,
+              -0.402898
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.003906838,
+            "reason": "WORKSPACE_BOUND",
+            "required_slew_s": null,
+            "step": 1,
+            "time_to_target_s": null
+          }
+        ]
+      },
+      {
+        "backend": "verified_p6_fk",
+        "backend_provenance": {
+          "backend": "verified_p6_fk",
+          "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+          "dof": 8,
+          "fk_module_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+          "fk_module_sha256": "3901939ba3a71f6dc6f78aac195f5b132120221950c760ca7be872c2eb3c34ac",
+          "frame_name": "gripper_end",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
+            "gripper_joint1",
+            "gripper_joint2"
+          ],
+          "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+          "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only",
+          "source_class": "VERIFIED_ASSET_KINEMATICS",
+          "target_kind": "ARM_END_FRAME"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 1,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 1,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_CONVERGED: IK converged (residual 8.64e-06 m / 3.26e-07 rad) with joint margin 0.0250 rad and 0.1664 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 3,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "command accepted by the P5-05 envelope",
+              "from": "PLAN",
+              "reason": null,
+              "seq": 4,
+              "sigma_m": 0.0036485576725183116,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "EXECUTE",
+              "trigger": "COMMAND"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "frame 1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 5,
+              "sigma_m": 0.007402568302721806,
+              "time_to_hit_s": null,
+              "to": "EXECUTE",
+              "trigger": "FRAME_UPDATE"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "prediction ekf+physics-1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 6,
+              "sigma_m": 0.007402568302721806,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "WORKSPACE_BOUND: face centre (0.7483182353571929, 0.16814893169850612, -0.35795133064417) is outside the workspace box on ['z']",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 7,
+              "sigma_m": 0.007402568302721806,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "WORKSPACE_BOUND: face centre (0.7483182353571929, 0.16814893169850612, -0.35795133064417) is outside the workspace box on ['z']",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.01,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 0.05
+          }
+        },
+        "geometry": [
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.030996827553269036,
+            "contacted": true,
+            "face_position_m": [
+              0.352775,
+              0.052035,
+              0.405162
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 0
+          }
+        ],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 1,
+        "geometry_evaluations": 1,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": {
+          "count": 1,
+          "max": 8.641635025427737e-06,
+          "mean": 8.641635025427737e-06,
+          "min": 8.641635025427737e-06,
+          "p50": 8.641635025427737e-06,
+          "p90": 8.641635025427737e-06
+        },
+        "ik_residual_rotation_rad": {
+          "count": 1,
+          "max": 3.255581494754784e-07,
+          "mean": 3.255581494754784e-07,
+          "min": 3.255581494754784e-07,
+          "p50": 3.255581494754784e-07,
+          "p90": 3.255581494754784e-07
+        },
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:WORKSPACE_BOUND": 1,
+          "REACHABLE:IK_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": {
+          "count": 1,
+          "max": 0.7795738920095477,
+          "mean": 0.7795738920095477,
+          "min": 0.7795738920095477,
+          "p50": 0.7795738920095477,
+          "p90": 0.7795738920095477
+        },
+        "robot": null,
+        "scenario": "LOW_SPEED_INCOMING",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 8,
+        "states_entered": {
+          "EXECUTE": 2,
+          "HOLD": 1,
+          "PLAN": 1,
+          "PREDICT": 2,
+          "SEARCH": 2,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 1,
+        "steps_requested": 12,
+        "time_to_target_margin_s": {
+          "count": 1,
+          "max": 0.28163650365790105,
+          "mean": 0.28163650365790105,
+          "min": 0.28163650365790105,
+          "p50": 0.28163650365790105,
+          "p90": 0.28163650365790105
+        },
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.030996827553269036,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 4,
+            "ik_residual_position_m": 8.641635025427737e-06,
+            "ik_residual_rotation_rad": 3.255581494754784e-07,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.352778,
+              0.052029,
+              0.405167
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.003678053,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.16636349634209954,
+            "revolute_joint_margin": 0.7795738920095477,
+            "step": 0,
+            "time_to_target_margin_s": 0.28163650365790105,
+            "time_to_target_s": 0.44800000000000056
+          },
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "gripper_end",
+            "intercept_point_m": [
+              0.748318,
+              0.168149,
+              -0.357951
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.010645363,
+            "reason": "WORKSPACE_BOUND",
+            "required_slew_s": null,
+            "step": 1,
+            "time_to_target_s": null
+          }
+        ]
+      },
+      {
+        "backend": "verified_p6_fk",
+        "backend_provenance": {
+          "backend": "verified_p6_fk",
+          "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+          "dof": 8,
+          "fk_module_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+          "fk_module_sha256": "3901939ba3a71f6dc6f78aac195f5b132120221950c760ca7be872c2eb3c34ac",
+          "frame_name": "gripper_end",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
+            "gripper_joint1",
+            "gripper_joint2"
+          ],
+          "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+          "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only",
+          "source_class": "VERIFIED_ASSET_KINEMATICS",
+          "target_kind": "ARM_END_FRAME"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 1,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 1,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.0024785849844483113,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.0024785849844483113,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_CONVERGED: IK converged (residual 2.88e-05 m / 8.20e-07 rad) with joint margin 0.0250 rad and 0.1676 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 3,
+              "sigma_m": 0.0024785849844483113,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "command accepted by the P5-05 envelope",
+              "from": "PLAN",
+              "reason": null,
+              "seq": 4,
+              "sigma_m": 0.0024785849844483113,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "EXECUTE",
+              "trigger": "COMMAND"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "frame 1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 5,
+              "sigma_m": 0.0051662571205879,
+              "time_to_hit_s": null,
+              "to": "EXECUTE",
+              "trigger": "FRAME_UPDATE"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "prediction ekf+physics-1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 6,
+              "sigma_m": 0.0051662571205879,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "WORKSPACE_BOUND: face centre (0.7051301897238402, 0.10164905368267817, -0.28801198222792185) is outside the workspace box on ['z']",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 7,
+              "sigma_m": 0.0051662571205879,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "WORKSPACE_BOUND: face centre (0.7051301897238402, 0.10164905368267817, -0.28801198222792185) is outside the workspace box on ['z']",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.01,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 0.05
+          }
+        },
+        "geometry": [
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.030982627022056324,
+            "contacted": true,
+            "face_position_m": [
+              0.346637,
+              0.050305,
+              0.401603
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 0
+          }
+        ],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 1,
+        "geometry_evaluations": 1,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": {
+          "count": 1,
+          "max": 2.8783514699239418e-05,
+          "mean": 2.8783514699239418e-05,
+          "min": 2.8783514699239418e-05,
+          "p50": 2.8783514699239418e-05,
+          "p90": 2.8783514699239418e-05
+        },
+        "ik_residual_rotation_rad": {
+          "count": 1,
+          "max": 8.202853566676495e-07,
+          "mean": 8.202853566676495e-07,
+          "min": 8.202853566676495e-07,
+          "p50": 8.202853566676495e-07,
+          "p90": 8.202853566676495e-07
+        },
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:WORKSPACE_BOUND": 1,
+          "REACHABLE:IK_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": {
+          "count": 1,
+          "max": 0.7462234778538348,
+          "mean": 0.7462234778538348,
+          "min": 0.7462234778538348,
+          "p50": 0.7462234778538348,
+          "p90": 0.7462234778538348
+        },
+        "robot": null,
+        "scenario": "PERTURBED",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 20261022,
+        "states_entered": {
+          "EXECUTE": 2,
+          "HOLD": 1,
+          "PLAN": 1,
+          "PREDICT": 2,
+          "SEARCH": 2,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 1,
+        "steps_requested": 12,
+        "time_to_target_margin_s": {
+          "count": 1,
+          "max": 0.2804296657188805,
+          "mean": 0.2804296657188805,
+          "min": 0.2804296657188805,
+          "p50": 0.2804296657188805,
+          "p90": 0.2804296657188805
+        },
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.030982627022056324,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 4,
+            "ik_residual_position_m": 2.8783514699239418e-05,
+            "ik_residual_rotation_rad": 8.202853566676495e-07,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.346654,
+              0.050284,
+              0.401611
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.002487772,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.1675703342811201,
+            "revolute_joint_margin": 0.7462234778538348,
+            "step": 0,
+            "time_to_target_margin_s": 0.2804296657188805,
+            "time_to_target_s": 0.44800000000000056
+          },
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "gripper_end",
+            "intercept_point_m": [
+              0.70513,
+              0.101649,
+              -0.288012
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.006045692,
+            "reason": "WORKSPACE_BOUND",
+            "required_slew_s": null,
+            "step": 1,
+            "time_to_target_s": null
+          }
+        ]
+      },
+      {
+        "backend": "verified_p6_fk",
+        "backend_provenance": {
+          "backend": "verified_p6_fk",
+          "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+          "dof": 8,
+          "fk_module_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+          "fk_module_sha256": "3901939ba3a71f6dc6f78aac195f5b132120221950c760ca7be872c2eb3c34ac",
+          "frame_name": "gripper_end",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
+            "gripper_joint1",
+            "gripper_joint2"
+          ],
+          "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+          "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only",
+          "source_class": "VERIFIED_ASSET_KINEMATICS",
+          "target_kind": "ARM_END_FRAME"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 1,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 1,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.002124942154382318,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.002124942154382318,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_CONVERGED: IK converged (residual 2.38e-05 m / 6.95e-07 rad) with joint margin 0.0250 rad and 0.1694 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 3,
+              "sigma_m": 0.002124942154382318,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "command accepted by the P5-05 envelope",
+              "from": "PLAN",
+              "reason": null,
+              "seq": 4,
+              "sigma_m": 0.002124942154382318,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "EXECUTE",
+              "trigger": "COMMAND"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "frame 1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 5,
+              "sigma_m": 0.0036187820887929553,
+              "time_to_hit_s": null,
+              "to": "EXECUTE",
+              "trigger": "FRAME_UPDATE"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "prediction ekf+physics-1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 6,
+              "sigma_m": 0.0036187820887929553,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "WORKSPACE_BOUND: face centre (0.5578840536497367, 0.034870537971508055, -0.45846128866936764) is outside the workspace box on ['z']",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 7,
+              "sigma_m": 0.0036187820887929553,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "WORKSPACE_BOUND: face centre (0.5578840536497367, 0.034870537971508055, -0.45846128866936764) is outside the workspace box on ['z']",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.01,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 0.05
+          }
+        },
+        "geometry": [
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.030986864671335983,
+            "contacted": true,
+            "face_position_m": [
+              0.347873,
+              0.051323,
+              0.402952
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 0
+          }
+        ],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 1,
+        "geometry_evaluations": 1,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": {
+          "count": 1,
+          "max": 2.3759670294383868e-05,
+          "mean": 2.3759670294383868e-05,
+          "min": 2.3759670294383868e-05,
+          "p50": 2.3759670294383868e-05,
+          "p90": 2.3759670294383868e-05
+        },
+        "ik_residual_rotation_rad": {
+          "count": 1,
+          "max": 6.95081801625563e-07,
+          "mean": 6.95081801625563e-07,
+          "min": 6.95081801625563e-07,
+          "p50": 6.95081801625563e-07,
+          "p90": 6.95081801625563e-07
+        },
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:WORKSPACE_BOUND": 1,
+          "REACHABLE:IK_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": {
+          "count": 1,
+          "max": 0.7550860292908343,
+          "mean": 0.7550860292908343,
+          "min": 0.7550860292908343,
+          "p50": 0.7550860292908343,
+          "p90": 0.7550860292908343
+        },
+        "robot": null,
+        "scenario": "PERTURBED",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 7,
+        "states_entered": {
+          "EXECUTE": 2,
+          "HOLD": 1,
+          "PLAN": 1,
+          "PREDICT": 2,
+          "SEARCH": 2,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 1,
+        "steps_requested": 12,
+        "time_to_target_margin_s": {
+          "count": 1,
+          "max": 0.27863629617656643,
+          "mean": 0.27863629617656643,
+          "min": 0.27863629617656643,
+          "p50": 0.27863629617656643,
+          "p90": 0.27863629617656643
+        },
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.030986864671335983,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 4,
+            "ik_residual_position_m": 2.3759670294383868e-05,
+            "ik_residual_rotation_rad": 6.95081801625563e-07,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.347886,
+              0.051305,
+              0.402959
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.002130722,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.16936370382343413,
+            "revolute_joint_margin": 0.7550860292908343,
+            "step": 0,
+            "time_to_target_margin_s": 0.27863629617656643,
+            "time_to_target_s": 0.44800000000000056
+          },
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "gripper_end",
+            "intercept_point_m": [
+              0.557884,
+              0.034871,
+              -0.458461
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.003889988,
+            "reason": "WORKSPACE_BOUND",
+            "required_slew_s": null,
+            "step": 1,
+            "time_to_target_s": null
+          }
+        ]
+      },
+      {
+        "backend": "verified_p6_fk",
+        "backend_provenance": {
+          "backend": "verified_p6_fk",
+          "detail": "P6 verified FK T = X0*M(q)*inv(X1) on the 8-DOF B601-RS chain (6 revolute + 2 prismatic jaws); pose and jacobian for the authored gripper_end frame; the racket FACE frame is UNKNOWN (P6 frame_tree edges 13/14/15)",
+          "dof": 8,
+          "fk_module_path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\src\\simulation\\rebot_b601_rs\\kinematics\\fk.py",
+          "fk_module_sha256": "3901939ba3a71f6dc6f78aac195f5b132120221950c760ca7be872c2eb3c34ac",
+          "frame_name": "gripper_end",
+          "joint_names": [
+            "joint1",
+            "joint2",
+            "joint3",
+            "joint4",
+            "joint5",
+            "joint6",
+            "gripper_joint1",
+            "gripper_joint2"
+          ],
+          "limit_source": "P6 joint_anchors.json / evidence robot_usd_joint_chain.json limits_*_as_authored (read from the loaded module's LIMITS table)",
+          "note": "the racket face / racket mount frame is NOT verified in P6; this backend answers for gripper_end only",
+          "source_class": "VERIFIED_ASSET_KINEMATICS",
+          "target_kind": "ARM_END_FRAME"
+        },
+        "calibration_used": {
+          "court_from_base": "provided (ASSUMED, not measured)",
+          "source": "ASSUMED identity (P7-12 wiring demo only)",
+          "verified": true
+        },
+        "camera": "SYNTHETIC_ANALYTIC_STEREO",
+        "commands_executed": 1,
+        "evidence_class": "SIMULATION-ONLY",
+        "final_state": "HOLD",
+        "fsm_report": {
+          "commands_emitted": 1,
+          "commands_suppressed": 0,
+          "events": [
+            {
+              "at_s": 0.002,
+              "detail": "",
+              "from": "SEARCH",
+              "reason": null,
+              "seq": 1,
+              "sigma_m": 0.003617511486686196,
+              "time_to_hit_s": null,
+              "to": "TRACK",
+              "trigger": "FRAME"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "prediction ekf+physics-0",
+              "from": "TRACK",
+              "reason": null,
+              "seq": 2,
+              "sigma_m": 0.003617511486686196,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "IK_CONVERGED: IK converged (residual 2.97e-05 m / 9.26e-07 rad) with joint margin 0.0250 rad and 0.1572 s of slew inside a 0.4480 s target",
+              "from": "PREDICT",
+              "reason": null,
+              "seq": 3,
+              "sigma_m": 0.003617511486686196,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PLAN",
+              "trigger": "PLAN"
+            },
+            {
+              "at_s": 0.002,
+              "detail": "command accepted by the P5-05 envelope",
+              "from": "PLAN",
+              "reason": null,
+              "seq": 4,
+              "sigma_m": 0.003617511486686196,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "EXECUTE",
+              "trigger": "COMMAND"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "frame 1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 5,
+              "sigma_m": 0.007388732476078023,
+              "time_to_hit_s": null,
+              "to": "EXECUTE",
+              "trigger": "FRAME_UPDATE"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "prediction ekf+physics-1",
+              "from": "EXECUTE",
+              "reason": null,
+              "seq": 6,
+              "sigma_m": 0.007388732476078023,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "PREDICT",
+              "trigger": "PREDICTION"
+            },
+            {
+              "at_s": 0.018666667,
+              "detail": "WORKSPACE_BOUND: face centre (0.8521970539034965, 0.03286193604993113, -0.28041403763476797) is outside the workspace box on ['z']",
+              "from": "PREDICT",
+              "reason": "UNREACHABLE_TARGET",
+              "seq": 7,
+              "sigma_m": 0.007388732476078023,
+              "time_to_hit_s": 0.44800000000000056,
+              "to": "HOLD",
+              "trigger": "FAIL_CLOSED"
+            }
+          ],
+          "evidence_class": "OFFLINE-SYNTHETIC",
+          "hold": {
+            "detail": "WORKSPACE_BOUND: face centre (0.8521970539034965, 0.03286193604993113, -0.28041403763476797) is outside the workspace box on ['z']",
+            "latched": true,
+            "reason": "UNREACHABLE_TARGET"
+          },
+          "hold_reasons_seen": {
+            "UNREACHABLE_TARGET": 1
+          },
+          "schema": "badmin.p7.safety_fsm",
+          "schema_version": 1,
+          "state": "HOLD",
+          "thresholds": {
+            "acceleration_cap_rad_s2": 20.0,
+            "joint_margin_rad": 0.01,
+            "max_position_sigma_m": 0.05,
+            "max_source_frame_age_s": 0.1,
+            "min_time_to_hit_s": 0.02,
+            "velocity_cap_rad_s": 0.05
+          }
+        },
+        "geometry": [
+          {
+            "backend": "verified_p6_fk",
+            "ball_radius_m": 0.03,
+            "ball_reference": "PREDICTED_INTERCEPT",
+            "clearance_m": -0.030979797358582615,
+            "contacted": true,
+            "face_position_m": [
+              0.345782,
+              0.046686,
+              0.399702
+            ],
+            "label": "SIM_PROXY_GEOMETRY_ONLY",
+            "nearest_primitive": "racket_string_bed_slab_06",
+            "note": "min over the committed racket primitives of the signed distance from the ball centre, minus the declared ball radius. A geometry test, NOT a physical contact model.",
+            "plan_stage": "PLANNED",
+            "step": 0
+          }
+        ],
+        "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+        "geometry_contacts": 1,
+        "geometry_evaluations": 1,
+        "hit_rate": null,
+        "hold_latched": true,
+        "hold_reasons": {
+          "UNREACHABLE_TARGET": 1
+        },
+        "ik_residual_position_m": {
+          "count": 1,
+          "max": 2.965071790798843e-05,
+          "mean": 2.965071790798843e-05,
+          "min": 2.965071790798843e-05,
+          "p50": 2.965071790798843e-05,
+          "p90": 2.965071790798843e-05
+        },
+        "ik_residual_rotation_rad": {
+          "count": 1,
+          "max": 9.257044836305885e-07,
+          "mean": 9.257044836305885e-07,
+          "min": 9.257044836305885e-07,
+          "p50": 9.257044836305885e-07,
+          "p90": 9.257044836305885e-07
+        },
+        "note": "hit_rate is None by contract: without a calibrated frame, a measured collision model and a physics engine there is no referent for a hit rate. geometry_contacts is a SIM_PROXY surface-distance statistic, not a hit.",
+        "physics_engine": null,
+        "racket_proxy": {
+          "face_center_from_root_m": 0.5472213636363636,
+          "kind": "ENGINEERING_PROXY \u2014 NOT a manufacturer collision model",
+          "loaded_from_committed_json": true,
+          "path": "E:\\\u5177\u8eab\u667a\u80fd\\badmin_wt_p6fk\\outputs\\simulation\\rebot_b601_rs\\morph_one\\p6_frames\\racket_collision_proxy.json",
+          "primitive_count": 43,
+          "role_counts": {
+            "frame": 27,
+            "handle": 4,
+            "shaft": 1,
+            "string_bed": 11
+          },
+          "schema": "p6_racket_collision_proxy/1",
+          "sha256": "6d1fb97928bd309684dcf8241ad99354cc75488e96df9b90f35baeee5c07f12e"
+        },
+        "reachability_verdicts": {
+          "NOT_REACHABLE:WORKSPACE_BOUND": 1,
+          "REACHABLE:IK_CONVERGED": 1
+        },
+        "real_hit_rate_claimed": false,
+        "revolute_joint_margin_rad": {
+          "count": 1,
+          "max": 0.734254542078574,
+          "mean": 0.734254542078574,
+          "min": 0.734254542078574,
+          "p50": 0.734254542078574,
+          "p90": 0.734254542078574
+        },
+        "robot": null,
+        "scenario": "PERTURBED",
+        "schema": "badmin.p7.wired_closed_loop",
+        "schema_version": 1,
+        "seed": 8,
+        "states_entered": {
+          "EXECUTE": 2,
+          "HOLD": 1,
+          "PLAN": 1,
+          "PREDICT": 2,
+          "SEARCH": 2,
+          "TRACK": 1
+        },
+        "status": "WIRED_RUN_COMPLETE",
+        "steps_completed": 1,
+        "steps_requested": 12,
+        "time_to_target_margin_s": {
+          "count": 1,
+          "max": 0.29080872209833725,
+          "mean": 0.29080872209833725,
+          "min": 0.29080872209833725,
+          "p50": 0.29080872209833725,
+          "p90": 0.29080872209833725
+        },
+        "verdicts": [
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "REACHABLE",
+            "frame_name": "gripper_end",
+            "geometry_clearance_m": -0.030979797358582615,
+            "geometry_contact": true,
+            "geometry_nearest_primitive": "racket_string_bed_slab_06",
+            "ik_iterations": 4,
+            "ik_residual_position_m": 2.965071790798843e-05,
+            "ik_residual_rotation_rad": 9.257044836305885e-07,
+            "ik_solver": "dls/verified_p6_fk/v1",
+            "intercept_point_m": [
+              0.345802,
+              0.046665,
+              0.399708
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": 0.025,
+            "pixel_residual_m": 0.003646254,
+            "reason": "IK_CONVERGED",
+            "required_slew_s": 0.15719127790166332,
+            "revolute_joint_margin": 0.734254542078574,
+            "step": 0,
+            "time_to_target_margin_s": 0.29080872209833725,
+            "time_to_target_s": 0.44800000000000056
+          },
+          {
+            "approach_source": "DECLARED_RETURN_DIRECTION",
+            "backend": "verified_p6_fk",
+            "backend_source_class": "VERIFIED_ASSET_KINEMATICS",
+            "decision": "NOT_REACHABLE",
+            "frame_name": "gripper_end",
+            "intercept_point_m": [
+              0.852197,
+              0.032862,
+              -0.280414
+            ],
+            "intercept_rule": "HIT_PLANE_CROSSING",
+            "joint_margin": null,
+            "pixel_residual_m": 0.010616332,
+            "reason": "WORKSPACE_BOUND",
+            "required_slew_s": null,
+            "step": 1,
+            "time_to_target_s": null
+          }
+        ]
+      }
+    ],
+    "episodes": 9,
+    "episodes_ending_in_hold": 9,
+    "episodes_refused": 0,
+    "evidence_class": "SIMULATION-ONLY",
+    "geometry_check_label": "SIM_PROXY_GEOMETRY_ONLY",
+    "geometry_contacts": 12,
+    "geometry_evaluations": 12,
+    "hit_rate": null,
+    "hold_reasons_total": {
+      "COMMAND_OVER_CAP": 3,
+      "UNREACHABLE_TARGET": 6
+    },
+    "ik_residual_position_m": {
+      "count": 12,
+      "max": 8.575397561236079e-05,
+      "mean": 2.5480109532791078e-05,
+      "min": 8.81606909134149e-08,
+      "p50": 2.3829180739585555e-05,
+      "p90": 2.956399758711353e-05
+    },
+    "reachability_verdicts_total": {
+      "NOT_REACHABLE:WORKSPACE_BOUND": 6,
+      "REACHABLE:IK_CONVERGED": 12
+    },
+    "real_hit_rate_claimed": false,
+    "revolute_joint_margin_rad": {
+      "count": 12,
+      "max": 1.2069469878846775,
+      "mean": 0.8210586800686479,
+      "min": 0.734254542078574,
+      "p50": 0.7554230065352227,
+      "p90": 0.9672592308851367
+    },
+    "schema": "badmin.p7.wired_closed_loop.summary",
+    "schema_version": 1,
+    "states_entered_total": {
+      "EXECUTE": 18,
+      "HOLD": 9,
+      "PLAN": 12,
+      "PREDICT": 18,
+      "SEARCH": 18,
+      "TRACK": 9
+    },
+    "time_to_target_margin_s": {
+      "count": 12,
+      "max": 0.29080872209833725,
+      "mean": 0.23625331683464748,
+      "min": 0.051457286352511344,
+      "p50": 0.281000456064791,
+      "p90": 0.28228489478883245
+    }
+  }
+}
