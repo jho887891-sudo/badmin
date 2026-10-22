@@ -49,7 +49,7 @@ import isaaclab.sim as sim_utils  # noqa: E402
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
 from isaaclab.assets import Articulation, ArticulationCfg  # noqa: E402
-from isaaclab.sim import PhysxCfg  # noqa: E402
+from isaaclab_physx.physics import PhysxCfg  # noqa: E402
 from pxr import Gf, Usd, UsdGeom, UsdPhysics, Sdf  # noqa: E402
 
 
