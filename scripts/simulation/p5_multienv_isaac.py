@@ -127,7 +127,6 @@ def main():
     # exact spawn path (P5N2_idle_r03: "No contact sensors added to the prim '/World/Root'").
     spawn = sim_utils.UsdFileCfg(usd_path=authored)
     spawn.func("/World/Scene", spawn)
-    sim.reset()
 
     envs = {}
     # ArticulationCfg REQUIRES actuators (P5N2_idle_r04: "Missing values ... - actuators")
@@ -137,6 +136,10 @@ def main():
         robot = Articulation(ArticulationCfg(prim_path="/World/Scene/E%d" % env,
                                                spawn=None, actuators=actuators))
         envs[env] = robot
+    # the articulations must exist BEFORE sim.reset() initialises the views, otherwise
+    # root_view is unset (P5N2_idle_r05: AttributeError 'Articulation' object has no
+    # attribute '_root_view')
+    sim.reset()
     dof = {env: int(robot.num_joints) for env, robot in envs.items()}
     joint_names = {env: list(robot.joint_names) for env, robot in envs.items()}
     initial = {env: np_(robot.data.joint_pos[0]).copy() for env, robot in envs.items()}
