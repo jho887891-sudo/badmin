@@ -1061,10 +1061,10 @@
    ],
    "status": "DONE",
    "owner": "main",
-   "head_sha": "7318d36",
-   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4f_low_r01/result.json",
-   "latest_run_id": "P4f_low_r01",
-   "next_action": "friction 0.2/0.8/1.4 travel 1.21026/1.21544/1.21579 m (0.46% spread); effective radius 0.10103-0.10149 m; matrix CONSISTENT exit 0",
+   "head_sha": "b0e5c28",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4f_base_r11/result.json",
+   "latest_run_id": "P4f_base_r11",
+   "next_action": "gravity-evidenced rerun of all 18 runs; aggregator CONSISTENT on 36 runs; A05 metadata audit 11/11 PASS",
    "blocker": null,
    "last_error": null,
    "repair_log": [
@@ -1084,6 +1084,20 @@
     },
     {
      "reason": "owner field was dropped by the direct JSON repair; restored to main"
+    },
+    {
+     "reason": "evidence re-pointed after the gravity-evidenced rerun / new slices",
+     "old": {
+      "status": "DONE",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4f_low_r01/result.json",
+      "head_sha": "7318d36",
+      "latest_run_id": "P4f_low_r01"
+     },
+     "new": {
+      "status": "DONE",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4f_base_r11/result.json",
+      "head_sha": "b0e5c28"
+     }
     }
    ]
   },
@@ -1165,12 +1179,12 @@
     "P2-10",
     "P3-08"
    ],
-   "status": "PARTIAL",
+   "status": "DONE",
    "owner": "main",
-   "head_sha": "5e4e92e",
-   "artifact": "management/morph_one_rs/PHASE_P4_09_RESULTS.md",
-   "latest_run_id": "P4V_clamp_r11",
-   "next_action": "control interface exercised closed-loop (speed command -> wheel target -> measured speed) but no formal unit-test suite or fail-closed input validation yet",
+   "head_sha": "b0e5c28",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4V_030_r13/result.json",
+   "latest_run_id": "P4V_030_r13",
+   "next_action": "command interface with clamp/reject, 73 tests, GPU cross-check max deviation 4.93e-7 on the measured rolling radius",
    "blocker": null,
    "last_error": null,
    "repair_log": [
@@ -1187,6 +1201,20 @@
       "status": "PARTIAL",
       "artifact": "management/morph_one_rs/PHASE_P4_09_RESULTS.md",
       "head_sha": "5e4e92e"
+     }
+    },
+    {
+     "reason": "evidence re-pointed after the gravity-evidenced rerun / new slices",
+     "old": {
+      "status": "PARTIAL",
+      "artifact": "management/morph_one_rs/PHASE_P4_09_RESULTS.md",
+      "head_sha": "5e4e92e",
+      "latest_run_id": "P4V_clamp_r11"
+     },
+     "new": {
+      "status": "DONE",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P4V_030_r13/result.json",
+      "head_sha": "b0e5c28"
      }
     }
    ]
@@ -1362,14 +1390,35 @@
    "dependencies": [
     "P2-10"
    ],
-   "status": "UNKNOWN",
-   "owner": null,
-   "head_sha": null,
-   "artifact": null,
-   "latest_run_id": null,
-   "next_action": null,
+   "status": "PARTIAL",
+   "owner": "main",
+   "head_sha": "d15c932",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_matrix.json",
+   "latest_run_id": "",
+   "next_action": "D455 metadata contract + replay validator shipped (85 tests); every camera datum is still UNKNOWN (no device), calibration_claimed=false",
    "blocker": null,
-   "last_error": null
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "evidence re-pointed after the gravity-evidenced rerun / new slices",
+     "old": {
+      "status": "UNKNOWN",
+      "artifact": null,
+      "head_sha": null,
+      "latest_run_id": null
+     },
+     "new": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/d455_replay_report/good/report.json",
+      "head_sha": "b0e5c28"
+     }
+    },
+    {
+     "reason": "artifact path corrected to the file that actually exists on p6/d455-metadata-replay@d15c932",
+     "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_matrix.json",
+     "new_head": "d15c932"
+    }
+   ]
   },
   {
    "task_id": "P6-04",
