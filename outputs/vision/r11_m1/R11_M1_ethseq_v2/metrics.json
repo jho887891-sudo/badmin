@@ -1,0 +1,43 @@
+{
+ "schema": "r11_vision_m1_metrics/v1",
+ "source_class": "REAL_RGB_FRAMES",
+ "measurement_source": "YOLO_BOX",
+ "state_units": "IMAGE_PLANE_2D",
+ "frames_processed": 60,
+ "frames_with_detection": 59,
+ "detection_rate": 0.983333,
+ "detections_total": 59,
+ "detections_per_frame": 0.983333,
+ "longest_miss_streak_frames": 1,
+ "association": {
+  "accepted": 58,
+  "rejected": 0,
+  "reinitialisations": 1,
+  "gate_px": 120.0
+ },
+ "latency_ms": {
+  "detect": {
+   "p50": 13.107,
+   "p95": 16.972,
+   "p99": 1892.336,
+   "max": 4575.219
+  },
+  "track_predict": {
+   "p50": 0.655,
+   "p95": 0.757,
+   "p99": 0.817,
+   "max": 0.885
+  }
+ },
+ "detect_wall_s": 5.378,
+ "timestamp_source": "FILENAME_INDEX_ASSUMED_FPS",
+ "sequence_spacing_regular": false,
+ "sequence_frame_index_span": 188,
+ "three_d_claimed": false,
+ "hit_rate": null,
+ "notes": [
+  "pixel_covariance is a PROXY derived from the bbox size (0.25 * extent, 1 px floor)",
+  "horizon prediction propagates the EKF own CV transition and process noise",
+  "no metric 3D position is produced or claimed anywhere in this run"
+ ]
+}

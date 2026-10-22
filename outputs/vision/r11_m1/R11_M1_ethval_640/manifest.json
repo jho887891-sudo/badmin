@@ -1,0 +1,59 @@
+{
+ "schema": "r11_vision_m1_manifest/v1",
+ "run_id": "R11_M1_ethval_640",
+ "git_head": "UNKNOWN",
+ "python": "3.12.13",
+ "host": "jxxy",
+ "command": "scripts/vision/run_visual_pipeline.py --source /tmp/r11_val_seq.txt --weights /home/dgut/.dsh-bench/runs/detect/runs_cont_v1/full_cont_e20/weights/best.pt --out-dir /home/dgut/runs/g/R11_M1_ethval_640 --imgsz 640 --conf 0.25 --iou 0.45 --device cuda:0",
+ "source_video": {
+  "path": "/tmp/r11_val_seq.txt",
+  "sha256": "9c0c003813080e6e0b0db94316d55a6ff9bcc3263411346ff50262d5fb38c5cf",
+  "fps": 30.0,
+  "frame_count": 41,
+  "width": 1920,
+  "height": 1200
+ },
+ "detector": {
+  "weights_path": "/home/dgut/.dsh-bench/runs/detect/runs_cont_v1/full_cont_e20/weights/best.pt",
+  "weights_sha256": "918dc5037ea49fc3749c1f35a3bf774255c8d0383be20360a0a1c5d2ee810a87",
+  "ultralytics_version": "8.4.183",
+  "torch_version": "2.10.0+cu128",
+  "cuda_available": true,
+  "device": "cuda:0",
+  "parameter_count": 9948638,
+  "class_names": {
+   "0": "shuttlecock"
+  },
+  "imgsz": 640,
+  "conf": 0.25,
+  "iou": 0.45,
+  "max_det": 64
+ },
+ "tracker": {
+  "mode": "IMAGE_PLANE_2D",
+  "gate_px": 120.0,
+  "ekf_dt_s": 0.03333333333333333,
+  "process_accel_std_override": null,
+  "measurement_std_override": null,
+  "noise_calibration": "INHERITED_P7_05_DEFAULT"
+ },
+ "horizons_s": [
+  0.3,
+  0.5,
+  0.8
+ ],
+ "outputs": [
+  "overlay.mp4",
+  "detections.jsonl",
+  "tracks.jsonl",
+  "metrics.json",
+  "manifest.json"
+ ],
+ "input_source_class": "REAL_RGB_FRAMES",
+ "not_claimed": [
+  "metric 3D position",
+  "hit rate",
+  "detection accuracy",
+  "hardware-synchronised timestamps"
+ ]
+}
