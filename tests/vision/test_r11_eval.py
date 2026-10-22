@@ -159,3 +159,17 @@ def test_declared_heldout_is_not_independent_split_audit():
                           annotation_provenance='human_verified')
     assert r['generalization_claim_allowed'] is False
     assert r['held_out_claim_candidate'] is True
+
+
+def test_detection_same_frame_id_but_wrong_clock_rejected():
+    gt=[label(0,0.0,[(20,20,25,25)])]
+    candidate=det(0,(20,20,25,25))
+    candidate['timestamp_s']=0.8
+    with pytest.raises(EvaluationError):
+        evaluate_detections(gt,[candidate],expected_frames=1)
+
+
+def test_detection_outside_video_frame_count_rejected():
+    gt=[label(0,0.0,[(20,20,25,25)])]
+    with pytest.raises(EvaluationError):
+        evaluate_detections(gt,[det(336,(20,20,25,25))],expected_frames=336)
