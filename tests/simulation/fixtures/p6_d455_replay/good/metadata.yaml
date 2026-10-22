@@ -1,0 +1,167 @@
+# SYNTHETIC fixture, not a D455 measurement. JSON twin: metadata.json
+{
+  "schema": "p6_d455_metadata/1",
+  "synthetic_fixture": {
+    "is_real_d455_data": false,
+    "note": "SYNTHETIC FIXTURE - NOT A D455 MEASUREMENT. Values describe an 8x6 toy pinhole used only to exercise the P6-03 contract and replay validator.",
+    "T_mount_camera_note": "rotation = the proven optical->mount convention; translation fixed at zero because no mount measurement exists. NOT a hand-eye calibration."
+  },
+  "units": {
+    "intrinsics": "px",
+    "depth_scale": "m_per_unit",
+    "length": "m",
+    "angle": "rad",
+    "rate": "Hz",
+    "distortion": "dimensionless",
+    "time": "s"
+  },
+  "fields": {
+    "fx_px": {
+      "value": 4.0,
+      "source": {
+        "file": "@self",
+        "locator": "fields.fx_px.value"
+      },
+      "unit": "px"
+    },
+    "fy_px": {
+      "value": 4.0,
+      "source": {
+        "file": "@self",
+        "locator": "fields.fy_px.value"
+      },
+      "unit": "px"
+    },
+    "cx_px": {
+      "value": 3.5,
+      "source": {
+        "file": "@self",
+        "locator": "fields.cx_px.value"
+      },
+      "unit": "px"
+    },
+    "cy_px": {
+      "value": 2.5,
+      "source": {
+        "file": "@self",
+        "locator": "fields.cy_px.value"
+      },
+      "unit": "px"
+    },
+    "width_px": {
+      "value": 8,
+      "source": {
+        "file": "@self",
+        "locator": "fields.width_px.value"
+      },
+      "unit": "px"
+    },
+    "height_px": {
+      "value": 6,
+      "source": {
+        "file": "@self",
+        "locator": "fields.height_px.value"
+      },
+      "unit": "px"
+    },
+    "depth_scale_m_per_unit": {
+      "value": 0.001,
+      "source": {
+        "file": "@self",
+        "locator": "fields.depth_scale_m_per_unit.value"
+      },
+      "unit": "m_per_unit"
+    },
+    "depth_encoding": {
+      "value": "uint16",
+      "source": {
+        "file": "@self",
+        "locator": "fields.depth_encoding.value"
+      }
+    },
+    "fps": {
+      "value": 30.0,
+      "source": {
+        "file": "@self",
+        "locator": "fields.fps.value"
+      },
+      "unit": "Hz"
+    },
+    "rgb_depth_aligned": {
+      "value": true,
+      "source": {
+        "file": "@self",
+        "locator": "fields.rgb_depth_aligned.value"
+      }
+    },
+    "distortion_model": {
+      "value": "brown_conrady",
+      "source": {
+        "file": "@self",
+        "locator": "fields.distortion_model.value"
+      }
+    },
+    "distortion_coefficients": {
+      "value": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source": {
+        "file": "@self",
+        "locator": "fields.distortion_coefficients.value"
+      },
+      "unit": "dimensionless"
+    },
+    "hfov_rad": {
+      "value": 1.5707963267948966,
+      "source": {
+        "file": "@self",
+        "locator": "fields.hfov_rad.value"
+      },
+      "unit": "rad"
+    },
+    "T_mount_camera": {
+      "value": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "source": {
+        "file": "@self",
+        "locator": "fields.T_mount_camera.value"
+      },
+      "unit": "m"
+    },
+    "device_model": {
+      "value": "SYNTHETIC-8x6-PINHOLE",
+      "source": {
+        "file": "@self",
+        "locator": "fields.device_model.value"
+      }
+    }
+  }
+}

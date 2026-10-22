@@ -1,0 +1,123 @@
+{
+  "schema": "p6_d455_replay_report/1",
+  "tool": "src/simulation/sensors/d455_replay.py",
+  "verdict": "FAIL",
+  "exit_code": 1,
+  "data_class": "OFFLINE-SYNTHETIC",
+  "calibration_claimed": false,
+  "input": {
+    "root": "E:\\具身智能\\badmin_wt_p6e\\tests\\simulation\\fixtures\\p6_d455_replay\\bad_sha",
+    "index": "E:\\具身智能\\badmin_wt_p6e\\tests\\simulation\\fixtures\\p6_d455_replay\\bad_sha\\index.json",
+    "metadata": "E:\\具身智能\\badmin_wt_p6e\\tests\\simulation\\fixtures\\p6_d455_replay\\bad_sha\\metadata.json"
+  },
+  "thresholds": {
+    "max_gap_factor": 1.5,
+    "gap_rule": "any dt > max_gap_factor / fps is a gap",
+    "monotonic_rule": "timestamps must be strictly increasing (dt > 0)",
+    "depth_scale_canonical_unit": "m_per_unit",
+    "depth_scale_upper_bound": 0.1,
+    "data_classes": [
+      "OFFLINE-SYNTHETIC",
+      "REAL-CAPTURE"
+    ]
+  },
+  "counts": {
+    "index_frames": 6,
+    "rgb_files": 6,
+    "depth_files": 6,
+    "rgb_files_on_disk": 6,
+    "depth_files_on_disk": 6
+  },
+  "metrics": {
+    "frame_count_with_timestamp": 6,
+    "min_dt_s": 0.03333333299999999,
+    "max_dt_s": 0.033333334,
+    "mean_dt_s": 0.0333333334,
+    "fps_source": "index",
+    "fps": 30.0,
+    "gap_threshold_s": 0.05,
+    "rgb_depth_aligned": true
+  },
+  "checks": [
+    {
+      "id": "index_parsable",
+      "status": "PASS",
+      "detail": "parsed index.json"
+    },
+    {
+      "id": "index_schema",
+      "status": "PASS",
+      "detail": "p6_d455_replay_index/1"
+    },
+    {
+      "id": "data_class",
+      "status": "PASS",
+      "detail": "declared OFFLINE-SYNTHETIC"
+    },
+    {
+      "id": "frames_present",
+      "status": "PASS",
+      "detail": "6 frames in index"
+    },
+    {
+      "id": "frame_files",
+      "status": "PASS",
+      "detail": "6 triplets resolve"
+    },
+    {
+      "id": "image_headers",
+      "status": "PASS",
+      "detail": "PNG headers readable"
+    },
+    {
+      "id": "image_size",
+      "status": "PASS",
+      "detail": "all images 8x6"
+    },
+    {
+      "id": "frame_counts",
+      "status": "PASS",
+      "detail": "rgb=6 depth=6"
+    },
+    {
+      "id": "timestamps_monotonic",
+      "status": "PASS",
+      "detail": "6 strictly increasing stamps"
+    },
+    {
+      "id": "frame_rate",
+      "status": "PASS",
+      "detail": "30.0 fps"
+    },
+    {
+      "id": "timestamp_gaps",
+      "status": "PASS",
+      "detail": "no dt > 0.050000s"
+    },
+    {
+      "id": "depth_units",
+      "status": "PASS",
+      "detail": "0.001 m_per_unit",
+      "metrics": {
+        "depth_scale_m_per_unit": 0.001,
+        "encoding": "uint16"
+      }
+    },
+    {
+      "id": "rgb_depth_alignment",
+      "status": "PASS",
+      "detail": "aligned=True"
+    },
+    {
+      "id": "intrinsics",
+      "status": "FAIL",
+      "detail": "metadata invalid"
+    }
+  ],
+  "violations": [
+    {
+      "code": "METADATA_INVALID",
+      "detail": "ProvenanceViolationError: source.file '../witness_lab_note.json' hashes to 55e367f1637ab0929278bec9da5a61a9c80502fe4bdd16a63d4fa2db8ae7dee5, record declares 0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}
