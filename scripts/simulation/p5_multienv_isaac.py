@@ -49,6 +49,7 @@ SIMULATION_APP = LAUNCHER.app
 import isaaclab.sim as sim_utils  # noqa: E402
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
+from isaaclab.actuators import ImplicitActuatorCfg  # noqa: E402
 from isaaclab.assets import Articulation, ArticulationCfg  # noqa: E402
 from isaaclab_physx.physics import PhysxCfg  # noqa: E402
 from pxr import Gf, Usd, UsdGeom, UsdPhysics, Sdf  # noqa: E402
@@ -129,9 +130,12 @@ def main():
     sim.reset()
 
     envs = {}
+    # ArticulationCfg REQUIRES actuators (P5N2_idle_r04: "Missing values ... - actuators")
+    actuators = {"all": ImplicitActuatorCfg(joint_names_expr=[".*"], stiffness=300.0,
+                                            damping=20.0)}
     for env in (0, 1):
         robot = Articulation(ArticulationCfg(prim_path="/World/Scene/E%d" % env,
-                                               spawn=None))
+                                               spawn=None, actuators=actuators))
         envs[env] = robot
     dof = {env: int(robot.num_joints) for env, robot in envs.items()}
     joint_names = {env: list(robot.joint_names) for env, robot in envs.items()}
