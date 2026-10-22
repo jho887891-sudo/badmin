@@ -1,0 +1,4 @@
+# R10-C evidence-contract fixtures index their own SHA256 in manifest.files.
+# Any EOL normalisation would change the bytes and break the fixture hashes,
+# so these trees are committed verbatim (no text conversion, no CRLF).
+tests/fixtures/r10c/** -text

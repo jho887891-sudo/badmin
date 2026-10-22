@@ -1,0 +1,32 @@
+{
+ "command": "python scripts/simulation/fixture_gate.py --inject fault",
+ "config": {
+  "gravity_m_s2": [
+   0.0,
+   0.0,
+   -9.81
+  ],
+  "impl": "box_child_xform",
+  "lift_m": 0.4,
+  "physics_dt_s": 0.008333333333333333,
+  "run_id": "B4_r01_untyped_fault",
+  "steps": 360
+ },
+ "config_sha256": "df6a65284462a57d083ab042fee2c6a56c003a472d9ab53aac6060e7045b64a7",
+ "env_fingerprint": {
+  "isaac_sim_version": "4.5.0",
+  "platform": "Linux-5.15.0-x86_64",
+  "python_version": "3.11.9",
+  "sim_backend": "isaac_sim_4.5_kit"
+ },
+ "files": {
+  "child_stderr.txt": "75683c6391327b61219f68fbdaa0f0c77ef59cb1e81d725ebde73c8ff8e6c527",
+  "child_stdout.txt": "186752f451e3fe743da8b7acda3c8fbb88fb97e59143f413ed8c96cbabe00723",
+  "fault_record.json": "ce43d5c6373f50e067afc1101afbd0bfb753e94fc76d3f53b7d37cfc3d1e03c9",
+  "gate_runner_summary.json": "962e62887d95c8b7e0b689c8d54f59b685645390c683aa5d4ae5d712ed33e87a"
+ },
+ "kind": "FAULT",
+ "run_id": "B4_r01_untyped_fault",
+ "schema_version": "1.0",
+ "stage": "P0-07"
+}

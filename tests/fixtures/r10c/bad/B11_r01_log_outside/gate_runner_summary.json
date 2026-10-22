@@ -1,0 +1,11 @@
+{
+ "child_returncode": 0,
+ "child_stderr_log": "child_stderr.txt",
+ "child_stdout_log": "/home/dgut/runs/g/B11_r01_log_outside/gate_child.stdout.log",
+ "command": "python scripts/simulation/fixture_gate.py --run-id B11_r01_log_outside",
+ "json_gate": "PASS",
+ "outer_exit": 0,
+ "run_id": "B11_r01_log_outside",
+ "timed_out": false,
+ "timeout_s": 1200.0
+}

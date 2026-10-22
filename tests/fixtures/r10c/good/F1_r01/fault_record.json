@@ -1,0 +1,10 @@
+{
+ "child_returncode": 0,
+ "fault_class": "UNEXPECTED",
+ "fault_code": "KIT_PYTHON_ERROR",
+ "message": "Python RuntimeError traceback while child_rc stayed 0",
+ "observed_at": "2026-10-22T04:10:00Z",
+ "outer_exit": 1,
+ "run_id": "F1_r01",
+ "schema_version": "1.0"
+}
