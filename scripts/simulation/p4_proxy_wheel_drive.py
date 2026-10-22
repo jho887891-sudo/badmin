@@ -590,6 +590,10 @@ def main():
                    "payload_kg": float(ARGS.payload_kg),
                    "single_factor_note": ("exactly one of friction / payload / wheel speed may "
                                           "differ between two runs of the P4-08 matrix"),
+                   # A05 flagged that a defaulted gravity is not EVIDENCED by the command line.
+                   "gravity_explicit_on_command_line": any(
+                       a.startswith("--gravity-z") for a in os.sys.argv),
+                   "applied_gravity_argv": [a for a in os.sys.argv if a.startswith("--gravity")],
                    "gravity_m_s2": [0.0, 0.0, float(ARGS.gravity_z)],
                    "preregistration": "management/morph_one_rs/PHASE_P4_PROXY_PREREG.md",
                    "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
