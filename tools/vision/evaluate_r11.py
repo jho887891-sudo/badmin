@@ -143,11 +143,24 @@ def _matching(gtboxes,predboxes,criterion,threshold):
             ok=metric>=threshold if criterion=='iou' else metric<=threshold
             if ok:pairs.append((metric,gi,pi))
     pairs.sort(key=lambda v:(-v[0],v[1],v[2]) if criterion=='iou' else (v[0],v[1],v[2]))
-    used_g=set();used_p=set()
-    for _,gi,pi in pairs:
-        if gi not in used_g and pi not in used_p:
-            used_g.add(gi);used_p.add(pi)
-    return used_g,used_p
+    # Maximize the number of true positives; pure greedy matching can
+    # undercount if the best-matching GT has a second viable prediction.
+    adjacency=[[] for _ in gtboxes]
+    for _,gi,pi in pairs:adjacency[gi].append(pi)
+    prediction_owner={}
+
+    def augment(gi,seen):
+        for pi in adjacency[gi]:
+            if pi in seen:continue
+            seen.add(pi)
+            if pi not in prediction_owner or augment(prediction_owner[pi],seen):
+                prediction_owner[pi]=gi
+                return True
+        return False
+
+    for gi in sorted(range(len(gtboxes)),key=lambda k:(len(adjacency[k]),k)):
+        augment(gi,set())
+    return set(prediction_owner.values()),set(prediction_owner)
 
 
 def _rate(num,den):
@@ -199,9 +212,11 @@ def evaluate_detections(gt_rows,pred_rows,*,expected_frames=None,centre_toleranc
     return {'schema':'r11_detection_eval/v1','units':'IMAGE_PLANE_2D',
             'matching':{'iou50':0.5,'center_tolerance_px':centre_tolerance_px},
             'split_provenance':split_provenance,'annotation_provenance':annotation_provenance,
-            'generalization_claim_allowed':(split_provenance=='held_out_session' and
+            'generalization_claim_allowed':False,
+            'held_out_claim_candidate':(split_provenance=='held_out_session' and
                 annotation_provenance=='human_verified' and expected_frames is not None and
                 missing==0 and labeled>0),
+            'generalization_warning':'Split labels are self-declared. Independent video/session leakage audit required.',
             'annotated_coverage':{'expected_frames':expected_frames,'gt_rows':len(gt),
                'labeled_frames':labeled,'unscorable_frames':unscorable,
                'missing_frames':missing,'labeled_positive_frames':sum(
