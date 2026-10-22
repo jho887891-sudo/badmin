@@ -728,10 +728,10 @@
    ],
    "status": "PARTIAL",
    "owner": "main",
-   "head_sha": "6b8b516",
-   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_static_r11/result.json",
+   "head_sha": "780b487",
+   "artifact": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_RESULTS.md",
    "latest_run_id": "P3_static_r11",
-   "next_action": "joint deviation 0.0179-0.0347 rad under motion; no limit violation observed",
+   "next_action": "joint hold verified under the v1.1 gate (joint_hold <=0.05 rad in all 27 runs) but no contact/collision-limit FAIL injection yet; real dynamics stay P4-dependent",
    "blocker": null,
    "last_error": null,
    "repair_log": [
@@ -753,6 +753,20 @@
     {
      "reason": "artifact de-duplicated against P3-03",
      "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_static_r11/result.json"
+    },
+    {
+     "reason": "P3 evidence summary and v1.1 coverage completed",
+     "old": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_static_r11/result.json",
+      "head_sha": "6b8b516",
+      "owner": "main"
+     },
+     "new": {
+      "status": "PARTIAL",
+      "artifact": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_RESULTS.md",
+      "head_sha": "780b487"
+     }
     }
    ]
   },
@@ -829,14 +843,30 @@
    "dependencies": [
     "P2-10"
    ],
-   "status": "PARTIAL",
+   "status": "DONE",
    "owner": "main",
-   "head_sha": "2fd84a3",
-   "artifact": "management/morph_one_rs/PHASE_P3_GATE_V1_1_AMENDMENT.md",
+   "head_sha": "780b487",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/p3_summary.json",
    "latest_run_id": null,
-   "next_action": "v1.1 prereg + both fail-open negative controls FAIL as required; summary table still to be consolidated",
+   "next_action": "auto summary over 27 runs (11 v1.0 / 16 v1.1), 6 negative controls audited, vacuous controls rejected; v1.1 coverage complete (every profile >=2 independent PASS); 3 remaining gaps are legacy v1.0 single runs",
    "blocker": null,
-   "last_error": null
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "P3 evidence summary and v1.1 coverage completed",
+     "old": {
+      "status": "PARTIAL",
+      "artifact": "management/morph_one_rs/PHASE_P3_GATE_V1_1_AMENDMENT.md",
+      "head_sha": "2fd84a3",
+      "owner": "main"
+     },
+     "new": {
+      "status": "DONE",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/p3_summary.json",
+      "head_sha": "780b487"
+     }
+    }
+   ]
   },
   {
    "task_id": "P4-01",
