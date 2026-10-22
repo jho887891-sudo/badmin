@@ -135,3 +135,27 @@ def test_real_jsonl_loader(tmp_path):
     assert len(load_ground_truth(p))==1
     p.write_text('NOT JSON\n')
     with pytest.raises(EvaluationError):load_ground_truth(p)
+
+
+def test_maximum_cardinality_matching_avoids_greedy_undercount():
+    # G0 is near P0 and P1, G1 is only near P0. Greedy would match G0-P0
+    # and miss G1; maximum bipartite matching must return two true positives.
+    labels=[label(0,0,[(10,10,12,12),(14,10,16,12)])]
+    guesses=[det(0,(11,10,13,12)),det(0,(8,10,10,12))]
+    result=evaluate_detections(labels,guesses,expected_frames=1,centre_tolerance_px=3.1)
+    assert result['center_distance']['tp']==2
+
+
+def test_annotation_future_wrong_clock_rejected():
+    labels=[label(0,0,[(10,10,14,14)]),label(9,.3,[(19,19,23,23)])]
+    with pytest.raises(EvaluationError):
+        evaluate_predictions(labels,[track(0,.1,21,21)],tolerance_s=.01)
+
+
+def test_declared_heldout_is_not_independent_split_audit():
+    r=evaluate_detections([label(0,0,[(10,10,14,14)])],
+                          [det(0,(10,10,14,14))],expected_frames=1,
+                          split_provenance='held_out_session',
+                          annotation_provenance='human_verified')
+    assert r['generalization_claim_allowed'] is False
+    assert r['held_out_claim_candidate'] is True
