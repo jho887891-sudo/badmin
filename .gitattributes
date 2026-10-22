@@ -1,0 +1,2 @@
+# Hash-bound D455 synthetic witness must retain identical bytes on Windows and Linux.
+tests/simulation/fixtures/p6_d455_replay/witness_lab_note.json text eol=lf

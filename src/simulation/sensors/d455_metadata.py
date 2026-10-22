@@ -691,8 +691,10 @@ def resolve_provenance(
     record_path: Path,
     record_document,
     repo_root: Path | None,
+    field_name: str,
+    claimed_value: Any,
 ) -> Provenance:
-    """Build a Provenance and verify it against real bytes. Refuses otherwise."""
+    """Verify bytes, locator AND witnessed value; a real hash alone is not enough."""
     if not isinstance(source_node, Mapping):
         raise ProvenanceViolationError(
             "every value needs a 'source' object with {file, sha256, locator}; got "
@@ -713,7 +715,18 @@ def resolve_provenance(
                 f"source.sha256 for @self is {declared_sha!r} but the record hashes "
                 f"to {actual!r}"
             )
-        _resolve_locator(record_document, locator)
+        # Self-references provide only self-consistency, not an independent measurement.
+        # Do not let fx silently cite fy (which may happen to have the same value).
+        expected = f"fields.{field_name}.value"
+        witnessed_value = _resolve_locator(record_document, locator)
+        if locator != expected:
+            raise ProvenanceViolationError(
+                f"{field_name}: @self locator {locator!r} must equal {expected!r}"
+            )
+        if witnessed_value != claimed_value:
+            raise ProvenanceViolationError(
+                f"{field_name}: @self locator value does not match the field value"
+            )
         return Provenance(file="@self", sha256=actual, locator=locator)
 
     if not isinstance(declared_sha, str) or len(declared_sha) != 64:
@@ -733,6 +746,21 @@ def resolve_provenance(
         raise ProvenanceViolationError(
             f"source.file {file_field!r} hashes to {actual}, record declares "
             f"{declared_sha}"
+        )
+    # SHA proves which witness file is referenced, not that the claimed field value
+    # agrees with the witness. Without this check fx=600 could cite a valid fx=300.
+    try:
+        witness = json.loads(target.read_text(encoding="utf-8"))
+    except (UnicodeError, json.JSONDecodeError) as exc:
+        raise ProvenanceViolationError(
+            f"{field_name}: source {file_field!r} is not structured JSON; "
+            "no verified locator reader is registered for this file type"
+        ) from exc
+    witnessed_value = _resolve_locator(witness, locator)
+    if witnessed_value != claimed_value:
+        raise ProvenanceViolationError(
+            f"{field_name}: value {claimed_value!r} disagrees with witness "
+            f"{file_field!r} locator {locator!r} = {witnessed_value!r}"
         )
     return Provenance(file=file_field, sha256=actual, locator=locator)
 
@@ -846,6 +874,8 @@ def parse_metadata_document(
             record_path=record_path,
             record_document=document,
             repo_root=repo_root,
+            field_name=name,
+            claimed_value=raw["value"],
         )
         declared_unit = raw.get("unit")
         if spec.unit_key is not None:
