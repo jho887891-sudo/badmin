@@ -1,0 +1,2068 @@
+{
+  "schema_version": "1.0",
+  "generated_at_utc": "2026-10-21T07:56:43Z",
+  "generator": "tools/queue/a01_engineering_index.py",
+  "repo": {
+    "root": ".",
+    "head_sha": "b5ee852d79ff6fe0cd67cc89bf84511ffa7e3ebc",
+    "head_branch": "queue/a01-a03-a10",
+    "default_branch": "shuttle-detection",
+    "default_branch_source": "git symbolic-ref refs/remotes/origin/HEAD"
+  },
+  "spec": {
+    "path": "management/morph_one_rs/EXECUTION_QUEUE_CONTINUOUS_P0_P8.md",
+    "ref": "origin/chatgpt/p2-wc-continuous-queue-20261021",
+    "ref_sha": "79ffab3b5916cc5063c09801298d400eeaf4e24a",
+    "blob_sha": "fdb8fddef9943e708d4034feb5f0c929366662fb",
+    "read_by": "tools/queue/queue_state.py --generate"
+  },
+  "branch_count": 81,
+  "branches": [
+    {
+      "name": "dev/morph-one-cad-pipeline",
+      "head_sha": "a042f51f6ddf65c957f5d39feb44c73c4b496ef7",
+      "committed_at": "2026-10-20T01:46:06+08:00",
+      "subject": "feat(cad): per-solid geometry facts, repeated-shape fingerprints and USD audit",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "dev/morph-one-metric-scene-and-mapping",
+      "head_sha": "3ce42c09cc0c86133a673c3756fd1fbf79d02a81",
+      "committed_at": "2026-10-20T08:45:55+08:00",
+      "subject": "feat(cad): grade STEP->USD part correspondence by name lineage and geometry",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "dev/morph-one-p2-init-diagnostics",
+      "head_sha": "459cb122f7be68ad60295ee61c4faaf73618b151",
+      "committed_at": "2026-10-21T04:08:18+08:00",
+      "subject": "P2: simplified chassis collision from measured geometry; contact reporters do not fire yet",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "dev/morph-one-p2-quat-and-settle",
+      "head_sha": "fd9073b1d531678e5b4fdf9c120ad0341312e3ba",
+      "committed_at": "2026-10-21T10:51:04+08:00",
+      "subject": "P2: fix the double-counted child transform in the simplified chassis; contact still silent",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "dev/p2-wheel-contact-g1g4",
+      "head_sha": "0255197f93e6835c33574bd636eb009dcd7c2a75",
+      "committed_at": "2026-10-21T15:43:00+08:00",
+      "subject": "P2-07/P2-08: real B601-RS arm on the CORRECTED four-wheel compound chassis (static + loaded gate modes)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        20
+      ]
+    },
+    {
+      "name": "evidence/b601-rs-acceptance-173966b",
+      "head_sha": "972819366fba3dcb841c3dcb1909455d1e40ed72",
+      "committed_at": "2026-10-19T19:48:53+08:00",
+      "subject": "evidence(b601-rs): three-phase acceptance run for commit 173966b (33 runs, all pass)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "evidence/b601-rs-accounting-83ea89c",
+      "head_sha": "f3ec620e7d3e5225c3fe39273c391f823ac74025",
+      "committed_at": "2026-10-20T00:06:02+08:00",
+      "subject": "evidence(b601-rs): velocity-accounting verification for commit 83ea89c (4 runs, all pass)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "evidence/b601-rs-physx-velocity-55112d2",
+      "head_sha": "01a9b27455c742297f370606c2e9c4f4cdf04a6f",
+      "committed_at": "2026-10-19T17:44:33+08:00",
+      "subject": "evidence(b601-rs): velocity-channel solver experiments for commit 55112d2 (11 runs)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "evidence/b601-rs-review-454197e-20261019",
+      "head_sha": "5f8ac8e18e3b46fbeae16d1bd78d4dffd2f8b1b8",
+      "committed_at": "2026-10-19T13:33:53+08:00",
+      "subject": "evidence(b601-rs): execution record for review commit 454197e (2..128 envs + velocity-channel probes)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "evidence/morph-one-audit7-verification-b0853ef",
+      "head_sha": "0e94de2a04aef543025e04e94541a630bc8e0d26",
+      "committed_at": "2026-10-20T17:22:18+08:00",
+      "subject": "evidence(morph-one): pxr regression re-run in the Isaac interpreter (151 passed)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "evidence/morph-one-cad-revalidation-2270cb3",
+      "head_sha": "e3a2cb444cba2332700b6cb95d5cdbb11bb5d818",
+      "committed_at": "2026-10-20T08:26:49+08:00",
+      "subject": "evidence(morph-one): revalidation of audit 2270cb3 (regression, attribution, conversion, metric scene)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "evidence/pr10-mount-gates-verification",
+      "head_sha": "5a734636ba127b1e6172e98e077ff4b616462a71",
+      "committed_at": "2026-10-20T19:24:48+08:00",
+      "subject": "evidence(pr10): independent re-verification of the C3 gate and the Y-up rotation sign",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "evidence/pr11-wheel-symmetry-verification",
+      "head_sha": "1e5173cfd60e63568eb981ab589ee72310aaea29",
+      "committed_at": "2026-10-20T19:24:56+08:00",
+      "subject": "evidence(pr11): independent re-verification of the wheel-symmetry metric change",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "evidence/pr12-physx-metrics-verification",
+      "head_sha": "31a9bd532ff714d88670b26af8fcb23f56d4f0ce",
+      "committed_at": "2026-10-20T22:07:32+08:00",
+      "subject": "evidence(pr12): audit metrics verified, mount metrics re-measured in an independent sandbox",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "evidence/pr9-exponent-direction-verification",
+      "head_sha": "90add7cd6805cea4d99046e556528ced48d01899",
+      "committed_at": "2026-10-20T19:24:41+08:00",
+      "subject": "evidence(pr9): independent re-verification of the scientific-notation direction fix",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "evidence/pr9-signed-zero-verification",
+      "head_sha": "3b3f809fedf7d2f9441f320efc6a9c46185a46bc",
+      "committed_at": "2026-10-20T22:00:45+08:00",
+      "subject": "evidence(pr9): signed-zero regression re-verified on the real STEP",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "feat/morph-one-physics-sandbox",
+      "head_sha": "b7372a291e5a038f8866903ebf3aed64aad807b0",
+      "committed_at": "2026-10-20T17:21:50+08:00",
+      "subject": "feat(morph_one): read-only physics-modeling prechecks and mount-scheme sandbox",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "feat/morph-one-physx-dynamic-validation",
+      "head_sha": "edf96003a7dba8f90fe7cfde9f350239f657cdff",
+      "committed_at": "2026-10-20T19:48:01+08:00",
+      "subject": "feat(morph_one): real PhysX stepping of proxy and real-arm mobile mounts",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "feat/morph-one-wheel-kinematics",
+      "head_sha": "53d71ff662c611d87a4fa53571297cd4e8cce478",
+      "committed_at": "2026-10-20T17:20:13+08:00",
+      "subject": "feat(morph_one): wheel-group and candidate steering/drive axes from real CAD geometry",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "feature/morph-one-rs-integrated-assembly",
+      "head_sha": "59f89488b92608552c5f0c58b6cfd70554419bf6",
+      "committed_at": "2026-10-20T00:26:23+08:00",
+      "subject": "feat(morph-one): Phase A CAD assetization facts + 8-joint interface with explicit blockers",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "feature/rebot-rs-sim-asset",
+      "head_sha": "d91220225d5d2f93ce280bd8c768f3dc44ae70cc",
+      "committed_at": "2026-10-19T12:33:02+08:00",
+      "subject": "fix(tests): trustworthy multi-env acceptance + real state-sync finding (70843e7 review)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "feature/shuttle-detection",
+      "head_sha": "e10929467dae570639558a41e72a17574ffad196",
+      "committed_at": "2026-10-19T02:55:33+08:00",
+      "subject": "test(arm): record the full F1 run logs and assert the DOF targets reached PhysX",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "main",
+      "head_sha": "2e6f1a78f0fcaa8521337a5f6419d087fff3f732",
+      "committed_at": "2026-09-15T00:57:42+08:00",
+      "subject": "fix(P4-A): take shuttlecock geometry from the project model, not a local constant",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin",
+      "head_sha": "98487bf3284279924de2cc5a284915d9ba7dfc1f",
+      "committed_at": "2026-10-17T18:05:13+08:00",
+      "subject": "docs: GPT triage protocol and the cell-to-coco-image mapping for the review package",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/audit/morph-one-sandwich-review",
+      "head_sha": "ba1d3084ae25bbc3b33169e51cfbfb912f53a16b",
+      "committed_at": "2026-10-20T13:11:21+08:00",
+      "subject": "audit: document corrected sandwich, greedy matching, strict scene gates and evidence limitations",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        7
+      ]
+    },
+    {
+      "name": "origin/chatgpt/full-execution-spec-p2-20261021",
+      "head_sha": "64a0b60968c64d1c60c46ad5dcd72c9e7e8ebd0c",
+      "committed_at": "2026-10-21T01:22:19+08:00",
+      "subject": "test(p2): verify actual C0 Payload body names and reject unresolved mount aliases",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        16
+      ]
+    },
+    {
+      "name": "origin/chatgpt/p0-subprocess-gate-20261020",
+      "head_sha": "31e910b1f30b16b5cf7d05a73a9d31f2316a6990",
+      "committed_at": "2026-10-21T00:02:11+08:00",
+      "subject": "test(p0): verify missing report, timeout and exclusive evidence path",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        14
+      ]
+    },
+    {
+      "name": "origin/chatgpt/p2-c0-gpu-diagnostic-fix-20261021",
+      "head_sha": "960cb7d3b01d6521bfedbb9621c662d8b56a28ca",
+      "committed_at": "2026-10-21T01:21:08+08:00",
+      "subject": "ci(p2): syntax-check C0 script and test safe simulated CUDA readback",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        17
+      ]
+    },
+    {
+      "name": "origin/chatgpt/p2-chassis-world-frame-contact-20261021",
+      "head_sha": "424c7e3d33776b934f2579a32c1fa445b8220d36",
+      "committed_at": "2026-10-21T10:34:01+08:00",
+      "subject": "fix(p2): apply geometry translation before scale in USDA xform order",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        18
+      ]
+    },
+    {
+      "name": "origin/chatgpt/p2-source-aware-pose-metrics-20261020",
+      "head_sha": "ff21230c78864fb69d8804e0ef9468df9824244a",
+      "committed_at": "2026-10-21T00:07:15+08:00",
+      "subject": "test(p2): lock actual reset0 world mismatch vs good local mount",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        15
+      ]
+    },
+    {
+      "name": "origin/chatgpt/p2-wc-continuous-queue-20261021",
+      "head_sha": "79ffab3b5916cc5063c09801298d400eeaf4e24a",
+      "committed_at": "2026-10-21T15:13:24+08:00",
+      "subject": "ci: enforce 96-task execution queue validity, safety gates and resumability",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        21
+      ]
+    },
+    {
+      "name": "origin/chatgpt/p2-wheel-contact-spec-20261021",
+      "head_sha": "e76e2677c3006b8274f1f742466c428e046d159f",
+      "committed_at": "2026-10-21T10:46:06+08:00",
+      "subject": "docs(p2): rigorous wheel-ground USD/PhysX/contact acceptance and autonomous experiment spec",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        19
+      ]
+    },
+    {
+      "name": "origin/dev/morph-one-cad-pipeline",
+      "head_sha": "a042f51f6ddf65c957f5d39feb44c73c4b496ef7",
+      "committed_at": "2026-10-20T01:46:06+08:00",
+      "subject": "feat(cad): per-solid geometry facts, repeated-shape fingerprints and USD audit",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/dev/morph-one-metric-scene-and-mapping",
+      "head_sha": "3ce42c09cc0c86133a673c3756fd1fbf79d02a81",
+      "committed_at": "2026-10-20T08:45:55+08:00",
+      "subject": "feat(cad): grade STEP->USD part correspondence by name lineage and geometry",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/dev/morph-one-p2-init-diagnostics",
+      "head_sha": "459cb122f7be68ad60295ee61c4faaf73618b151",
+      "committed_at": "2026-10-21T04:08:18+08:00",
+      "subject": "P2: simplified chassis collision from measured geometry; contact reporters do not fire yet",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/dev/morph-one-p2-quat-and-settle",
+      "head_sha": "fd9073b1d531678e5b4fdf9c120ad0341312e3ba",
+      "committed_at": "2026-10-21T10:51:04+08:00",
+      "subject": "P2: fix the double-counted child transform in the simplified chassis; contact still silent",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/dev/p2-wheel-contact-g1g4",
+      "head_sha": "9bf73d7f03b57b4dd0969a331be0d1aa7537bdba",
+      "committed_at": "2026-10-21T15:42:00+08:00",
+      "subject": "P2-WC G6: three collision implementations all verified; reliable structure named",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        20
+      ]
+    },
+    {
+      "name": "origin/evidence/b601-rs-acceptance-173966b",
+      "head_sha": "972819366fba3dcb841c3dcb1909455d1e40ed72",
+      "committed_at": "2026-10-19T19:48:53+08:00",
+      "subject": "evidence(b601-rs): three-phase acceptance run for commit 173966b (33 runs, all pass)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/evidence/b601-rs-accounting-83ea89c",
+      "head_sha": "f3ec620e7d3e5225c3fe39273c391f823ac74025",
+      "committed_at": "2026-10-20T00:06:02+08:00",
+      "subject": "evidence(b601-rs): velocity-accounting verification for commit 83ea89c (4 runs, all pass)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/evidence/b601-rs-physx-velocity-55112d2",
+      "head_sha": "01a9b27455c742297f370606c2e9c4f4cdf04a6f",
+      "committed_at": "2026-10-19T17:44:33+08:00",
+      "subject": "evidence(b601-rs): velocity-channel solver experiments for commit 55112d2 (11 runs)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/evidence/b601-rs-review-454197e-20261019",
+      "head_sha": "5f8ac8e18e3b46fbeae16d1bd78d4dffd2f8b1b8",
+      "committed_at": "2026-10-19T13:33:53+08:00",
+      "subject": "evidence(b601-rs): execution record for review commit 454197e (2..128 envs + velocity-channel probes)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/evidence/morph-one-audit7-verification-b0853ef",
+      "head_sha": "0e94de2a04aef543025e04e94541a630bc8e0d26",
+      "committed_at": "2026-10-20T17:22:18+08:00",
+      "subject": "evidence(morph-one): pxr regression re-run in the Isaac interpreter (151 passed)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/evidence/morph-one-cad-revalidation-2270cb3",
+      "head_sha": "e3a2cb444cba2332700b6cb95d5cdbb11bb5d818",
+      "committed_at": "2026-10-20T08:26:49+08:00",
+      "subject": "evidence(morph-one): revalidation of audit 2270cb3 (regression, attribution, conversion, metric scene)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/evidence/pr10-mount-gates-verification",
+      "head_sha": "5a734636ba127b1e6172e98e077ff4b616462a71",
+      "committed_at": "2026-10-20T19:24:48+08:00",
+      "subject": "evidence(pr10): independent re-verification of the C3 gate and the Y-up rotation sign",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/evidence/pr11-wheel-symmetry-verification",
+      "head_sha": "1e5173cfd60e63568eb981ab589ee72310aaea29",
+      "committed_at": "2026-10-20T19:24:56+08:00",
+      "subject": "evidence(pr11): independent re-verification of the wheel-symmetry metric change",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/evidence/pr12-physx-metrics-verification",
+      "head_sha": "31a9bd532ff714d88670b26af8fcb23f56d4f0ce",
+      "committed_at": "2026-10-20T22:07:32+08:00",
+      "subject": "evidence(pr12): audit metrics verified, mount metrics re-measured in an independent sandbox",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/evidence/pr9-exponent-direction-verification",
+      "head_sha": "90add7cd6805cea4d99046e556528ced48d01899",
+      "committed_at": "2026-10-20T19:24:41+08:00",
+      "subject": "evidence(pr9): independent re-verification of the scientific-notation direction fix",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/evidence/pr9-signed-zero-verification",
+      "head_sha": "3b3f809fedf7d2f9441f320efc6a9c46185a46bc",
+      "committed_at": "2026-10-20T22:00:45+08:00",
+      "subject": "evidence(pr9): signed-zero regression re-verified on the real STEP",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/feat/morph-one-physics-sandbox",
+      "head_sha": "b7372a291e5a038f8866903ebf3aed64aad807b0",
+      "committed_at": "2026-10-20T17:21:50+08:00",
+      "subject": "feat(morph_one): read-only physics-modeling prechecks and mount-scheme sandbox",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/feat/morph-one-physx-dynamic-validation",
+      "head_sha": "edf96003a7dba8f90fe7cfde9f350239f657cdff",
+      "committed_at": "2026-10-20T19:48:01+08:00",
+      "subject": "feat(morph_one): real PhysX stepping of proxy and real-arm mobile mounts",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/feat/morph-one-wheel-kinematics",
+      "head_sha": "53d71ff662c611d87a4fa53571297cd4e8cce478",
+      "committed_at": "2026-10-20T17:20:13+08:00",
+      "subject": "feat(morph_one): wheel-group and candidate steering/drive axes from real CAD geometry",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/feature/d455-rebot-rs-calibration-v2-20261009",
+      "head_sha": "b96664a02ab992f4891797bd99dbd5c26b79190e",
+      "committed_at": "2026-10-09T17:30:50+08:00",
+      "subject": "test: verify fixed camera optical axes and transform direction",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/feature/morph-one-rs-integrated-assembly",
+      "head_sha": "59f89488b92608552c5f0c58b6cfd70554419bf6",
+      "committed_at": "2026-10-20T00:26:23+08:00",
+      "subject": "feat(morph-one): Phase A CAD assetization facts + 8-joint interface with explicit blockers",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/feature/rebot-rs-sim-asset",
+      "head_sha": "d91220225d5d2f93ce280bd8c768f3dc44ae70cc",
+      "committed_at": "2026-10-19T12:33:02+08:00",
+      "subject": "fix(tests): trustworthy multi-env acceptance + real state-sync finding (70843e7 review)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/feature/shuttle-detection",
+      "head_sha": "98487bf3284279924de2cc5a284915d9ba7dfc1f",
+      "committed_at": "2026-10-17T18:05:13+08:00",
+      "subject": "docs: GPT triage protocol and the cell-to-coco-image mapping for the review package",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/main",
+      "head_sha": "16f1ae43283880dc09af8480c0f87b97f0511565",
+      "committed_at": "2026-10-09T16:57:55+08:00",
+      "subject": "assets: record the Morph One M1-4WD4S chassis CAD arriving on the resource host",
+      "is_default": false,
+      "merged_into_main": true,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/p1/wheel-identity-205-vs-181",
+      "head_sha": "76c7022f27db776ab88072f3c76ba64c832c4f36",
+      "committed_at": "2026-10-21T11:00:17+08:00",
+      "subject": "evidence(p1): quantify the 205.991 vs 180.782 mm wheel bbox gap",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/p1/wheel-rolling-surface",
+      "head_sha": "c3ec799b13f2e86da009b0f29924949075ee2149",
+      "committed_at": "2026-10-21T15:54:19+08:00",
+      "subject": "P1: wheel rolling-surface report + LF-normalised manifest (P1-04/05/08/09)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        25
+      ]
+    },
+    {
+      "name": "origin/p5/arm-static-consistency",
+      "head_sha": "ca30af08ad1f1a01a4c71b8fb3c20093e42cfdbf",
+      "committed_at": "2026-10-21T11:01:58+08:00",
+      "subject": "test(arm): P5 static consistency of the B601-RS USD against the limit table",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/p5/rs-reset-pose",
+      "head_sha": "667230693448370cca2c11d5eceab778519b2aec",
+      "committed_at": "2026-10-21T15:41:50+08:00",
+      "subject": "test(arm): 5%-of-range rest margin, NaN guard, P5B record with reverse control",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        22
+      ]
+    },
+    {
+      "name": "origin/queue/a01-a03-a10",
+      "head_sha": "b5ee852d79ff6fe0cd67cc89bf84511ffa7e3ebc",
+      "committed_at": "2026-10-21T15:56:25+08:00",
+      "subject": "fix(queue): A01 --check compares stable facts only, not the worktree HEAD or moving refs",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        24
+      ]
+    },
+    {
+      "name": "origin/review/b601-rs-physx-production-20261019",
+      "head_sha": "173966bf7c12c0e4c2da4d82719fbad80eda063c",
+      "committed_at": "2026-10-19T18:36:54+08:00",
+      "subject": "docs(b601-rs): record causal evidence, production PhysX fix and remaining dynamic velocity risk",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        3
+      ]
+    },
+    {
+      "name": "origin/review/b601-rs-physx-velocity-20261019",
+      "head_sha": "55112d26e1e3e830254702a77b5972eae8a920b1",
+      "committed_at": "2026-10-19T13:39:47+08:00",
+      "subject": "diagnostics(b601-rs): controlled PhysX TGS/PGS and external-forces velocity experiments",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        2
+      ]
+    },
+    {
+      "name": "origin/review/b601-rs-state-consistency-20261019",
+      "head_sha": "454197ebb5615df2f3b5fe58567a6c813b9daf7b",
+      "committed_at": "2026-10-19T12:50:04+08:00",
+      "subject": "fix(b601-rs): import code from the executing checkout, not a hard-coded old clone",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        1
+      ]
+    },
+    {
+      "name": "origin/review/b601-rs-velocity-accounting-20261019",
+      "head_sha": "83ea89c05af57e31dcc67b50f9ff14aa9fa66033",
+      "committed_at": "2026-10-19T23:54:44+08:00",
+      "subject": "docs(b601-rs): correct first-step accounting interpretation and limit dynamic claims",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        4
+      ]
+    },
+    {
+      "name": "origin/review/morph-one-cad-pipeline-audit-20261020",
+      "head_sha": "2270cb3535b9b9473c8c99a620dad93791a56770",
+      "committed_at": "2026-10-20T08:13:29+08:00",
+      "subject": "docs(morph-one): independent night audit, factual claims and next unit-composition gate",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        6
+      ]
+    },
+    {
+      "name": "origin/review/morph-one-metric-mapping-audit-20261020",
+      "head_sha": "b0853efe375bda931b84ed401c7ccff2d6ce950e",
+      "committed_at": "2026-10-20T13:28:06+08:00",
+      "subject": "docs(morph-one): audit metric scene and correct STEP-to-USD mapping interpretation",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        8
+      ]
+    },
+    {
+      "name": "origin/review/morph-one-mount-evidence-gates-20261020",
+      "head_sha": "9bafbfe051b05ff9b58c6bcfee477dafa78e71bf",
+      "committed_at": "2026-10-20T17:51:32+08:00",
+      "subject": "test(physics): require candidacy and guard Y-up rotation sign",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        10
+      ]
+    },
+    {
+      "name": "origin/review/morph-one-phase-a-audit-20261020",
+      "head_sha": "c5469e8bd8d19b76c9fef21f172f66ab0b8369aa",
+      "committed_at": "2026-10-20T00:35:50+08:00",
+      "subject": "docs(morph-one): independent audit, exact evidence lineage and CAD headless probe plan",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        5
+      ]
+    },
+    {
+      "name": "origin/review/morph-one-physx-metrics-audit-20261020",
+      "head_sha": "96ef90f614300174fb700aafe8abde541e1552aa",
+      "committed_at": "2026-10-20T21:35:21+08:00",
+      "subject": "docs(physx): audit mount, Z drift, gains provenance and BREP bboxes",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        12
+      ]
+    },
+    {
+      "name": "origin/review/morph-one-step-exponent-direction-20261020",
+      "head_sha": "3a679b35fc326ed8eadfdaf299f56ce19d28c321",
+      "committed_at": "2026-10-20T21:29:05+08:00",
+      "subject": "test(cad): canonical signed-zero axis labels from SolidWorks STEP",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        9
+      ]
+    },
+    {
+      "name": "origin/review/morph-one-wheel-symmetry-20261020",
+      "head_sha": "eaf7c1e20ea97c25c019cb3e23b896b604bea200",
+      "committed_at": "2026-10-20T17:53:36+08:00",
+      "subject": "docs(cad): document axial-origin symmetry error and revalidation gate",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        11
+      ]
+    },
+    {
+      "name": "origin/test/p0-gate-runner-regression",
+      "head_sha": "5e143d0511fb3f3adfba3e9118ac4ce599d41b35",
+      "committed_at": "2026-10-21T10:52:30+08:00",
+      "subject": "P0: report for the pytest regression of the outer P2 gate runner",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "origin/test/p0-gate-runner-strict-outdir",
+      "head_sha": "ce278c2a1825ca6b4f7621c4d8c4c6e304798b21",
+      "committed_at": "2026-10-21T15:49:20+08:00",
+      "subject": "P0-02..P0-06: fail-closed gate domain, real PID tree-kill evidence, reused out-dir refusal, manifest gravity consistency, JSONL integrity",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        23
+      ]
+    },
+    {
+      "name": "p1/wheel-identity-205-vs-181",
+      "head_sha": "76c7022f27db776ab88072f3c76ba64c832c4f36",
+      "committed_at": "2026-10-21T11:00:17+08:00",
+      "subject": "evidence(p1): quantify the 205.991 vs 180.782 mm wheel bbox gap",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "p1/wheel-rolling-surface",
+      "head_sha": "c3ec799b13f2e86da009b0f29924949075ee2149",
+      "committed_at": "2026-10-21T15:54:19+08:00",
+      "subject": "P1: wheel rolling-surface report + LF-normalised manifest (P1-04/05/08/09)",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        25
+      ]
+    },
+    {
+      "name": "p5/arm-static-consistency",
+      "head_sha": "ca30af08ad1f1a01a4c71b8fb3c20093e42cfdbf",
+      "committed_at": "2026-10-21T11:01:58+08:00",
+      "subject": "test(arm): P5 static consistency of the B601-RS USD against the limit table",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "p5/rs-reset-pose",
+      "head_sha": "667230693448370cca2c11d5eceab778519b2aec",
+      "committed_at": "2026-10-21T15:41:50+08:00",
+      "subject": "test(arm): 5%-of-range rest margin, NaN guard, P5B record with reverse control",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        22
+      ]
+    },
+    {
+      "name": "queue/a01-a03-a10",
+      "head_sha": "b5ee852d79ff6fe0cd67cc89bf84511ffa7e3ebc",
+      "committed_at": "2026-10-21T15:56:25+08:00",
+      "subject": "fix(queue): A01 --check compares stable facts only, not the worktree HEAD or moving refs",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        24
+      ]
+    },
+    {
+      "name": "test/p0-gate-runner-regression",
+      "head_sha": "5e143d0511fb3f3adfba3e9118ac4ce599d41b35",
+      "committed_at": "2026-10-21T10:52:30+08:00",
+      "subject": "P0: report for the pytest regression of the outer P2 gate runner",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": []
+    },
+    {
+      "name": "test/p0-gate-runner-strict-outdir",
+      "head_sha": "ce278c2a1825ca6b4f7621c4d8c4c6e304798b21",
+      "committed_at": "2026-10-21T15:49:20+08:00",
+      "subject": "P0-02..P0-06: fail-closed gate domain, real PID tree-kill evidence, reused out-dir refusal, manifest gravity consistency, JSONL integrity",
+      "is_default": false,
+      "merged_into_main": false,
+      "pull_requests": [
+        23
+      ]
+    }
+  ],
+  "unmerged_branches": [
+    "origin",
+    "origin/audit/morph-one-sandwich-review",
+    "origin/chatgpt/full-execution-spec-p2-20261021",
+    "origin/chatgpt/p0-subprocess-gate-20261020",
+    "origin/chatgpt/p2-c0-gpu-diagnostic-fix-20261021",
+    "origin/chatgpt/p2-chassis-world-frame-contact-20261021",
+    "origin/chatgpt/p2-source-aware-pose-metrics-20261020",
+    "origin/chatgpt/p2-wc-continuous-queue-20261021",
+    "origin/chatgpt/p2-wheel-contact-spec-20261021",
+    "origin/dev/morph-one-cad-pipeline",
+    "origin/dev/morph-one-metric-scene-and-mapping",
+    "origin/dev/morph-one-p2-init-diagnostics",
+    "origin/dev/morph-one-p2-quat-and-settle",
+    "origin/dev/p2-wheel-contact-g1g4",
+    "origin/evidence/b601-rs-acceptance-173966b",
+    "origin/evidence/b601-rs-accounting-83ea89c",
+    "origin/evidence/b601-rs-physx-velocity-55112d2",
+    "origin/evidence/b601-rs-review-454197e-20261019",
+    "origin/evidence/morph-one-audit7-verification-b0853ef",
+    "origin/evidence/morph-one-cad-revalidation-2270cb3",
+    "origin/evidence/pr10-mount-gates-verification",
+    "origin/evidence/pr11-wheel-symmetry-verification",
+    "origin/evidence/pr12-physx-metrics-verification",
+    "origin/evidence/pr9-exponent-direction-verification",
+    "origin/evidence/pr9-signed-zero-verification",
+    "origin/feat/morph-one-physics-sandbox",
+    "origin/feat/morph-one-physx-dynamic-validation",
+    "origin/feat/morph-one-wheel-kinematics",
+    "origin/feature/d455-rebot-rs-calibration-v2-20261009",
+    "origin/feature/morph-one-rs-integrated-assembly",
+    "origin/feature/rebot-rs-sim-asset",
+    "origin/feature/shuttle-detection",
+    "origin/p1/wheel-identity-205-vs-181",
+    "origin/p1/wheel-rolling-surface",
+    "origin/p5/arm-static-consistency",
+    "origin/p5/rs-reset-pose",
+    "origin/queue/a01-a03-a10",
+    "origin/review/b601-rs-physx-production-20261019",
+    "origin/review/b601-rs-physx-velocity-20261019",
+    "origin/review/b601-rs-state-consistency-20261019",
+    "origin/review/b601-rs-velocity-accounting-20261019",
+    "origin/review/morph-one-cad-pipeline-audit-20261020",
+    "origin/review/morph-one-metric-mapping-audit-20261020",
+    "origin/review/morph-one-mount-evidence-gates-20261020",
+    "origin/review/morph-one-phase-a-audit-20261020",
+    "origin/review/morph-one-physx-metrics-audit-20261020",
+    "origin/review/morph-one-step-exponent-direction-20261020",
+    "origin/review/morph-one-wheel-symmetry-20261020",
+    "origin/test/p0-gate-runner-regression",
+    "origin/test/p0-gate-runner-strict-outdir"
+  ],
+  "worktree_count": 28,
+  "worktrees": [
+    {
+      "path": "E:/具身智能/badmin_p1_wheel",
+      "head_sha": "76c7022f27db776ab88072f3c76ba64c832c4f36",
+      "branch": "p1/wheel-identity-205-vs-181"
+    },
+    {
+      "path": "E:/具身智能/badmin_project",
+      "head_sha": "d91220225d5d2f93ce280bd8c768f3dc44ae70cc",
+      "branch": "feature/rebot-rs-sim-asset"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_173966b",
+      "head_sha": "972819366fba3dcb841c3dcb1909455d1e40ed72",
+      "branch": "evidence/b601-rs-acceptance-173966b"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_2270cb3",
+      "head_sha": "e3a2cb444cba2332700b6cb95d5cdbb11bb5d818",
+      "branch": "evidence/morph-one-cad-revalidation-2270cb3"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_454197e",
+      "head_sha": "5f8ac8e18e3b46fbeae16d1bd78d4dffd2f8b1b8",
+      "branch": "evidence/b601-rs-review-454197e-20261019"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_55112d2",
+      "head_sha": "01a9b27455c742297f370606c2e9c4f4cdf04a6f",
+      "branch": "evidence/b601-rs-physx-velocity-55112d2"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_83ea89c",
+      "head_sha": "f3ec620e7d3e5225c3fe39273c391f823ac74025",
+      "branch": "evidence/b601-rs-accounting-83ea89c"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_b",
+      "head_sha": "edf96003a7dba8f90fe7cfde9f350239f657cdff",
+      "branch": "feat/morph-one-physx-dynamic-validation"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_b0853ef",
+      "head_sha": "0e94de2a04aef543025e04e94541a630bc8e0d26",
+      "branch": "evidence/morph-one-audit7-verification-b0853ef"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_baseline_check",
+      "head_sha": "83ea89c05af57e31dcc67b50f9ff14aa9fa66033",
+      "detached": true
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_c5469e8",
+      "head_sha": "c5469e8bd8d19b76c9fef21f172f66ab0b8369aa",
+      "detached": true
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_cad_pipeline",
+      "head_sha": "a042f51f6ddf65c957f5d39feb44c73c4b496ef7",
+      "branch": "dev/morph-one-cad-pipeline"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_dev_2270cb3",
+      "head_sha": "3ce42c09cc0c86133a673c3756fd1fbf79d02a81",
+      "branch": "dev/morph-one-metric-scene-and-mapping"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_g",
+      "head_sha": "0255197f93e6835c33574bd636eb009dcd7c2a75",
+      "branch": "dev/p2-wheel-contact-g1g4"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_morphone",
+      "head_sha": "59f89488b92608552c5f0c58b6cfd70554419bf6",
+      "branch": "feature/morph-one-rs-integrated-assembly"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_p0b",
+      "head_sha": "ce278c2a1825ca6b4f7621c4d8c4c6e304798b21",
+      "branch": "test/p0-gate-runner-strict-outdir"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_p1b",
+      "head_sha": "c3ec799b13f2e86da009b0f29924949075ee2149",
+      "branch": "p1/wheel-rolling-surface"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_p2",
+      "head_sha": "5e143d0511fb3f3adfba3e9118ac4ce599d41b35",
+      "branch": "test/p0-gate-runner-regression"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_p5",
+      "head_sha": "ca30af08ad1f1a01a4c71b8fb3c20093e42cfdbf",
+      "branch": "p5/arm-static-consistency"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_p5b",
+      "head_sha": "667230693448370cca2c11d5eceab778519b2aec",
+      "branch": "p5/rs-reset-pose"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_physics",
+      "head_sha": "b7372a291e5a038f8866903ebf3aed64aad807b0",
+      "branch": "feat/morph-one-physics-sandbox"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_pr10",
+      "head_sha": "5a734636ba127b1e6172e98e077ff4b616462a71",
+      "branch": "evidence/pr10-mount-gates-verification"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_pr11",
+      "head_sha": "1e5173cfd60e63568eb981ab589ee72310aaea29",
+      "branch": "evidence/pr11-wheel-symmetry-verification"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_pr12",
+      "head_sha": "31a9bd532ff714d88670b26af8fcb23f56d4f0ce",
+      "branch": "evidence/pr12-physx-metrics-verification"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_pr9",
+      "head_sha": "90add7cd6805cea4d99046e556528ced48d01899",
+      "branch": "evidence/pr9-exponent-direction-verification"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_pr9b",
+      "head_sha": "3b3f809fedf7d2f9441f320efc6a9c46185a46bc",
+      "branch": "evidence/pr9-signed-zero-verification"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_qa",
+      "head_sha": "b5ee852d79ff6fe0cd67cc89bf84511ffa7e3ebc",
+      "branch": "queue/a01-a03-a10"
+    },
+    {
+      "path": "E:/具身智能/badmin_wt_wheels",
+      "head_sha": "53d71ff662c611d87a4fa53571297cd4e8cce478",
+      "branch": "feat/morph-one-wheel-kinematics"
+    }
+  ],
+  "pull_count": 24,
+  "pulls": [
+    {
+      "baseRefName": "feature/rebot-rs-sim-asset",
+      "headRefName": "review/b601-rs-state-consistency-20261019",
+      "isDraft": true,
+      "number": 1,
+      "state": "OPEN",
+      "title": "[Review] B601-RS full-window acceptance and PhysX velocity probes",
+      "updatedAt": "2026-10-19T04:50:34Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/1"
+    },
+    {
+      "baseRefName": "review/b601-rs-state-consistency-20261019",
+      "headRefName": "review/b601-rs-physx-velocity-20261019",
+      "isDraft": true,
+      "number": 2,
+      "state": "OPEN",
+      "title": "[Diagnostic] B601-RS PhysX force-iteration / solver velocity isolation",
+      "updatedAt": "2026-10-19T05:41:09Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/2"
+    },
+    {
+      "baseRefName": "review/b601-rs-physx-velocity-20261019",
+      "headRefName": "review/b601-rs-physx-production-20261019",
+      "isDraft": true,
+      "number": 3,
+      "state": "OPEN",
+      "title": "[Review] B601-RS TGS gravity velocity fix in scene + multi-env with static-state gate",
+      "updatedAt": "2026-10-19T10:37:39Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/3"
+    },
+    {
+      "baseRefName": "review/b601-rs-physx-production-20261019",
+      "headRefName": "review/b601-rs-velocity-accounting-20261019",
+      "isDraft": true,
+      "number": 4,
+      "state": "OPEN",
+      "title": "[Review] Fix B601-RS velocity probe step-0 accounting and add CPU regression tests",
+      "updatedAt": "2026-10-19T15:55:15Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/4"
+    },
+    {
+      "baseRefName": "feature/morph-one-rs-integrated-assembly",
+      "headRefName": "review/morph-one-phase-a-audit-20261020",
+      "isDraft": true,
+      "number": 5,
+      "state": "OPEN",
+      "title": "[Audit] Morph One phase A evidence correction, safe STEP claims, chassis parameter validation",
+      "updatedAt": "2026-10-19T16:36:55Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/5"
+    },
+    {
+      "baseRefName": "dev/morph-one-cad-pipeline",
+      "headRefName": "review/morph-one-cad-pipeline-audit-20261020",
+      "isDraft": true,
+      "number": 6,
+      "state": "OPEN",
+      "title": "[Audit] Morph One CAD: prevent stale USD acceptance, complete owner graph, enforce unit composition",
+      "updatedAt": "2026-10-20T00:14:01Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/6"
+    },
+    {
+      "baseRefName": "dev/morph-one-metric-scene-and-mapping",
+      "headRefName": "audit/morph-one-sandwich-review",
+      "isDraft": true,
+      "number": 7,
+      "state": "OPEN",
+      "title": "CAD audit: fix STEP bbox sandwich, recover admissible duplicate matches, tighten metric-scene gates",
+      "updatedAt": "2026-10-20T05:11:55Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/7"
+    },
+    {
+      "baseRefName": "dev/morph-one-metric-scene-and-mapping",
+      "headRefName": "review/morph-one-metric-mapping-audit-20261020",
+      "isDraft": true,
+      "number": 8,
+      "state": "OPEN",
+      "title": "[Audit] Fix STEP–USD bbox matching, candidate grading and metre-scene gates",
+      "updatedAt": "2026-10-20T05:28:33Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/8"
+    },
+    {
+      "baseRefName": "review/morph-one-metric-mapping-audit-20261020",
+      "headRefName": "review/morph-one-step-exponent-direction-20261020",
+      "isDraft": true,
+      "number": 9,
+      "state": "OPEN",
+      "title": "fix(cad): STEP DIRECTION scientific notation must not vanish silently",
+      "updatedAt": "2026-10-20T14:32:19Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/9"
+    },
+    {
+      "baseRefName": "feat/morph-one-physics-sandbox",
+      "headRefName": "review/morph-one-mount-evidence-gates-20261020",
+      "isDraft": true,
+      "number": 10,
+      "state": "OPEN",
+      "title": "fix(physics): correct chassis up-axis rotation and unstepped articulation grading",
+      "updatedAt": "2026-10-20T09:51:48Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/10"
+    },
+    {
+      "baseRefName": "feat/morph-one-wheel-kinematics",
+      "headRefName": "review/morph-one-wheel-symmetry-20261020",
+      "isDraft": true,
+      "number": 11,
+      "state": "OPEN",
+      "title": "fix(cad): wheel steering-axis symmetry must ignore arbitrary anchor height",
+      "updatedAt": "2026-10-20T09:53:49Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/11"
+    },
+    {
+      "baseRefName": "feat/morph-one-physx-dynamic-validation",
+      "headRefName": "review/morph-one-physx-metrics-audit-20261020",
+      "isDraft": true,
+      "number": 12,
+      "state": "OPEN",
+      "title": "fix(physx): report true vertical delta and 6DoF mount relative pose",
+      "updatedAt": "2026-10-20T14:32:22Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/12"
+    },
+    {
+      "baseRefName": "dev/morph-one-p2-init-diagnostics",
+      "headRefName": "chatgpt/p0-subprocess-gate-20261020",
+      "isDraft": true,
+      "number": 14,
+      "state": "OPEN",
+      "title": "draft(p0): ChatGPT subprocess gate runner and fail-closed regression tests",
+      "updatedAt": "2026-10-20T16:05:58Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/14"
+    },
+    {
+      "baseRefName": "dev/morph-one-p2-init-diagnostics",
+      "headRefName": "chatgpt/p2-source-aware-pose-metrics-20261020",
+      "isDraft": true,
+      "number": 15,
+      "state": "OPEN",
+      "title": "draft(p2): ChatGPT source-aware quaternion and SE(3) metrics",
+      "updatedAt": "2026-10-20T16:07:41Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/15"
+    },
+    {
+      "baseRefName": "dev/morph-one-p2-init-diagnostics",
+      "headRefName": "chatgpt/full-execution-spec-p2-20261021",
+      "isDraft": true,
+      "number": 16,
+      "state": "OPEN",
+      "title": "draft(spec): full dual-agent P0-P8 execution spec + P2 telemetry gate and offline CI",
+      "updatedAt": "2026-10-20T17:22:21Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/16"
+    },
+    {
+      "baseRefName": "dev/morph-one-p2-quat-and-settle",
+      "headRefName": "chatgpt/p2-c0-gpu-diagnostic-fix-20261021",
+      "isDraft": true,
+      "number": 17,
+      "state": "OPEN",
+      "title": "draft(p2): fix C0 CUDA tensor readback and preserve failure evidence",
+      "updatedAt": "2026-10-20T17:21:34Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/17"
+    },
+    {
+      "baseRefName": "dev/morph-one-p2-quat-and-settle",
+      "headRefName": "chatgpt/p2-chassis-world-frame-contact-20261021",
+      "isDraft": true,
+      "number": 18,
+      "state": "OPEN",
+      "title": "draft(p2): fix doubled wheel lift and verify composed USD world clearance",
+      "updatedAt": "2026-10-21T02:34:43Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/18"
+    },
+    {
+      "baseRefName": "chatgpt/p2-chassis-world-frame-contact-20261021",
+      "headRefName": "chatgpt/p2-wheel-contact-spec-20261021",
+      "isDraft": true,
+      "number": 19,
+      "state": "OPEN",
+      "title": "draft(spec): P2 wheel-ground USD/PhysX/contact acceptance matrix",
+      "updatedAt": "2026-10-21T02:46:27Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/19"
+    },
+    {
+      "baseRefName": "chatgpt/p2-chassis-world-frame-contact-20261021",
+      "headRefName": "dev/p2-wheel-contact-g1g4",
+      "isDraft": false,
+      "number": 20,
+      "state": "OPEN",
+      "title": "P2-WC: wheel-ground contact G1/G2/G3/G4 (contact proven, penetration fails correctly)",
+      "updatedAt": "2026-10-21T07:42:12Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/20"
+    },
+    {
+      "baseRefName": "dev/p2-wheel-contact-g1g4",
+      "headRefName": "chatgpt/p2-wc-continuous-queue-20261021",
+      "isDraft": true,
+      "number": 21,
+      "state": "OPEN",
+      "title": "draft(spec): 96-task continuous P0–P8 engineering queue, resume state and safety gates",
+      "updatedAt": "2026-10-21T07:13:57Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/21"
+    },
+    {
+      "baseRefName": "p5/arm-static-consistency",
+      "headRefName": "p5/rs-reset-pose",
+      "isDraft": true,
+      "number": 22,
+      "state": "OPEN",
+      "title": "fix(reset): model-aware arm rest pose (B601-RS joint3 no longer written out of limits)",
+      "updatedAt": "2026-10-21T07:42:27Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/22"
+    },
+    {
+      "baseRefName": "test/p0-gate-runner-regression",
+      "headRefName": "test/p0-gate-runner-strict-outdir",
+      "isDraft": true,
+      "number": 23,
+      "state": "OPEN",
+      "title": "P0-02..P0-06: fail-closed gate runner (strict gate domain, PID tree-kill evidence, out-dir refusal, manifest gravity, JSONL integrity)",
+      "updatedAt": "2026-10-21T07:49:29Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/23"
+    },
+    {
+      "baseRefName": "main",
+      "headRefName": "queue/a01-a03-a10",
+      "isDraft": true,
+      "number": 24,
+      "state": "OPEN",
+      "title": "draft(queue): A01 engineering index + A02 queue state/READY selector + A03 consistency gate + A10 CPU runbook",
+      "updatedAt": "2026-10-21T07:56:32Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/24"
+    },
+    {
+      "baseRefName": "p1/wheel-identity-205-vs-181",
+      "headRefName": "p1/wheel-rolling-surface",
+      "isDraft": true,
+      "number": 25,
+      "state": "OPEN",
+      "title": "P1: wheel identity contract + rolling surface UNKNOWN (P1-04/05/08/09)",
+      "updatedAt": "2026-10-21T07:54:41Z",
+      "url": "https://github.com/jho887891-sudo/badmin/pull/25"
+    }
+  ],
+  "branch_protection": {
+    "available": false,
+    "branch": "shuttle-detection",
+    "reason": "gh: Branch not found (HTTP 404)"
+  },
+  "documents": [
+    {
+      "path": "deliverables/rebot_b601dm/README.md",
+      "sha256": "faaa91d9616d88c5664ec766f00798e1d651031baa13dc90eb1862f9dad800cd",
+      "bytes": 7970
+    },
+    {
+      "path": "deliverables/rebot_b601dm/docs/superpowers/plans/2026-09-17-rebot-b601dm-badminton-capability-plan.md",
+      "sha256": "575c0d3cf2f7064317130efda7213e4aebed723000af66852975f7aac39dc16b",
+      "bytes": 15160
+    },
+    {
+      "path": "deliverables/rebot_b601dm/management/rebot_b601dm/ARM_IDENTITY_DECISION.md",
+      "sha256": "b8fe2226e39a67ccaf922032ebfa6441b98d27003ba174a8b0e9e7dab98d401e",
+      "bytes": 2571
+    },
+    {
+      "path": "deliverables/rebot_b601dm/management/rebot_b601dm/BADMINTON_CAPABILITY_RESULT.md",
+      "sha256": "444ad9f02eab7a5adcf70941520502e93fa9cd86bc782cd71075700562c11674",
+      "bytes": 8041
+    },
+    {
+      "path": "deliverables/rebot_b601dm/management/rebot_b601dm/DELIVERABLES.md",
+      "sha256": "c6480aeb2a0d23b5af2b10df73eb2ff5c06af530ef003e7758757a4e89889ed5",
+      "bytes": 7793
+    },
+    {
+      "path": "deliverables/rebot_b601dm/management/rebot_b601dm/FIRST_SWING_RECORD_INVALID.md",
+      "sha256": "0b65ef2beac385a99e0b9157aebafd87ade31e27270e51d7cfe09435c62e7f12",
+      "bytes": 2777
+    },
+    {
+      "path": "deliverables/rebot_b601dm/management/rebot_b601dm/REBOT_B601DM_REPORT.md",
+      "sha256": "d81d1c612204c915b06f138fbff39479a22a94f36cfbe067078d9f796fd0c13e",
+      "bytes": 11834
+    },
+    {
+      "path": "deliverables/rebot_b601dm/management/rebot_b601dm/TASK7_MEASUREMENT_STATUS.md",
+      "sha256": "725fc9b0e551321a09b2d5c0798d4d45cc4414ba013e107b95d35c905fc3f18e",
+      "bytes": 4202
+    },
+    {
+      "path": "deliverables/rebot_b601dm/management/rebot_b601dm/TEMP_README.md",
+      "sha256": "3e303e6966459020deacd0d03e86a6e4e842eec23ccfb6c77937a81d74e734e5",
+      "bytes": 4615
+    },
+    {
+      "path": "deliverables/rebot_b601dm/outputs/simulation/rebot_b601dm/real_limits/PATCH_NOTES.md",
+      "sha256": "267b1343ec971a2e78500fd6f3c6e5f77aba1b4ebf90b76678a4c1dc5b6980b2",
+      "bytes": 1290
+    },
+    {
+      "path": "deliverables/rebot_b601dm/outputs/simulation/rebot_b601dm/recommended_70_limits/PATCH_NOTES.md",
+      "sha256": "23ec323091829928c7a3e52add83580b3bdd37c314fb48fd4599e1bc96e14fe7",
+      "bytes": 1300
+    },
+    {
+      "path": "docs/ALGORITHM_AUDIT.md",
+      "sha256": "1433e3fba282f449734a1c17699f79d56980431023fb24caa9c4262657395773",
+      "bytes": 14238
+    },
+    {
+      "path": "docs/EVAL_FROZEN_TEST.md",
+      "sha256": "50da576ee7b0c0003869279b2a612aede447b68637f2847dc32fdc19da17749d",
+      "bytes": 3977
+    },
+    {
+      "path": "docs/LOCALIZATION_AUDIT.md",
+      "sha256": "27fe4ac0823f436fb1711303af44041a2d0bc344a8df800973459bdd3ca05e1d",
+      "bytes": 6049
+    },
+    {
+      "path": "docs/RACKET.md",
+      "sha256": "d47a1ced1c5676619b0576067691b5205edc8b559b6263190e50e9a44c7dc48e",
+      "bytes": 7087
+    },
+    {
+      "path": "docs/REMOTE_CONNECT_PLAYBOOK.md",
+      "sha256": "ecc5ef8393b2f09fba392821102af9a38ab4eea6d2b17382b5204cf1537d8828",
+      "bytes": 10570
+    },
+    {
+      "path": "docs/REMOTE_DSH_DEPLOY.md",
+      "sha256": "700c145c6cc2695746878b1211f6cdfd4ec98466c6b8c9f81a96859217392a83",
+      "bytes": 35142
+    },
+    {
+      "path": "docs/SHUTTLECOCK.md",
+      "sha256": "6504af1429ebac01a72121102f640ef6f8c0ef650989dcd0d7fa346b4881b68d",
+      "bytes": 5410
+    },
+    {
+      "path": "docs/algorithm_design.md",
+      "sha256": "cfe404d259e02eb4d779bccc31d4aa1e50ab744cd050fea82f4c19e9d67a66d1",
+      "bytes": 750
+    },
+    {
+      "path": "docs/architecture.md",
+      "sha256": "c40b0abf8df2f4f5ee0a70478758b25527e2021ab62bc01495d235bd0e9c4611",
+      "bytes": 779
+    },
+    {
+      "path": "docs/architecture/COORDINATE_SYSTEM.md",
+      "sha256": "29973a15da69906cdcb220ebdab841592f575006126732eb4991f8cb10967ee6",
+      "bytes": 1007
+    },
+    {
+      "path": "docs/deployment.md",
+      "sha256": "a0fcb2d758a762c9ee9c4e527792881e69ab6fb417e23234bf3d1038059407ab",
+      "bytes": 3154
+    },
+    {
+      "path": "docs/design/2026-09-13-racket-physics-design.md",
+      "sha256": "495e38fce5582222ecef6ca622201cba207889ff1279bd4b6c860459192b9d15",
+      "bytes": 4597
+    },
+    {
+      "path": "docs/hardware_interface.md",
+      "sha256": "95e6a460363c2239943189bd5d0b840a3efe11ac764bb87ea4220e0aaa63c24e",
+      "bytes": 1092
+    },
+    {
+      "path": "docs/observation_action.md",
+      "sha256": "4b13ff8dd23886b8a2a7822ec98a9901fee0d873886db2758bf216d30f31ae0a",
+      "bytes": 1010
+    },
+    {
+      "path": "docs/queue/README_zh.md",
+      "sha256": "70fd59260c9462f4c83f9c17abc46424e8393f1708310c0deedcce1605fe618d",
+      "bytes": 6112
+    },
+    {
+      "path": "docs/reward_design.md",
+      "sha256": "a75e75d230ecd3e4ee5a08128df6fe54aa1b6949228191afac5e058cb6f30bf6",
+      "bytes": 876
+    },
+    {
+      "path": "docs/sim2real.md",
+      "sha256": "67b716221047d216d96adde2fe260eeed91e386b62042c9902fe33297641da4d",
+      "bytes": 1240
+    },
+    {
+      "path": "docs/simulation/BADMINTON_ROBOT.md",
+      "sha256": "244b9341021c61f2d57c38e1d4b2770bc23e6670c487b0945b39cf9c4d1cad04",
+      "bytes": 34160
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-13-brain-modules.md",
+      "sha256": "87c578d23026ac8b71811e3f0c7bf3aaeb6fe1d7b80bfaee4794fc427165fb68",
+      "bytes": 9315
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-15-shuttle-baseline-training.md",
+      "sha256": "d4f778569b3be14cc19e2700bffacebf90a0ce45203de5e2504d11d6feccb136",
+      "bytes": 8149
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-15-shuttle-controlled-capability.md",
+      "sha256": "49ad906996eeaef52180d21b7210e6a67fb216ae4a6dcb993bc1516de375ce36",
+      "bytes": 6470
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-15-shuttle-data-asset-readiness.md",
+      "sha256": "4a24da488836229c2b25e932fb23b2b49593c2f9eb97445165a51c608437414b",
+      "bytes": 10502
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-15-shuttle-failure-feedback.md",
+      "sha256": "13c2be03e4b8c04881b044a54922f53933e0ee8fad4ff86c55a92913528a88b7",
+      "bytes": 5241
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-15-shuttle-final-evaluation.md",
+      "sha256": "9fafa82839adb2754e51eb2359fb3bea69eb8d708e20805ad568140f5f3deb48",
+      "bytes": 4756
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-15-shuttle-freeze-handoff.md",
+      "sha256": "a1377c9516904f8b96dd0259bdbed3bc1137b62e2b2c92b509cb6543f596e327",
+      "bytes": 5970
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-15-shuttle-real-image-video.md",
+      "sha256": "bef32c41aabc6737ef005ca87491408c874b667970f2f56f3807c1c58e0684c1",
+      "bytes": 5723
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-15-shuttle-system-requirements.md",
+      "sha256": "1b0e1178bb29750787a3abb3514200aa3b56e01a485a2fdcff4aec182580c11b",
+      "bytes": 5711
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-15-shuttle-three-level-adjustment.md",
+      "sha256": "7895c4d5420f4c4f0f9e3e941dee2416cc09c44fc15976f39cf8738c95562ef1",
+      "bytes": 6797
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-17-rebot-b601dm-badminton-capability-plan.md",
+      "sha256": "575c0d3cf2f7064317130efda7213e4aebed723000af66852975f7aac39dc16b",
+      "bytes": 15160
+    },
+    {
+      "path": "docs/superpowers/plans/PLAN_ERRATA.md",
+      "sha256": "3c889f681994cf5fa17680e3f0a4a4b879fe25dd4ffcf4849d9715d77b32571e",
+      "bytes": 5330
+    },
+    {
+      "path": "docs/superpowers/plans/README.md",
+      "sha256": "210f4910cf9539085a61bb0019dcd918f531024763f44093a9821a9496af1958",
+      "bytes": 656
+    },
+    {
+      "path": "docs/superpowers/specs/00_SHUTTLE_DETECTION_MASTER_SPEC.md",
+      "sha256": "a33c563efbbc8c792e4744077b07e06f95dbc7986fbe2ba034725afdde809d8b",
+      "bytes": 6777
+    },
+    {
+      "path": "docs/superpowers/specs/01_DATA_ASSET_READINESS_SPEC.md",
+      "sha256": "1308476177faba3388578dd31a33c8d6449dfbc66d49b79bc483fea8fde34dbb",
+      "bytes": 3519
+    },
+    {
+      "path": "docs/superpowers/specs/02_BASELINE_TRAINING_SPEC.md",
+      "sha256": "003dd533691da221180f2ce3a99fa044de7b2810e1bf72dad9c6219b09c8ed64",
+      "bytes": 2415
+    },
+    {
+      "path": "docs/superpowers/specs/03_CONTROLLED_CAPABILITY_SPEC.md",
+      "sha256": "77855016318444f2b67716de1ddb90479e2daddae298daa55e9b6e22048c0767",
+      "bytes": 2832
+    },
+    {
+      "path": "docs/superpowers/specs/04_REAL_IMAGE_VIDEO_SPEC.md",
+      "sha256": "4a64a52f87447bfc74cb06530920356aa00a798701f38bd5c24ce4ab585acf58",
+      "bytes": 2526
+    },
+    {
+      "path": "docs/superpowers/specs/05_SYSTEM_REQUIREMENT_MAPPING_SPEC.md",
+      "sha256": "78c67340b83132ba01aa2f7440c2d752ae1d3086c587b3b49efbedcdbd75aa55",
+      "bytes": 2619
+    },
+    {
+      "path": "docs/superpowers/specs/06_FAILURE_DIAGNOSIS_FEEDBACK_SPEC.md",
+      "sha256": "38f37b4175604ad64575694d823501a32e9f7534ecb10963a8a6a6db998a48cc",
+      "bytes": 2309
+    },
+    {
+      "path": "docs/superpowers/specs/07_THREE_LEVEL_ADJUSTMENT_SPEC.md",
+      "sha256": "b230fb5d8a7382c5df637789477a852b0fffe02b121d97174a124cf32a8c8506",
+      "bytes": 4628
+    },
+    {
+      "path": "docs/superpowers/specs/08_FINAL_EVALUATION_SPEC.md",
+      "sha256": "0cd4e17d6814ec41a288fc13ab927e0a0eefb831725576085a42e8ee9a1403b9",
+      "bytes": 3493
+    },
+    {
+      "path": "docs/superpowers/specs/09_FREEZE_HANDOFF_SPEC.md",
+      "sha256": "f3fbbe29f4d7fd53c97c79f27f4f7530aa8e668df8b0a79e1c4acbda62fa37de",
+      "bytes": 3213
+    },
+    {
+      "path": "docs/superpowers/specs/2026-10-02-eth-only-yolo26s-1024-baseline-v1-design.md",
+      "sha256": "6f8ea096344167981931a080425911b571d1e48ce76ceb1513822e974574665d",
+      "bytes": 4296
+    },
+    {
+      "path": "docs/superpowers/specs/2026-10-05-eth-real-hardneg-yolo26s-v2-design.md",
+      "sha256": "2993987b7bf7d93fc79426a5c9223b43d3f6f49153f5529591cc631f2c6dc2ab",
+      "bytes": 5657
+    },
+    {
+      "path": "docs/superpowers/specs/2026-10-05-tiny-object-recovery-v1-design.md",
+      "sha256": "88e5e2bcddb8b72aa87a3346e60dcd3254065ffc125ebdbbc64b8775ba508558",
+      "bytes": 4641
+    },
+    {
+      "path": "docs/superpowers/specs/2026-10-07-yolo26s-v2-full-eth-continuation-v1-spec.md",
+      "sha256": "5eca25b00995bc424123bc142dfed9eeb314e4fd1d5b59ba63439c335c12fbe2",
+      "bytes": 21710
+    },
+    {
+      "path": "docs/superpowers/specs/README.md",
+      "sha256": "52e2e1c72121f6308b7ec376af19389e102538cb87aeced6aef72f8cb93c60b7",
+      "bytes": 1893
+    },
+    {
+      "path": "management/DAILY_LOG.md",
+      "sha256": "075fc7a9fa1175beb0e6d3bfe97e482bf48320a4d94cef8f2c3e43a4685c0c02",
+      "bytes": 123210
+    },
+    {
+      "path": "management/DECISIONS.md",
+      "sha256": "cec25b3cbd822b73659e028ce552750a21d23885db8a788eaabfa2ab7e7d9b50",
+      "bytes": 33252
+    },
+    {
+      "path": "management/ISSUES.md",
+      "sha256": "36642fa3f3b2a8650c6ee7977c620a996f6f5cad2ad72e42270ebd273cc0a5c3",
+      "bytes": 58505
+    },
+    {
+      "path": "management/LAYOUT_MIGRATION.md",
+      "sha256": "9bd804367eee6b1da88160ca7ba526041b4a1157f98208f4cd5e3589eb30da03",
+      "bytes": 3553
+    },
+    {
+      "path": "management/MILESTONES.md",
+      "sha256": "d69d730b9f96b29f0e8401c81d3cb5c624b7b8bc80585be7912abebd276b952f",
+      "bytes": 961
+    },
+    {
+      "path": "management/RISKS.md",
+      "sha256": "d444102cccc4ba7df713110368070298484794d270309c71830b4385522d86fe",
+      "bytes": 1370
+    },
+    {
+      "path": "management/SETUP.md",
+      "sha256": "9124daf9280084c2af220151b6fcd4839602b1aabe017c0942c0b8029206930a",
+      "bytes": 8979
+    },
+    {
+      "path": "management/TRAEWORK_REMOTE_FEASIBILITY.md",
+      "sha256": "33fed59da1c25c85e95e3bc641d227b323a0564ad52926bdb3d6e32163c03ead",
+      "bytes": 5113
+    },
+    {
+      "path": "management/rebot_b601dm/ARM_IDENTITY_DECISION.md",
+      "sha256": "b8fe2226e39a67ccaf922032ebfa6441b98d27003ba174a8b0e9e7dab98d401e",
+      "bytes": 2571
+    },
+    {
+      "path": "management/rebot_b601dm/BADMINTON_CAPABILITY_RESULT.md",
+      "sha256": "444ad9f02eab7a5adcf70941520502e93fa9cd86bc782cd71075700562c11674",
+      "bytes": 8041
+    },
+    {
+      "path": "management/rebot_b601dm/DELIVERABLES.md",
+      "sha256": "c6480aeb2a0d23b5af2b10df73eb2ff5c06af530ef003e7758757a4e89889ed5",
+      "bytes": 7793
+    },
+    {
+      "path": "management/rebot_b601dm/FIRST_SWING_RECORD_INVALID.md",
+      "sha256": "0b65ef2beac385a99e0b9157aebafd87ade31e27270e51d7cfe09435c62e7f12",
+      "bytes": 2777
+    },
+    {
+      "path": "management/rebot_b601dm/GATE3_BLOCKED_HOST_UNREACHABLE.md",
+      "sha256": "5090088ebf46be8039c0f197107e0bce3699b6712567a603f757a02db3292fd0",
+      "bytes": 3275
+    },
+    {
+      "path": "management/rebot_b601dm/REBOT_B601DM_REPORT.md",
+      "sha256": "d81d1c612204c915b06f138fbff39479a22a94f36cfbe067078d9f796fd0c13e",
+      "bytes": 11834
+    },
+    {
+      "path": "management/rebot_b601dm/TASK7_MEASUREMENT_STATUS.md",
+      "sha256": "725fc9b0e551321a09b2d5c0798d4d45cc4414ba013e107b95d35c905fc3f18e",
+      "bytes": 4202
+    },
+    {
+      "path": "management/rebot_b601dm/TEMP_README.md",
+      "sha256": "3e303e6966459020deacd0d03e86a6e4e842eec23ccfb6c77937a81d74e734e5",
+      "bytes": 4615
+    },
+    {
+      "path": "management/shuttle_detection/DATASET_RESOLUTION.md",
+      "sha256": "3ce1f1d8e9c1fdef749c14ff92deb91cbcb17733a883372ba2588f096287353f",
+      "bytes": 7019
+    },
+    {
+      "path": "management/shuttle_detection/IMAGE_RESOURCES.md",
+      "sha256": "b880fbe7f9712ae89ce51554936eb4bf51c9313ae7cb9c8626afad5a1401ed7e",
+      "bytes": 9129
+    },
+    {
+      "path": "management/shuttle_detection/IMAGE_SYNTHESIS_PIPELINE.md",
+      "sha256": "767a7f5dc3e1902d146e1856a6d0265ea1e9d9ad84b6ba850998972b554126d2",
+      "bytes": 9794
+    },
+    {
+      "path": "management/shuttle_detection/THREED_RENDER_ETH_PROBE.md",
+      "sha256": "abe18192c70e8b353e9d5edaa262394fbdcadbd2644bc25bab738cee50403261",
+      "bytes": 12063
+    },
+    {
+      "path": "management/shuttle_detection/VISION_DATASET_SURVEY.zh.md",
+      "sha256": "6f139375dbf7092766f8d2a4bba25191e3476a4049446f7ff69d10d846d3ceeb",
+      "bytes": 26587
+    },
+    {
+      "path": "management/shuttle_detection/asset_readiness_report.md",
+      "sha256": "5aa7320f4b5f7d161c10e4a10f8099b490a77d7f713e5c95efcd567631fcd284",
+      "bytes": 10134
+    },
+    {
+      "path": "management/shuttle_detection/closure_questions_final.md",
+      "sha256": "3276d730a9d6219e697aea75a17e7f0b989ac8f7dbfaad8824cb8d9819b397b1",
+      "bytes": 11661
+    },
+    {
+      "path": "management/shuttle_detection/closure_questions_interim.md",
+      "sha256": "696405ca9f7a54aa01fc22506054c2102d44183f357bd8905cf9654d6666e4c0",
+      "bytes": 10982
+    },
+    {
+      "path": "management/shuttle_detection/final_acceptance_readiness.md",
+      "sha256": "76ff0859bbf4fcd8dea6c41993a359755092d8b6529eaf37664f52ef775bda27",
+      "bytes": 6540
+    },
+    {
+      "path": "management/shuttle_detection/plan5_input_requirements.md",
+      "sha256": "65f7d5a8087d0a689876221b7895bdd15089ef2fab595747879eb6e3b897407d",
+      "bytes": 4211
+    }
+  ],
+  "evidence": {
+    "root": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates",
+    "runs": [],
+    "totals": {
+      "run_dirs": 0,
+      "files": 0,
+      "bytes": 0
+    }
+  },
+  "evidence_from_refs": [
+    {
+      "run_id": "G1_r01",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G1_r01",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G1_r02",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G1_r02",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G2_r01",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G2_r01",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G2_r02",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G2_r02",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G3_r01",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G3_r01",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G3_r02",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G3_r02",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G4_r01",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G4_r01",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_control.usda",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G4_r02",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G4_r02",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_control.usda",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G5L_r01",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G5L_r01",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "contacts.jsonl",
+        "gate_runner_summary.json",
+        "landing_analysis.json",
+        "manifest.json",
+        "notes.md",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G5_r01",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G5_r01",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "gate_runner_summary.json",
+        "landing_analysis.json",
+        "manifest.json",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G5_r02",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G5_r02",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "gate_runner_summary.json",
+        "manifest.json",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G6A_eq_r01",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6A_eq_r01",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "contacts.jsonl",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "notes.md",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G6A_r01",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6A_r01",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "contacts.jsonl",
+        "gate_runner_summary.json",
+        "landing_analysis.json",
+        "manifest.json",
+        "notes.md",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G6A_r02",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6A_r02",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "contacts.jsonl",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "notes.md",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G6B_r01",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6B_r01",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "gate_runner_summary.json"
+      ],
+      "has_manifest": false,
+      "has_result": false,
+      "has_raw_poses": false
+    },
+    {
+      "run_id": "G6B_r02",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6B_r02",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "gate_runner_summary.json"
+      ],
+      "has_manifest": false,
+      "has_result": false,
+      "has_raw_poses": false
+    },
+    {
+      "run_id": "G6B_r03",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6B_r03",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "gate_runner_summary.json"
+      ],
+      "has_manifest": false,
+      "has_result": false,
+      "has_raw_poses": false
+    },
+    {
+      "run_id": "G6B_r04",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6B_r04",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "gate_runner_summary.json"
+      ],
+      "has_manifest": false,
+      "has_result": false,
+      "has_raw_poses": false
+    },
+    {
+      "run_id": "G6B_r05",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6B_r05",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "contacts.jsonl",
+        "gate_runner_summary.json",
+        "landing_analysis.json",
+        "manifest.json",
+        "notes.md",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G6B_r06",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6B_r06",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "contacts.jsonl",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "notes.md",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G6C_r01",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6C_r01",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "contacts.jsonl",
+        "gate_runner_summary.json",
+        "landing_analysis.json",
+        "manifest.json",
+        "notes.md",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G6C_r02",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G6C_r02",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "authored_chassis.usda",
+        "contacts.jsonl",
+        "gate_runner_summary.json",
+        "manifest.json",
+        "notes.md",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    },
+    {
+      "run_id": "G7_r01",
+      "path": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/G7_r01",
+      "source": "git:origin/dev/p2-wheel-contact-g1g4",
+      "files": [
+        "gate_runner_summary.json",
+        "manifest.json",
+        "raw_poses.jsonl",
+        "result.json"
+      ],
+      "has_manifest": true,
+      "has_result": true,
+      "has_raw_poses": true
+    }
+  ],
+  "outputs_roots": [
+    {
+      "path": "outputs/evidence",
+      "files": 38
+    },
+    {
+      "path": "outputs/reports",
+      "files": 7
+    },
+    {
+      "path": "outputs/shuttle_capability",
+      "files": 1107
+    },
+    {
+      "path": "outputs/shuttle_detection",
+      "files": 134
+    },
+    {
+      "path": "outputs/simulation",
+      "files": 18
+    },
+    {
+      "path": "outputs/yolo26_p2_ab_test",
+      "files": 27
+    },
+    {
+      "path": "outputs/yolo26s_speed_opt",
+      "files": 25
+    }
+  ],
+  "environment": {
+    "python": "3.11.9",
+    "platform": "win32",
+    "pure_cpu": true,
+    "launches_isaac_or_kit": false
+  },
+  "notes": []
+}
