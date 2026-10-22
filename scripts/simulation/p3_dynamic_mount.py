@@ -244,6 +244,26 @@ def main():
     base_rotation = rotation_matrix(base_root_quat)
     offset_root_frame = base_rotation.T @ offset_world
 
+    def negative_control_record(spec):
+        """A negative control is only meaningful if the frozen component was non-zero.
+
+        P3_neg_frozen_y_r01 froze Y on the translate_xy profile, whose command is
+        x=0.3, y=0.0: the freeze was a no-op, the run was bit-identical to P3_xy_r14 and
+        the gate PASSED. That is a VACUOUS negative control, not a gate hole, so it is
+        recorded as such and forced to FAIL (a vacuous control may never count as PASS).
+        """
+        component = {"x": float(spec["x"]), "y": float(spec["y"]), "z": float(spec["z"]),
+                     "yaw": float(spec["yaw"])}.get(ARGS.freeze_axis, 0.0)
+        vacuous = abs(component) < 1e-9
+        return {"frozen_axis": ARGS.freeze_axis,
+                "frozen_command_component": component,
+                "vacuous": vacuous,
+                "note": ("the frozen command component was ZERO, so dropping it changes "
+                         "nothing: this run cannot serve as a negative control"
+                         if vacuous else
+                         "command component dropped on purpose; the corresponding motion "
+                         "gate MUST fail")}
+
     def write_pose(pos_cmd, yaw_cmd):
         """pos_cmd/yaw_cmd are absolute CHASSIS commands; converted to a root pose."""
         pos_cmd = [float(pos_cmd[0]), float(pos_cmd[1]), float(pos_cmd[2])]
@@ -447,6 +467,10 @@ def main():
             realized_yaw >= thresholds["motion_ratio"] * abs(spec["yaw"]))
     if arm_peak is not None:
         gates["arm_does_not_touch_ground"] = bool(arm_peak <= thresholds["arm_ground_contact_n"])
+    if ARGS.freeze_axis != "none" and negative_control_record(spec)["vacuous"]:
+        # a negative control whose frozen component was already zero proves nothing, so it
+        # may never be counted as a PASS (P3_neg_frozen_y_r01 was exactly this case)
+        gates["negative_control_is_meaningful"] = False
     gate = "PASS" if all(gates.values()) else "FAIL"
 
     arm_hash_after = sha256(REAL_ARM)
@@ -476,10 +500,8 @@ def main():
         },
         "thresholds": thresholds, "gates": gates,
         "diagnostics": {
-            "negative_control": ({"frozen_axis": ARGS.freeze_axis,
-                                  "note": "command component dropped on purpose; the "
-                                          "corresponding motion gate MUST fail"}
-                                 if ARGS.freeze_axis != "none" else None),
+            "negative_control": (negative_control_record(spec) if ARGS.freeze_axis != "none"
+                                 else None),
             "quat_order_for_write_root_pose": quat_order,
             "t0_pose_write_error_m": round(start_error, 12),
             "root_to_chassis_offset_m": round(float(np.linalg.norm(offset_world)), 9),

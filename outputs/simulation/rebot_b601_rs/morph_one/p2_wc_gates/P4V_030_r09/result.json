@@ -1,0 +1,282 @@
+{
+ "run_id": "P4V_030_r09",
+ "scene_variant": "P4_PROXY_WHEEL_DRIVE",
+ "profile": "velocity_control",
+ "profile_description": "CLOSED LOOP: command a chassis speed along -Y, P-control on wheel speed, then command zero for a stop test",
+ "gate_result": "PASS",
+ "proxy_parameters": {
+  "wheel_radius_m": 0.103,
+  "wheel_radius_source": "P1 v2 torus equator R+r = 103.000000 mm (geometric unloaded); NOT a loaded radius",
+  "wheel_collision_shape": "CYLINDER (TEST_PROXY simplification of the toroidal tread)",
+  "wheel_half_width_m": 0.0243,
+  "wheel_mass_kg": 1.0,
+  "chassis_mass_kg": 16.0,
+  "total_mass_kg": 20.0,
+  "mass_source": "TEST_PROXY, no vendor mass data",
+  "ground_clearance_m": 0.02,
+  "lift_m": 0.367,
+  "axle_positions_m": [
+   [
+    0.250002,
+    0.297,
+    -0.244
+   ],
+   [
+    0.250002,
+    -0.297,
+    -0.244
+   ],
+   [
+    -0.250002,
+    0.297,
+    -0.244
+   ],
+   [
+    -0.250002,
+    -0.297,
+    -0.244
+   ]
+  ],
+  "motor_sign_mapping": {
+   "joint_axis": "world +X for all four wheels",
+   "rolling_direction": "world Y (perpendicular to the axle)",
+   "p1_outward_normal_signs": [
+    1.0,
+    1.0,
+    -1.0,
+    -1.0
+   ],
+   "joint_space_target_for_straight_roll": "same sign on all four wheels",
+   "note": "the P1 outward convention maps to MOTOR CHANNELS by multiplying by the per-side sign; it must not be applied to a common-axis joint"
+  }
+ },
+ "metrics": {
+  "wheel_targets_rad_s_per_wheel": [
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "tail_wheel_omega_rad_s": {
+   "wheel1": -0.00176541,
+   "wheel2": -0.00482851,
+   "wheel3": -0.001170357,
+   "wheel4": -0.005296999
+  },
+  "wheel_speed_relative_error": {
+   "wheel1": null,
+   "wheel2": null,
+   "wheel3": null,
+   "wheel4": null
+  },
+  "chassis_displacement_m": [
+   0.000164436,
+   -1.041028857,
+   -0.018616349
+  ],
+  "tail_chassis_speed_m_s": 8.7016e-05,
+  "yaw_change_rad": 0.000545052,
+  "peak_contact_force_n": 438.611846924,
+  "distance_per_wheel_revolution_m_deprecated": "UNKNOWN (old field was wrong)",
+  "velocity_control": {
+   "commanded_speed_m_s": 0.3,
+   "commanded_after_clamp_m_s": 0.3,
+   "clamped": false,
+   "steady_window_steps": [
+    180,
+    480
+   ],
+   "steady_mean_speed_m_s": 0.318110311,
+   "steady_relative_error": 0.060367703,
+   "peak_speed_m_s": 0.319604874,
+   "since_zero_max_speed_m_s": 8.5831e-05,
+   "distance_m": 1.041028857,
+   "kp": 2.0,
+   "nominal_radius_m": 0.101459
+  },
+  "wheel_delta_theta_rad": {
+   "wheel1": 10.035821915,
+   "wheel2": 10.052541733,
+   "wheel3": 10.038961411,
+   "wheel4": 10.053636551
+  },
+  "measured_rolling_radius_m": {
+   "wheel1": 0.103731,
+   "wheel2": 0.103559,
+   "wheel3": 0.103699,
+   "wheel4": 0.103547
+  },
+  "measured_rolling_radius_rel_error": [
+   0.007097,
+   0.005427,
+   0.006786,
+   0.005311
+  ],
+  "measured_rolling_radius_basis": "|delta chassis Y| / |delta MEASURED joint angle|; includes any slip, so it is an effective radius, not the tyre radius",
+  "steps": 600
+ },
+ "thresholds": {
+  "speed_tracking_rel": 0.2,
+  "min_displacement_m": 0.01,
+  "contact_force_n": 1.0,
+  "tail_speed_max_m_s": 5.0,
+  "hold_still_m": 0.001,
+  "hold_still_rad": 0.001,
+  "rolling_radius_rel": 0.1
+ },
+ "gates": {
+  "all_finite": true,
+  "no_root_pose_write": true,
+  "contact_detected": true,
+  "steady_speed_tracks_command": true,
+  "stops_after_zero_command": true,
+  "speed_limit_respected": true
+ },
+ "diagnostics": {
+  "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",
+  "root_writes": 0,
+  "contact_api": "isaaclab.sensors.ContactSensor(chassis,wheels)",
+  "body_names": [
+   "Chassis",
+   "wheel1",
+   "wheel2",
+   "wheel3",
+   "wheel4"
+  ],
+  "joint_names": [
+   "joint_wheel1",
+   "joint_wheel2",
+   "joint_wheel3",
+   "joint_wheel4"
+  ],
+  "dofs": 4,
+  "gravity_m_s2": [
+   0.0,
+   0.0,
+   -9.81
+  ],
+  "friction_coefficient": 0.8,
+  "friction_source": "TEST_PROXY value set on the ground material; not vendor data",
+  "payload_kg": 0.0,
+  "payload_body": null,
+  "body_audit": {
+   "source": "PhysX runtime via root_physx_view",
+   "available": {
+    "masses": [
+     [
+      16.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ]
+    ],
+    "coms": [
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0009646763210184872,
+      0.0,
+      0.0,
+      0.9999995827674866
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "inertias": [
+     [
+      0.9027721285820007,
+      0.0,
+      0.0,
+      0.0,
+      0.25843459367752075,
+      -0.0015513603575527668,
+      0.0,
+      -0.0015513603575527668,
+      1.062513828277588
+     ],
+     [
+      0.00530449952930212,
+      0.0,
+      0.0,
+      0.0,
+      0.0028490801341831684,
+      0.0,
+      0.0,
+      0.0,
+      0.0028490801341831684
+     ],
+     [
+      0.00530449952930212,
+      0.0,
+      0.0,
+      0.0,
+      0.0028490801341831684,
+      0.0,
+      0.0,
+      0.0,
+      0.0028490801341831684
+     ],
+     [
+      0.00530449952930212,
+      0.0,
+      0.0,
+      0.0,
+      0.0028490801341831684,
+      0.0,
+      0.0,
+      0.0,
+      0.0028490801341831684
+     ],
+     [
+      0.00530449952930212,
+      0.0,
+      0.0,
+      0.0,
+      0.0028490801341831684,
+      0.0,
+      0.0,
+      0.0,
+      0.0028490801341831684
+     ]
+    ]
+   }
+  },
+  "note": "P4_PROXY only: verified axle/radius geometry with a CYLINDER tread proxy and proxy masses. Not P4_REAL, not the vendor physical model."
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "run_id": "P4f_low_r01",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p4_proxy_wheel_drive.py --run-id P4f_low_r01 --out-dir /home/dgut/runs/g/P4f_low_r01 --profile roll_neg_y --read-contacts --friction 0.2",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1500.0,
+ "quarantined_stale_result": null,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "wheel_targets_rad_s_per_wheel": [
+   4.0,
+   4.0,
+   4.0,
+   4.0
+  ],
+  "tail_wheel_omega_rad_s": {
+   "wheel1": 3.997242367,
+   "wheel2": 3.994410002,
+   "wheel3": 3.997843941,
+   "wheel4": 3.993867127
+  },
+  "wheel_speed_relative_error": {
+   "wheel1": 0.000689408,
+   "wheel2": 0.0013975,
+   "wheel3": 0.000539015,
+   "wheel4": 0.001533218
+  },
+  "chassis_displacement_m": [
+   0.000285255,
+   -1.210260153,
+   -0.018616498
+  ],
+  "tail_chassis_speed_m_s": 0.411787045,
+  "yaw_change_rad": 0.000142561,
+  "peak_contact_force_n": 561.07635498,
+  "distance_per_wheel_revolution_m_deprecated": "UNKNOWN (old field was wrong)",
+  "wheel_delta_theta_rad": {
+   "wheel1": 11.9719944,
+   "wheel2": 11.989098549,
+   "wheel3": 11.974767685,
+   "wheel4": 11.981122971
+  },
+  "measured_rolling_radius_m": {
+   "wheel1": 0.101091,
+   "wheel2": 0.100947,
+   "wheel3": 0.101068,
+   "wheel4": 0.101014
+  },
+  "measured_rolling_radius_rel_error": [
+   0.018534,
+   0.019932,
+   0.018757,
+   0.019282
+  ],
+  "measured_rolling_radius_basis": "|delta chassis Y| / |delta MEASURED joint angle|; includes any slip, so it is an effective radius, not the tyre radius",
+  "steps": 360
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 46.609,
+ "child_stdout_log": "/home/dgut/runs/g/P4f_low_r01/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P4f_low_r01/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}

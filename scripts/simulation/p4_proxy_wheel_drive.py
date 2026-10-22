@@ -69,6 +69,9 @@ PROFILES = {
     "turn": ([3.0, 3.0, -3.0, -3.0], 360, "left/right opposed, yaw expected"),
     "hold_still": ([0.0, 0.0, 0.0, 0.0], 240,
                    "NEGATIVE CONTROL: zero wheel targets, the chassis must NOT move"),
+    "velocity_control": ([0.0, 0.0, 0.0, 0.0], 600,
+                         "CLOSED LOOP: command a chassis speed along -Y, P-control on wheel "
+                         "speed, then command zero for a stop test"),
 }
 
 PARSER = argparse.ArgumentParser(description="P4 PROXY four-wheel drive (no root writes)")
@@ -87,6 +90,14 @@ PARSER.add_argument("--payload-kg", type=float, default=0.0,
                          "box 0.30 x 0.25 x 0.15 m centred 0.15 m above the chassis origin")
 PARSER.add_argument("--wheel-speed", type=float, default=None,
                     help="override the straight-roll wheel speed magnitude in rad/s")
+PARSER.add_argument("--velocity-cmd", type=float, default=0.30,
+                    help="P4-09 commanded chassis speed magnitude along -Y in m/s")
+PARSER.add_argument("--velocity-kp", type=float, default=2.0,
+                    help="P gain from chassis speed error to wheel speed error (1/s)")
+PARSER.add_argument("--speed-limit", type=float, default=0.50,
+                    help="hard chassis speed limit in m/s; a command above it must be clamped")
+PARSER.add_argument("--nominal-radius", type=float, default=0.101459,
+                    help="MEASURED effective rolling radius from the P4-08 matrix (m)")
 AppLauncher.add_app_launcher_args(PARSER)
 ARGS = PARSER.parse_args()
 LAUNCHER = AppLauncher(ARGS)
@@ -285,7 +296,52 @@ def main():
 
     jsonl = open(os.path.join(out_dir, "raw_poses.jsonl"), "w", encoding="utf-8")
     frames = []
+    closed_loop = ARGS.profile == "velocity_control"
+    # P4-09 pre-registration: ramp 1.5 s, hold 2.5 s, then command zero for the last 1.0 s
+    ramp_steps = int(1.5 / DT)
+    hold_end = int(4.0 / DT)
+    v_cmd = float(ARGS.velocity_cmd)
+    commanded_v = min(abs(v_cmd), float(ARGS.speed_limit))
+    clamped = bool(abs(v_cmd) > float(ARGS.speed_limit) + 1e-12)
+    # Physics: a wheel spinning +omega about world +X drives the chassis along -Y
+    # (contact point moves +Y).  So chassis vy = -omega*r and omega = -vy/r.  v_cmd > 0 means
+    # "travel along -Y".  The first version got this sign wrong and the loop ran away to
+    # 0.914 m/s for a 0.30 m/s command (P4V_030_r03), which the gate caught.
+    # the CLAMP must reach the loop: P4V_clamp_r09 commanded 0.80 m/s with a 0.50 m/s limit
+    # and reached 0.849 m/s because vy_cmd_signed was built from the unclamped v_cmd.
+    vy_cmd_signed = -commanded_v if v_cmd > 0 else commanded_v
+    trim_integral = 0.0
     for step in range(steps + 1):
+        if step > 0 and closed_loop:
+            # measured chassis speed along the roll axis (Y)
+            e = target_tensor  # reuse the tensor object; values overwritten below
+            vy_meas = 0.0
+            if frames:
+                prev = frames[-1]["chassis_pos"]
+                now = [float(v) for v in
+                       _np(robot.data.body_pos_w[0, chassis_index]).reshape(-1)[:3]]
+                vy_meas = (now[1] - prev[1]) / DT
+            phase_fraction = min(1.0, step / max(1, ramp_steps))
+            vy_target = vy_cmd_signed * phase_fraction
+            if step > hold_end:
+                vy_target = 0.0                # stop test
+                trim_integral = 0.0
+            # CONTROL LAW v2: feed-forward (the open-loop matrix already tracks the commanded
+            # wheel speed to 0.05-0.15 %, so omega_ff = -vy/r is almost the whole answer) plus a
+            # SLOW integral trim.  The first law (omega = -(vy_t + K(vy_t - vy_meas))/r) had
+            # gain -K on the previous measured speed and its stable-looking fixed point was
+            # 3x the command: P4V_030_r05 sat at 0.913 m/s for a 0.30 m/s command.
+            omega_ff = -vy_target / float(ARGS.nominal_radius)
+            if step == ramp_steps:
+                trim_integral = 0.0            # restart the trim when the hold phase begins
+            # slow trim: +Kp*dt*(vy_meas - vy_target) reduces omega when too fast
+            trim_integral += 0.5 * float(ARGS.velocity_kp) * DT * (vy_meas - vy_target)
+            trim_limit = max(0.05 * abs(omega_ff), 0.05)
+            trim_integral = max(-trim_limit, min(trim_limit, trim_integral))
+            wheel_speed = omega_ff + trim_integral
+            wheel_speed = max(-50.0, min(50.0, wheel_speed))
+            values = [wheel_speed] * len(joint_names)
+            target_tensor = torch.tensor([values], dtype=torch.float32, device=robot.device)
         if step > 0:
             robot.set_joint_velocity_target(target_tensor)
             robot.write_data_to_sim()
@@ -424,6 +480,41 @@ def main():
         # chassis is sliding rather than rolling (or the drive/direction is wrong)
         gates["measured_rolling_radius_consistent"] = bool(
             max(radius_error) <= thresholds["rolling_radius_rel"])
+    # ---- P4-09 closed-loop speed control metrics (pre-registered) ----
+    velocity_metrics = None
+    if ARGS.profile == "velocity_control":
+        positions = np.array([frame["chassis_pos"] for frame in frames])
+        dt = DT
+        speed_series = np.abs(np.diff(positions[:, 1]) / dt)
+        steady = speed_series[ramp_steps:hold_end] if hold_end > ramp_steps else speed_series
+        # NOTE: do NOT reuse the name `tail_speed` here - it is already the scalar chassis
+        # speed from the open-loop metric block, and shadowing it crashed P4V_030_r01 with
+        # "type numpy.ndarray doesn't define __round__".
+        tail_speed_arr = speed_series[-int(0.5 / dt):]
+        commanded_v_eff = min(abs(float(ARGS.velocity_cmd)), float(ARGS.speed_limit))
+        steady_mean = float(np.mean(steady)) if steady.size else 0.0
+        velocity_metrics = {
+            "commanded_speed_m_s": round(abs(float(ARGS.velocity_cmd)), 9),
+            "commanded_after_clamp_m_s": round(commanded_v_eff, 9),
+            "clamped": clamped,
+            "steady_window_steps": [ramp_steps, hold_end],
+            "steady_mean_speed_m_s": round(steady_mean, 9),
+            "steady_relative_error": (round(abs(steady_mean - commanded_v_eff) / commanded_v_eff, 9)
+                                      if commanded_v_eff > 1e-9 else None),
+            "peak_speed_m_s": round(float(np.max(speed_series)), 9),
+            "since_zero_max_speed_m_s": round(float(np.max(tail_speed_arr)), 9),
+            "distance_m": round(float(abs(positions[-1][1] - positions[0][1])), 9),
+            "kp": float(ARGS.velocity_kp),
+            "nominal_radius_m": float(ARGS.nominal_radius),
+        }
+        gates["steady_speed_tracks_command"] = bool(
+            velocity_metrics["steady_relative_error"] is not None
+            and velocity_metrics["steady_relative_error"] <= 0.15)
+        gates["stops_after_zero_command"] = bool(
+            velocity_metrics["since_zero_max_speed_m_s"] <= 0.02)
+        gates["speed_limit_respected"] = bool(
+            velocity_metrics["peak_speed_m_s"] <= commanded_v_eff * 1.10 + 0.02)
+
     audit = body_audit()
     gate = "PASS" if all(gates.values()) else "FAIL"
 
@@ -462,6 +553,7 @@ def main():
             # DEPRECATED (kept only for lineage): the old field divided by the COMMANDED
             # angular velocity and always produced 0 -> treated as UNKNOWN, never as a radius.
             "distance_per_wheel_revolution_m_deprecated": "UNKNOWN (old field was wrong)",
+            "velocity_control": velocity_metrics,
             "wheel_delta_theta_rad": {k: round(v, 9) for k, v in wheel_delta_theta.items()},
             "measured_rolling_radius_m": measured_radius,
             "measured_rolling_radius_rel_error": radius_error,
@@ -498,6 +590,10 @@ def main():
                    "payload_kg": float(ARGS.payload_kg),
                    "single_factor_note": ("exactly one of friction / payload / wheel speed may "
                                           "differ between two runs of the P4-08 matrix"),
+                   # A05 flagged that a defaulted gravity is not EVIDENCED by the command line.
+                   "gravity_explicit_on_command_line": any(
+                       a.startswith("--gravity-z") for a in os.sys.argv),
+                   "applied_gravity_argv": [a for a in os.sys.argv if a.startswith("--gravity")],
                    "gravity_m_s2": [0.0, 0.0, float(ARGS.gravity_z)],
                    "preregistration": "management/morph_one_rs/PHASE_P4_PROXY_PREREG.md",
                    "drive_mode": "JOINT VELOCITY TARGETS (no root pose/velocity writes)",

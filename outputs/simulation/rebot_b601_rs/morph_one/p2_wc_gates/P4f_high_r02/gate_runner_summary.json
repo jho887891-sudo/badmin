@@ -1,0 +1,65 @@
+{
+ "run_id": "P4f_high_r02",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p4_proxy_wheel_drive.py --run-id P4f_high_r02 --out-dir /home/dgut/runs/g/P4f_high_r02 --profile roll_neg_y --read-contacts --friction 1.4",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1500.0,
+ "quarantined_stale_result": null,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "wheel_targets_rad_s_per_wheel": [
+   4.0,
+   4.0,
+   4.0,
+   4.0
+  ],
+  "tail_wheel_omega_rad_s": {
+   "wheel1": 3.99771235,
+   "wheel2": 3.994773297,
+   "wheel3": 3.998554691,
+   "wheel4": 3.994368931
+  },
+  "wheel_speed_relative_error": {
+   "wheel1": 0.000571912,
+   "wheel2": 0.001306676,
+   "wheel3": 0.000361327,
+   "wheel4": 0.001407767
+  },
+  "chassis_displacement_m": [
+   2.7582e-05,
+   -1.21579361,
+   -0.018616408
+  ],
+  "tail_chassis_speed_m_s": 0.411772729,
+  "yaw_change_rad": 1.696e-05,
+  "peak_contact_force_n": 645.546081543,
+  "distance_per_wheel_revolution_m_deprecated": "UNKNOWN (old field was wrong)",
+  "wheel_delta_theta_rad": {
+   "wheel1": 11.966721535,
+   "wheel2": 11.993086815,
+   "wheel3": 11.9666996,
+   "wheel4": 11.993115425
+  },
+  "measured_rolling_radius_m": {
+   "wheel1": 0.101598,
+   "wheel2": 0.101375,
+   "wheel3": 0.101598,
+   "wheel4": 0.101374
+  },
+  "measured_rolling_radius_rel_error": [
+   0.013612,
+   0.015777,
+   0.013612,
+   0.015786
+  ],
+  "measured_rolling_radius_basis": "|delta chassis Y| / |delta MEASURED joint angle|; includes any slip, so it is an effective radius, not the tyre radius",
+  "steps": 360
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 64.921,
+ "child_stdout_log": "/home/dgut/runs/g/P4f_high_r02/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P4f_high_r02/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}

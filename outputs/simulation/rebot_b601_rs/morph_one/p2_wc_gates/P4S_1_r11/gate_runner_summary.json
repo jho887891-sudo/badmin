@@ -1,0 +1,66 @@
+{
+ "run_id": "P4S_1_r11",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p4_proxy_wheel_drive.py --run-id P4S_1_r11 --out-dir /home/dgut/runs/g/P4S_1_r11 --profile roll_neg_y --read-contacts --gravity-z -9.81 --wheel-speed 1.0",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1500.0,
+ "quarantined_stale_result": null,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "wheel_targets_rad_s_per_wheel": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "tail_wheel_omega_rad_s": {
+   "wheel1": 0.99753248,
+   "wheel2": 0.994734806,
+   "wheel3": 0.998782177,
+   "wheel4": 0.994496936
+  },
+  "wheel_speed_relative_error": {
+   "wheel1": 0.00246752,
+   "wheel2": 0.005265194,
+   "wheel3": 0.001217823,
+   "wheel4": 0.005503064
+  },
+  "chassis_displacement_m": [
+   1.899e-05,
+   -0.303993493,
+   -0.018616349
+  ],
+  "tail_chassis_speed_m_s": 0.102871657,
+  "yaw_change_rad": 1.231e-06,
+  "peak_contact_force_n": 523.062683105,
+  "distance_per_wheel_revolution_m_deprecated": "UNKNOWN (old field was wrong)",
+  "velocity_control": null,
+  "wheel_delta_theta_rad": {
+   "wheel1": 2.991708994,
+   "wheel2": 2.991709948,
+   "wheel3": 2.991711617,
+   "wheel4": 2.991754055
+  },
+  "measured_rolling_radius_m": {
+   "wheel1": 0.101612,
+   "wheel2": 0.101612,
+   "wheel3": 0.101612,
+   "wheel4": 0.10161
+  },
+  "measured_rolling_radius_rel_error": [
+   0.013476,
+   0.013476,
+   0.013476,
+   0.013495
+  ],
+  "measured_rolling_radius_basis": "|delta chassis Y| / |delta MEASURED joint angle|; includes any slip, so it is an effective radius, not the tyre radius",
+  "steps": 360
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 35.02,
+ "child_stdout_log": "/home/dgut/runs/g/P4S_1_r11/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P4S_1_r11/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}
