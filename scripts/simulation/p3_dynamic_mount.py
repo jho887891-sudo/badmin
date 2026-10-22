@@ -361,15 +361,6 @@ def main():
     def set_joint_targets():
         # Fail closed. Previously exceptions here were silently swallowed,
         # allowing "joint_hold PASS" when no joint target had been submitted.
-        if ARGS.inject_fault == "joint_limit":
-            # Submit a target BEYOND the recorded limit and refuse it here, BEFORE the write,
-            # so the run cannot claim "joint_hold" on data that never received a command.
-            index = 2 if len(joint_names) > 2 else 0
-            limit = float(_np(robot.data.joint_pos_limits[0, index, 1]))
-            bad = limit + 0.5
-            raise SystemExit("JOINT_LIMIT_REFUSED: joint %r target %.6f rad exceeds the USD "
-                             "upper limit %.6f rad; no target was written"
-                             % (joint_names[index], bad, limit))
         robot.set_joint_position_target(joint_target_tensor)
 
     def capture(tag, step, commanded_pos, commanded_yaw, smooth):
@@ -424,14 +415,48 @@ def main():
     # solver step gave the flipped leftover pose: P3_static_r05 reported
     # t0_pose_write_error_m = 0.2615 m even though the write itself used the now-confirmed
     # xyzw order (probe: xyzw 0.199999853 rad vs commanded 0.2; wxyz 9.8e-08).
+    def write_fault_record(code, detail):
+        try:
+            with open(os.path.join(ARGS.out_dir, "fault_record.json"), "w",
+                      encoding="utf-8") as handle:
+                json.dump({"run_id": ARGS.run_id, "fault": ARGS.inject_fault,
+                           "code": code, "detail": detail,
+                           "sim_steps_taken": len(frames),
+                           "note": ("typed refusal: the gate runner must surface this as a "
+                                    "non-zero child code, never as a PASS")},
+                          handle, ensure_ascii=False, indent=1)
+        except Exception:
+            pass
+
+    if ARGS.inject_fault == "joint_limit":
+        # Refuse BEFORE the loop.  Raising SystemExit from inside the stepping callback made
+        # Kit die with SIGSEGV (child rc 139, P0F_jointlimit_r01) - fail-closed but ugly and
+        # not a typed refusal, so the check is done once, up front, with a clean exit code.
+        index = 2 if len(joint_names) > 2 else 0
+        upper = float(_np(robot.data.joint_pos_limits[0, index, 1]))
+        bad_target = upper + 0.5
+        if bad_target > upper:
+            write_fault_record("JOINT_LIMIT_REFUSED",
+                               {"joint": joint_names[index], "target_rad": bad_target,
+                                "upper_limit_rad": upper, "targets_written": 0})
+            print("JOINT_LIMIT_REFUSED: joint %r target %.6f rad exceeds the upper limit "
+                  "%.6f rad; refusing before any write" % (joint_names[index], bad_target,
+                                                           upper), flush=True)
+            jsonl.close()
+            return 3
+
     for step in range(ARGS.steps + 1):
         commanded_pos, commanded_yaw, smooth = command_at(ARGS.profile, step)
         write_pose(commanded_pos, commanded_yaw)
         set_joint_targets()
         if ARGS.inject_fault == "python_exception" and step == 60:
-            # P0-07: an exception raised INSIDE the loop must reach the gate runner as a
-            # non-zero child code; the wrapper must never turn this into a PASS.
-            raise RuntimeError("INJECTED_PYTHON_EXCEPTION at step %d" % step)
+            # P0-07 finding: an exception raised inside the loop was caught by Kit, the
+            # traceback printed, and the process still exited 0 (P0F_exception_r01 child rc 0).
+            # The script therefore records a typed fault and exits non-zero itself.
+            write_fault_record("INJECTED_PYTHON_EXCEPTION", {"step": step})
+            print("INJECTED_PYTHON_EXCEPTION at step %d" % step, flush=True)
+            jsonl.close()
+            return 4
         sim.step()
         robot.update(DT)
         for sensor in sensors.values():
