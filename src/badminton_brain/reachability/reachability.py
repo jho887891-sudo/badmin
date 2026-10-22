@@ -119,16 +119,25 @@ class KinematicLimits:
     base_column_radius_m: float = 0.18
     face_sphere_radius_m: float = 0.06
     max_position_sigma_m: float = 0.05
+    #: P7-11: width of the joint vector this decision is made over.  The default is
+    #: the 6-DOF proxy chain of kinematics.py, so every existing caller is unchanged;
+    #: a backend with a different DOF (the verified 8-DOF B601-RS) passes its own.
+    dof: int = DOF
+    joint_names: Tuple[str, ...] = JOINT_NAMES
 
     def __post_init__(self) -> None:
-        if len(self.lower_rad) != DOF or len(self.upper_rad) != DOF:
-            raise ValueError(f"limits must carry {DOF} entries per side")
+        if self.dof <= 0:
+            raise ValueError(f"dof must be > 0, got {self.dof}")
+        if len(self.lower_rad) != self.dof or len(self.upper_rad) != self.dof:
+            raise ValueError(f"limits must carry {self.dof} entries per side")
+        if len(self.joint_names) != self.dof:
+            raise ValueError(f"joint_names must carry {self.dof} entries")
         for lo, hi in zip(self.lower_rad, self.upper_rad):
             if not (math.isfinite(lo) and math.isfinite(hi)) or lo >= hi:
                 raise ValueError(f"bad joint interval [{lo}, {hi}]")
         if self.joint_margin_rad < 0.0:
             raise ValueError("joint_margin_rad must be >= 0")
-        if len(self.velocity_cap_rad_s) != DOF or min(self.velocity_cap_rad_s) <= 0.0:
+        if len(self.velocity_cap_rad_s) != self.dof or min(self.velocity_cap_rad_s) <= 0.0:
             raise ValueError("velocity_cap_rad_s must be > 0 for every joint")
         mins = np.asarray(self.workspace_min_m, dtype=float)
         maxs = np.asarray(self.workspace_max_m, dtype=float)
@@ -354,10 +363,11 @@ def assess_reachability(
                 "decision threshold: the intercept is not localised well enough to commit")
 
     # 8. IK - the only place a joint vector may come from
-    seed = np.zeros(DOF) if seed_rad is None else np.asarray(seed_rad, dtype=float).reshape(-1)
-    if seed.shape != (DOF,):
+    dof = int(limits.dof)
+    seed = np.zeros(dof) if seed_rad is None else np.asarray(seed_rad, dtype=float).reshape(-1)
+    if seed.shape != (dof,):
         return _verdict(ReachabilityDecision.UNKNOWN, ReachabilityReason.NON_FINITE_TARGET,
-                        f"seed_rad must have {DOF} entries, got {seed.shape}")
+                        f"seed_rad must have {dof} entries, got {seed.shape}")
     try:
         result = solver.solve(target, seed)
     except IkNotImplemented as exc:
@@ -377,7 +387,7 @@ def assess_reachability(
     if margin < limits.joint_margin_rad:
         return _verdict(
             ReachabilityDecision.NOT_REACHABLE, ReachabilityReason.JOINT_LIMIT_MARGIN,
-            f"{JOINT_NAMES[index]} sits {margin:.4f} rad from its stop, inside the "
+            f"{limits.joint_names[index]} sits {margin:.4f} from its stop, inside the "
             f"{limits.joint_margin_rad:.4f} rad margin required by the P5-05 envelope",
             time_to_target_s=t, joint_margin_rad=margin, ik=result)
 
