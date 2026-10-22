@@ -56,6 +56,10 @@ from badminton_brain.estimation.shuttle_state_ekf import (  # noqa: E402
 from badminton_brain.prediction.position_uncertainty import (  # noqa: E402
     position_uncertainty,
 )
+from perception.shuttle_detection.tiled_inference import (  # noqa: E402
+    generate_tiles,
+    predict_tiled,
+)
 
 PX = "IMAGE_PLANE_2D"
 HORIZONS_S = (0.3, 0.5, 0.8)
@@ -243,7 +247,8 @@ class YoloDetector:
     """A thin, honest wrapper around an ultralytics checkpoint."""
 
     def __init__(self, weights: str, *, imgsz: int, conf: float, iou: float,
-                 device: str, max_det: int = 64) -> None:
+                 device: str, max_det: int = 64,
+                 tile_size: int = 0, tile_overlap: float = 0.25) -> None:
         from ultralytics import YOLO
         self.weights = os.path.abspath(weights)
         self.imgsz = int(imgsz)
@@ -251,6 +256,15 @@ class YoloDetector:
         self.iou = float(iou)
         self.device = str(device)
         self.max_det = int(max_det)
+        self.tile_size = int(tile_size)
+        self.tile_overlap = float(tile_overlap)
+        if self.tile_size < 0:
+            raise ValueError("--tile-size must be >= 0")
+        if self.tile_size:
+            generate_tiles(2, 2, self.tile_size, self.tile_overlap)
+        elif not 0.0 <= self.tile_overlap < 1.0:
+            raise ValueError("--tile-overlap must lie in [0,1)")
+        self.last_diagnostics: Dict[str, Any] = {}
         self.model = YOLO(self.weights)
         self.names = dict(getattr(self.model, "names", {}) or {})
 
@@ -272,39 +286,57 @@ class YoloDetector:
             "class_names": self.names,
             "imgsz": self.imgsz, "conf": self.conf, "iou": self.iou,
             "max_det": self.max_det,
+            "inference_mode": "tiled" if self.tile_size else "full_frame",
+            "tile_size_px": self.tile_size if self.tile_size else None,
+            "tile_overlap": self.tile_overlap if self.tile_size else None,
+            "uses_gt_roi": False,
         }
 
     def detect(self, image: Any, frame_id: int, timestamp_s: float,
                camera_id: str) -> Tuple[List[DetectionObservation], float]:
+        """Return only actual YOLO boxes, remapped to original pixel coordinates."""
         started = time.perf_counter()
-        results = self.model.predict(
-            source=image, imgsz=self.imgsz, conf=self.conf, iou=self.iou,
-            device=self.device, max_det=self.max_det, verbose=False,
-        )
+        box_scores: List[Tuple[Sequence[float], float]] = []
+        if self.tile_size:
+            tiled, diagnostics = predict_tiled(
+                self.model, image, tile_size=self.tile_size, overlap=self.tile_overlap,
+                imgsz=self.imgsz, conf=self.conf, iou=self.iou,
+                device=self.device, max_det=self.max_det)
+            box_scores = [(item.xyxy, item.confidence) for item in tiled]
+            self.last_diagnostics = diagnostics
+        else:
+            results = self.model.predict(
+                source=image, imgsz=self.imgsz, conf=self.conf, iou=self.iou,
+                device=self.device, max_det=self.max_det, verbose=False)
+            if results and results[0].boxes is not None and len(results[0].boxes):
+                boxes = results[0].boxes
+                xyxy = boxes.xyxy.detach().cpu().numpy()
+                confidences = boxes.conf.detach().cpu().numpy()
+                box_scores = list(zip(xyxy, confidences))
+            self.last_diagnostics = {
+                "mode": "full_frame", "tiles": 1,
+                "candidate_count": len(box_scores),
+                "kept_count": len(box_scores), "uses_gt_roi": False,
+            }
         elapsed_s = time.perf_counter() - started
         height, width = image.shape[:2]
         size = ImageSize(width_px=int(width), height_px=int(height))
         observations: List[DetectionObservation] = []
-        if results:
-            boxes = results[0].boxes
-            if boxes is not None and len(boxes) > 0:
-                xyxy = boxes.xyxy.detach().cpu().numpy()
-                confidences = boxes.conf.detach().cpu().numpy()
-                for bbox, confidence in zip(xyxy, confidences):
-                    extent = max(float(bbox[2] - bbox[0]), float(bbox[3] - bbox[1]), 1.0)
-                    sigma = max(0.25 * extent, 1.0)
-                    observations.append(DetectionObservation(
-                        timestamp_s=float(timestamp_s),
-                        frame_id=int(frame_id),
-                        camera_id=camera_id,
-                        bbox_xyxy_px=[float(v) for v in bbox],
-                        confidence=float(confidence),
-                        pixel_covariance=[[sigma * sigma, 0.0], [0.0, sigma * sigma]],
-                        image_size=size,
-                        validity=ValidityFlags(detected=True, in_image=True,
-                                               confidence_ok=True, covariance_ok=True,
-                                               timestamp_ok=True),
-                    ))
+        for bbox, confidence in box_scores:
+            extent = max(float(bbox[2] - bbox[0]), float(bbox[3] - bbox[1]), 1.0)
+            sigma = max(0.25 * extent, 1.0)
+            observations.append(DetectionObservation(
+                timestamp_s=float(timestamp_s),
+                frame_id=int(frame_id),
+                camera_id=camera_id,
+                bbox_xyxy_px=[float(v) for v in bbox],
+                confidence=float(confidence),
+                pixel_covariance=[[sigma * sigma, 0.0], [0.0, sigma * sigma]],
+                image_size=size,
+                validity=ValidityFlags(detected=True, in_image=True,
+                                       confidence_ok=True, covariance_ok=True,
+                                       timestamp_ok=True),
+            ))
         return observations, elapsed_s
 
 
@@ -524,6 +556,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--weights", required=True, help="YOLO checkpoint (.pt)")
     parser.add_argument("--out-dir", required=True, help="new run directory")
     parser.add_argument("--imgsz", type=int, default=640)
+    parser.add_argument("--tile-size", type=int, default=0,
+                        help="0 = original full-frame baseline; >0 = GT-free square tiles in original pixels")
+    parser.add_argument("--tile-overlap", type=float, default=0.25,
+                        help="fractional overlap between full-frame tiles, 0 <= x < 1")
     parser.add_argument("--conf", type=float, default=0.25)
     parser.add_argument("--iou", type=float, default=0.45)
     parser.add_argument("--device", default="cuda:0")
@@ -559,7 +595,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     source = open_frame_source(args.source, args.camera_id, args.source_fps, args.limit)
     detector = YoloDetector(args.weights, imgsz=args.imgsz, conf=args.conf, iou=args.iou,
-                            device=args.device)
+                            device=args.device, tile_size=args.tile_size,
+                            tile_overlap=args.tile_overlap)
     fps = source.fps if source.fps > 0 else 30.0
     tracker = ImagePlaneTracker(gate_px=args.gate_px, dt_s=1.0 / fps,
                                 camera_id=args.camera_id,
@@ -611,6 +648,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 "camera_id": frame.camera_id,
                 "input_source_class": source.source_class,
                 "measurement_source": "YOLO_BOX",
+                "detector_diagnostics": detector.last_diagnostics,
                 "units": PX,
                 "association": track,
                 "horizon": horizons,
@@ -652,6 +690,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "schema": "r11_vision_m1_metrics/v2",
         "source_class": getattr(source, "source_class", "REAL_RGB_VIDEO"),
         "measurement_source": "YOLO_BOX",
+        "detector_mode": "tiled" if args.tile_size else "full_frame",
+        "tile_size_px": args.tile_size if args.tile_size else None,
         "state_units": PX,
         "frames_processed": frames,
         "frames_with_detection": detected_frames,
