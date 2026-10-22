@@ -718,11 +718,12 @@ def resolve_provenance(
         # Self-references provide only self-consistency, not an independent measurement.
         # Do not let fx silently cite fy (which may happen to have the same value).
         expected = f"fields.{field_name}.value"
+        witnessed_value = _resolve_locator(record_document, locator)
         if locator != expected:
             raise ProvenanceViolationError(
                 f"{field_name}: @self locator {locator!r} must equal {expected!r}"
             )
-        if _resolve_locator(record_document, locator) != claimed_value:
+        if witnessed_value != claimed_value:
             raise ProvenanceViolationError(
                 f"{field_name}: @self locator value does not match the field value"
             )
