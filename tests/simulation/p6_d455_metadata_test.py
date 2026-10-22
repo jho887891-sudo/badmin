@@ -111,6 +111,33 @@ def test_external_witness_provenance_is_verified_against_real_bytes():
     assert meta.status == "CALIBRATED_FULL"
 
 
+def test_external_witness_value_must_match_even_when_sha_is_valid(tmp_path):
+    """A valid SHA + valid locator cannot certify a forged camera focal length."""
+    witness = FIX / "witness_lab_note.json"
+    (tmp_path / "witness_lab_note.json").write_bytes(witness.read_bytes())
+    parent = tmp_path / "external_witness"
+    parent.mkdir()
+    document = json.loads((FIX / "external_witness/metadata.json").read_text(
+        encoding="utf-8"))
+    # File / SHA / locator all remain valid. Only the asserted value is false.
+    document["fields"]["fx_px"]["value"] = 5.0
+    candidate = parent / "metadata.json"
+    candidate.write_text(json.dumps(document, indent=2), encoding="utf-8")
+    with pytest.raises(md.ProvenanceViolationError, match="disagrees with witness"):
+        md.load_metadata(candidate)
+
+
+def test_self_locator_cannot_point_at_another_equal_field(tmp_path):
+    """Even equal numerical values cannot make fx cite fy as its source."""
+    def mutate(document):
+        assert document["fields"]["fx_px"]["value"] == document["fields"]["fy_px"]["value"]
+        document["fields"]["fx_px"]["source"]["locator"] = "fields.fy_px.value"
+
+    candidate = write_record(tmp_path, mutate)
+    with pytest.raises(md.ProvenanceViolationError, match="must equal"):
+        md.load_metadata(candidate)
+
+
 def test_bad_witness_sha256_is_rejected():
     with pytest.raises(md.ProvenanceViolationError) as exc:
         load("bad_sha/metadata.json")
