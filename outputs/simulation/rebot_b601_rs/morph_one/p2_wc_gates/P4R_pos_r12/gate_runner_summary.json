@@ -1,0 +1,66 @@
+{
+ "run_id": "P4R_pos_r12",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p4_proxy_wheel_drive.py --run-id P4R_pos_r12 --out-dir /home/dgut/runs/g/P4R_pos_r12 --profile roll_pos_y --read-contacts --gravity-z -9.81",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1500.0,
+ "quarantined_stale_result": null,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "wheel_targets_rad_s_per_wheel": [
+   -4.0,
+   -4.0,
+   -4.0,
+   -4.0
+  ],
+  "tail_wheel_omega_rad_s": {
+   "wheel1": -4.001947196,
+   "wheel2": -4.004984967,
+   "wheel3": -4.001451453,
+   "wheel4": -4.005573408
+  },
+  "wheel_speed_relative_error": {
+   "wheel1": 0.000486799,
+   "wheel2": 0.001246242,
+   "wheel3": 0.000362863,
+   "wheel4": 0.001393352
+  },
+  "chassis_displacement_m": [
+   0.000177057,
+   1.216358423,
+   -0.018616438
+  ],
+  "tail_chassis_speed_m_s": 0.412058838,
+  "yaw_change_rad": 7.85e-05,
+  "peak_contact_force_n": 645.847961426,
+  "distance_per_wheel_revolution_m_deprecated": "UNKNOWN (old field was wrong)",
+  "velocity_control": null,
+  "wheel_delta_theta_rad": {
+   "wheel1": -12.000264168,
+   "wheel2": -11.979391098,
+   "wheel3": -12.000208855,
+   "wheel4": -11.973709106
+  },
+  "measured_rolling_radius_m": {
+   "wheel1": 0.101361,
+   "wheel2": 0.101538,
+   "wheel3": 0.101361,
+   "wheel4": 0.101586
+  },
+  "measured_rolling_radius_rel_error": [
+   0.015913,
+   0.014194,
+   0.015913,
+   0.013728
+  ],
+  "measured_rolling_radius_basis": "|delta chassis Y| / |delta MEASURED joint angle|; includes any slip, so it is an effective radius, not the tyre radius",
+  "steps": 360
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 36.347,
+ "child_stdout_log": "/home/dgut/runs/g/P4R_pos_r12/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P4R_pos_r12/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}

@@ -1,0 +1,81 @@
+{
+ "run_id": "P4V_clamp_r13",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p4_proxy_wheel_drive.py --run-id P4V_clamp_r13 --out-dir /home/dgut/runs/g/P4V_clamp_r13 --profile velocity_control --read-contacts --gravity-z -9.81 --velocity-cmd 0.80 --speed-limit 0.50",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1500.0,
+ "quarantined_stale_result": null,
+ "json_gate": "PASS",
+ "json_metrics": {
+  "wheel_targets_rad_s_per_wheel": [
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "tail_wheel_omega_rad_s": {
+   "wheel1": -0.001960111,
+   "wheel2": -0.005007014,
+   "wheel3": -0.001552615,
+   "wheel4": -0.005594972
+  },
+  "wheel_speed_relative_error": {
+   "wheel1": null,
+   "wheel2": null,
+   "wheel3": null,
+   "wheel4": null
+  },
+  "chassis_displacement_m": [
+   0.000395927,
+   -1.743709207,
+   -0.018616349
+  ],
+  "tail_chassis_speed_m_s": 0.000114509,
+  "yaw_change_rad": 0.001918741,
+  "peak_contact_force_n": 445.670379639,
+  "distance_per_wheel_revolution_m_deprecated": "UNKNOWN (old field was wrong)",
+  "velocity_control": {
+   "commanded_speed_m_s": 0.8,
+   "commanded_after_clamp_m_s": 0.5,
+   "clamped": true,
+   "steady_window_steps": [
+    180,
+    480
+   ],
+   "steady_mean_speed_m_s": 0.53007437,
+   "steady_relative_error": 0.06014874,
+   "peak_speed_m_s": 0.532636642,
+   "since_zero_max_speed_m_s": 0.000114441,
+   "distance_m": 1.743709207,
+   "kp": 2.0,
+   "nominal_radius_m": 0.101459
+  },
+  "wheel_delta_theta_rad": {
+   "wheel1": 16.730955124,
+   "wheel2": 16.760297775,
+   "wheel3": 16.73690033,
+   "wheel4": 16.761127472
+  },
+  "measured_rolling_radius_m": {
+   "wheel1": 0.104221,
+   "wheel2": 0.104038,
+   "wheel3": 0.104184,
+   "wheel4": 0.104033
+  },
+  "measured_rolling_radius_rel_error": [
+   0.011854,
+   0.010078,
+   0.011495,
+   0.010029
+  ],
+  "measured_rolling_radius_basis": "|delta chassis Y| / |delta MEASURED joint angle|; includes any slip, so it is an effective radius, not the tyre radius",
+  "steps": 600
+ },
+ "child_ok": true,
+ "gates_ok": true,
+ "outer_exit": 0,
+ "elapsed_s": 43.013,
+ "child_stdout_log": "/home/dgut/runs/g/P4V_clamp_r13/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P4V_clamp_r13/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}
