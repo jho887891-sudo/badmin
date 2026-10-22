@@ -1,0 +1,17 @@
+{
+ "run_id": "P0F_exception_r02",
+ "command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P0F_exception_r02 --out-dir /home/dgut/runs/g/P0F_exception_r02 --profile static --steps 120 --read-contacts --gravity-z -9.81 --inject-fault python_exception",
+ "child_returncode": 0,
+ "timed_out": false,
+ "timeout_s": 1500.0,
+ "quarantined_stale_result": null,
+ "json_gate": "MISSING",
+ "json_metrics": {},
+ "child_ok": true,
+ "gates_ok": false,
+ "outer_exit": 1,
+ "elapsed_s": 29.001,
+ "child_stdout_log": "/home/dgut/runs/g/P0F_exception_r02/gate_child.stdout.log",
+ "child_stderr_log": "/home/dgut/runs/g/P0F_exception_r02/gate_child.stderr.log",
+ "note": "outer exit is non-zero unless the child returned 0 AND the JSON gate is PASS; the raw child status is kept so Kit swallowing failures stays visible"
+}
