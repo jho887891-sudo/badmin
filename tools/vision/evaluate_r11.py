@@ -95,11 +95,17 @@ def _validate_gt(rows, expected_frames=None):
     return out
 
 
-def _validate_pred(rows, gt):
+def _validate_pred(rows, gt, expected_frames=None, timestamp_tolerance_s=.005):
     by_frame=defaultdict(list)
     for r in rows:
         if not isinstance(r,dict):raise EvaluationError('detection row must be a mapping')
         fid=_integer(r.get('frame_id'),'prediction frame_id')
+        if expected_frames is not None and fid >= expected_frames:
+            raise EvaluationError('prediction frame_id outside expected video frame count')
+        t=_finite(r.get('timestamp_s'),'prediction timestamp_s')
+        if t < 0:raise EvaluationError('negative prediction timestamp')
+        if fid in gt and abs(t-gt[fid]['time'])>timestamp_tolerance_s:
+            raise EvaluationError('prediction/GT timestamp mismatch for frame_id')
         if fid in gt:
             sz=_size(r)
             if sz!=gt[fid]['size']:raise EvaluationError('prediction image size differs from GT')
@@ -168,12 +174,14 @@ def _rate(num,den):
 
 
 def evaluate_detections(gt_rows,pred_rows,*,expected_frames=None,centre_tolerance_px=3.0,
-                        split_provenance='unknown',annotation_provenance='unknown'):
+                        timestamp_tolerance_s=.005,split_provenance='unknown',annotation_provenance='unknown'):
     """Human-reviewed TP/FP/FN. Missing/uncertain frames never become negatives."""
     if not math.isfinite(centre_tolerance_px) or centre_tolerance_px<=0:
         raise EvaluationError('centre_tolerance_px must be positive finite')
+    if not math.isfinite(timestamp_tolerance_s) or timestamp_tolerance_s<0:
+        raise EvaluationError('timestamp_tolerance_s must be nonnegative finite')
     gt=_validate_gt(gt_rows,expected_frames)
-    preds=_validate_pred(pred_rows,gt)
+    preds=_validate_pred(pred_rows,gt,expected_frames,timestamp_tolerance_s)
     if split_provenance not in ('train','validation','held_out_session','unknown'):
         raise EvaluationError('invalid split provenance')
     if annotation_provenance not in ('human_verified','unknown'):
@@ -210,7 +218,8 @@ def evaluate_detections(gt_rows,pred_rows,*,expected_frames=None,centre_toleranc
     unscorable=len(gt)-labeled
     missing=expected_frames-len(gt) if expected_frames is not None else None
     return {'schema':'r11_detection_eval/v1','units':'IMAGE_PLANE_2D',
-            'matching':{'iou50':0.5,'center_tolerance_px':centre_tolerance_px},
+            'matching':{'iou50':0.5,'center_tolerance_px':centre_tolerance_px,
+                        'timestamp_tolerance_s':timestamp_tolerance_s},
             'split_provenance':split_provenance,'annotation_provenance':annotation_provenance,
             'generalization_claim_allowed':False,
             'held_out_claim_candidate':(split_provenance=='held_out_session' and
@@ -355,6 +364,7 @@ def main(argv=None):
     p.add_argument('--output',required=True,type=Path)
     p.add_argument('--expected-frames',type=int)
     p.add_argument('--centre-tolerance-px',type=float,default=3.)
+    p.add_argument('--detection-tolerance-s',type=float,default=.005)
     p.add_argument('--future-tolerance-s',type=float,default=.02)
     p.add_argument('--split-provenance',choices=['train','validation','held_out_session','unknown'],default='unknown')
     p.add_argument('--annotation-provenance',choices=['human_verified','unknown'],default='unknown')
@@ -365,6 +375,7 @@ def main(argv=None):
         if a.mode=='detection':
             report=evaluate_detections(gt,data,expected_frames=a.expected_frames,
                 centre_tolerance_px=a.centre_tolerance_px,
+                timestamp_tolerance_s=a.detection_tolerance_s,
                 split_provenance=a.split_provenance,annotation_provenance=a.annotation_provenance)
         else:report=evaluate_predictions(gt,data,tolerance_s=a.future_tolerance_s)
         report['provenance']={'ground_truth_sha256':_hash(a.ground_truth),
