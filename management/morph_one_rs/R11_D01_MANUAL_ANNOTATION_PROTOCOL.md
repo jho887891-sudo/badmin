@@ -37,7 +37,7 @@ python tools/vision/annotate_r11_video.py --video "D:\Projects\badmin\data\doubl
 | `u` | **unscorable**，目标不清楚、严重模糊、无法判断；不能作为 FN 或负例 |
 | `s` | **skip/unreviewed**，不写入 GT；**不得自动记为无球** |
 | `x` | 撤销当前帧最近一个 bbox |
-| `m` | 开关鼠标附近的原像素 **6 倍最近邻放大**（不生成新细节） |
+| `m` | 开关**独立窗口**里的鼠标附近原像素 **6 倍最近邻放大**（不生成新细节、绝不覆盖原视频画面） |
 | `q` / `Esc` | 保存已有已审帧并结束；下次相同输入 SHA、帧数、FPS 与标注员编号可继续 |
 
 建议：对于 4–6 px 羽毛球，先移动鼠标使用放大预览检查，再决定是否可以人工确认和框选。若无法辨认应标 `u`，而不是为了完成 336 帧强行画框。不要使用 GT-oracle 自动 ROI、AI 超分恢复图像的“细节”，或者用 YOLO 预测代替人审。
@@ -58,7 +58,7 @@ python tools/vision/annotate_r11_video.py --video "D:\Projects\badmin\data\doubl
 | 画面不可判断 | `status=unscorable` + `objects=[]` | 不进入 TP/FP/FN |
 | 人工跳过，未审核 | **不写 GT 行** | 完全不评价 |
 
-工具使用 **顺序从帧 0 解码**，即使只审核后半段也不依赖不精确的视频 keyframe seek；帧号、时间与真实解码顺序保持对应。视频有 presentation timestamp 时记录 `PTS_VIDEO`；否则由声明 FPS 推算并记录 `ASSUMED_FPS`，不能冒充硬件同步。GUI 显示窗口使用 `WINDOW_AUTOSIZE`，防止任意调整窗口宽高导致鼠标标框投影错位。
+工具使用 **顺序从帧 0 解码**，即使只审核后半段也不依赖不精确的视频 keyframe seek；帧号、时间与真实解码顺序保持对应。视频有 presentation timestamp 时记录 `PTS_VIDEO`；否则由声明 FPS 推算并记录 `ASSUMED_FPS`，不能冒充硬件同步。GUI 显示窗口使用 `WINDOW_AUTOSIZE`，防止任意调整窗口宽高导致鼠标标框投影错位。为避免 4–6px 羽毛球被标注界面的状态文字或放大区域遮住，**状态栏绘制在原视频下方、放大镜位于第二个窗口**，原视频画面未画框时不覆盖任何像素。鼠标误点状态栏不会写 bbox。Linux 无 DISPLAY/WAYLAND_DISPLAY 时提前拒绝 GUI，防止 OpenCV HighGUI 因 headless 环境意外终止。
 
 **不可覆写规则**：一帧一旦保存人工判断，自动恢复会跳过该帧，不允许通过同一个输出路径篡改旧标签。需要纠错时另建输出副本、标明修订者和修订依据，禁止悄悄替换已用于报告的 GT。已有标注但删除了 `.meta.json`，或视频 SHA/分辨率/FPS 不一致时，立即 fail-closed。输出使用同目录临时文件 + 原子替换，每帧提交保存，手动退出和异常中断时已确认帧留存。
 
@@ -92,7 +92,7 @@ python tools/vision/evaluate_r11.py \
 
 **实际运行**：
 
-- `pytest -q tests/vision/test_r11_annotation.py`：**24 passed, exit 0**。至少一次 RED→GREEN 覆盖无模块、顺序解码、缺 GT 文件的恢复拒绝、4–6 px 原像素放大、屏幕坐标映射。
+- `pytest -q tests/vision/test_r11_annotation.py`：**26 passed, exit 0**。至少一次 RED→GREEN 覆盖无模块、顺序解码、缺 GT 文件的恢复拒绝、4–6 px 原像素放大、屏幕坐标映射。
 - `python -m py_compile tools/vision/annotate_r11_video.py`：exit 0。
 - 真实 OpenCV `mp4v` 编码器/解码器读写一个 **12 帧合成视频**，对其手动决定写入 3 个合成 GT 行并关闭恢复：**PASS**，输出中正确保留了 `positive/negative/unscorable` 和原始视频指纹。这只验证格式和解码，不是人审 336 帧。
 - **未执行真实 GUI 鼠标交互测试**（当前工作环境无图形桌面），Windows GUI 行为尚需实际人工小样检查。
