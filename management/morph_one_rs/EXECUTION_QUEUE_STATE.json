@@ -288,14 +288,29 @@
    "stage": "P0",
    "title": "在真实 Kit 上做故障注入：Python 抛异常子进程 0、真正 PASS、真正 FAIL、timeout 和历史目录防串用。",
    "dependencies": [],
-   "status": "UNKNOWN",
-   "owner": null,
-   "head_sha": null,
-   "artifact": null,
-   "latest_run_id": null,
-   "next_action": null,
+   "status": "DONE",
+   "owner": "main",
+   "head_sha": "2252802",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P0F_exception_r01/gate_runner_summary.json",
+   "latest_run_id": "P0F_exception_r01",
+   "next_action": "real Kit fault injection: 6 runs, exceptions leave child rc 0 (Kit swallows them) and SystemExit is unusable; all 6 still fail via the outer exit and missing artifacts; joint-limit refusal happens before any write",
    "blocker": null,
-   "last_error": null
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "P0-07 fault injection evidence landed in 2252802",
+     "old": {
+      "status": "UNKNOWN",
+      "artifact": null,
+      "head_sha": null,
+      "owner": null
+     },
+     "new": {
+      "status": "DONE",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P0F_exception_r01/gate_runner_summary.json"
+     }
+    }
+   ]
   },
   {
    "task_id": "P0-08",
@@ -728,10 +743,10 @@
    ],
    "status": "PARTIAL",
    "owner": "main",
-   "head_sha": "780b487",
-   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_static_r15/result.json",
-   "latest_run_id": "P3_static_r15",
-   "next_action": "joint hold verified under the v1.1 gate (joint_hold <=0.05 rad in all 27 runs) but no contact/collision-limit FAIL injection yet; real dynamics stay P4-dependent",
+   "head_sha": "2252802",
+   "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P0F_jointlimit_r03/fault_record.json",
+   "latest_run_id": "P0F_jointlimit_r03",
+   "next_action": "joint-limit refusal verified before any write (joint5 2.07 vs 1.57 rad, targets_written 0); contact/collision-limit and pinch detection still open, real dynamics stay P4-dependent",
    "blocker": null,
    "last_error": null,
    "repair_log": [
@@ -771,6 +786,19 @@
     {
      "reason": "P3-06 already claims PHASE_P3_DYNAMIC_MOUNT_RESULTS.md; P3-05 points at the run that backs its joint-hold claim",
      "new_artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_static_r15/result.json"
+    },
+    {
+     "reason": "P0-07 fault injection evidence landed in 2252802",
+     "old": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P3_static_r15/result.json",
+      "head_sha": "780b487",
+      "owner": "main"
+     },
+     "new": {
+      "status": "PARTIAL",
+      "artifact": "outputs/simulation/rebot_b601_rs/morph_one/p2_wc_gates/P0F_jointlimit_r03/fault_record.json"
+     }
     }
    ]
   },
