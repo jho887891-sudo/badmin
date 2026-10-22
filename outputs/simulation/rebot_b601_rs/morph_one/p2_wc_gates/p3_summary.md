@@ -26,10 +26,12 @@
 | P3_yaw_r13 | yaw | positive | PASS | 0 | 0 | - | all_finite=T, arm_does_not_touch_ground=T, joint_hold=T, mount_stable=T, yaw_actually_measured=T |
 | P3_yaw_r14 | yaw | positive | PASS | 0 | 0 | - | all_finite=T, arm_does_not_touch_ground=T, joint_hold=T, mount_stable=T, yaw_actually_measured=T |
 
-### v1.1（14 个 run）
+### v1.1（16 个 run）
 
 | run_id | profile | gate 模式 | gate_result | outer_exit | child_rc | 失败门禁 | 逐门禁 |
 |---|---|---|---|---|---|---|---|
+| P3_compound_r13 | compound | positive | PASS | 0 | 0 | - | all_finite=T, arm_does_not_touch_ground=T, joint_hold=T, mount_stable=T, translation_actually_measured=T, yaw_actually_measured=T |
+| P3_compound_r14 | compound | positive | PASS | 0 | 0 | - | all_finite=T, arm_does_not_touch_ground=T, joint_hold=T, mount_stable=T, translation_actually_measured=T, yaw_actually_measured=T |
 | P3_static_r15 | static | positive | PASS | 0 | 0 | - | all_finite=T, arm_does_not_touch_ground=T, joint_hold=T, mount_stable=T |
 | P3_static_r16 | static | positive | PASS | 0 | 0 | - | all_finite=T, arm_does_not_touch_ground=T, joint_hold=T, mount_stable=T |
 | P3_neg_frozen_x_r03 | translate_xy | negative_control(freeze_axis=x) | FAIL | 1 | 0 | translation_actually_measured | all_finite=T, arm_does_not_touch_ground=T, joint_hold=T, mount_stable=T, translation_actually_measured=F |
@@ -49,6 +51,8 @@ v1.1 有向位移（directed_translation，v1.1 判据）：
 
 | run_id | profile | 命令位移 (m) | achieved_ratio | final_ratio | best_frame | cross_track (m) | 通过 |
 |---|---|---|---|---|---|---|---|
+| P3_compound_r13 | compound | 0.254951 | 0.997424 | 0.997424 | 240 | 0.00269164 | PASS |
+| P3_compound_r14 | compound | 0.254951 | 0.997424 | 0.997424 | 240 | 0.00269164 | PASS |
 | P3_neg_frozen_x_r03 | translate_xy | 0.3 | 0.000776468 | 0.00044665 | 303 | 0.000112786 | FAIL |
 | P3_neg_frozen_xy_r02 | translate_xy | 0.3 | 2.42505e-05 | 2.39985e-05 | 78 | 4.5273e-05 | FAIL |
 | P3_neg_frozen_y_r01 | translate_xy | 0.3 | 1.00103 | 1.00078 | 180 | 0.000124074 | PASS |
@@ -64,7 +68,7 @@ v1.1 有向位移（directed_translation，v1.1 判据）：
 | 代际 | run 数 | PASS | FAIL | 有向判据 run 数 | 最小 achieved_ratio | 安装位偏差 max (m) | 安装姿态偏差 max (rad) | jerk max (m/s³) |
 |---|---|---|---|---|---|---|---|---|
 | v1.0 | 11 | 9 | 2 | 0 | - | 6.6639e-08 | 9.4243e-08 | 6209.07 |
-| v1.1 | 14 | 9 | 5 | 9 | 2.42505e-05 | 3.0825e-08 | 9.1857e-08 | 826.686 |
+| v1.1 | 16 | 11 | 5 | 11 | 2.42505e-05 | 3.0825e-08 | 9.1857e-08 | 904.133 |
 
 ## 3. 覆盖审计（每个剖面每个代际需要 2 个独立 PASS）
 
@@ -75,7 +79,7 @@ v1.1 有向位移（directed_translation，v1.1 判据）：
 | v1.0 | translate_xy | 1 | 2 | **缺口** | P3_xy_r09 |
 | v1.0 | translate_z | 1 | 2 | **缺口** | P3_z_r09 |
 | v1.0 | yaw | 4 | 2 | - | P3_yaw_r09, P3_yaw_r11, P3_yaw_r13, P3_yaw_r14 |
-| v1.1 | compound | 0 | 2 | **缺口** | - |
+| v1.1 | compound | 2 | 2 | - | P3_compound_r13, P3_compound_r14 |
 | v1.1 | static | 2 | 2 | - | P3_static_r15, P3_static_r16 |
 | v1.1 | translate_xy | 2 | 2 | - | P3_xy_r13, P3_xy_r14 |
 | v1.1 | translate_z | 2 | 2 | - | P3_z_r13, P3_z_r14 |
@@ -86,7 +90,6 @@ v1.1 有向位移（directed_translation，v1.1 判据）：
 - v1.0 / compound：独立 PASS 1 < 2（PASS: P3_compound_r11；run: P3_compound_r09, P3_compound_r11）
 - v1.0 / translate_xy：独立 PASS 1 < 2（PASS: P3_xy_r09；run: P3_xy_r09）
 - v1.0 / translate_z：独立 PASS 1 < 2（PASS: P3_z_r09；run: P3_z_r09）
-- v1.1 / compound：独立 PASS 0 < 2（PASS: 无；run: 无）
 
 ## 4. 负控制审计（缺运动必须 FAIL）
 
@@ -102,7 +105,7 @@ v1.1 有向位移（directed_translation，v1.1 判据）：
 ## 5. 诊断量：root<->chassis 偏置与安装漂移
 
 - `diagnostics.root_to_chassis_offset_m` 取值：[0.261476607]（跨 run 极差 0）
-- 带该诊断字段的 run：19 / 25；声明做偏置补偿的 run：19
+- 带该诊断字段的 run：21 / 27；声明做偏置补偿的 run：21
 - 安装位偏差 max：6.6639e-08 m；安装姿态偏差 max：9.4243e-08 rad（门限 0.001 m / 0.001 rad）
 - `raw_poses.jsonl` 帧数观测：[361]，steps+1 期望：[361]
 - v1.0 安装漂移：6.6639e-08 m / 9.4243e-08 rad
@@ -117,7 +120,6 @@ v1.1 有向位移（directed_translation，v1.1 判据）：
 - 告警：COVERAGE GAP: compound has 1 independent PASS under v1.0 (need 2)
 - 告警：COVERAGE GAP: translate_xy has 1 independent PASS under v1.0 (need 2)
 - 告警：COVERAGE GAP: translate_z has 1 independent PASS under v1.0 (need 2)
-- 告警：COVERAGE GAP: compound has 0 independent PASS under v1.1 (need 2)
 - 告警：AMBIGUOUS: P3_compound_r09 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4
 - 告警：AMBIGUOUS: P3_compound_r11 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4
 - 告警：AMBIGUOUS: P3_static_r09 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4
