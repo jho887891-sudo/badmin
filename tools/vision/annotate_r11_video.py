@@ -249,6 +249,41 @@ def display_to_source(x: int, y: int, *, scale: float,
             min(height - 1, max(0, int(round(y / scale)))))
 
 
+
+def require_desktop_display(*, platform_name: str | None = None, env=None) -> None:
+    """Avoid a fatal OpenCV HighGUI abort on common headless Linux runners."""
+    import sys
+    if platform_name is None:
+        platform_name = os.name
+    if env is None:
+        env = os.environ
+    if (platform_name == "posix" and sys.platform != "darwin" and
+            not (env.get("DISPLAY") or env.get("WAYLAND_DISPLAY"))):
+        raise AnnotationError(
+            "desktop display unavailable; run manual annotation on a GUI desktop, "
+            "not a headless GPU server")
+
+
+def compose_review_canvas(image, line1: str, line2: str, *, scale: float = 1.0):
+    """Draw status BELOW the source image; raw video pixels remain unoccluded."""
+    import cv2
+    import numpy as np
+    if image.ndim != 3 or image.shape[2] != 3 or image.size == 0:
+        raise AnnotationError("review canvas needs HxWx3 image")
+    if not math.isfinite(scale) or scale <= 0:
+        raise AnnotationError("invalid review scale")
+    height, width = image.shape[:2]
+    resized = (image.copy() if scale == 1.0 else cv2.resize(
+        image, (max(2, int(round(width * scale))),
+                max(2, int(round(height * scale))))))
+    panel = np.zeros((60, resized.shape[1], 3), dtype=resized.dtype)
+    cv2.putText(panel, line1, (7, 19), cv2.FONT_HERSHEY_SIMPLEX,
+                .48, (255, 255, 255), 1, cv2.LINE_AA)
+    cv2.putText(panel, line2, (7, 44), cv2.FONT_HERSHEY_SIMPLEX,
+                .46, (255, 255, 255), 1, cv2.LINE_AA)
+    return np.concatenate((resized, panel), axis=0)
+
+
 def make_pixel_magnifier(image, u: int, v: int, *, radius: int = 24,
                          zoom: int = 6):
     """Model-blind nearest-neighbour enlarged crop for reviewing 4-6px objects.
@@ -302,10 +337,12 @@ def review_video(video_path: Path, store: ReviewStore, *, start: int = 0,
         raise AnnotationError("end must be exclusive and within video")
     if not math.isfinite(display_scale) or not 0.1 <= display_scale <= 2:
         raise AnnotationError("invalid display scale")
+    require_desktop_display()
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
         raise AnnotationError("cannot open video for manual review")
     window = "R11 HUMAN BLIND GT (p/n/u/s/q, mouse drag, x undo)"
+    zoom_window = "R11 RAW PIXEL MAGNIFIER (no YOLO)"
     ui = {"boxes": [], "down": None, "cursor": None,
           "hover": (store.width // 2, store.height // 2), "magnify": True}
     view_width = max(2, int(round(store.width * display_scale)))
@@ -316,6 +353,11 @@ def review_video(video_path: Path, store: ReviewStore, *, start: int = 0,
                                  width=store.width, height=store.height)
 
     def mouse(event, x, y, flags, userdata):
+        if y >= view_height:
+            if event == cv2.EVENT_LBUTTONUP:
+                ui["down"] = None
+                ui["cursor"] = None
+            return
         pt = to_native(x, y)
         ui["hover"] = pt
         if event == cv2.EVENT_LBUTTONDOWN:
@@ -335,8 +377,12 @@ def review_video(video_path: Path, store: ReviewStore, *, start: int = 0,
     try:
         # WINDOW_AUTOSIZE preserves 1:1 mouse coords with the resized image.
         # WINDOW_NORMAL could allow arbitrary user resizing and corrupt GT xyxy.
-        cv2.namedWindow(window, cv2.WINDOW_AUTOSIZE)
-        cv2.setMouseCallback(window, mouse)
+        try:
+            cv2.namedWindow(window, cv2.WINDOW_AUTOSIZE)
+            cv2.namedWindow(zoom_window, cv2.WINDOW_AUTOSIZE)
+            cv2.setMouseCallback(window, mouse)
+        except cv2.error as exc:
+            raise AnnotationError("OpenCV GUI unavailable: needs graphical desktop and non-headless cv2") from exc
         for frame_idx, image in iter_decoded_frames(cap, start=start, end=end, stride=stride):
             if frame_idx in store.reviewed_frames:
                 continue
@@ -352,23 +398,19 @@ def review_video(video_path: Path, store: ReviewStore, *, start: int = 0,
                     cv2.rectangle(display, (x1, y1), (x2, y2), (0, 255, 80), 2)
                 if ui["down"] is not None and ui["cursor"] is not None:
                     cv2.rectangle(display, ui["down"], ui["cursor"], (0, 255, 255), 1)
-                if ui["magnify"]:
-                    inset = make_pixel_magnifier(image, *ui["hover"])
-                    ih = min(display.shape[0], inset.shape[0])
-                    iw = min(display.shape[1], inset.shape[1])
-                    display[0:ih, display.shape[1] - iw:] = inset[:ih, :iw]
-                    cv2.rectangle(display, (display.shape[1] - iw, 0),
-                                  (display.shape[1] - 1, ih - 1), (255, 255, 0), 2)
+                # The status text and magnifier are outside the actual source video.
+                # Never cover raw video pixels while deciding if a 4px ball is visible.
                 msg = f"frame {frame_idx}/{store.frame_count}  t={ts:.3f}({clock_src})  boxes={len(ui['boxes'])}"
-                cv2.rectangle(display, (0, 0), (min(store.width, 950), 58), (0, 0, 0), -1)
-                cv2.putText(display, msg, (7, 19), cv2.FONT_HERSHEY_SIMPLEX,
-                            .48, (255, 255, 255), 1, cv2.LINE_AA)
-                cv2.putText(display, "p=positive n=no-ball u=unscorable s=skip x=undo m=zoom q=quit",
-                            (7, 44), cv2.FONT_HERSHEY_SIMPLEX, .46, (255, 255, 255), 1,
-                            cv2.LINE_AA)
-                if display_scale != 1:
-                    display = cv2.resize(display, (view_width, view_height))
+                display = compose_review_canvas(
+                    display, msg,
+                    "p=positive n=no-ball u=unscorable s=skip x=undo m=zoom q=quit",
+                    scale=display_scale)
                 cv2.imshow(window, display)
+                if ui["magnify"]:
+                    cv2.imshow(zoom_window, make_pixel_magnifier(image, *ui["hover"]))
+                else:
+                    import numpy as np
+                    cv2.imshow(zoom_window, np.zeros((288, 288, 3), dtype=np.uint8))
                 key = cv2.waitKey(30) & 0xFF
                 if key == ord("m"):
                     ui["magnify"] = not ui["magnify"]
