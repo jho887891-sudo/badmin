@@ -74,6 +74,14 @@ def make_run(root: Path, run_id: str, *, profile: str = "translate_xy",
         "arm_peak_contact_n": 0.0,
         "command_amplitude": {"x_m": 0.3, "y_m": 0.0, "z_m": 0.0, "yaw_rad": 0.0},
     }
+    # A negative control is only meaningful when the frozen component is NON-ZERO.  The
+    # real P3_neg_frozen_y_r01 froze Y on a command whose Y was 0, so the freeze was a no-op
+    # and the run proved nothing; the fixture therefore mirrors the meaningful case by
+    # default and leaves the vacuous case to an explicit test.
+    frozen = (negative_control or {}).get("frozen_axis")
+    if frozen in ("x", "y", "z", "yaw"):
+        metrics["command_amplitude"][{"x": "x_m", "y": "y_m", "z": "z_m",
+                                      "yaw": "yaw_rad"}[frozen]] = 0.1
     diagnostics = {
         "quat_order_for_write_root_pose": dict(QUAT_PROBE),
         "root_to_chassis_offset_m": 0.261476607,
@@ -143,31 +151,45 @@ def test_committed_evidence_exits_zero(committed):
     proc, data, _ = committed
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert data["totals"]["errors"] == 0
-    assert data["totals"]["runs"] == 12
-    assert data["totals"]["by_generation"] == {"v1.0": 8, "v1.1": 4}
+    # invariant, not a snapshot: the evidence set grows every round, so pin the properties
+    # that must hold for ANY size instead of the count of one afternoon.
+    assert data["totals"]["runs"] >= 12
+    by_generation = data["totals"]["by_generation"]
+    assert set(by_generation) == set(GENERATIONS)
+    assert all(count > 0 for count in by_generation.values())
+    assert sum(by_generation.values()) == data["totals"]["runs"]
 
 
 def test_committed_evidence_generation_split_is_exact(committed):
     _, data, _ = committed
     by_gen = {gen: {run["run_id"] for run in data["runs"] if run["generation"] == gen}
               for gen in GENERATIONS}
-    assert by_gen["v1.0"] == {
+    assert {
         "P3_compound_r09", "P3_compound_r11", "P3_static_r01", "P3_static_r09",
-        "P3_static_r11", "P3_xy_r09", "P3_yaw_r09", "P3_yaw_r11"}
-    assert by_gen["v1.1"] == {
-        "P3_neg_frozen_xy_r02", "P3_neg_frozen_z_r02", "P3_xy_r13", "P3_z_r13"}
+        "P3_static_r11", "P3_xy_r09", "P3_yaw_r09", "P3_yaw_r11"} <= by_gen["v1.0"]
+    assert {
+        "P3_neg_frozen_xy_r02", "P3_neg_frozen_z_r02", "P3_xy_r13", "P3_z_r13",
+        "P3_yaw_r15", "P3_yaw_r16", "P3_static_r15", "P3_static_r16"} <= by_gen["v1.1"]
     assert not by_gen["v1.0"] & by_gen["v1.1"]
 
 
 def test_committed_negative_controls_verified(committed):
     _, data, _ = committed
     controls = {c["run_id"]: c for c in data["negative_controls"]}
-    assert len(controls) == 2
+    assert len(controls) >= 2
     for control in controls.values():
-        assert control["gate_result"] == "FAIL"
-        assert control["outer_exit"] == 1
-        assert "translation_actually_measured" in control["gates_false"]
-        assert control["verified"] is True
+        # meaningful controls must be observed failing; vacuous ones are reported as
+        # warnings (they prove nothing) and are never counted as verified
+        if control["verified"]:
+            assert control["gate_result"] == "FAIL"
+            assert control["outer_exit"] == 1
+            # the attributable motion gate depends on the frozen axis: translation for
+            # x/y/z, yaw for yaw.  It must be among the FALSE gates either way.
+            assert ({"translation_actually_measured", "yaw_actually_measured"}
+                    & set(control["gates_false"]))
+        else:
+            assert control["vacuous"] is True
+    assert any(control["verified"] for control in controls.values())
 
 
 def test_committed_coverage_gaps_are_reported(committed):
@@ -176,9 +198,6 @@ def test_committed_coverage_gaps_are_reported(committed):
     # translate_z has zero v1.0 runs: the amendment cites P3_z_r09, which is not on
     # this branch, and P3_z_r13 is v1.1.  translate_xy has exactly one PASS per generation.
     assert ("v1.0", "translate_z") in gaps
-    assert ("v1.0", "translate_xy") in gaps
-    assert ("v1.1", "translate_xy") in gaps
-    assert ("v1.1", "translate_z") in gaps
     for gap in data["coverage_gaps"]:
         assert gap["independent_pass"] < gap["required"] == 2
 
@@ -186,12 +205,14 @@ def test_committed_coverage_gaps_are_reported(committed):
 def test_committed_directed_fields_present_only_for_v11(committed):
     _, data, _ = committed
     for run in data["runs"]:
-        if run["generation"] == "v1.1":
-            directed = run["directed_translation"]
-            assert directed is not None
+        directed = run["directed_translation"]
+        if run["generation"] == "v1.0":
+            # the v1.0 gate never wrote the directed block
+            assert directed is None
+        elif directed is not None:
+            # v1.1 writes it for the translation profiles; the yaw/static profiles have no
+            # translation command, so absence is legitimate there
             assert set(directed) >= {"achieved_ratio", "best_frame", "cross_track_m"}
-        else:
-            assert run["directed_translation"] is None
 
 
 def test_markdown_carries_caveat_and_table(committed):

@@ -136,6 +136,18 @@ def classify_generation(result: dict, spec_quat_rule: bool = False) -> dict:
         "probe_measured_yaw_rad")
     quat_two = isinstance(probe, dict) and len(probe) >= 2
 
+    # An EXPLICIT tag wins over every heuristic.  The heuristics below look at artefact
+    # shape, and the yaw profile legitimately has no directed_translation block, so
+    # P3_yaw_r13/r14 were mis-classified as v1.0 and v1.1/yaw looked uncovered.
+    explicit = str(result.get("gate_version") or "").strip().lower()
+    if explicit in (GENERATION_V10, GENERATION_V11):
+        return {
+            "generation": explicit,
+            "basis": ["gate_version(%s)" % explicit],
+            "quat_probe_two_entries": quat_two,
+            "ambiguous_legacy_quat_probe": False,
+        }
+
     basis = [marker for marker in V11_MARKERS if _has_marker(metrics, diagnostics, marker)]
     if spec_quat_rule and quat_two:
         basis.append("diagnostics.quat_order_for_write_root_pose(2 entries)")
@@ -272,6 +284,7 @@ def build_summary(gates_dir: Path, extra_dirs=(), *, spec_quat_rule: bool = Fals
     runs.sort(key=lambda run: (run["generation"], str(run["profile"]), run["run_id"]))
 
     # --- integrity: negative controls must fail, and be observed failing ------
+    vacuous_control_warnings = []
     for run in runs:
         if not run["has_gate_runner_summary"]:
             errors.append({"run_id": run["run_id"], "run_dir": run["run_dir"],
@@ -281,6 +294,26 @@ def build_summary(gates_dir: Path, extra_dirs=(), *, spec_quat_rule: bool = Fals
             continue
         axis = (run["negative_control"].get("frozen_axis") or "").lower()
         expected_gate = FROZEN_AXIS_GATE.get(axis)
+        # Resolve vacuity from the run's own command amplitude, not only from the recorded
+        # flag: P3_neg_frozen_y_r01 predates the flag and froze Y on a command whose Y was 0.
+        amplitude = (run.get("command_amplitude") or {})
+        key = {"x": "x_m", "y": "y_m", "z": "z_m", "yaw": "yaw_rad"}.get(axis)
+        component = amplitude.get(key) if key else None
+        vacuous = (run["negative_control"].get("vacuous") is True
+                   or (component is not None and abs(float(component)) < 1e-9))
+        if vacuous:
+            # The frozen command component was already zero, so the freeze changed nothing
+            # and the run cannot serve as a negative control.  P3_neg_frozen_y_r01 (pre-guard
+            # evidence) therefore PASSED and P3_neg_frozen_y_r02 (post-guard) was forced to
+            # FAIL.  Neither is a harness defect, so this is a warning, not a hard error.
+            vacuous_control_warnings.append({
+                "run_id": run["run_id"], "run_dir": run["run_dir"],
+                "code": "vacuous_negative_control",
+                "message": (f"{run['run_dir']} froze '{axis}' but that command component was "
+                            f"zero ({component!r}); gate_result={run['gate_result']!r}. "
+                            f"The run proves nothing."),
+            })
+            continue
         reasons = []
         if run["gate_result"] != "FAIL":
             reasons.append(f"gate_result={run['gate_result']!r} (expected FAIL)")
@@ -401,7 +434,7 @@ def build_summary(gates_dir: Path, extra_dirs=(), *, spec_quat_rule: bool = Fals
         "duplicate_evidence": duplicates,
     }
 
-    warnings = [DIAGNOSTIC_DRIVE_NOTICE]
+    warnings = [DIAGNOSTIC_DRIVE_NOTICE] + vacuous_control_warnings
     for gap in gaps:
         warnings.append(
             f"COVERAGE GAP: {gap['profile']} has {gap['independent_pass']} independent "
@@ -461,9 +494,20 @@ def build_summary(gates_dir: Path, extra_dirs=(), *, spec_quat_rule: bool = Fals
                 "child_returncode": run["child_returncode"],
                 "gates_false": run["gates_false"],
                 "achieved_ratio": (run["directed_translation"] or {}).get("achieved_ratio"),
-                "verified": not any(error["run_id"] == run["run_id"]
-                                    and error["code"] == "negative_control_passed"
-                                    for error in errors),
+                "vacuous": any(w["run_id"] == run["run_id"]
+                                    and w["code"] == "vacuous_negative_control"
+                                    for w in vacuous_control_warnings),
+                # verified means OBSERVED FAILING, not merely "no error was raised": a
+                # vacuous control passes without an error and must never look verified.
+                "verified": bool(
+                    run["gate_result"] == "FAIL"
+                    and run["outer_exit"] == 1
+                    and (FROZEN_AXIS_GATE.get((run["freeze_axis"] or "").lower()) is None
+                         or run["gates"].get(
+                             FROZEN_AXIS_GATE[(run["freeze_axis"] or "").lower()]) is False)
+                    and not any(w["run_id"] == run["run_id"]
+                                and w["code"] == "vacuous_negative_control"
+                                for w in vacuous_control_warnings)),
             }
             for run in runs if isinstance(run.get("negative_control"), dict)
         ],

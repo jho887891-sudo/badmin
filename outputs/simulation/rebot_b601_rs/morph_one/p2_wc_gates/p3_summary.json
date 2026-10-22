@@ -20,17 +20,17 @@
     "P3 drive is a DIAGNOSTIC root-pose teleport with the root velocity zeroed every step: peak_lin_speed_m_s / peak_ang_speed_rad_s / peak_jerk_m_s3 are zero (or teleport artefacts) BY CONSTRUCTION and are NOT dynamics or stability evidence. P3 PASS is never P4 wheel-drive evidence."
   ],
   "totals": {
-    "runs": 12,
+    "runs": 25,
     "errors": 0,
     "by_generation": {
-      "v1.0": 8,
-      "v1.1": 4
+      "v1.0": 11,
+      "v1.1": 14
     }
   },
   "aggregates": {
     "v1.0": {
-      "runs": 8,
-      "pass": 6,
+      "runs": 11,
+      "pass": 9,
       "fail": 2,
       "run_ids": [
         "P3_compound_r09",
@@ -39,8 +39,11 @@
         "P3_static_r09",
         "P3_static_r11",
         "P3_xy_r09",
+        "P3_z_r09",
         "P3_yaw_r09",
-        "P3_yaw_r11"
+        "P3_yaw_r11",
+        "P3_yaw_r13",
+        "P3_yaw_r14"
       ],
       "gates_defined": [
         "all_finite",
@@ -59,28 +62,40 @@
       "arm_peak_contact_n_max": 0.0
     },
     "v1.1": {
-      "runs": 4,
-      "pass": 2,
-      "fail": 2,
+      "runs": 14,
+      "pass": 9,
+      "fail": 5,
       "run_ids": [
+        "P3_static_r15",
+        "P3_static_r16",
+        "P3_neg_frozen_x_r03",
         "P3_neg_frozen_xy_r02",
+        "P3_neg_frozen_y_r01",
+        "P3_neg_frozen_y_r02",
         "P3_xy_r13",
+        "P3_xy_r14",
         "P3_neg_frozen_z_r02",
-        "P3_z_r13"
+        "P3_z_r13",
+        "P3_z_r14",
+        "P3_neg_frozen_yaw_r01",
+        "P3_yaw_r15",
+        "P3_yaw_r16"
       ],
       "gates_defined": [
         "all_finite",
         "arm_does_not_touch_ground",
         "joint_hold",
         "mount_stable",
-        "translation_actually_measured"
+        "negative_control_is_meaningful",
+        "translation_actually_measured",
+        "yaw_actually_measured"
       ],
-      "directed_runs": 4,
+      "directed_runs": 9,
       "directed_achieved_ratio_min": 2.425051666666667e-05,
-      "mount_position_deviation_max_m": 3.0328e-08,
-      "mount_rotation_deviation_max_rad": 8.9407e-08,
-      "peak_jerk_m_s3_max": 307.026971,
-      "peak_lin_speed_m_s_max": 0.027119113,
+      "mount_position_deviation_max_m": 3.0825e-08,
+      "mount_rotation_deviation_max_rad": 9.1857e-08,
+      "peak_jerk_m_s3_max": 826.686404,
+      "peak_lin_speed_m_s_max": 0.08201479,
       "arm_peak_contact_n_max": 0.0
     }
   },
@@ -141,28 +156,40 @@
         "gap": true
       },
       "translate_z": {
-        "runs": [],
-        "passes": [],
+        "runs": [
+          "P3_z_r09"
+        ],
+        "passes": [
+          "P3_z_r09"
+        ],
         "fails": [],
-        "independent_pass": 0,
-        "independent_pass_ids": [],
+        "independent_pass": 1,
+        "independent_pass_ids": [
+          "P3_z_r09"
+        ],
         "required": 2,
         "gap": true
       },
       "yaw": {
         "runs": [
           "P3_yaw_r09",
-          "P3_yaw_r11"
+          "P3_yaw_r11",
+          "P3_yaw_r13",
+          "P3_yaw_r14"
         ],
         "passes": [
           "P3_yaw_r09",
-          "P3_yaw_r11"
+          "P3_yaw_r11",
+          "P3_yaw_r13",
+          "P3_yaw_r14"
         ],
         "fails": [],
-        "independent_pass": 2,
+        "independent_pass": 4,
         "independent_pass_ids": [
           "P3_yaw_r09",
-          "P3_yaw_r11"
+          "P3_yaw_r11",
+          "P3_yaw_r13",
+          "P3_yaw_r14"
         ],
         "required": 2,
         "gap": false
@@ -179,52 +206,76 @@
         "gap": true
       },
       "static": {
-        "runs": [],
-        "passes": [],
+        "runs": [
+          "P3_static_r15",
+          "P3_static_r16"
+        ],
+        "passes": [
+          "P3_static_r15",
+          "P3_static_r16"
+        ],
         "fails": [],
-        "independent_pass": 0,
-        "independent_pass_ids": [],
+        "independent_pass": 2,
+        "independent_pass_ids": [
+          "P3_static_r15",
+          "P3_static_r16"
+        ],
         "required": 2,
-        "gap": true
+        "gap": false
       },
       "translate_xy": {
         "runs": [
-          "P3_xy_r13"
+          "P3_xy_r13",
+          "P3_xy_r14"
         ],
         "passes": [
-          "P3_xy_r13"
+          "P3_xy_r13",
+          "P3_xy_r14"
         ],
         "fails": [],
-        "independent_pass": 1,
+        "independent_pass": 2,
         "independent_pass_ids": [
-          "P3_xy_r13"
+          "P3_xy_r13",
+          "P3_xy_r14"
         ],
         "required": 2,
-        "gap": true
+        "gap": false
       },
       "translate_z": {
         "runs": [
-          "P3_z_r13"
+          "P3_z_r13",
+          "P3_z_r14"
         ],
         "passes": [
-          "P3_z_r13"
+          "P3_z_r13",
+          "P3_z_r14"
         ],
         "fails": [],
-        "independent_pass": 1,
+        "independent_pass": 2,
         "independent_pass_ids": [
-          "P3_z_r13"
+          "P3_z_r13",
+          "P3_z_r14"
         ],
         "required": 2,
-        "gap": true
+        "gap": false
       },
       "yaw": {
-        "runs": [],
-        "passes": [],
+        "runs": [
+          "P3_yaw_r15",
+          "P3_yaw_r16"
+        ],
+        "passes": [
+          "P3_yaw_r15",
+          "P3_yaw_r16"
+        ],
         "fails": [],
-        "independent_pass": 0,
-        "independent_pass_ids": [],
+        "independent_pass": 2,
+        "independent_pass_ids": [
+          "P3_yaw_r15",
+          "P3_yaw_r16"
+        ],
         "required": 2,
-        "gap": true
+        "gap": false
       }
     }
   },
@@ -257,10 +308,14 @@
     {
       "generation": "v1.0",
       "profile": "translate_z",
-      "independent_pass": 0,
+      "independent_pass": 1,
       "required": 2,
-      "passes": [],
-      "runs_seen": []
+      "passes": [
+        "P3_z_r09"
+      ],
+      "runs_seen": [
+        "P3_z_r09"
+      ]
     },
     {
       "generation": "v1.1",
@@ -269,49 +324,23 @@
       "required": 2,
       "passes": [],
       "runs_seen": []
-    },
-    {
-      "generation": "v1.1",
-      "profile": "static",
-      "independent_pass": 0,
-      "required": 2,
-      "passes": [],
-      "runs_seen": []
-    },
-    {
-      "generation": "v1.1",
-      "profile": "translate_xy",
-      "independent_pass": 1,
-      "required": 2,
-      "passes": [
-        "P3_xy_r13"
-      ],
-      "runs_seen": [
-        "P3_xy_r13"
-      ]
-    },
-    {
-      "generation": "v1.1",
-      "profile": "translate_z",
-      "independent_pass": 1,
-      "required": 2,
-      "passes": [
-        "P3_z_r13"
-      ],
-      "runs_seen": [
-        "P3_z_r13"
-      ]
-    },
-    {
-      "generation": "v1.1",
-      "profile": "yaw",
-      "independent_pass": 0,
-      "required": 2,
-      "passes": [],
-      "runs_seen": []
     }
   ],
   "negative_controls": [
+    {
+      "run_id": "P3_neg_frozen_x_r03",
+      "profile": "translate_xy",
+      "frozen_axis": "x",
+      "gate_result": "FAIL",
+      "outer_exit": 1,
+      "child_returncode": 0,
+      "gates_false": [
+        "translation_actually_measured"
+      ],
+      "achieved_ratio": 0.00077646791,
+      "vacuous": false,
+      "verified": true
+    },
     {
       "run_id": "P3_neg_frozen_xy_r02",
       "profile": "translate_xy",
@@ -323,7 +352,34 @@
         "translation_actually_measured"
       ],
       "achieved_ratio": 2.425051666666667e-05,
+      "vacuous": false,
       "verified": true
+    },
+    {
+      "run_id": "P3_neg_frozen_y_r01",
+      "profile": "translate_xy",
+      "frozen_axis": "y",
+      "gate_result": "PASS",
+      "outer_exit": 0,
+      "child_returncode": 0,
+      "gates_false": [],
+      "achieved_ratio": 1.0010295984866666,
+      "vacuous": true,
+      "verified": false
+    },
+    {
+      "run_id": "P3_neg_frozen_y_r02",
+      "profile": "translate_xy",
+      "frozen_axis": "y",
+      "gate_result": "FAIL",
+      "outer_exit": 1,
+      "child_returncode": 0,
+      "gates_false": [
+        "negative_control_is_meaningful"
+      ],
+      "achieved_ratio": 1.0010295984866666,
+      "vacuous": true,
+      "verified": false
     },
     {
       "run_id": "P3_neg_frozen_z_r02",
@@ -336,6 +392,21 @@
         "translation_actually_measured"
       ],
       "achieved_ratio": 0.0003364682199996638,
+      "vacuous": false,
+      "verified": true
+    },
+    {
+      "run_id": "P3_neg_frozen_yaw_r01",
+      "profile": "yaw",
+      "frozen_axis": "yaw",
+      "gate_result": "FAIL",
+      "outer_exit": 1,
+      "child_returncode": 0,
+      "gates_false": [
+        "yaw_actually_measured"
+      ],
+      "achieved_ratio": null,
+      "vacuous": false,
       "verified": true
     }
   ],
@@ -344,8 +415,8 @@
       0.261476607
     ],
     "root_to_chassis_offset_m_spread": 0.0,
-    "runs_with_offset_diagnostic": 7,
-    "runs_offset_compensated": 7,
+    "runs_with_offset_diagnostic": 19,
+    "runs_offset_compensated": 19,
     "mount_position_deviation_max_m": 6.6639e-08,
     "mount_rotation_deviation_max_rad": 9.4243e-08,
     "mount_drift_by_generation": {
@@ -354,8 +425,8 @@
         "mount_rotation_deviation_max_rad": 9.4243e-08
       },
       "v1.1": {
-        "mount_position_deviation_max_m": 3.0328e-08,
-        "mount_rotation_deviation_max_rad": 8.9407e-08
+        "mount_position_deviation_max_m": 3.0825e-08,
+        "mount_rotation_deviation_max_rad": 9.1857e-08
       }
     },
     "raw_poses_frames_expected": [
@@ -369,21 +440,32 @@
   },
   "warnings": [
     "P3 drive is a DIAGNOSTIC root-pose teleport with the root velocity zeroed every step: peak_lin_speed_m_s / peak_ang_speed_rad_s / peak_jerk_m_s3 are zero (or teleport artefacts) BY CONSTRUCTION and are NOT dynamics or stability evidence. P3 PASS is never P4 wheel-drive evidence.",
+    {
+      "run_id": "P3_neg_frozen_y_r01",
+      "run_dir": "P3_neg_frozen_y_r01",
+      "code": "vacuous_negative_control",
+      "message": "P3_neg_frozen_y_r01 froze 'y' but that command component was zero (0.0); gate_result='PASS'. The run proves nothing."
+    },
+    {
+      "run_id": "P3_neg_frozen_y_r02",
+      "run_dir": "P3_neg_frozen_y_r02",
+      "code": "vacuous_negative_control",
+      "message": "P3_neg_frozen_y_r02 froze 'y' but that command component was zero (0.0); gate_result='FAIL'. The run proves nothing."
+    },
     "COVERAGE GAP: compound has 1 independent PASS under v1.0 (need 2)",
     "COVERAGE GAP: translate_xy has 1 independent PASS under v1.0 (need 2)",
-    "COVERAGE GAP: translate_z has 0 independent PASS under v1.0 (need 2)",
+    "COVERAGE GAP: translate_z has 1 independent PASS under v1.0 (need 2)",
     "COVERAGE GAP: compound has 0 independent PASS under v1.1 (need 2)",
-    "COVERAGE GAP: static has 0 independent PASS under v1.1 (need 2)",
-    "COVERAGE GAP: translate_xy has 1 independent PASS under v1.1 (need 2)",
-    "COVERAGE GAP: translate_z has 1 independent PASS under v1.1 (need 2)",
-    "COVERAGE GAP: yaw has 0 independent PASS under v1.1 (need 2)",
     "AMBIGUOUS: P3_compound_r09 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4",
     "AMBIGUOUS: P3_compound_r11 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4",
     "AMBIGUOUS: P3_static_r09 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4",
     "AMBIGUOUS: P3_static_r11 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4",
     "AMBIGUOUS: P3_xy_r09 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4",
+    "AMBIGUOUS: P3_z_r09 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4",
     "AMBIGUOUS: P3_yaw_r09 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4",
-    "AMBIGUOUS: P3_yaw_r11 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4"
+    "AMBIGUOUS: P3_yaw_r11 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4",
+    "AMBIGUOUS: P3_yaw_r13 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4",
+    "AMBIGUOUS: P3_yaw_r14 has a two-entry quat probe but no v1.1 marker; bound to v1.0 per amendment section 4"
   ],
   "errors": [],
   "runs": [
@@ -801,6 +883,72 @@
       }
     },
     {
+      "run_id": "P3_z_r09",
+      "run_dir": "P3_z_r09",
+      "profile": "translate_z",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "positive",
+      "freeze_axis": "none",
+      "gate_result": "PASS",
+      "outer_exit": 0,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": true,
+      "json_gate": "PASS",
+      "timed_out": false,
+      "elapsed_s": 88.296,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_z_r09 --out-dir /home/dgut/runs/g/P3_z_r09 --profile translate_z --steps 360 --read-contacts",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true
+      },
+      "gates_false": [],
+      "generation": "v1.0",
+      "generation_basis": [],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": true,
+      "metrics": {
+        "realized_translation_max_m": 0.100000024,
+        "realized_yaw_max_rad": 0.0,
+        "tracking_position_error_max_m": 0.208394548,
+        "mount_position_deviation_max_m": 0.0,
+        "mount_rotation_deviation_max_rad": 0.0,
+        "joint_deviation_max_rad": 0.0,
+        "peak_lin_speed_m_s": 0.0,
+        "peak_ang_speed_rad_s": 0.0,
+        "peak_jerk_m_s3": 0.0,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "z_m": 0.1,
+        "yaw_rad": 0.0,
+        "ramp_s": 1.0
+      },
+      "directed_translation": null,
+      "negative_control": null,
+      "root_to_chassis_offset_m": null,
+      "root_to_chassis_offset_root_frame_m": null,
+      "root_pose_is_offset_compensated": null,
+      "t0_pose_write_error_m": 0.208394530817,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "a04760988ee1244e7a76cbd23c8918eb21c295f75491fe1fd86a1badca064729",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
       "run_id": "P3_yaw_r09",
       "run_dir": "P3_yaw_r09",
       "profile": "yaw",
@@ -939,6 +1087,382 @@
       }
     },
     {
+      "run_id": "P3_yaw_r13",
+      "run_dir": "P3_yaw_r13",
+      "profile": "yaw",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "positive",
+      "freeze_axis": "none",
+      "gate_result": "PASS",
+      "outer_exit": 0,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": true,
+      "json_gate": "PASS",
+      "timed_out": false,
+      "elapsed_s": 32.809,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_yaw_r13 --out-dir /home/dgut/runs/g/P3_yaw_r13 --profile yaw --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis none",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true,
+        "yaw_actually_measured": true
+      },
+      "gates_false": [],
+      "generation": "v1.0",
+      "generation_basis": [],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": true,
+      "metrics": {
+        "realized_translation_max_m": 0.001255749,
+        "realized_yaw_max_rad": 0.345357438,
+        "tracking_position_error_max_m": 0.002711065,
+        "mount_position_deviation_max_m": 3.0825e-08,
+        "mount_rotation_deviation_max_rad": 9.1857e-08,
+        "joint_deviation_max_rad": 0.036755629,
+        "peak_lin_speed_m_s": 0.033834715,
+        "peak_ang_speed_rad_s": 0.156382146,
+        "peak_jerk_m_s3": 826.686404,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "z_m": 0.0,
+        "yaw_rad": 0.35,
+        "ramp_s": 1.5
+      },
+      "directed_translation": null,
+      "negative_control": null,
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 6.1587e-08,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "76c2624c51461383351bd9ec4930f8a9c023930a5869046f9d028d3e2ab86c9d",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
+      "run_id": "P3_yaw_r14",
+      "run_dir": "P3_yaw_r14",
+      "profile": "yaw",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "positive",
+      "freeze_axis": "none",
+      "gate_result": "PASS",
+      "outer_exit": 0,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": true,
+      "json_gate": "PASS",
+      "timed_out": false,
+      "elapsed_s": 37.686,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_yaw_r14 --out-dir /home/dgut/runs/g/P3_yaw_r14 --profile yaw --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis none",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true,
+        "yaw_actually_measured": true
+      },
+      "gates_false": [],
+      "generation": "v1.0",
+      "generation_basis": [],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": true,
+      "metrics": {
+        "realized_translation_max_m": 0.001255749,
+        "realized_yaw_max_rad": 0.345357438,
+        "tracking_position_error_max_m": 0.002711065,
+        "mount_position_deviation_max_m": 3.0825e-08,
+        "mount_rotation_deviation_max_rad": 9.1857e-08,
+        "joint_deviation_max_rad": 0.036755629,
+        "peak_lin_speed_m_s": 0.033834715,
+        "peak_ang_speed_rad_s": 0.156382146,
+        "peak_jerk_m_s3": 826.686404,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "z_m": 0.0,
+        "yaw_rad": 0.35,
+        "ramp_s": 1.5
+      },
+      "directed_translation": null,
+      "negative_control": null,
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 6.1587e-08,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "e26a5b6d7d07380d3ba1fc64bf4e1a24563b79befee354a6ffe1dd5e1bf578fd",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
+      "run_id": "P3_static_r15",
+      "run_dir": "P3_static_r15",
+      "profile": "static",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "positive",
+      "freeze_axis": "none",
+      "gate_result": "PASS",
+      "outer_exit": 0,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": true,
+      "json_gate": "PASS",
+      "timed_out": false,
+      "elapsed_s": 27.095,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_static_r15 --out-dir /home/dgut/runs/g/P3_static_r15 --profile static --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis none",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true
+      },
+      "gates_false": [],
+      "generation": "v1.1",
+      "generation_basis": [
+        "gate_version(v1.1)"
+      ],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": false,
+      "metrics": {
+        "realized_translation_max_m": 0.000314557,
+        "realized_yaw_max_rad": 0.004478917,
+        "tracking_position_error_max_m": 0.002495221,
+        "mount_position_deviation_max_m": 3.0322e-08,
+        "mount_rotation_deviation_max_rad": 8.9407e-08,
+        "joint_deviation_max_rad": 0.035853617,
+        "peak_lin_speed_m_s": 0.03568456,
+        "peak_ang_speed_rad_s": 0.156320704,
+        "peak_jerk_m_s3": 386.96066,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "z_m": 0.0,
+        "yaw_rad": 0.0,
+        "ramp_s": 1.0
+      },
+      "directed_translation": null,
+      "negative_control": null,
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 6.1587e-08,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "a29f1ee52d58a51c3620d8286073e8c376c5a6f03975aace356f9c1a695fbf09",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
+      "run_id": "P3_static_r16",
+      "run_dir": "P3_static_r16",
+      "profile": "static",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "positive",
+      "freeze_axis": "none",
+      "gate_result": "PASS",
+      "outer_exit": 0,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": true,
+      "json_gate": "PASS",
+      "timed_out": false,
+      "elapsed_s": 25.979,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_static_r16 --out-dir /home/dgut/runs/g/P3_static_r16 --profile static --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis none",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true
+      },
+      "gates_false": [],
+      "generation": "v1.1",
+      "generation_basis": [
+        "gate_version(v1.1)"
+      ],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": false,
+      "metrics": {
+        "realized_translation_max_m": 0.000314557,
+        "realized_yaw_max_rad": 0.004478917,
+        "tracking_position_error_max_m": 0.002495221,
+        "mount_position_deviation_max_m": 3.0322e-08,
+        "mount_rotation_deviation_max_rad": 8.9407e-08,
+        "joint_deviation_max_rad": 0.035853617,
+        "peak_lin_speed_m_s": 0.03568456,
+        "peak_ang_speed_rad_s": 0.156320704,
+        "peak_jerk_m_s3": 386.96066,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "z_m": 0.0,
+        "yaw_rad": 0.0,
+        "ramp_s": 1.0
+      },
+      "directed_translation": null,
+      "negative_control": null,
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 6.1587e-08,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "1f3767b256398c1cb34b86b85b9f2922e9e48c6e0834ef8995c79fa005eea0e1",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
+      "run_id": "P3_neg_frozen_x_r03",
+      "run_dir": "P3_neg_frozen_x_r03",
+      "profile": "translate_xy",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "negative_control(freeze_axis=x)",
+      "freeze_axis": "x",
+      "gate_result": "FAIL",
+      "outer_exit": 1,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": false,
+      "json_gate": "FAIL",
+      "timed_out": false,
+      "elapsed_s": 33.87,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_neg_frozen_x_r03 --out-dir /home/dgut/runs/g/P3_neg_frozen_x_r03 --profile translate_xy --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis x",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true,
+        "translation_actually_measured": false
+      },
+      "gates_false": [
+        "translation_actually_measured"
+      ],
+      "generation": "v1.1",
+      "generation_basis": [
+        "metrics.directed_translation",
+        "diagnostics.negative_control"
+      ],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": false,
+      "metrics": {
+        "realized_translation_max_m": 0.000314557,
+        "realized_yaw_max_rad": 0.004478917,
+        "tracking_position_error_max_m": 0.299874082,
+        "mount_position_deviation_max_m": 3.0322e-08,
+        "mount_rotation_deviation_max_rad": 8.9407e-08,
+        "joint_deviation_max_rad": 0.035853617,
+        "peak_lin_speed_m_s": 0.03568456,
+        "peak_ang_speed_rad_s": 0.156320704,
+        "peak_jerk_m_s3": 386.96066,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.3,
+        "y_m": 0.0,
+        "z_m": 0.0,
+        "yaw_rad": 0.0,
+        "ramp_s": 1.5
+      },
+      "directed_translation": {
+        "commanded_displacement_m": 0.3,
+        "achieved_along_command_max_m": 0.000232940373,
+        "achieved_along_command_final_m": 0.000133995048,
+        "best_frame": 303,
+        "achieved_ratio": 0.00077646791,
+        "final_ratio": 0.00044665016000000005,
+        "cross_track_m": 0.000112786065373041,
+        "pass": false
+      },
+      "negative_control": {
+        "frozen_axis": "x",
+        "frozen_command_component": 0.3,
+        "vacuous": false,
+        "note": "command component dropped on purpose; the corresponding motion gate MUST fail"
+      },
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 6.1587e-08,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "6da9b02151b29cd6810b95de01da672aed6f3d70ce30742c1f1d9e8ba35b4fa2",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
       "run_id": "P3_neg_frozen_xy_r02",
       "run_dir": "P3_neg_frozen_xy_r02",
       "profile": "translate_xy",
@@ -1027,6 +1551,183 @@
       }
     },
     {
+      "run_id": "P3_neg_frozen_y_r01",
+      "run_dir": "P3_neg_frozen_y_r01",
+      "profile": "translate_xy",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "negative_control(freeze_axis=y)",
+      "freeze_axis": "y",
+      "gate_result": "PASS",
+      "outer_exit": 0,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": true,
+      "json_gate": "PASS",
+      "timed_out": false,
+      "elapsed_s": 29.921,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_neg_frozen_y_r01 --out-dir /home/dgut/runs/g/P3_neg_frozen_y_r01 --profile translate_xy --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis y",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true,
+        "translation_actually_measured": true
+      },
+      "gates_false": [],
+      "generation": "v1.1",
+      "generation_basis": [
+        "metrics.directed_translation",
+        "diagnostics.negative_control"
+      ],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": false,
+      "metrics": {
+        "realized_translation_max_m": 0.300308911,
+        "realized_yaw_max_rad": 0.004939128,
+        "tracking_position_error_max_m": 0.003250456,
+        "mount_position_deviation_max_m": 3.0323e-08,
+        "mount_rotation_deviation_max_rad": 8.9407e-08,
+        "joint_deviation_max_rad": 0.048813321,
+        "peak_lin_speed_m_s": 0.044383802,
+        "peak_ang_speed_rad_s": 0.156919823,
+        "peak_jerk_m_s3": 597.183117,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.3,
+        "y_m": 0.0,
+        "z_m": 0.0,
+        "yaw_rad": 0.0,
+        "ramp_s": 1.5
+      },
+      "directed_translation": {
+        "commanded_displacement_m": 0.3,
+        "achieved_along_command_max_m": 0.300308879546,
+        "achieved_along_command_final_m": 0.300233122042,
+        "best_frame": 180,
+        "achieved_ratio": 1.0010295984866666,
+        "final_ratio": 1.0007770734733332,
+        "cross_track_m": 0.00012407362275542315,
+        "pass": true
+      },
+      "negative_control": {
+        "frozen_axis": "y",
+        "note": "command component dropped on purpose; the corresponding motion gate MUST fail"
+      },
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 6.1587e-08,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "41cb27425b1edb12921656f61cefb45969264526bf2978563d74003f6c677b57",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
+      "run_id": "P3_neg_frozen_y_r02",
+      "run_dir": "P3_neg_frozen_y_r02",
+      "profile": "translate_xy",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "negative_control(freeze_axis=y)",
+      "freeze_axis": "y",
+      "gate_result": "FAIL",
+      "outer_exit": 1,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": false,
+      "json_gate": "FAIL",
+      "timed_out": false,
+      "elapsed_s": 38.518,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_neg_frozen_y_r02 --out-dir /home/dgut/runs/g/P3_neg_frozen_y_r02 --profile translate_xy --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis y",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true,
+        "negative_control_is_meaningful": false,
+        "translation_actually_measured": true
+      },
+      "gates_false": [
+        "negative_control_is_meaningful"
+      ],
+      "generation": "v1.1",
+      "generation_basis": [
+        "metrics.directed_translation",
+        "diagnostics.negative_control"
+      ],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": false,
+      "metrics": {
+        "realized_translation_max_m": 0.300308911,
+        "realized_yaw_max_rad": 0.004939128,
+        "tracking_position_error_max_m": 0.003250456,
+        "mount_position_deviation_max_m": 3.0323e-08,
+        "mount_rotation_deviation_max_rad": 8.9407e-08,
+        "joint_deviation_max_rad": 0.048813321,
+        "peak_lin_speed_m_s": 0.044383802,
+        "peak_ang_speed_rad_s": 0.156919823,
+        "peak_jerk_m_s3": 597.183117,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.3,
+        "y_m": 0.0,
+        "z_m": 0.0,
+        "yaw_rad": 0.0,
+        "ramp_s": 1.5
+      },
+      "directed_translation": {
+        "commanded_displacement_m": 0.3,
+        "achieved_along_command_max_m": 0.300308879546,
+        "achieved_along_command_final_m": 0.300233122042,
+        "best_frame": 180,
+        "achieved_ratio": 1.0010295984866666,
+        "final_ratio": 1.0007770734733332,
+        "cross_track_m": 0.00012407362275542315,
+        "pass": true
+      },
+      "negative_control": {
+        "frozen_axis": "y",
+        "frozen_command_component": 0.0,
+        "vacuous": true,
+        "note": "the frozen command component was ZERO, so dropping it changes nothing: this run cannot serve as a negative control"
+      },
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 6.1587e-08,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "c2f3a53c818455001e0e8911a388441137fc96dc22f2006411c48c365d95be5b",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
       "run_id": "P3_xy_r13",
       "run_dir": "P3_xy_r13",
       "profile": "translate_xy",
@@ -1100,6 +1801,88 @@
       "quat_order_value": "xyzw",
       "raw_poses_frames": 361,
       "raw_poses_sha256": "20ee4e56bd398483414b152e6f25b3e1fb626c29d1194829143829841570e757",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
+      "run_id": "P3_xy_r14",
+      "run_dir": "P3_xy_r14",
+      "profile": "translate_xy",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "positive",
+      "freeze_axis": "none",
+      "gate_result": "PASS",
+      "outer_exit": 0,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": true,
+      "json_gate": "PASS",
+      "timed_out": false,
+      "elapsed_s": 33.481,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_xy_r14 --out-dir /home/dgut/runs/g/P3_xy_r14 --profile translate_xy --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis none",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true,
+        "translation_actually_measured": true
+      },
+      "gates_false": [],
+      "generation": "v1.1",
+      "generation_basis": [
+        "metrics.directed_translation"
+      ],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": false,
+      "metrics": {
+        "realized_translation_max_m": 0.300308911,
+        "realized_yaw_max_rad": 0.004939128,
+        "tracking_position_error_max_m": 0.003250456,
+        "mount_position_deviation_max_m": 3.0323e-08,
+        "mount_rotation_deviation_max_rad": 8.9407e-08,
+        "joint_deviation_max_rad": 0.048813321,
+        "peak_lin_speed_m_s": 0.044383802,
+        "peak_ang_speed_rad_s": 0.156919823,
+        "peak_jerk_m_s3": 597.183117,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.3,
+        "y_m": 0.0,
+        "z_m": 0.0,
+        "yaw_rad": 0.0,
+        "ramp_s": 1.5
+      },
+      "directed_translation": {
+        "commanded_displacement_m": 0.3,
+        "achieved_along_command_max_m": 0.300308879546,
+        "achieved_along_command_final_m": 0.300233122042,
+        "best_frame": 180,
+        "achieved_ratio": 1.0010295984866666,
+        "final_ratio": 1.0007770734733332,
+        "cross_track_m": 0.00012407362275542315,
+        "pass": true
+      },
+      "negative_control": null,
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 6.1587e-08,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "df7076e71be5fea15dfb566ea9ba7fe1eac67cb366972e2ae1e20dc6c86ce2b8",
       "thresholds": {
         "mount_pos_m": 0.001,
         "mount_rot_rad": 0.001,
@@ -1270,6 +2053,312 @@
       "quat_order_value": "xyzw",
       "raw_poses_frames": 361,
       "raw_poses_sha256": "447486dd17a4607cadf1f87f8f5d52807537eae61fa5d8fe1490674deefe821c",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
+      "run_id": "P3_z_r14",
+      "run_dir": "P3_z_r14",
+      "profile": "translate_z",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "positive",
+      "freeze_axis": "none",
+      "gate_result": "PASS",
+      "outer_exit": 0,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": true,
+      "json_gate": "PASS",
+      "timed_out": false,
+      "elapsed_s": 32.679,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_z_r14 --out-dir /home/dgut/runs/g/P3_z_r14 --profile translate_z --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis none",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true,
+        "translation_actually_measured": true
+      },
+      "gates_false": [],
+      "generation": "v1.1",
+      "generation_basis": [
+        "metrics.directed_translation"
+      ],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": false,
+      "metrics": {
+        "realized_translation_max_m": 0.097236317,
+        "realized_yaw_max_rad": 0.002567778,
+        "tracking_position_error_max_m": 0.00242027,
+        "mount_position_deviation_max_m": 5.588e-09,
+        "mount_rotation_deviation_max_rad": 8.4294e-08,
+        "joint_deviation_max_rad": 0.014215382,
+        "peak_lin_speed_m_s": 0.08201479,
+        "peak_ang_speed_rad_s": 0.120643485,
+        "peak_jerk_m_s3": 769.406908,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "z_m": 0.1,
+        "yaw_rad": 0.0,
+        "ramp_s": 1.0
+      },
+      "directed_translation": {
+        "commanded_displacement_m": 0.1,
+        "achieved_along_command_max_m": 0.09723612666100001,
+        "achieved_along_command_final_m": 0.09723612666100001,
+        "best_frame": 120,
+        "achieved_ratio": 0.9723612666100001,
+        "final_ratio": 0.9723612666100001,
+        "cross_track_m": 0.00019256633582920892,
+        "pass": true
+      },
+      "negative_control": null,
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 6.1587e-08,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "d05b168eb456bb473fdd79e4bd2878fa53cd0a720aa681e831b6f43f88952b98",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
+      "run_id": "P3_neg_frozen_yaw_r01",
+      "run_dir": "P3_neg_frozen_yaw_r01",
+      "profile": "yaw",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "negative_control(freeze_axis=yaw)",
+      "freeze_axis": "yaw",
+      "gate_result": "FAIL",
+      "outer_exit": 1,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": false,
+      "json_gate": "FAIL",
+      "timed_out": false,
+      "elapsed_s": 33.312,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_neg_frozen_yaw_r01 --out-dir /home/dgut/runs/g/P3_neg_frozen_yaw_r01 --profile yaw --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis yaw",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true,
+        "yaw_actually_measured": false
+      },
+      "gates_false": [
+        "yaw_actually_measured"
+      ],
+      "generation": "v1.1",
+      "generation_basis": [
+        "diagnostics.negative_control"
+      ],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": false,
+      "metrics": {
+        "realized_translation_max_m": 0.0,
+        "realized_yaw_max_rad": 0.0,
+        "tracking_position_error_max_m": 0.294651509,
+        "mount_position_deviation_max_m": 0.0,
+        "mount_rotation_deviation_max_rad": 0.0,
+        "joint_deviation_max_rad": 5e-09,
+        "peak_lin_speed_m_s": 0.081749991,
+        "peak_ang_speed_rad_s": 1.46e-07,
+        "peak_jerk_m_s3": 0.00023,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "z_m": 0.0,
+        "yaw_rad": 0.35,
+        "ramp_s": 1.5
+      },
+      "directed_translation": null,
+      "negative_control": {
+        "frozen_axis": "yaw",
+        "note": "command component dropped on purpose; the corresponding motion gate MUST fail"
+      },
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 0.294713882043,
+      "quat_order_value": "wxyz",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "adef4b8eba259a4b246d4f21945f21a09b6f0e9159b7739249b70dde68744f89",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
+      "run_id": "P3_yaw_r15",
+      "run_dir": "P3_yaw_r15",
+      "profile": "yaw",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "positive",
+      "freeze_axis": "none",
+      "gate_result": "PASS",
+      "outer_exit": 0,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": true,
+      "json_gate": "PASS",
+      "timed_out": false,
+      "elapsed_s": 43.438,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_yaw_r15 --out-dir /home/dgut/runs/g/P3_yaw_r15 --profile yaw --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis none",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true,
+        "yaw_actually_measured": true
+      },
+      "gates_false": [],
+      "generation": "v1.1",
+      "generation_basis": [
+        "gate_version(v1.1)"
+      ],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": false,
+      "metrics": {
+        "realized_translation_max_m": 0.001255749,
+        "realized_yaw_max_rad": 0.345357438,
+        "tracking_position_error_max_m": 0.002711065,
+        "mount_position_deviation_max_m": 3.0825e-08,
+        "mount_rotation_deviation_max_rad": 9.1857e-08,
+        "joint_deviation_max_rad": 0.036755629,
+        "peak_lin_speed_m_s": 0.033834715,
+        "peak_ang_speed_rad_s": 0.156382146,
+        "peak_jerk_m_s3": 826.686404,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "z_m": 0.0,
+        "yaw_rad": 0.35,
+        "ramp_s": 1.5
+      },
+      "directed_translation": null,
+      "negative_control": null,
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 6.1587e-08,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "1036f2d0996f14f3330c65ca587a5efdd5a7485b6f91a4aa413f8022cd7d71a1",
+      "thresholds": {
+        "mount_pos_m": 0.001,
+        "mount_rot_rad": 0.001,
+        "joint_hold_rad": 0.05,
+        "motion_ratio": 0.9,
+        "arm_ground_contact_n": 1.0
+      }
+    },
+    {
+      "run_id": "P3_yaw_r16",
+      "run_dir": "P3_yaw_r16",
+      "profile": "yaw",
+      "scene_variant": "P3_DYNAMIC_MOUNT",
+      "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+      "gate_mode": "positive",
+      "freeze_axis": "none",
+      "gate_result": "PASS",
+      "outer_exit": 0,
+      "child_returncode": 0,
+      "child_ok": true,
+      "gates_ok": true,
+      "json_gate": "PASS",
+      "timed_out": false,
+      "elapsed_s": 34.387,
+      "queued_command": "/home/T7/ojh/robot_sim/env_isaaclab/bin/python /home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_yaw_r16 --out-dir /home/dgut/runs/g/P3_yaw_r16 --profile yaw --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis none",
+      "has_gate_runner_summary": true,
+      "gates": {
+        "all_finite": true,
+        "arm_does_not_touch_ground": true,
+        "joint_hold": true,
+        "mount_stable": true,
+        "yaw_actually_measured": true
+      },
+      "gates_false": [],
+      "generation": "v1.1",
+      "generation_basis": [
+        "gate_version(v1.1)"
+      ],
+      "quat_probe_two_entries": true,
+      "ambiguous_legacy_quat_probe": false,
+      "metrics": {
+        "realized_translation_max_m": 0.001255749,
+        "realized_yaw_max_rad": 0.345357438,
+        "tracking_position_error_max_m": 0.002711065,
+        "mount_position_deviation_max_m": 3.0825e-08,
+        "mount_rotation_deviation_max_rad": 9.1857e-08,
+        "joint_deviation_max_rad": 0.036755629,
+        "peak_lin_speed_m_s": 0.033834715,
+        "peak_ang_speed_rad_s": 0.156382146,
+        "peak_jerk_m_s3": 826.686404,
+        "arm_peak_contact_n": 0.0,
+        "steps": 360
+      },
+      "command_amplitude": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "z_m": 0.0,
+        "yaw_rad": 0.35,
+        "ramp_s": 1.5
+      },
+      "directed_translation": null,
+      "negative_control": null,
+      "root_to_chassis_offset_m": 0.261476607,
+      "root_to_chassis_offset_root_frame_m": [
+        0.215999865,
+        0.145000108,
+        -0.026249634
+      ],
+      "root_pose_is_offset_compensated": true,
+      "t0_pose_write_error_m": 6.1587e-08,
+      "quat_order_value": "xyzw",
+      "raw_poses_frames": 361,
+      "raw_poses_sha256": "ba7f75f33b81353f8903958eaea4030e57f4f5bdcf9247329db8453509485cfc",
       "thresholds": {
         "mount_pos_m": 0.001,
         "mount_rot_rad": 0.001,
