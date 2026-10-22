@@ -45,6 +45,8 @@ PROFILES = {
     "compound": {"ramp_s": 2.0, "x": 0.20, "y": -0.15, "z": 0.05, "yaw": 0.30},
 }
 
+GATE_VERSION = "v1.1"
+
 PARSER = argparse.ArgumentParser(description="P3 dynamic mount stability (diagnostic root drive)")
 PARSER.add_argument("--run-id", required=True)
 PARSER.add_argument("--out-dir", required=True)
@@ -499,6 +501,10 @@ def main():
             "steps": ARGS.steps,
         },
         "thresholds": thresholds, "gates": gates,
+        # explicit generation tag: P3_EVIDENCE_SUMMARY had to guess v1.0 vs v1.1 from the
+        # metrics shape, and mis-classified the yaw profile (no directed_translation block).
+        "gate_version": GATE_VERSION,
+        "gate_preregistration": "management/morph_one_rs/PHASE_P3_GATE_V1_1_AMENDMENT.md",
         "diagnostics": {
             "negative_control": (negative_control_record(spec) if ARGS.freeze_axis != "none"
                                  else None),
