@@ -171,3 +171,21 @@ def test_display_coordinate_conversion_never_distorts_native_box():
     assert display_to_source(400, 200, scale=2.0, width=1280, height=720) == (200, 100)
     assert display_to_source(200, 100, scale=.5, width=1280, height=720) == (400, 200)
     assert display_to_source(-8, 1000, scale=1., width=1280, height=720) == (0, 719)
+
+
+def test_review_status_overlay_does_not_cover_source_pixels():
+    import numpy as np
+    from tools.vision.annotate_r11_video import compose_review_canvas
+    raw = np.random.default_rng(3).integers(0, 255, (96, 120, 3), dtype=np.uint8)
+    frame = compose_review_canvas(raw, "frame 0  t=0", "p=positive n=no-ball", scale=1.0)
+    assert frame.shape == (156, 120, 3)
+    assert np.array_equal(frame[:96], raw)
+    assert not np.array_equal(frame[96:], np.zeros((60, 120, 3), dtype=np.uint8))
+
+
+def test_headless_linux_rejected_before_highgui_abort():
+    from tools.vision.annotate_r11_video import require_desktop_display
+    with pytest.raises(AnnotationError, match="desktop display"):
+        require_desktop_display(platform_name="posix", env={})
+    require_desktop_display(platform_name="nt", env={})
+    require_desktop_display(platform_name="posix", env={"DISPLAY": ":0"})
