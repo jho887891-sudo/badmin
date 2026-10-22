@@ -5,7 +5,8 @@ fake adapter; this script proves what Isaac/PhysX actually does with two articul
 scene: independent addressing, cross-command isolation, per-env reset, throughput and GPU memory.
 
 Gates (pre-registered, R10 B2/B3/B4):
-  two_articulations_present     both envs resolved and have the same DOF count
+  two_articulations_present     both envs resolved and have the same DOF count (a real
+                                articulation inside the referenced arm asset)
   independent_command_applied   the commanded env moved, the idle env did not (<= 1e-6 rad)
   cross_isolation               env1 joint trajectory is bit-identical to the idle-only run
   reset_returns_to_rest         after reset env0 is back at the default pose (<= 1e-6 rad)
@@ -80,7 +81,9 @@ def author(path):
     UsdGeom.SetStageUpAxis(stage, UsdGeom.Tokens.z)
     UsdPhysics.Scene.Define(stage, "/physicsScene")
     for env in (0, 1):
-        root = "/World/E%d" % env
+        # authored at the FILE root: the file is then spawned as /World/Scene, so the runtime
+        # prim paths become /World/Scene/E0 and /World/Scene/E1 (see main()).
+        root = "/E%d" % env
         UsdGeom.Xform.Define(stage, root)
         chassis = UsdGeom.Xform.Define(stage, root + "/base")
         UsdGeom.Xformable(chassis).AddTranslateOp().Set(
@@ -118,13 +121,17 @@ def main():
         dt=DT, device="cuda:0", gravity=(0.0, 0.0, float(ARGS.gravity_z)), physics=physics))
     ground = sim_utils.GroundPlaneCfg()
     ground.func("/World/ground", ground)
-    spawn = sim_utils.UsdFileCfg(usd_path=authored, activate_contact_sensors=True)
-    spawn.func("/World/Root", spawn)
+    # no contact sensors here: B1-B4 are about articulation independence, and
+    # activate_contact_sensors raises when the spawned subtree has no rigid body at the
+    # exact spawn path (P5N2_idle_r03: "No contact sensors added to the prim '/World/Root'").
+    spawn = sim_utils.UsdFileCfg(usd_path=authored)
+    spawn.func("/World/Scene", spawn)
     sim.reset()
 
     envs = {}
     for env in (0, 1):
-        robot = Articulation(ArticulationCfg(prim_path="/World/E%d" % env, spawn=None))
+        robot = Articulation(ArticulationCfg(prim_path="/World/Scene/E%d" % env,
+                                               spawn=None))
         envs[env] = robot
     dof = {env: int(robot.num_joints) for env, robot in envs.items()}
     joint_names = {env: list(robot.joint_names) for env, robot in envs.items()}
