@@ -1,0 +1,127 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1792642549.778870 3673798 descriptor_database.cc:633] File already exists in database: grpc/health/v1/health.proto
+W0000 00:00:1792642549.778975 3673798 message.cc:301] Protobuf GeneratedMessageFactory: File is already registered: grpc/health/v1/health.proto
+2026-10-22T04:15:52Z [0ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] A crash has occurred.  If a debugger should be attached, please set the '/crashreporter/debuggerAttachTimeoutMs' setting to a timeout in milliseconds.  This can be used to allow the crash reporter to wait for up to that long for a debugger to attach before processing or sending the crash report.
+2026-10-22T04:15:53Z [361ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] compressing 3 files into '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/4577334c-1dcc-4d8c-867456a9-5a15bb44.dmp.zip' for upload.
+2026-10-22T04:15:53Z [594ms] [Error] [carb.crashreporter-breakpad.plugin] [crash] Wrote dump file '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/4577334c-1dcc-4d8c-867456a9-5a15bb44.dmp.zip'
+2026-10-22T04:15:53Z [597ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Uploading minidump: file:'/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/4577334c-1dcc-4d8c-867456a9-5a15bb44.dmp.zip' svr:'https://services.nvidia.com/submit'
+2026-10-22T04:15:53Z [597ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Crash metadata for upload:
+2026-10-22T04:15:53Z [597ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'BuildGitlabJobID' = '339414756'
+2026-10-22T04:15:53Z [598ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'CarbSdkVersion' = '210.1.11+release.13746.80f6dc72.gl'
+2026-10-22T04:15:53Z [598ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'CrashTime' = 'Thu Oct 22 04:15:53 2026 GMT'
+2026-10-22T04:15:53Z [598ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'DumpId' = '4577334c-1dcc-4d8c-867456a9-5a15bb44'
+2026-10-22T04:15:53Z [599ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'GlibcVersion' = '2.35'
+2026-10-22T04:15:53Z [600ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'LastUploadStatus' = ''
+2026-10-22T04:15:53Z [600ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'ProductName' = 'OmniverseKit'
+2026-10-22T04:15:53Z [600ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'PythonTracebackStatus' = ''py-spy' successfully wrote info to '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/4577334c-1dcc-4d8c-867456a9-5a15bb44.py.txt''
+2026-10-22T04:15:53Z [600ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'RetryCount' = '0'
+2026-10-22T04:15:53Z [601ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'StartupTime' = '1792642544'
+2026-10-22T04:15:53Z [601ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'UploadSuccessful' = '0'
+2026-10-22T04:15:53Z [601ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'UptimeSeconds' = '9'
+2026-10-22T04:15:53Z [601ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'UserEmail' = ''
+2026-10-22T04:15:53Z [602ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'UserStory' = ''
+2026-10-22T04:15:53Z [602ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'UserStoryStatus' = 'Running in headless mode; not gathering user story'
+2026-10-22T04:15:53Z [602ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'Version' = '110.1.2+production.326809.f9bf0dda.gl'
+2026-10-22T04:15:53Z [602ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'appName' = 'IsaacLab'
+2026-10-22T04:15:53Z [603ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'appState' = 'startup'
+2026-10-22T04:15:53Z [603ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'appVersion' = '3.0.0'
+2026-10-22T04:15:53Z [603ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'autoloadExts' = ''
+2026-10-22T04:15:53Z [603ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildBranch' = 'production'
+2026-10-22T04:15:53Z [604ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildCi' = 'gl'
+2026-10-22T04:15:53Z [604ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildConfig' = 'release'
+2026-10-22T04:15:53Z [604ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildGitlabJobName' = 'kit-build-release-linux-x86_64'
+2026-10-22T04:15:53Z [605ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildGitlabJobStage' = 'kit-build'
+2026-10-22T04:15:53Z [605ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildGitlabPipelineID' = '54503051'
+2026-10-22T04:15:53Z [605ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildHash' = 'f9bf0dda'
+2026-10-22T04:15:53Z [606ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildMajor' = '110'
+2026-10-22T04:15:53Z [606ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildMinor' = '1'
+2026-10-22T04:15:53Z [606ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildNumber' = '326809'
+2026-10-22T04:15:53Z [606ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildPatch' = '2'
+2026-10-22T04:15:53Z [607ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'buildVersion' = '110.1.2'
+2026-10-22T04:15:53Z [607ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'commandLine' = '/home/<username>/ojh/robot_sim/env_isaaclab/bin/python /home/<username>/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P0F_jointlimit_r01 --out-dir /home/<username>/runs/g/P0F_jointlimit_r01 --profile static --steps 120 --read-contacts --gravity-z -9.81 --inject-fault joint_limit'
+2026-10-22T04:15:53Z [607ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'environmentName' = 'Individual'
+2026-10-22T04:15:53Z [608ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'experience' = 'Isaac Sim'
+2026-10-22T04:15:53Z [608ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'externalBuild' = '1'
+2026-10-22T04:15:53Z [608ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'graphicsApi' = 'vulkan'
+2026-10-22T04:15:53Z [608ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'memoryStats' = '(avail/total) RAM: 48.4464/58.822GB, Swap: 10.5945/17.9961GB, VM: 1.71799e+10/1.71799e+10GB'
+2026-10-22T04:15:53Z [609ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'portableMode' = '1'
+2026-10-22T04:15:53Z [609ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'runEnvironment' = 'Individual'
+2026-10-22T04:15:53Z [609ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'runningInContainer' = '0'
+2026-10-22T04:15:53Z [609ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'telemetrySessionId' = '880043111269346765'
+2026-10-22T04:15:53Z [610ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'terminatedByAbort' = '0'
+2026-10-22T04:15:53Z [610ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'userId' = 'default'
+2026-10-22T04:15:53Z [610ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'workingDirectory' = '/home/<username>/runs/g'
+2026-10-22T04:15:53Z [610ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Crash report files for upload:
+2026-10-22T04:15:53Z [611ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]   'upload_file_minidump' = '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/4577334c-1dcc-4d8c-867456a9-5a15bb44.dmp.zip'
+2026-10-22T04:15:55Z [2,272ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] uploaded minidump: file: '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/4577334c-1dcc-4d8c-867456a9-5a15bb44.dmp.zip', code:200, response:
+2026-10-22T04:15:55Z [2,273ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]     c0a4304f-e7d0-43c0-807b-112714360143
+2026-10-22T04:15:55Z [2,274ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Deleting file: '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/4577334c-1dcc-4d8c-867456a9-5a15bb44.dmp.zip' (use setting "/crashreporter/preserveDump=true" to save)
+2026-10-22T04:15:55Z [2,275ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Deleting file: '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/4577334c-1dcc-4d8c-867456a9-5a15bb44.dmp.zip.toml'
+2026-10-22T04:15:55Z [2,276ms] [Error] [carb.crashreporter-breakpad.plugin] [crash]     dump file size is 0 bytes, file is readable.
+2026-10-22T04:15:55Z [2,322ms] [Fatal] [carb.crashreporter-breakpad.plugin] [crash] Crash detected in pid 3673798 thread 3673901
+2026-10-22T04:15:55Z [2,322ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Crash metadata:
+2026-10-22T04:15:55Z [2,322ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  BuildGitlabJobID = '339414756'
+2026-10-22T04:15:55Z [2,323ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  CarbSdkVersion = '210.1.11+release.13746.80f6dc72.gl'
+2026-10-22T04:15:55Z [2,323ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  CrashTime = 'Thu Oct 22 04:15:53 2026 GMT'
+2026-10-22T04:15:55Z [2,323ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  DumpId = '4577334c-1dcc-4d8c-867456a9-5a15bb44'
+2026-10-22T04:15:55Z [2,323ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  GlibcVersion = '2.35'
+2026-10-22T04:15:55Z [2,324ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  LastUploadStatus = '200'
+2026-10-22T04:15:55Z [2,324ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  ProductName = 'OmniverseKit'
+2026-10-22T04:15:55Z [2,324ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  PythonTracebackStatus = ''py-spy' successfully wrote info to '/home/T7/ojh/robot_sim/env_isaaclab/lib/python3.12/site-packages/isaacsim/kit/data/Kit/IsaacLab/3.0/4577334c-1dcc-4d8c-867456a9-5a15bb44.py.txt''
+2026-10-22T04:15:55Z [2,324ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  RetryCount = '0'
+2026-10-22T04:15:55Z [2,324ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  StartupTime = '1792642544'
+2026-10-22T04:15:55Z [2,325ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UploadSuccessful = '0'
+2026-10-22T04:15:55Z [2,325ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UptimeSeconds = '9'
+2026-10-22T04:15:55Z [2,325ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UserEmail = ''
+2026-10-22T04:15:55Z [2,325ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UserStory = ''
+2026-10-22T04:15:55Z [2,326ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UserStoryStatus = 'Running in headless mode; not gathering user story'
+2026-10-22T04:15:55Z [2,326ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  Version = '110.1.2+production.326809.f9bf0dda.gl'
+2026-10-22T04:15:55Z [2,326ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  appName = 'IsaacLab'
+2026-10-22T04:15:55Z [2,326ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  appState = 'startup'
+2026-10-22T04:15:55Z [2,326ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  appVersion = '3.0.0'
+2026-10-22T04:15:55Z [2,327ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  autoloadExts = ''
+2026-10-22T04:15:55Z [2,327ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildBranch = 'production'
+2026-10-22T04:15:55Z [2,327ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildCi = 'gl'
+2026-10-22T04:15:55Z [2,327ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildConfig = 'release'
+2026-10-22T04:15:55Z [2,327ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildGitlabJobName = 'kit-build-release-linux-x86_64'
+2026-10-22T04:15:55Z [2,328ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildGitlabJobStage = 'kit-build'
+2026-10-22T04:15:55Z [2,328ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildGitlabPipelineID = '54503051'
+2026-10-22T04:15:55Z [2,328ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildHash = 'f9bf0dda'
+2026-10-22T04:15:55Z [2,328ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildMajor = '110'
+2026-10-22T04:15:55Z [2,329ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildMinor = '1'
+2026-10-22T04:15:55Z [2,329ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildNumber = '326809'
+2026-10-22T04:15:55Z [2,329ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildPatch = '2'
+2026-10-22T04:15:55Z [2,329ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildVersion = '110.1.2'
+2026-10-22T04:15:55Z [2,329ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  commandLine = '/home/<username>/ojh/robot_sim/env_isaaclab/bin/python /home/<username>/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P0F_jointlimit_r01 --out-dir /home/<username>/runs/g/P0F_jointlimit_r01 --profile static --steps 120 --read-contacts --gravity-z -9.81 --inject-fault joint_limit'
+2026-10-22T04:15:55Z [2,330ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  environmentName = 'Individual'
+2026-10-22T04:15:55Z [2,330ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  experience = 'Isaac Sim'
+2026-10-22T04:15:55Z [2,330ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  externalBuild = '1'
+2026-10-22T04:15:55Z [2,330ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  graphicsApi = 'vulkan'
+2026-10-22T04:15:55Z [2,331ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  memoryStats = '(avail/total) RAM: 48.4464/58.822GB, Swap: 10.5945/17.9961GB, VM: 1.71799e+10/1.71799e+10GB'
+2026-10-22T04:15:55Z [2,331ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  portableMode = '1'
+2026-10-22T04:15:55Z [2,331ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  runEnvironment = 'Individual'
+2026-10-22T04:15:55Z [2,331ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  runningInContainer = '0'
+2026-10-22T04:15:55Z [2,332ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  telemetrySessionId = '880043111269346765'
+2026-10-22T04:15:55Z [2,332ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  terminatedByAbort = '0'
+2026-10-22T04:15:55Z [2,333ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  userId = 'default'
+2026-10-22T04:15:55Z [2,333ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  workingDirectory = '/home/<username>/runs/g'
+2026-10-22T04:15:55Z [2,333ms] [Fatal] [carb.crashreporter-breakpad.plugin] [crash] Thread 3673901 backtrace follows:
+2026-10-22T04:15:55Z [2,468ms] [Fatal] [carb.crashreporter-breakpad.plugin] 000: libcarb.crashreporter-breakpad.plugin.so!google_breakpad::ExceptionHandler::SignalHandler(int, siginfo_t*, void*)+0x17d ***
+2026-10-22T04:15:55Z [2,639ms] [Fatal] [carb.crashreporter-breakpad.plugin] 001: libc.so.6!__sigaction+0x50 (libc_sigaction.c:?)
+2026-10-22T04:15:55Z [2,728ms] [Fatal] [carb.crashreporter-breakpad.plugin] 002: libc.so.6!getenv+0xad (./stdlib/getenv.c:84)
+2026-10-22T04:15:55Z [2,740ms] [Fatal] [carb.crashreporter-breakpad.plugin] 003: libX11.so.6!XOpenDisplay+0x45 ***
+2026-10-22T04:15:55Z [2,762ms] [Fatal] [carb.crashreporter-breakpad.plugin] 004: libomni.platforminfo.plugin.so!std::mersenne_twister_engine<unsigned long, 64ul, 312ul, 156ul, 31ul, 13043109905998158313ul, 29ul, 6148914691236517205ul, 17ul, 8202884508482404352ul, 37ul, 18444473444759240704ul, 43ul, 6364136223846793005ul>::operator()()+0x237e ***
+2026-10-22T04:15:55Z [2,785ms] [Fatal] [carb.crashreporter-breakpad.plugin] 005: libomni.platforminfo.plugin.so!std::mersenne_twister_engine<unsigned long, 64ul, 312ul, 156ul, 31ul, 13043109905998158313ul, 29ul, 6148914691236517205ul, 17ul, 8202884508482404352ul, 37ul, 18444473444759240704ul, 43ul, 6364136223846793005ul>::operator()()+0x2a89 ***
+2026-10-22T04:15:55Z [2,793ms] [Fatal] [carb.crashreporter-breakpad.plugin] 006: libomni.platforminfo.plugin.so!std::mersenne_twister_engine<unsigned long, 64ul, 312ul, 156ul, 31ul, 13043109905998158313ul, 29ul, 6148914691236517205ul, 17ul, 8202884508482404352ul, 37ul, 18444473444759240704ul, 43ul, 6364136223846793005ul>::operator()()+0x3386 ***
+2026-10-22T04:15:55Z [2,799ms] [Fatal] [carb.crashreporter-breakpad.plugin] 007: libomni.platforminfo.plugin.so!std::mersenne_twister_engine<unsigned long, 64ul, 312ul, 156ul, 31ul, 13043109905998158313ul, 29ul, 6148914691236517205ul, 17ul, 8202884508482404352ul, 37ul, 18444473444759240704ul, 43ul, 6364136223846793005ul>::operator()()+0x36c5 ***
+2026-10-22T04:15:55Z [2,804ms] [Fatal] [carb.crashreporter-breakpad.plugin] 008: libomni.platforminfo.plugin.so!std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::operator[](std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&)+0x46ad ***
+2026-10-22T04:15:55Z [2,809ms] [Fatal] [carb.crashreporter-breakpad.plugin] 009: libcarb.so!omniCoreStart+0x526f1 ***
+2026-10-22T04:15:55Z [2,813ms] [Fatal] [carb.crashreporter-breakpad.plugin] 010: libcarb.so!omniCoreStart+0x5a96a ***
+2026-10-22T04:15:55Z [2,818ms] [Fatal] [carb.crashreporter-breakpad.plugin] 011: libomni.kit.telemetry.plugin.so!std::__detail::_Compiler<std::__cxx11::regex_traits<char> >::_M_assertion()+0x45a5 ***
+2026-10-22T04:15:55Z [2,822ms] [Fatal] [carb.crashreporter-breakpad.plugin] 012: libomni.kit.telemetry.plugin.so!std::bad_optional_access::~bad_optional_access()+0x1573 ***
+2026-10-22T04:15:55Z [2,835ms] [Fatal] [carb.crashreporter-breakpad.plugin] 013: libcarb.tasking.plugin.so!std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_dispose()+0x7007 ***
+2026-10-22T04:15:55Z [2,840ms] [Fatal] [carb.crashreporter-breakpad.plugin] 014: libcarb.tasking.plugin.so!std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char)+0x10d3c ***
+2026-10-22T04:15:55Z [2,845ms] [Fatal] [carb.crashreporter-breakpad.plugin] 015: libcarb.tasking.plugin.so!std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::resize(unsigned long, char)+0x10d5f ***
+2026-10-22T04:15:55Z [2,850ms] [Fatal] [carb.crashreporter-breakpad.plugin] 016: libcarb.tasking.plugin.so!make_fcontext+0x39 ***
+2026-10-22T04:15:55Z [2,850ms] [Fatal] [carb.crashreporter-breakpad.plugin] [crash] NOTE: *** indicates a low-confidence frame, such as when symbols cannot be found
+2026-10-22T04:15:55Z [2,850ms] [Warning] [carb.crashreporter-breakpad.plugin] terminating this process with exit code 139.

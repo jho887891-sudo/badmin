@@ -311,6 +311,8 @@ def main():
     # and reached 0.849 m/s because vy_cmd_signed was built from the unclamped v_cmd.
     vy_cmd_signed = -commanded_v if v_cmd > 0 else commanded_v
     trim_integral = 0.0
+    prev_step_vy = 0.0          # chassis speed measured at the END of the previous step
+    prev_step_pos = None        # chassis position at the END of the previous step
     for step in range(steps + 1):
         if step > 0 and closed_loop:
             # measured chassis speed along the roll axis (Y)
