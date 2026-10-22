@@ -315,12 +315,12 @@ def main():
         if step > 0 and closed_loop:
             # measured chassis speed along the roll axis (Y)
             e = target_tensor  # reuse the tensor object; values overwritten below
-            vy_meas = 0.0
-            if frames:
-                prev = frames[-1]["chassis_pos"]
-                now = [float(v) for v in
-                       _np(robot.data.body_pos_w[0, chassis_index]).reshape(-1)[:3]]
-                vy_meas = (now[1] - prev[1]) / DT
+            # FEEDBACK TAP: this block runs BEFORE sim.step(), so frames[-1] is the pose from
+            # AFTER the previous step: comparing it with body_pos_w read here measures the SAME
+            # state and yields exactly 0 (R10-D proved vy_meas == 0 for all 601 frames, which
+            # turned the "closed loop" into an open loop with a saturating integrator). Use the
+            # speed recorded at the end of the previous step instead.
+            vy_meas = float(prev_step_vy)
             phase_fraction = min(1.0, step / max(1, ramp_steps))
             vy_target = vy_cmd_signed * phase_fraction
             if step > hold_end:
@@ -364,6 +364,10 @@ def main():
             # integrated joint angle -> needed for the MEASURED rolling radius
             wheel_pos["wheel%d" % (wheel + 1)] = round(
                 float(_np(robot.data.joint_pos[0, joint_index[joint_name]])), 9)
+        # record the post-step chassis speed so the NEXT step's controller sees real feedback
+        if closed_loop and prev_step_pos is not None:
+            prev_step_vy = (chassis_pos[1] - prev_step_pos[1]) / DT
+        prev_step_pos = chassis_pos
         contacts = {}
         for name, sensor in sensors.items():
             try:

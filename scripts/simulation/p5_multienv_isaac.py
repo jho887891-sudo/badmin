@@ -81,10 +81,15 @@ def author(path):
     stage = Usd.Stage.CreateNew(path)
     UsdGeom.SetStageUpAxis(stage, UsdGeom.Tokens.z)
     UsdPhysics.Scene.Define(stage, "/physicsScene")
+    # A default prim is REQUIRED: UsdFileCfg spawns the file's default prim at the target
+    # path, so without it nothing lands and Articulation raises
+    # "No prim found at '/World/Scene/E0'" (P5N2_idle_r06).
+    container = UsdGeom.Xform.Define(stage, "/Envs")
+    stage.SetDefaultPrim(container.GetPrim())
     for env in (0, 1):
         # authored at the FILE root: the file is then spawned as /World/Scene, so the runtime
         # prim paths become /World/Scene/E0 and /World/Scene/E1 (see main()).
-        root = "/E%d" % env
+        root = "/Envs/E%d" % env
         UsdGeom.Xform.Define(stage, root)
         chassis = UsdGeom.Xform.Define(stage, root + "/base")
         UsdGeom.Xformable(chassis).AddTranslateOp().Set(
