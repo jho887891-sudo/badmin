@@ -1,0 +1,74 @@
+{
+  "schema": "p6_d455_metadata/1",
+  "synthetic_fixture": {
+    "is_real_d455_data": false,
+    "note": "SYNTHETIC FIXTURE - NOT A D455 MEASUREMENT. Values describe an 8x6 toy pinhole used only to exercise the P6-03 contract and replay validator."
+  },
+  "units": {
+    "intrinsics": "px",
+    "depth_scale": "m_per_unit",
+    "length": "m",
+    "angle": "rad",
+    "rate": "Hz",
+    "distortion": "dimensionless",
+    "time": "s"
+  },
+  "fields": {
+    "fx_px": {
+      "status": "UNKNOWN",
+      "missing_datum": "no committed intrinsics record for the exact stream profile"
+    },
+    "fy_px": {
+      "status": "UNKNOWN",
+      "missing_datum": "no committed intrinsics record for the exact stream profile"
+    },
+    "cx_px": {
+      "status": "UNKNOWN",
+      "missing_datum": "no committed intrinsics record for the exact stream profile"
+    },
+    "cy_px": {
+      "status": "UNKNOWN",
+      "missing_datum": "no committed intrinsics record for the exact stream profile"
+    },
+    "width_px": {
+      "status": "UNKNOWN",
+      "missing_datum": "the stream profile actually used is not recorded"
+    },
+    "height_px": {
+      "status": "UNKNOWN",
+      "missing_datum": "the stream profile actually used is not recorded"
+    },
+    "depth_scale_m_per_unit": {
+      "status": "UNKNOWN",
+      "missing_datum": "per-device depth scale never read from a unit"
+    },
+    "depth_encoding": {
+      "status": "UNKNOWN",
+      "missing_datum": "depth frame format never recorded"
+    },
+    "fps": {
+      "status": "UNKNOWN",
+      "missing_datum": "configured frame rate never recorded"
+    },
+    "rgb_depth_aligned": {
+      "status": "UNKNOWN",
+      "missing_datum": "whether align(rs.stream.color) runs is not recorded"
+    },
+    "distortion_model": {
+      "status": "UNKNOWN",
+      "missing_datum": "no colour-stream calibration record"
+    },
+    "distortion_coefficients": {
+      "status": "UNKNOWN",
+      "missing_datum": "no colour-stream calibration record"
+    },
+    "T_mount_camera": {
+      "status": "UNKNOWN",
+      "missing_datum": "no hand-eye calibration and no measured CAD mount"
+    },
+    "device_serial": {
+      "status": "UNKNOWN",
+      "missing_datum": "no rs-enumerate-devices output in the repository"
+    }
+  }
+}

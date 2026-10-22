@@ -1,0 +1,232 @@
+{
+  "schema": "p6_d455_replay_matrix/1",
+  "data_class": "OFFLINE-SYNTHETIC",
+  "calibration_claimed": false,
+  "no_device_attached": true,
+  "generated_by": "tools/p6_frames/run_d455_replay_matrix.py",
+  "thresholds": {
+    "max_gap_factor": 1.5,
+    "max_gap_factor_limit": 100.0,
+    "gap_rule": "dt > max_gap_factor / fps",
+    "monotonic_rule": "strictly increasing"
+  },
+  "fixtures": [
+    {
+      "fixture": "good",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_good.json",
+      "report_sha256": "3c9e387ebd63ee1c4506177c5b2d181d82a5d55f6c23a02507a9ce9ddb82ed38",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0,
+      "expected_codes": [],
+      "actual_codes": [],
+      "verdict": "PASS",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "external_witness",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_external_witness.json",
+      "report_sha256": "df83b75b237cbb6cfe52c2ff4ddd2aa307a498f870c6946a3170b914a62973a0",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0,
+      "expected_codes": [],
+      "actual_codes": [],
+      "verdict": "PASS",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "missing_frames",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_missing_frames.json",
+      "report_sha256": "3c82a75878e64e30d82b531c42b53b3dc23170e026c962c5674b38f3038185b8",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "expected_codes": [
+        "MISSING_FRAME_FILE",
+        "FRAME_COUNT_MISMATCH",
+        "DIRECTORY_COUNT_MISMATCH"
+      ],
+      "actual_codes": [
+        "MISSING_FRAME_FILE",
+        "FRAME_COUNT_MISMATCH",
+        "DIRECTORY_COUNT_MISMATCH"
+      ],
+      "verdict": "FAIL",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "non_monotonic",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_non_monotonic.json",
+      "report_sha256": "c8e9fc06ace0d527e894f3c6ab57904079b19867f3e7790da876d98316c10ab9",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "expected_codes": [
+        "NON_MONOTONIC_TIMESTAMP",
+        "TIMESTAMP_GAP_EXCEEDED"
+      ],
+      "actual_codes": [
+        "NON_MONOTONIC_TIMESTAMP",
+        "TIMESTAMP_GAP_EXCEEDED"
+      ],
+      "verdict": "FAIL",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "gap",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_gap.json",
+      "report_sha256": "ef58e1de0f46de1b2b5861667488183f8e9ae4cc45c17d99e8183e56ddd14329",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "expected_codes": [
+        "TIMESTAMP_GAP_EXCEEDED"
+      ],
+      "actual_codes": [
+        "TIMESTAMP_GAP_EXCEEDED"
+      ],
+      "verdict": "FAIL",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "mm_depth",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_mm_depth.json",
+      "report_sha256": "b30df2f68ab05d2ccf1f108f8a09367269dbdc0a4250919469f9f4294b234940",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "expected_codes": [
+        "DEPTH_UNIT_NOT_METRES"
+      ],
+      "actual_codes": [
+        "DEPTH_UNIT_NOT_METRES"
+      ],
+      "verdict": "FAIL",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "mm_value_in_metres_field",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_mm_value_in_metres_field.json",
+      "report_sha256": "54f4b777df8b0e0156b144356009afcbfd67e0817b1a56327356028eee1cdc7e",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "expected_codes": [
+        "METADATA_INVALID"
+      ],
+      "actual_codes": [
+        "METADATA_INVALID"
+      ],
+      "verdict": "FAIL",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "unknown_intrinsics",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_unknown_intrinsics.json",
+      "report_sha256": "91f2b22c08f381a527c67b9a01241a279553c43657b537b8451afd33d864bfe9",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "expected_codes": [
+        "INTRINSICS_UNKNOWN"
+      ],
+      "actual_codes": [
+        "INTRINSICS_UNKNOWN"
+      ],
+      "verdict": "FAIL",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "bad_sha",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_bad_sha.json",
+      "report_sha256": "9edd6a1e405e63b0b3ca178230b11a91639cf67060f0a4b9552ed22fe4fdd34c",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "expected_codes": [
+        "METADATA_INVALID"
+      ],
+      "actual_codes": [
+        "METADATA_INVALID"
+      ],
+      "verdict": "FAIL",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "deg_fov",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_deg_fov.json",
+      "report_sha256": "e4c2db60a7c4bffe8c392cae1031199ec49d48ff4471c6c830adceec60c2902c",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "expected_codes": [
+        "METADATA_INVALID"
+      ],
+      "actual_codes": [
+        "METADATA_INVALID"
+      ],
+      "verdict": "FAIL",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "no_fps",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_no_fps.json",
+      "report_sha256": "71618fbaae4d764ad8439bfe0eb192fe57cd661a29f5d2c5bc8a7ef25f08b294",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "expected_codes": [
+        "FPS_UNKNOWN",
+        "INTRINSICS_UNKNOWN"
+      ],
+      "actual_codes": [
+        "FPS_UNKNOWN",
+        "INTRINSICS_UNKNOWN"
+      ],
+      "verdict": "FAIL",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "alignment_undeclared",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_alignment_undeclared.json",
+      "report_sha256": "3dcac06b3733e9b60427941f93c9e5a93f54560d58f0397cff6b19c0d4f003bd",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "expected_codes": [
+        "ALIGNMENT_UNKNOWN",
+        "INTRINSICS_UNKNOWN"
+      ],
+      "actual_codes": [
+        "ALIGNMENT_UNKNOWN",
+        "INTRINSICS_UNKNOWN"
+      ],
+      "verdict": "FAIL",
+      "matches_expectation": true
+    },
+    {
+      "fixture": "no_metadata_record",
+      "data_class": "OFFLINE-SYNTHETIC",
+      "report": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/d455_replay_no_metadata_record.json",
+      "report_sha256": "daa808f8777649b68550442f178eb20456cbe704af5ba427e199443970e685cb",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "expected_codes": [
+        "INTRINSICS_UNKNOWN"
+      ],
+      "actual_codes": [
+        "INTRINSICS_UNKNOWN"
+      ],
+      "verdict": "FAIL",
+      "matches_expectation": true
+    }
+  ],
+  "summary": {
+    "total": 13,
+    "passing_replays": 2,
+    "failing_replays": 11,
+    "mismatched_expectations": [],
+    "all_match": true
+  }
+}

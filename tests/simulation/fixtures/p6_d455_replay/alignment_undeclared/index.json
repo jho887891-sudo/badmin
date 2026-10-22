@@ -1,0 +1,46 @@
+{
+  "schema": "p6_d455_replay_index/1",
+  "data_class": "OFFLINE-SYNTHETIC",
+  "resolution": [
+    8,
+    6
+  ],
+  "fps": 30.0,
+  "depth": {
+    "scale_m_per_unit": 0.001,
+    "unit": "m_per_unit",
+    "encoding": "uint16"
+  },
+  "frames": [
+    {
+      "rgb": "rgb/000000.png",
+      "depth": "depth/000000.png",
+      "timestamp_s": 0.0
+    },
+    {
+      "rgb": "rgb/000001.png",
+      "depth": "depth/000001.png",
+      "timestamp_s": 0.033333333
+    },
+    {
+      "rgb": "rgb/000002.png",
+      "depth": "depth/000002.png",
+      "timestamp_s": 0.066666667
+    },
+    {
+      "rgb": "rgb/000003.png",
+      "depth": "depth/000003.png",
+      "timestamp_s": 0.1
+    },
+    {
+      "rgb": "rgb/000004.png",
+      "depth": "depth/000004.png",
+      "timestamp_s": 0.133333333
+    },
+    {
+      "rgb": "rgb/000005.png",
+      "depth": "depth/000005.png",
+      "timestamp_s": 0.166666667
+    }
+  ]
+}
