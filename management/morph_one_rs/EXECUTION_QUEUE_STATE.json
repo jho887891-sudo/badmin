@@ -1873,14 +1873,29 @@
    "stage": "P8",
    "title": "PPO 预算门禁文件：GPU/训练时间上限、安全守卫、可恢复 checkpoint、停止条件和回滚。",
    "dependencies": [],
-   "status": "UNKNOWN",
-   "owner": null,
-   "head_sha": null,
-   "artifact": null,
-   "latest_run_id": null,
-   "next_action": null,
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "d061559",
+   "artifact": "src/badminton_brain/rl/training_gate.py",
+   "latest_run_id": "",
+   "next_action": "sha256-pinned pre-registration, 7 typed refusals, injected-clock budget accountant, atomic checkpoint + resume refusal, closed stop-reason vocabulary; 186 passed exit 0",
    "blocker": null,
-   "last_error": null
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "P8-05/06 slice landed in d061559",
+     "old": {
+      "status": "UNKNOWN",
+      "artifact": null,
+      "head_sha": null,
+      "owner": null
+     },
+     "new": {
+      "status": "DONE",
+      "artifact": "src/badminton_brain/rl/training_gate.py"
+     }
+    }
+   ]
   },
   {
    "task_id": "P8-06",
@@ -1889,14 +1904,29 @@
    "dependencies": [
     "P7-13"
    ],
-   "status": "UNKNOWN",
-   "owner": null,
-   "head_sha": null,
-   "artifact": null,
-   "latest_run_id": null,
-   "next_action": null,
+   "status": "PARTIAL",
+   "owner": "subagent",
+   "head_sha": "d061559",
+   "artifact": "src/badminton_brain/rl/dependency_gate.py",
+   "latest_run_id": "",
+   "next_action": "dependency gate enforces 11 P5/P6/P7 requirements and REFUSES PPO today (all 11 MISSING_EVIDENCE because those branches are not merged); mock-only, no algorithm dependency actually exercised",
    "blocker": null,
-   "last_error": null
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "P8-05/06 slice landed in d061559",
+     "old": {
+      "status": "UNKNOWN",
+      "artifact": null,
+      "head_sha": null,
+      "owner": null
+     },
+     "new": {
+      "status": "PARTIAL",
+      "artifact": "src/badminton_brain/rl/dependency_gate.py"
+     }
+    }
+   ]
   },
   {
    "task_id": "P8-07",
