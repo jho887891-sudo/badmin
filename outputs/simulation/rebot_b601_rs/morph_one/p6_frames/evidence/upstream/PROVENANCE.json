@@ -1,0 +1,30 @@
+{
+ "schema": "p6_frame_audit_pinned_upstream/1",
+ "task": "P6-05",
+ "why": "the P6-05 auditor reads the committed P6 JSON by path; mounted_chain*.json and joint_anchors.json live on earlier P6 branches that this branch (p6/racket-camera-frames @ d7672d5) does not contain. They are pinned here verbatim, following the convention already used by mounted_chain.json for evidence/p3_mount_frame_tree_at_0bbed19.json. Nothing is rewritten: the auditor re-hashes every file and compares the recorded sha256 chain.",
+ "files": [
+  {
+   "name": "mounted_chain.json",
+   "source_branch": "p6/joint-anchor-fix",
+   "source_commit": "3540109",
+   "first_delivered_by": "p6/racket-collision-proxy @ 0e87c5e (PR #36), unchanged since",
+   "sha256_lf": "7228b55930de8208d4ab195d6c9ceacc688905aa61ea4eb83df6d80892747772"
+  },
+  {
+   "name": "mounted_chain_v2.json",
+   "source_branch": "p6/joint-anchor-fix",
+   "source_commit": "3540109",
+   "first_delivered_by": "PR #37",
+   "sha256_lf": "bf7b6361cca80543aa902cfdbf16ce36ac4f1af31945594473c1846b1dc234a6"
+  },
+  {
+   "name": "joint_anchors.json",
+   "source_branch": "p6/joint-anchor-fix",
+   "source_commit": "3540109",
+   "first_delivered_by": "PR #37",
+   "sha256_lf": "13030fb3eb5daaba6db28406c7f7388e49e56427f08bc1670d0d6e8a9ab9467b"
+  }
+ ],
+ "how_pinned": "git -C <repo> show 3540109:outputs/simulation/rebot_b601_rs/morph_one/p6_frames/<name> (byte-identical; sha256 above is over LF-normalised bytes, the basis every P6 file declares)",
+ "never_modified": "the audit and the test suite only ever read these; every mutation test writes into a tmp_path copy"
+}

@@ -1,0 +1,482 @@
+{
+  "schema": "p6_mounted_chain/2",
+  "task": "P6-02-OI-1",
+  "title": "mounted_chain.json + the body1 joint anchors: composition B corrected to the pxr end pose",
+  "additive_only": "mounted_chain.json is IMMUTABLE history and is NOT edited. Every edge, every historical number and all five UNKNOWN edges are inherited by pointer from base_chain and are not restated here, so there is no second truth for any number.",
+  "base_chain": {
+    "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/mounted_chain.json",
+    "sha256": "7228b55930de8208d4ab195d6c9ceacc688905aa61ea4eb83df6d80892747772",
+    "sha256_basis": "LF-normalised bytes",
+    "json_pointer": "",
+    "role": "P6-02 chain of record: 15 edges, 10 asserted, 5 UNKNOWN - unchanged by this file"
+  },
+  "joint_anchors": {
+    "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/joint_anchors.json",
+    "sha256": "13030fb3eb5daaba6db28406c7f7388e49e56427f08bc1670d0d6e8a9ab9467b",
+    "sha256_basis": "LF-normalised bytes",
+    "json_pointer": "/joints",
+    "generated_by": "tools/p6_frames/build_joint_anchors.py",
+    "source_layer": "payloads/Physics/physics.usda",
+    "source_layer_sha256": "8d18a8c9271e0905df72530d177157bbdebeb2fceaae3de7628524240fce02b6"
+  },
+  "joint_anchor_extension": {
+    "what_it_adds": "the body1 side (physics:localPos1 / physics:localRot1) for root_joint and joint1..joint6, with source line numbers, so a joint edge is no longer half a joint",
+    "rule": "T_body0_body1 = X0 * inv(X1); see /joint_frame_rule in joint_anchors.json",
+    "per_edge": [
+      {
+        "merged_edge": 3,
+        "joint": "root_joint",
+        "usd_type": "PhysicsFixedJoint",
+        "value_ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/joint_anchors.json",
+          "sha256": "13030fb3eb5daaba6db28406c7f7388e49e56427f08bc1670d0d6e8a9ab9467b",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/joints/0"
+        },
+        "body1_anchor_ref": "/joints/0",
+        "body1_pose_is_identity": true,
+        "source_lines": {
+          "prim_def": 308,
+          "prim_end": 318,
+          "physics_axis": null,
+          "body0": 311,
+          "body1": 313,
+          "localPos0": 314,
+          "localPos1": 315,
+          "localRot0": 316,
+          "localRot1": 317,
+          "limits": null
+        },
+        "note": "body1 side is the identity, so composition B was already correct for this joint"
+      },
+      {
+        "merged_edge": 4,
+        "joint": "joint1",
+        "usd_type": "PhysicsRevoluteJoint",
+        "value_ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/joint_anchors.json",
+          "sha256": "13030fb3eb5daaba6db28406c7f7388e49e56427f08bc1670d0d6e8a9ab9467b",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/joints/1"
+        },
+        "body1_anchor_ref": "/joints/1",
+        "body1_pose_is_identity": false,
+        "source_lines": {
+          "prim_def": 124,
+          "prim_end": 145,
+          "physics_axis": 132,
+          "body0": 134,
+          "body1": 136,
+          "localPos0": 137,
+          "localPos1": 138,
+          "localRot0": 139,
+          "localRot1": 140,
+          "limits": null
+        },
+        "note": "body1 side is NOT the identity ([0.0, -1.0, 0.0, 0.0] wxyz): dropping it flipped this joint's child link"
+      },
+      {
+        "merged_edge": 5,
+        "joint": "joint2",
+        "usd_type": "PhysicsRevoluteJoint",
+        "value_ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/joint_anchors.json",
+          "sha256": "13030fb3eb5daaba6db28406c7f7388e49e56427f08bc1670d0d6e8a9ab9467b",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/joints/2"
+        },
+        "body1_anchor_ref": "/joints/2",
+        "body1_pose_is_identity": true,
+        "source_lines": {
+          "prim_def": 147,
+          "prim_end": 168,
+          "physics_axis": 155,
+          "body0": 157,
+          "body1": 159,
+          "localPos0": 160,
+          "localPos1": 161,
+          "localRot0": 162,
+          "localRot1": 163,
+          "limits": null
+        },
+        "note": "body1 side is the identity, so composition B was already correct for this joint"
+      },
+      {
+        "merged_edge": 6,
+        "joint": "joint3",
+        "usd_type": "PhysicsRevoluteJoint",
+        "value_ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/joint_anchors.json",
+          "sha256": "13030fb3eb5daaba6db28406c7f7388e49e56427f08bc1670d0d6e8a9ab9467b",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/joints/3"
+        },
+        "body1_anchor_ref": "/joints/3",
+        "body1_pose_is_identity": false,
+        "source_lines": {
+          "prim_def": 170,
+          "prim_end": 191,
+          "physics_axis": 178,
+          "body0": 180,
+          "body1": 182,
+          "localPos0": 183,
+          "localPos1": 184,
+          "localRot0": 185,
+          "localRot1": 186,
+          "limits": null
+        },
+        "note": "body1 side is NOT the identity ([0.0, -1.0, 0.0, 0.0] wxyz): dropping it flipped this joint's child link"
+      },
+      {
+        "merged_edge": 7,
+        "joint": "joint4",
+        "usd_type": "PhysicsRevoluteJoint",
+        "value_ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/joint_anchors.json",
+          "sha256": "13030fb3eb5daaba6db28406c7f7388e49e56427f08bc1670d0d6e8a9ab9467b",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/joints/4"
+        },
+        "body1_anchor_ref": "/joints/4",
+        "body1_pose_is_identity": false,
+        "source_lines": {
+          "prim_def": 193,
+          "prim_end": 214,
+          "physics_axis": 201,
+          "body0": 203,
+          "body1": 205,
+          "localPos0": 206,
+          "localPos1": 207,
+          "localRot0": 208,
+          "localRot1": 209,
+          "limits": null
+        },
+        "note": "body1 side is NOT the identity ([0.0, -1.0, 0.0, 0.0] wxyz): dropping it flipped this joint's child link"
+      },
+      {
+        "merged_edge": 8,
+        "joint": "joint5",
+        "usd_type": "PhysicsRevoluteJoint",
+        "value_ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/joint_anchors.json",
+          "sha256": "13030fb3eb5daaba6db28406c7f7388e49e56427f08bc1670d0d6e8a9ab9467b",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/joints/5"
+        },
+        "body1_anchor_ref": "/joints/5",
+        "body1_pose_is_identity": false,
+        "source_lines": {
+          "prim_def": 216,
+          "prim_end": 237,
+          "physics_axis": 224,
+          "body0": 226,
+          "body1": 228,
+          "localPos0": 229,
+          "localPos1": 230,
+          "localRot0": 231,
+          "localRot1": 232,
+          "limits": null
+        },
+        "note": "body1 side is NOT the identity ([0.0, -1.0, 0.0, 0.0] wxyz): dropping it flipped this joint's child link"
+      },
+      {
+        "merged_edge": 9,
+        "joint": "joint6",
+        "usd_type": "PhysicsRevoluteJoint",
+        "value_ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/joint_anchors.json",
+          "sha256": "13030fb3eb5daaba6db28406c7f7388e49e56427f08bc1670d0d6e8a9ab9467b",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/joints/6"
+        },
+        "body1_anchor_ref": "/joints/6",
+        "body1_pose_is_identity": false,
+        "source_lines": {
+          "prim_def": 239,
+          "prim_end": 260,
+          "physics_axis": 247,
+          "body0": 249,
+          "body1": 251,
+          "localPos0": 252,
+          "localPos1": 253,
+          "localRot0": 254,
+          "localRot1": 255,
+          "limits": null
+        },
+        "note": "body1 side is NOT the identity ([0.0, -1.0, 0.0, 0.0] wxyz): dropping it flipped this joint's child link"
+      }
+    ]
+  },
+  "composition": {
+    "A_usdgeom_xformops_authoritative": {
+      "what": "chassis -> arm_base -> base_link -> link1..link6 -> gripper_end composed from the P3-01 UsdGeom xformOp hops (pxr-verified slice)",
+      "hops_used": 9,
+      "hops_ref": {
+        "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/p3_mount_frame_tree_at_0bbed19.json",
+        "sha256": "96366ec79a684e24bf3f3b67deefef29faf798f694cf8d290ecf41a1f7343e9c",
+        "sha256_basis": "LF-normalised bytes",
+        "json_pointer": "/arm_chain_rest_pose/hops"
+      },
+      "T": [
+        [
+          1.0,
+          0.0,
+          -3.4231e-08,
+          0.301710169999
+        ],
+        [
+          -0.0,
+          1.0,
+          1.39475e-07,
+          2.62633e-07
+        ],
+        [
+          3.4231e-08,
+          -1.39475e-07,
+          1.0,
+          0.217746720407
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R": 1.0,
+      "R_orthonormal_max_error": 0.0,
+      "vs_pxr_end_pose": {
+        "p3_gripper_end_world_rest_pose_ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/p3_mount_frame_tree_at_0bbed19.json",
+          "sha256": "96366ec79a684e24bf3f3b67deefef29faf798f694cf8d290ecf41a1f7343e9c",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/arm_chain_rest_pose/gripper_end_world_rest_pose"
+        },
+        "position_delta_m": [
+          -0.0,
+          -0.0,
+          -0.0
+        ],
+        "max_abs_delta_m": 0.0
+      }
+    },
+    "B_p6_physics_joint_anchors": {
+      "what": "chassis -> arm_base -> base_link -> link1..link6 -> gripper_end composed from the P6 joint anchors (physics:localPos0 + physics:localRot0)",
+      "edges_used": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        12
+      ],
+      "T": [
+        [
+          -0.999999999972,
+          -5.5e-11,
+          -7.44244e-06,
+          -0.030709829999
+        ],
+        [
+          -5.6e-11,
+          -0.99999999989,
+          1.4813868e-05,
+          0.007025903967
+        ],
+        [
+          -7.44244e-06,
+          1.4813868e-05,
+          0.999999999863,
+          -0.018254752155
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R": 1.0,
+      "R_orthonormal_max_error": 0.0,
+      "vs_A": {
+        "position_delta_m": [
+          -0.33242,
+          0.007025641,
+          -0.236001473
+        ],
+        "max_abs_delta_m": 0.33242
+      }
+    },
+    "note": "inherited verbatim from base_chain so the before/after numbers stay comparable; B above is composition B v1 (body0 only)"
+  },
+  "composition_v2": {
+    "B_v2_body0_and_body1": {
+      "what": "chassis -> arm_base -> base_link -> link1..link6 -> gripper_end composed from the P6 joint anchors with BOTH body sides: T_body0_body1 = X0 * inv(X1)",
+      "edges_used": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        12
+      ],
+      "hops": [
+        {
+          "merged_edge": 3,
+          "joint": "root_joint",
+          "body1_side_applied": true
+        },
+        {
+          "merged_edge": 4,
+          "joint": "joint1",
+          "body1_side_applied": true
+        },
+        {
+          "merged_edge": 5,
+          "joint": "joint2",
+          "body1_side_applied": true
+        },
+        {
+          "merged_edge": 6,
+          "joint": "joint3",
+          "body1_side_applied": true
+        },
+        {
+          "merged_edge": 7,
+          "joint": "joint4",
+          "body1_side_applied": true
+        },
+        {
+          "merged_edge": 8,
+          "joint": "joint5",
+          "body1_side_applied": true
+        },
+        {
+          "merged_edge": 9,
+          "joint": "joint6",
+          "body1_side_applied": true
+        },
+        {
+          "merged_edge": 12,
+          "joint": "gripper_end",
+          "body1_side_applied": false
+        }
+      ],
+      "T": [
+        [
+          0.9999999999999997,
+          -3.0073211634577156e-13,
+          -2.460725901864607e-08,
+          0.3017101699988416
+        ],
+        [
+          3.03690577652413e-13,
+          0.999999999999993,
+          1.2022721254283068e-07,
+          2.62394596854716e-07
+        ],
+        [
+          2.460725900680116e-08,
+          -1.2022721254284328e-07,
+          0.9999999999999925,
+          0.21774671855448924
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "det_R": 1.0000000000000002,
+      "R_orthonormal_max_error": 4.440892098500626e-16,
+      "vs_A": {
+        "position_delta_m": [
+          -1.5842882561400984e-13,
+          -2.3840314528397583e-10,
+          -1.8525107559064224e-09
+        ],
+        "max_abs_delta_m": 1.8525107559064224e-09,
+        "max_abs_rotation_element_rad": 1.9247787457169314e-08,
+        "geodesic_angle_rad": 2.151961227990848e-08
+      }
+    },
+    "error_progression": {
+      "before": {
+        "composition": "B_v1 (physics:localPos0/localRot0 only, body1 side dropped)",
+        "ref": {
+          "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/mounted_chain.json",
+          "sha256": "7228b55930de8208d4ab195d6c9ceacc688905aa61ea4eb83df6d80892747772",
+          "sha256_basis": "LF-normalised bytes",
+          "json_pointer": "/composition/B_p6_physics_joint_anchors/vs_A/max_abs_delta_m"
+        },
+        "max_abs_delta_m": 0.33242,
+        "max_abs_delta_m_is": "the value recorded in base_chain (rounded there); ref resolves to exactly this number",
+        "recomputed_from_anchors_m": 0.33241999999784155,
+        "recomputed_note": "the same datum to full float64 precision, recomposed here from the body0 anchors; it differs from the recorded value only by that file's rounding",
+        "geodesic_angle_rad": 3.1415926535894916
+      },
+      "after": {
+        "composition": "B_v2 (both body sides)",
+        "max_abs_delta_m": 1.8525107559064224e-09,
+        "geodesic_angle_rad": 2.151961227990848e-08
+      },
+      "improvement_factor_translation": 179442952.72671193,
+      "tolerance_m": 1e-06,
+      "tolerance_rad": 1e-06,
+      "verdict": "PASS",
+      "residual_explanation": "the residual is float32 rounding in the USD layer (the anchors are authored as float32 point3f/quatf), not a residual convention error: it is 5 orders of magnitude below the 1e-6 tolerance"
+    },
+    "reproduces_the_recorded_B_v1": {
+      "max_abs_delta_vs_base_chain": 4.587719093507303e-13,
+      "statement": "re-composing with localRot0 only reproduces the recorded composition B matrix, so v1 and v2 differ by exactly the body1 anchors and by nothing else"
+    }
+  },
+  "issue_resolution": {
+    "id": "P6-02-OI-1",
+    "status": "RESOLVED",
+    "root_cause": "the P6 frame tree recorded one local pose per joint and it was the body0 side; a USD joint has two",
+    "evidence": "composition B v1 differs from the pxr pose by 0.33242 m; composition B v2 differs by 1.853e-09 m and 2.152e-08 rad",
+    "what_did_NOT_change": "the five UNKNOWN edges are still UNKNOWN and still carry no number; no mount offset, no racket attachment and no contact point has been invented",
+    "historical_finding_preserved": "the base chain keeps open_issue.status = OPEN and max_abs_delta_m = 0.33242 verbatim; this file records the resolution alongside it"
+  },
+  "unknown_edges_unchanged": {
+    "edge_ids": [
+      1,
+      2,
+      13,
+      14,
+      15
+    ],
+    "status": "UNKNOWN",
+    "numeric_payload": null,
+    "ref": {
+      "file": "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/mounted_chain.json",
+      "sha256": "7228b55930de8208d4ab195d6c9ceacc688905aa61ea4eb83df6d80892747772",
+      "sha256_basis": "LF-normalised bytes",
+      "json_pointer": "/unknown"
+    },
+    "statement": "this extension answers the ARM side of the chain only; it answers none of the five UNKNOWN boundaries",
+    "still_unknown": [
+      "the physical Morph One top-plate mount offset and yaw (edge 2)",
+      "the chassis world pose for the actual deployment (edge 1)",
+      "T_flange_tcp / the physical racket attachment (edges 13, 14)",
+      "the measured racket face centre (edge 15)",
+      "the D455 extrinsics and intrinsics (camera_metadata.json, untouched)"
+    ]
+  },
+  "provenance": {
+    "pxr_used": false,
+    "isaac_sim_used": false,
+    "gpu_used": false,
+    "assets_modified": false,
+    "remote_written": false,
+    "deterministic": true,
+    "base_chain_modified": false,
+    "command": "python tools/p6_frames/build_joint_anchors.py --physics-usda <read-only copy> --remote-sha256 <sha256sum from the host>"
+  }
+}
