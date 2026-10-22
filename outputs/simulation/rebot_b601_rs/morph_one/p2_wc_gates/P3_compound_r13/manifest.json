@@ -1,0 +1,21 @@
+{
+ "stage": "P3",
+ "run_id": "P3_compound_r13",
+ "scene_variant": "P3_DYNAMIC_MOUNT",
+ "profile": "compound",
+ "physics_dt_s": 0.008333333333333333,
+ "steps": 360,
+ "gravity_m_s2": [
+  0.0,
+  0.0,
+  -9.81
+ ],
+ "lift_m": 0.4,
+ "arm_asset": "/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+ "arm_sha256": "96d4f2ec1126dec6eaf9e70ab664ba6cc30fa81bdec86178a3e50b7a23bdd510",
+ "arm_asset_unchanged": true,
+ "drive_mode": "DIAGNOSTIC_ROOT_POSE (NOT wheel drive)",
+ "freeze_axis": "none",
+ "preregistration": "management/morph_one_rs/PHASE_P3_DYNAMIC_MOUNT_GATE.md",
+ "command": "/home/dgut/runs/g/scripts/simulation/p3_dynamic_mount.py --run-id P3_compound_r13 --out-dir /home/dgut/runs/g/P3_compound_r13 --profile compound --steps 360 --read-contacts --gravity-z -9.81 --freeze-axis none"
+}
