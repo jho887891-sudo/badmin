@@ -109,7 +109,7 @@ python tools/vision/evaluate_r11.py \
 
 ## 5. 验证与技术债务
 
-**本次会话的实际验证级别：** 单独提取源码在本地 Python 环境运行 `pytest -q tests/vision/test_r11_eval.py`，先 RED（模块不存在），实现后 GREEN，额外发现/修复贪心匹配和自称 held-out 的问题，共 **17 tests PASS**。运行了独立 CLI 的合成文件 smoke：detection、prediction 两种模式均 exit 0，正确写入输出并计算输入 SHA256；合成结果只用于验证算法，不得当作真实检测实验。
+**本次会话的实际验证级别：** 单独提取源码在本地 Python 环境运行 `pytest -q tests/vision/test_r11_eval.py`，先 RED（模块不存在），实现后 GREEN，额外发现/修复贪心匹配和自称 held-out 的问题，共 **19 tests PASS**。运行了独立 CLI 的合成文件 smoke：detection、prediction 两种模式均 exit 0，正确写入输出并计算输入 SHA256；合成结果只用于验证算法，不得当作真实检测实验。
 
 **未完成的真实验收**：
 - doubles0.mp4 336 帧的真实人工标注尚未产生，无法给出 Precision/Recall；
@@ -119,3 +119,15 @@ python tools/vision/evaluate_r11.py \
 - 未来时刻的 2D 恒速度预测未证明可以击球，仍需要后续几何和物理链路。
 
 **权限边界**：DeepSeek 仅按精确 SHA 运行、回传日志/指标和原始视频；不得改代码、调阈值、修改 GT、训练新模型或擅自将 M1 提升 PASS。GitHub PR 均 Draft，禁止自动合并受保护分支，不运行 PPO 或真机动作。
+
+
+## 6. 最新 fail-closed 增量与复验
+
+后续测试还抓到了两个缺陷，已经通过 RED→GREEN 修复并在本地复验：
+
+- **同帧号错时钟**：检测 `frame_id` 虽相同，若预测 `timestamp_s` 与人工标签相差超过 **0.005s**（默认），拒绝计算 Precision/Recall；调用参数 `--detection-tolerance-s` 可显式设置，且报告记录真实值。这样旧图像序列错误假设 1/30 s 时，不能悄悄对齐到其它时间段。
+- **超视频范围**：设置 `--expected-frames 336` 后，如模型检测声明 frame_id≥336，立即报错，而不是忽略该框并继续给出看似正常的统计。
+
+截至该文档修订，测试为 `19 passed`，并对两种命令行模式使用合成 JSONL 做过 exit 0 的端到端 smoke。模型未在本会话重跑，广播视频的 0/336 历史数字没有改变。
+
+**审阅限制：** 当前为单作者自审，独立远端集成验证和第三方复核仍未进行。传统 mAP/AP 需要不同 confidence 阈值及标准定义的排序评估，本工具当前只实现**指定 conf 下 IoU50 与中心距离的 TP/FP/FN/Precision/Recall**，不得把输出称为 AP50 或 mAP。
