@@ -57,6 +57,12 @@ PARSER.add_argument("--read-contacts", action="store_true")
 PARSER.add_argument("--freeze-axis", choices=("none", "x", "y", "z", "yaw"), default="none",
                     help="NEGATIVE CONTROL: deliberately drop this command component so the "
                          "directed/yaw gate must FAIL. Recorded in manifest as negative_control.")
+PARSER.add_argument("--inject-fault", choices=("none", "joint_limit", "python_exception"),
+                    default="none",
+                    help="P0-07/P3-05 fault injection. 'joint_limit' submits a joint target "
+                         "outside the USD limit and must be REFUSED before any write; "
+                         "'python_exception' raises inside the stepping loop so the gate runner "
+                         "must report a non-zero child code instead of a false PASS.")
 AppLauncher.add_app_launcher_args(PARSER)
 ARGS = PARSER.parse_args()
 LAUNCHER = AppLauncher(ARGS)
@@ -355,6 +361,15 @@ def main():
     def set_joint_targets():
         # Fail closed. Previously exceptions here were silently swallowed,
         # allowing "joint_hold PASS" when no joint target had been submitted.
+        if ARGS.inject_fault == "joint_limit":
+            # Submit a target BEYOND the recorded limit and refuse it here, BEFORE the write,
+            # so the run cannot claim "joint_hold" on data that never received a command.
+            index = 2 if len(joint_names) > 2 else 0
+            limit = float(_np(robot.data.joint_pos_limits[0, index, 1]))
+            bad = limit + 0.5
+            raise SystemExit("JOINT_LIMIT_REFUSED: joint %r target %.6f rad exceeds the USD "
+                             "upper limit %.6f rad; no target was written"
+                             % (joint_names[index], bad, limit))
         robot.set_joint_position_target(joint_target_tensor)
 
     def capture(tag, step, commanded_pos, commanded_yaw, smooth):
@@ -413,6 +428,10 @@ def main():
         commanded_pos, commanded_yaw, smooth = command_at(ARGS.profile, step)
         write_pose(commanded_pos, commanded_yaw)
         set_joint_targets()
+        if ARGS.inject_fault == "python_exception" and step == 60:
+            # P0-07: an exception raised INSIDE the loop must reach the gate runner as a
+            # non-zero child code; the wrapper must never turn this into a PASS.
+            raise RuntimeError("INJECTED_PYTHON_EXCEPTION at step %d" % step)
         sim.step()
         robot.update(DT)
         for sensor in sensors.values():
