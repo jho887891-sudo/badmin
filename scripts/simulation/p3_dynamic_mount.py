@@ -443,7 +443,14 @@ def main():
                   "%.6f rad; refusing before any write" % (joint_names[index], bad_target,
                                                            upper), flush=True)
             jsonl.close()
-            return 3
+            # P0-07 finding 2: returning from main() WITHOUT closing the Kit app left the
+            # process exiting 0 (child_returncode 0 in P0F_jointlimit_r02), so any tool keyed
+            # on the child code would read a false PASS.  Close, then raise.
+            try:
+                SIMULATION_APP.close()
+            except Exception:
+                pass
+            raise SystemExit(3)
 
     for step in range(ARGS.steps + 1):
         commanded_pos, commanded_yaw, smooth = command_at(ARGS.profile, step)
@@ -456,7 +463,11 @@ def main():
             write_fault_record("INJECTED_PYTHON_EXCEPTION", {"step": step})
             print("INJECTED_PYTHON_EXCEPTION at step %d" % step, flush=True)
             jsonl.close()
-            return 4
+            try:
+                SIMULATION_APP.close()
+            except Exception:
+                pass
+            raise SystemExit(4)
         sim.step()
         robot.update(DT)
         for sensor in sensors.values():
