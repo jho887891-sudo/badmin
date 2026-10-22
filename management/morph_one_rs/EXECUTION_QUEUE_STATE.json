@@ -1698,14 +1698,29 @@
     "P5-09",
     "P6-09"
    ],
-   "status": "UNKNOWN",
-   "owner": null,
-   "head_sha": null,
-   "artifact": null,
-   "latest_run_id": null,
-   "next_action": null,
+   "status": "DONE",
+   "owner": "subagent",
+   "head_sha": "a3d6de0",
+   "artifact": "outputs/badminton_brain/p7_closed_loop/wired_episodes.json",
+   "latest_run_id": "",
+   "next_action": "end-to-end wiring harness runs (detector->EKF->predictor->FSM->IK->racket proxy); 444 passed exit 0; hit_rate null by design",
    "blocker": null,
-   "last_error": null
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "P7-11/12 slice landed in a3d6de0",
+     "old": {
+      "status": "UNKNOWN",
+      "artifact": null,
+      "head_sha": null,
+      "owner": null
+     },
+     "new": {
+      "status": "DONE",
+      "artifact": "outputs/badminton_brain/p7_closed_loop/wired_episodes.json"
+     }
+    }
+   ]
   },
   {
    "task_id": "P7-12",
@@ -1715,14 +1730,29 @@
     "P5-09",
     "P6-09"
    ],
-   "status": "UNKNOWN",
-   "owner": null,
-   "head_sha": null,
-   "artifact": null,
-   "latest_run_id": null,
-   "next_action": null,
+   "status": "PARTIAL",
+   "owner": "subagent",
+   "head_sha": "a3d6de0",
+   "artifact": "outputs/badminton_brain/p7_closed_loop/backend_compare.json",
+   "latest_run_id": "",
+   "next_action": "per-trial statistics wired but only 9 episodes per backend; no calibrated TCP/D455 so no real hit statistic exists",
    "blocker": null,
-   "last_error": null
+   "last_error": null,
+   "repair_log": [
+    {
+     "reason": "P7-11/12 slice landed in a3d6de0",
+     "old": {
+      "status": "UNKNOWN",
+      "artifact": null,
+      "head_sha": null,
+      "owner": null
+     },
+     "new": {
+      "status": "PARTIAL",
+      "artifact": "outputs/badminton_brain/p7_closed_loop/backend_compare.json"
+     }
+    }
+   ]
   },
   {
    "task_id": "P7-13",
