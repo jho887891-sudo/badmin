@@ -36,6 +36,10 @@ import os
 
 import numpy as np
 
+# P4-11: stdlib-only command interface (no numpy/torch/Isaac inside it), imported BEFORE the
+# Isaac app so the fail-closed pre-flight below can reject a bad command without starting a sim.
+from p4_command_interface import CommandValidationError, WheelCommand
+
 from isaaclab.app import AppLauncher
 
 # verified geometry (P1 v2)
@@ -98,8 +102,32 @@ PARSER.add_argument("--speed-limit", type=float, default=0.50,
                     help="hard chassis speed limit in m/s; a command above it must be clamped")
 PARSER.add_argument("--nominal-radius", type=float, default=0.101459,
                     help="MEASURED effective rolling radius from the P4-08 matrix (m)")
+PARSER.add_argument("--limit-mode", choices=("clamp", "reject"), default="clamp",
+                    help="P4-11 fail-closed validation of --velocity-cmd against --speed-limit. "
+                         "'clamp' (default, the P4-09 gate behaviour) pins the magnitude to the "
+                         "limit; 'reject' aborts with exit code 2 BEFORE the Isaac app is created "
+                         "if the command is over the limit. No gate or threshold is affected.")
 AppLauncher.add_app_launcher_args(PARSER)
 ARGS = PARSER.parse_args()
+
+# P4-11 PREFLIGHT BEGIN -- pure-stdlib validation, must stay BEFORE AppLauncher(ARGS).
+# With --limit-mode reject an over-limit / non-finite / unit-confused command aborts here:
+# no USD stage is authored, no SimulationContext is created, sim.step() is never reached.
+try:
+    PREFLIGHT_COMMAND = WheelCommand.from_speed(
+        abs(float(ARGS.velocity_cmd)), float(ARGS.nominal_radius),
+        float(ARGS.speed_limit), str(ARGS.limit_mode))
+except CommandValidationError as _pf_exc:
+    print(json.dumps({"run_id": ARGS.run_id, "profile": ARGS.profile,
+                      "aborted": True, "limit_mode": str(ARGS.limit_mode),
+                      "reason": type(_pf_exc).__name__, "error_code": _pf_exc.code,
+                      "detail": str(_pf_exc),
+                      "stage_authored": False, "sim_steps": 0,
+                      "root_writes": 0}, ensure_ascii=False, indent=1))
+    print("GATE_RESULT=ABORTED", flush=True)
+    raise SystemExit(2)
+# P4-11 PREFLIGHT END
+
 LAUNCHER = AppLauncher(ARGS)
 SIMULATION_APP = LAUNCHER.app
 
@@ -303,6 +331,13 @@ def main():
     v_cmd = float(ARGS.velocity_cmd)
     commanded_v = min(abs(v_cmd), float(ARGS.speed_limit))
     clamped = bool(abs(v_cmd) > float(ARGS.speed_limit) + 1e-12)
+    # P4-11: the pre-flight (which ran before the app was created) must agree with this inline
+    # clamp bit-for-bit.  A divergence would mean the validated command is not the one executed,
+    # so it is a hard failure rather than a warning.  This cannot fire for clamp mode: both sides
+    # are min(|v|, limit) / copysign(limit, v) over the same floats.
+    if abs(PREFLIGHT_COMMAND.speed_m_s - commanded_v) > 1e-12:
+        raise SystemExit("P4-11 pre-flight/execution divergence: interface %.12f m/s vs script "
+                         "%.12f m/s" % (PREFLIGHT_COMMAND.speed_m_s, commanded_v))
     # Physics: a wheel spinning +omega about world +X drives the chassis along -Y
     # (contact point moves +Y).  So chassis vy = -omega*r and omega = -vy/r.  v_cmd > 0 means
     # "travel along -Y".  The first version got this sign wrong and the loop ran away to
