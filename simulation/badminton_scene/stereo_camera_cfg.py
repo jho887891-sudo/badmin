@@ -29,7 +29,9 @@ def build_stereo_camera_sensor_specs(
     from isaaclab.sensors import Camera, CameraCfg
 
     rig_world = tuple(float(v) for v in CAMERA["rig_world"])
-    pitch_rad = -math.radians(float(CAMERA["pitch_deg"]))
+    # CAMERA.pitch_deg follows stereo_geometry.forward_camera_rotation: positive is nose-down.
+    # CameraCfg convention="world" uses +X forward / +Z up, so preserve the signed angle.
+    pitch_rad = math.radians(float(CAMERA["pitch_deg"]))
     rotation_xyzw = (
         0.0,
         math.sin(pitch_rad / 2.0),
