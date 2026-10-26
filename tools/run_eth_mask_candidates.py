@@ -229,8 +229,11 @@ def run_mask_candidates(inventory_csv: str | Path, output_dir: str | Path, *,
     pending=sum(r['status']=='PENDING_REVIEW' for r in records)
     unrecoverable=sum(r['status']=='UNRECOVERABLE' for r in records)
     blocked=sum(r['status']=='BLOCKED_SOURCE_INTEGRITY' for r in records)
+    backend_blocked=sum(r['reason']=='BLOCKED_MASK_BACKEND' for r in records)
+    top_status=('BLOCKED_SOURCE_INTEGRITY' if integrity_failures else
+                ('BLOCKED_MASK_BACKEND' if backend_blocked else 'PENDING_HUMAN_REVIEW'))
     report={
-        'status':'BLOCKED_SOURCE_INTEGRITY' if integrity_failures else 'PENDING_HUMAN_REVIEW',
+        'status':top_status,
         'inventory_path':str(inv),'inventory_sha256':sha256_file(inv),
         'input_rows':len(rows),'unique_instance_ids':len(processed_ids),
         'candidate_masks':pending,'unrecoverable':unrecoverable,'source_integrity_failures':blocked,
@@ -260,7 +263,7 @@ def main(argv=None):
     except MaskRunBlocked as exc:
         print(json.dumps({'status':'BLOCKED','reason':str(exc)},indent=2));return 2
     print(json.dumps(report,indent=2,ensure_ascii=False))
-    return 2 if report['status']=='BLOCKED_SOURCE_INTEGRITY' else 0
+    return 2 if report['status'] in {'BLOCKED_SOURCE_INTEGRITY','BLOCKED_MASK_BACKEND'} else 0
 
 
 if __name__=='__main__':
