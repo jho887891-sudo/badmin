@@ -26,7 +26,8 @@ def generate_fixture_pilot(seed:int=42) -> dict:
     bg=np.full((64,96,3),75,dtype=np.uint8)
     bg[:12,:,:]=[170,170,192]
     fg={'sample_id':'cpu-only-eth-fixture','rgb':rgb,'alpha':alpha,
-        'source':'eth_train','source_sha256':'F'*64,'qa_status':'APPROVED'}
+        'source':'eth_train','source_sha256':'F'*64,'qa_status':'APPROVED',
+        'reviewed':True,'reviewer_id':'CPU_FIXTURE_NOT_REAL','review_method':'synthetic_fixture'}
     env={'background_id':'cpu-only-venue-fixture','image':bg,'source':'real_venue_train',
          'source_sha256':'B'*64,'qa_status':'APPROVED','split':'train',
          'reviewer_id':'fixture-automated-not-real-review','no_shuttle_reviewed':True,
