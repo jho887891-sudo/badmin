@@ -19,7 +19,7 @@ def _sample(root,name,boxes,*,split='train',set_dir='court_a',source='eth_main')
     arr[::9,:,2]=150
     Image.fromarray(arr).save(image,quality=95)
     label=root/'labels'/'train'/f'{name}.txt';label.parent.mkdir(parents=True,exist_ok=True)
-    label.write_text(''.join('0 %.8f %.8f %.8f %.8f\\n'%tuple(b) for b in boxes),encoding='utf-8')
+    label.write_text(''.join('0 %.8f %.8f %.8f %.8f\n'%tuple(b) for b in boxes),encoding='utf-8')
     sha=hashlib.sha256(image.read_bytes()).hexdigest()
     return {'image':str(image),'label':str(label),'location':'court_a','split':split,
             'set_dir':set_dir,'role':'official_positives','source':source,'is_negative':'False',
@@ -92,7 +92,7 @@ def test_missing_label_is_blocker(tmp_path):
 def test_eval_sha_excluded_even_if_split_train(tmp_path):
     manifest,row=_data(tmp_path)
     frozen=tmp_path/'frozen.csv'
-    frozen.write_text('image,sha256\\n/frozen/other.jpg,'+row['sha256']+'\\n',encoding='utf-8')
+    frozen.write_text('image,sha256\n/frozen/other.jpg,'+row['sha256']+'\n',encoding='utf-8')
     r=enumerate_eth_train_instances(manifest,frozen_eval_manifests=(frozen,))
     assert len(r['instances'])==0
     assert any(x['reason']=='eval_content' for x in r['rejections'])
