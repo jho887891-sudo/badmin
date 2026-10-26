@@ -6,7 +6,7 @@ Status at authoring time: implementation submitted for review; **Isaac Sim runti
 
 Connect the existing single-environment court scene to two actual Isaac Lab camera sensors, read RGB plus distance-to-image-plane depth, run a caller-selected already-trained Ultralytics-compatible YOLO checkpoint, and produce timestamped 3D measurement candidates.
 
-This is a sensor/inference integration gate only. For env_0, world-frame coordinates are passed through as court-frame coordinates because the project layout defines the court origin at the net centre and aligns the world axes. This identity mapping is a scene assumption, not an independently verified runtime transform or hardware calibration. Each measurement carries separate `valid_mask` and `velocity_valid_mask`: the first valid position frame is retained, but its placeholder zero velocity is not fused by the UKF. Legacy producers that omit `velocity_valid_mask` retain the previous behavior. The probe does not generalize to cloned environments. It does not run the robot, send commands, train YOLO, or claim calibrated 3D accuracy.
+This is a sensor/inference integration gate only. For env_0, world-frame coordinates are passed through as court-frame coordinates because the project layout defines the court origin at the net centre and aligns the world axes. This identity mapping is a scene assumption, not an independently verified runtime transform or hardware calibration. Each measurement carries separate `valid_mask` and `velocity_valid_mask`: the first valid position frame is retained, but its placeholder zero velocity is not fused by the UKF. A finite-difference velocity is marked valid only when consecutive valid detections are no more than 0.05 s apart; after a longer gap the current point becomes a new baseline. The 0.05 s cutoff is a configurable engineering threshold, not a calibrated physical constant. Legacy producers that omit `velocity_valid_mask` retain the previous behavior. The probe does not generalize to cloned environments. It does not run the robot, send commands, train YOLO, or claim calibrated 3D accuracy.
 
 ## Preconditions
 
@@ -32,7 +32,7 @@ The wrapper refuses to install packages, update environments, kill other process
 - images/left_frame_*.png and images/right_frame_*.png: raw camera RGB.
 - images/*_overlay.png: detector boxes on the same rendered frame.
 - depth/*.npy: raw distance-to-image-plane depth in metres.
-- detections.jsonl: per-frame, per-camera boxes, confidence, timestamp, depth patch statistics, world-frame 3D point, velocity, covariance, latency, and checkpoint SHA256.
+- detections.jsonl: per-frame, per-camera boxes, confidence, timestamp, depth patch statistics, world-frame 3D point, velocity and its validity mask/gap, covariance, latency, and checkpoint SHA256.
 - metrics.json: camera, detector, RGB-D projection status, per-camera counts, latency, and left/right consistency diagnostics.
 - manifest.json: code HEAD, checkpoint and visual-asset SHA256, parameters, and SHA256 of output artifacts.
 - failure.json: exception details if the runtime fails after output creation.
