@@ -48,6 +48,7 @@ def test_racket_visual_and_43_collision_shapes_are_authored_with_valid_usd_types
     assert visual_path == mount_path + "/RacketVisual"
     assert stage.GetPrimAtPath(visual_path).IsValid()
     assert stage.GetPrimAtPath(mount_path).GetCustomDataByKey("badminton_mount_status") == "SIMULATION_ASSUMPTION"
+    assert stage.GetPrimAtPath(visual_path).GetCustomDataByKey("badminton_mount_status") == "SIMULATION_ASSUMPTION"
 
     colliders = [
         prim for prim in stage.Traverse()

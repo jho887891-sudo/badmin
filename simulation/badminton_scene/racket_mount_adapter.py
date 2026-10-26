@@ -273,6 +273,9 @@ def attach_racket_visual(stage, *, arm_prim_path: str,
     mount_xform.AddTranslateOp().Set(Gf.Vec3d(*mount.translation_m))
     orient = mount_xform.AddOrientOp()
     _set_orient(orient, mount.quaternion_wxyz, Gf, UsdGeom)
+    # Keep provenance on the transform that owns the mount as well as the visual child.
+    mount_xform.GetPrim().SetCustomDataByKey("badminton_mount_status", mount.status)
+    mount_xform.GetPrim().SetCustomDataByKey("badminton_mount_source", mount.source)
     visual_xform = UsdGeom.Xform.Define(stage, visual_path)
     visual_xform.GetPrim().GetReferences().AddReference(str(asset), Sdf.Path("/RacketVisual"))
     visual_xform.GetPrim().SetCustomDataByKey("badminton_mount_status", mount.status)
