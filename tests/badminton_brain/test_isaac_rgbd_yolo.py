@@ -5,7 +5,9 @@ from __future__ import annotations
 import hashlib
 import sys
 import tempfile
+import types
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 import numpy as np
@@ -186,6 +188,34 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
                 UltralyticsShuttleDetector(checkpoint, expected_sha256="0" * 64)
             with self.assertRaisesRegex(ValueError, "64-character hexadecimal"):
                 UltralyticsShuttleDetector(checkpoint, expected_sha256="not-a-sha")
+
+    def test_detector_rejects_checkpoint_with_wrong_target_class_name(self):
+        payload = b"test-checkpoint-for-class-name-validation"
+        with tempfile.TemporaryDirectory() as tmp:
+            checkpoint = Path(tmp) / "weights.pt"
+            checkpoint.write_bytes(payload)
+            expected_sha = hashlib.sha256(payload).hexdigest()
+            fake_model = types.SimpleNamespace(names={0: "person"})
+            fake_ultralytics = types.SimpleNamespace(YOLO=lambda _path: fake_model)
+            with patch.dict(sys.modules, {"ultralytics": fake_ultralytics}):
+                with self.assertRaisesRegex(RuntimeError, "expected target class 'shuttlecock'"):
+                    UltralyticsShuttleDetector(
+                        checkpoint, expected_sha256=expected_sha, class_id=0
+                    )
+
+    def test_detector_accepts_matching_target_class_name(self):
+        payload = b"test-checkpoint-for-class-name-validation"
+        with tempfile.TemporaryDirectory() as tmp:
+            checkpoint = Path(tmp) / "weights.pt"
+            checkpoint.write_bytes(payload)
+            expected_sha = hashlib.sha256(payload).hexdigest()
+            fake_model = types.SimpleNamespace(names={0: "shuttlecock"})
+            fake_ultralytics = types.SimpleNamespace(YOLO=lambda _path: fake_model)
+            with patch.dict(sys.modules, {"ultralytics": fake_ultralytics}):
+                detector = UltralyticsShuttleDetector(
+                    checkpoint, expected_sha256=expected_sha, class_id=0
+                )
+            self.assertEqual(detector.expected_class_name, "shuttlecock")
 
     def test_detector_receives_rgb_without_alpha(self):
         image = np.zeros((1, 80, 100, 4), dtype=np.uint8)
