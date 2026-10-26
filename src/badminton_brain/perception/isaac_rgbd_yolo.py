@@ -43,13 +43,17 @@ def _to_numpy(value: Any) -> np.ndarray:
     return np.asarray(value)
 
 
-def _first_view(value: Any, name: str) -> np.ndarray:
+def _first_view(value: Any, name: str, batched_ndim: int) -> np.ndarray:
+    """Strip a leading one-view batch only when the array has the expected batched rank."""
     array = _to_numpy(value)
-    if array.ndim >= 1 and array.shape[0] == 1:
-        array = array[0]
-    elif array.ndim >= 1 and array.shape[0] > 1:
-        raise BrainBoundaryError(
-            name + " contains more than one view; this adapter is N=1 only")
+    if array.ndim == batched_ndim:
+        if array.shape[0] == 1:
+            array = array[0]
+        elif array.shape[0] > 1:
+            raise BrainBoundaryError(
+                name + " contains more than one view; this adapter is N=1 only")
+        else:
+            raise BrainBoundaryError(name + " contains zero views")
     return array
 
 
@@ -87,7 +91,7 @@ def read_camera_frame(camera: Any) -> dict[str, np.ndarray]:
     if "distance_to_image_plane" not in output:
         raise BrainBoundaryError("camera output is missing distance_to_image_plane")
 
-    rgb = _first_view(output["rgb"], "rgb")
+    rgb = _first_view(output["rgb"], "rgb", 4)
     if rgb.ndim != 3 or rgb.shape[2] < 3:
         raise BrainBoundaryError("rgb must have shape HxWxC, got " + repr(rgb.shape))
     rgb = rgb[:, :, :3]
@@ -101,7 +105,7 @@ def read_camera_frame(camera: Any) -> dict[str, np.ndarray]:
         rgb = np.clip(rgb, 0, 255).astype(np.uint8)
     rgb = np.ascontiguousarray(rgb)
 
-    depth = _first_view(output["distance_to_image_plane"], "distance_to_image_plane")
+    depth = _first_view(output["distance_to_image_plane"], "distance_to_image_plane", 4)
     if depth.ndim == 3:
         if depth.shape[2] < 1:
             raise BrainBoundaryError("depth image has no channels")
@@ -116,9 +120,9 @@ def read_camera_frame(camera: Any) -> dict[str, np.ndarray]:
         raise BrainBoundaryError(
             "camera must expose intrinsic_matrices, pos_w, and quat_w_opengl")
 
-    intrinsic = _first_view(data.intrinsic_matrices, "intrinsic_matrices")
-    position = _first_view(data.pos_w, "pos_w").reshape(-1)
-    quaternion = _first_view(data.quat_w_opengl, "quat_w_opengl").reshape(-1)
+    intrinsic = _first_view(data.intrinsic_matrices, "intrinsic_matrices", 3)
+    position = _first_view(data.pos_w, "pos_w", 2).reshape(-1)
+    quaternion = _first_view(data.quat_w_opengl, "quat_w_opengl", 2).reshape(-1)
     if intrinsic.shape != (3, 3) or not np.isfinite(intrinsic).all():
         raise BrainBoundaryError("camera intrinsic matrix must be finite 3x3")
     if position.shape != (3,) or not np.isfinite(position).all():

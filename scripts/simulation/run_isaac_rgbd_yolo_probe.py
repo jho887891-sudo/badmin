@@ -39,6 +39,7 @@ PARSER.add_argument("--target-pos", type=float, nargs=3, default=[-0.5, 0.0, 1.3
 ARGS = PARSER.parse_args()
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT))
 
 
 def sha256_file(path: Path) -> str:
@@ -115,7 +116,6 @@ def main() -> int:
 
         import omni.usd
         import isaaclab.sim as sim_utils
-        from isaaclab.utils import configclass  # noqa: F401
         from pxr import Gf, UsdGeom
 
         from simulation.badminton_scene.scene_cfg import create_scene

@@ -85,6 +85,15 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
         np.testing.assert_allclose(frame["intrinsic_matrix_px"][0, 0], 100.0)
         np.testing.assert_allclose(frame["position_world_m"], [1.0, 2.0, 3.0])
 
+    def test_accepts_unbatched_rgb_and_depth_buffers(self):
+        self.camera.data.output["rgb"] = Proxy(np.zeros((80, 100, 3), dtype=np.uint8))
+        self.camera.data.output["distance_to_image_plane"] = Proxy(
+            np.full((80, 100), 2.0, dtype=np.float32)
+        )
+        frame = read_camera_frame(self.camera)
+        self.assertEqual(frame["rgb"].shape, (80, 100, 3))
+        self.assertEqual(frame["depth_m"].shape, (80, 100))
+
     def test_depth_backprojection_returns_court_frame_measurement(self):
         result = self.module.process(sensor_state(0.0))
         self.assertEqual(result.position.shape, (1, 3))
