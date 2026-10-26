@@ -319,6 +319,9 @@ def audit_eth_train_instances(v2_manifest, min_short: int = DEFAULT_MIN_SHORT, m
                 if actual_digest.lower() != digest.lower():
                     raise EthForegroundBlocked("raw ETH image SHA256 mismatch for %s: manifest=%s actual=%s" %
                                                (image, digest, actual_digest))
+            if actual_digest in frozen["sha256"] or image in frozen["paths"] or stem in frozen["stems"]:
+                reject("eval_content", "actual raw-image SHA256/path/stem matches a frozen evaluation image")
+                continue
             digest = actual_digest
 
         label_path = resolve_label_path(row, label_root)
