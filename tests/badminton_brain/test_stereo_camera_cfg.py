@@ -11,12 +11,13 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "src"))
 
 from simulation.badminton_scene.stereo_camera_cfg import (  # noqa: E402
     build_stereo_camera_sensor_specs,
 )
 from simulation.badminton_scene.scene_layout import CAMERA  # noqa: E402
-from src.badminton_brain.perception.stereo_geometry import forward_camera_rotation  # noqa: E402
+from badminton_brain.perception.stereo_geometry import forward_camera_rotation  # noqa: E402
 
 
 class FakeCfg:
