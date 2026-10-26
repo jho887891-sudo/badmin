@@ -342,11 +342,16 @@ def audit_eth_train_instances(v2_manifest, min_short: int = DEFAULT_MIN_SHORT, m
             short, long_side = min(box_width, box_height), max(box_width, box_height)
             instance_id = ("%s#%d" % (digest, index)) if include_all_sizes else ("%s#%d" % (stem, index))
             if box_width <= 0 or box_height <= 0:
-                invalid_box_count += 1
-                rejections.append({"image": image, "instance_id": instance_id,
-                                   "reason": "quantized_empty_bbox",
-                                   "detail": "box %dx%d px after pixel quantization" % (box_width, box_height),
-                                   "bbox_xyxy": [x1, y1, x2, y2]})
+                if include_all_sizes:
+                    invalid_box_count += 1
+                    rejections.append({"image": image, "instance_id": instance_id,
+                                       "reason": "quantized_empty_bbox",
+                                       "detail": "box %dx%d px after pixel quantization" % (box_width, box_height),
+                                       "bbox_xyxy": [x1, y1, x2, y2]})
+                else:
+                    reject("below_min_size",
+                           "%s#%d is %dx%d px, below the %d/%d px floors" %
+                           (stem, index, box_width, box_height, min_short, min_long))
                 continue
             if not include_all_sizes and (short < min_short or long_side < min_long):
                 reject("below_min_size",
