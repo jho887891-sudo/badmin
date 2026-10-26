@@ -406,6 +406,27 @@ class ShuttleUKF:
                 raise BrainBoundaryError("measurement.valid_mask contains NaN/Inf")
             valid_mask = raw_mask > 0.5
 
+        if measurement.velocity_valid_mask is None:
+            # Backward compatibility: old producers supplied velocity on every
+            # valid row, so absence of the new mask keeps the previous semantics.
+            velocity_valid_mask = np.ones(m, dtype=bool)
+        else:
+            raw_velocity_mask = np.asarray(
+                measurement.velocity_valid_mask, dtype=float
+            ).reshape(-1)
+            if raw_velocity_mask.shape != (m,):
+                raise BrainBoundaryError(
+                    "measurement.velocity_valid_mask must have shape "
+                    f"({m},), got {raw_velocity_mask.shape}"
+                )
+            if not np.isfinite(raw_velocity_mask).all():
+                raise BrainBoundaryError("measurement.velocity_valid_mask contains NaN/Inf")
+            velocity_valid_mask = raw_velocity_mask > 0.5
+            if np.any(velocity_valid_mask & ~valid_mask):
+                raise BrainBoundaryError(
+                    "velocity_valid_mask cannot be true when valid_mask is false"
+                )
+
         obs_dim = 6 if self.fuse_velocity else 3
         innovations = np.zeros((m, obs_dim))
         nis = np.zeros(m)
@@ -418,7 +439,8 @@ class ShuttleUKF:
             r_pos = 0.5 * (cov[j] + cov[j].T) + _MEASUREMENT_JITTER * np.eye(3)
             if not np.isfinite(r_pos).all():
                 raise BrainBoundaryError("measurement covariance contains NaN/Inf")
-            if self.fuse_velocity:
+            use_velocity = self.fuse_velocity and velocity_valid_mask[j]
+            if use_velocity:
                 z = np.concatenate((pos[j], vel[j]))
                 r = np.zeros((6, 6))
                 r[:3, :3] = r_pos
@@ -428,7 +450,7 @@ class ShuttleUKF:
 
             points, wm, wc = self.sigma_points(self._state[e][None, :], self._covariance[e])
             pts = points[0]
-            if self.fuse_velocity:
+            if use_velocity:
                 z_pts = np.concatenate((pts[:, POSITION_SLICE], pts[:, VELOCITY_SLICE]), axis=1)
             else:
                 z_pts = pts[:, POSITION_SLICE]
@@ -452,7 +474,7 @@ class ShuttleUKF:
                 raise FloatingPointError(
                     f"shuttle UKF produced a non-finite state in environment {e}")
 
-            innovations[j] = innovation
+            innovations[j, :innovation.shape[0]] = innovation
             try:
                 nis[j] = float(innovation @ np.linalg.solve(s, innovation))
             except np.linalg.LinAlgError:

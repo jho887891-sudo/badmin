@@ -1,0 +1,52 @@
+name: VIS-C2 CPU regression
+
+on:
+  push:
+    branches:
+      - "chatgpt/vis-c2-*"
+      - "feature/shuttle-detection"
+  pull_request:
+    branches:
+      - "feature/shuttle-detection"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vis-c2-cpu-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cpu-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install CPU-only test dependencies
+        run: python -m pip install --disable-pip-version-check numpy==1.26.4 pytest==8.3.5
+
+      - name: Compile changed Python entry points
+        run: |
+          python -m py_compile \
+            src/badminton_brain/types.py \
+            src/badminton_brain/estimation/shuttle_ukf.py \
+            src/badminton_brain/perception/isaac_rgbd_yolo.py \
+            simulation/badminton_scene/stereo_camera_cfg.py \
+            scripts/simulation/run_isaac_rgbd_yolo_probe.py
+
+      - name: Run VIS-C2 and UKF CPU regressions
+        run: |
+          python -m pytest -q \
+            tests/badminton_brain/test_isaac_rgbd_yolo.py \
+            tests/badminton_brain/test_stereo_camera_cfg.py \
+            tests/badminton_brain/test_ukf_valid_mask_integration.py \
+            tests/badminton_brain/test_shuttle_ukf.py \
+            tests/architecture/test_brain_pipeline.py
