@@ -129,9 +129,12 @@ def run_mask_candidates(inventory_csv: str | Path, output_dir: str | Path, *,
             label_sha=sha256_file(label_path)
             if label_sha.lower()!=str(row['label_sha256']).lower():
                 raise MaskRunBlocked('source_label_sha256_mismatch')
-            with Image.open(image_path) as im:
-                im.verify()
-            image=np.asarray(Image.open(image_path).convert('RGB'))
+            try:
+                with Image.open(image_path) as im:
+                    im.verify()
+                image=np.asarray(Image.open(image_path).convert('RGB'))
+            except Exception as exc:
+                raise MaskRunBlocked('source_image_unreadable:'+type(exc).__name__) from exc
             h,w=image.shape[:2]
             bbox=_bbox(row['bbox_xyxy'],w,h)
             x0,y0,x1,y1=bbox;bw=x1-x0;bh=y1-y0
