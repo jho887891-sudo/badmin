@@ -64,6 +64,35 @@ MORPH_PLACEHOLDER = dict(
     top_z=0.25,
 )
 
+REBOT_RS = dict(
+    # Formal arm since the 2026-10 migration. Mixing these numbers with the PiPER block below is a
+    # defect: the two arms have different joint ranges, link lengths and masses.
+    source="TEMP_PARAMETERIZED_PROXY",
+    usd="/home/T7/dgut/robot_sim/assets/robots/badminton_robot/rebot_b601_rs"
+        "/usd/rebot_b601_rs.usd/ReBot_Arm_RS/ReBot_Arm_RS.usda",
+    # mount relative to robot_base origin (robot_base at world (-1.6,0,0))
+    mount_rel=(0.0, 0.0, 0.30),
+    mount_world=(-1.60, 0.0, 0.30),
+    # Engineering baseline rest pose INSIDE the official URDF ranges. Note the PiPER rest pose
+    # (joint2=1.5, joint3=-1.5) is NOT reachable on this arm: joint2 and joint3 are [0, 3.14] here.
+    # Chosen from geometry (outputs/simulation/rebot_b601_rs/rest_pose_probe.json): no link below
+    # the base plane, link6 sits 0.497 m above the mount.
+    rest_joint_pos={"joint1": 0.0, "joint2": 0.3, "joint3": 1.0,
+                    "joint4": 0.0, "joint5": 0.0, "joint6": 0.0},
+    # Drive gains, DERIVED rather than guessed (F1 follow-up, multi-env round):
+    #   * the position drive is a P controller, so a gravity-loaded joint settles at tau_g / k;
+    #   * three measured steady-state errors at the same target (k=100: 0.053228 rad,
+    #     k=300: 0.017627 rad, k=1000: 0.005675 rad) all imply tau_g = 5.3 N m at the rest pose, and
+    #     the error scales exactly as 1/k - evidence that it is lag, not a broken drive;
+    #   * with a 0.02 rad steady-state error budget: k >= 5.3 / 0.02 = 265, so k = 300 is chosen;
+    #   * damping 20 keeps the response settled (at k=100 / c=1 the joints were still moving at
+    #     0.17 rad/s after 2.5 s; at 300 / 20 the residual is below 0.02 rad/s).
+    # Raising the gain further would shrink the error, but this value is the one the error budget
+    # justifies; nothing here relaxes a joint limit or a safety value.
+    stiffness=300.0,
+    damping=20.0,
+)
+
 PIPER = dict(
     # mount relative to robot_base origin (robot_base at world (-1.6,0,0))
     mount_rel=(0.0, 0.0, 0.30),

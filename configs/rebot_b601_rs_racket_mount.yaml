@@ -1,0 +1,28 @@
+schema_version: "1.0"
+schema: "rebot_b601_rs_racket_mount/1"
+robot_model: "rebot_b601_rs"
+
+frame_convention:
+  transform_definition: "T_A_B maps points expressed in frame B into frame A"
+  length_unit: "metre"
+  quaternion_order: "wxyz"
+
+world_from_arm_root:
+  status: "UNKNOWN"
+  translation_m: null
+  quaternion_wxyz: null
+  note: "Supply from a verified runtime pose or calibration. Do not infer a physical Morph One mount from the temporary scene-layout pose."
+
+gripper_end_from_racket_root:
+  status: "UNKNOWN"
+  translation_m: null
+  quaternion_wxyz: null
+  source: null
+  note: "Must be measured on the installed B601-RS + racket/adapter assembly. Identity is not a valid default."
+
+racket_root_from_contact_proxy:
+  status: "PROXY_DERIVED"
+  source_file: "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/racket_collision_proxy.json"
+  source_json_pointer: "/source_meshes/1"
+  derivation: "Midpoint of the visual-only string-bed bounding box; computed at runtime from bbox_min_m and bbox_max_m."
+  note: "This is a string-bed centre proxy, not a measured sweet spot and not a physical contact calibration."

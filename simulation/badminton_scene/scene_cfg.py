@@ -12,10 +12,14 @@ from isaaclab.scene import InteractiveScene, InteractiveSceneCfg
 from isaaclab.utils.configclass import configclass
 from pxr import Usd, UsdGeom, UsdShade, UsdPhysics, Sdf, Gf
 
+import torch
 from .scene_layout import (CAMERA, PIPER, MORPH_PLACEHOLDER,
                            PERCEPTION_ROI, CANDIDATE_STRIKE_ROI, SPAWN_REGION,
-                           TARGET_ZONE, SIMULATION)
-from .robot_cfg import ROBOT_ARTICULATION_CFG, MORPH
+                           TARGET_ZONE, SIMULATION, REBOT_RS)
+from .robot_cfg import (ARM_MODEL, MORPH, ROBOT_ARTICULATION_CFG,
+                        REBOT_RS_PRIM_PATH, spawn_rebot_rs_directly)
+from .assembly_route import resolve_scene_arm_route
+from .rs_physics import rebot_rs_simulation_cfg
 from .shuttle_cfg import SHUTTLE_CFG
 
 SIM_DT = SIMULATION["physics_dt"]
@@ -106,16 +110,56 @@ class BadmintonSceneCfg(InteractiveSceneCfg):
 
 
 @configclass
+class ShuttleOnlySceneCfg(InteractiveSceneCfg):
+    """Shuttle without the scene-registered robot (the formal arm is spawned directly)."""
+    shuttle: object = SHUTTLE_CFG
+
+
+@configclass
 class CourtOnlySceneCfg(InteractiveSceneCfg):
     """Default scene: the user's court asset only (no robot, no shuttle, no ROIs,
     no placeholders, no ground). A camera may still be attached for rendering."""
 
 
 def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_axes=None, statics_mode="first",
-                 include_robot: bool = False, include_shuttle: bool = False, include_ground: bool = False):
-    sim = sim_utils.SimulationContext(sim_utils.SimulationCfg(dt=SIM_DT, device="cuda:0"))
-    _cfg_cls = BadmintonSceneCfg if (include_robot or include_shuttle) else CourtOnlySceneCfg
+                 include_robot: bool = False, include_shuttle: bool = False, include_ground: bool = False,
+                 include_racket: bool = False, racket_mount_transform=None, racket_visual_path=None):
+    # F1: the converted B601-RS gets no drive torque when registered through InteractiveScene, so the
+    # formal arm is spawned and bound directly (verified to hold the rest pose). See
+    # management/rebot_b601_rs/ARM_MIGRATION_RECORD.md section E/F1.
+    # The route (and the num_envs guard) lives in a pure helper so it can be unit tested without
+    # Isaac Sim: see tests/simulation/rebot_b601_rs/test_scene_arm_route.py.
+    _direct_arm = resolve_scene_arm_route(
+        include_robot=include_robot, arm_model=ARM_MODEL, num_envs=num_envs) == "direct"
+    if include_racket:
+        if not include_robot or not _direct_arm:
+            raise ValueError("include_racket requires include_robot=True with the formal B601-RS direct-articulation route")
+        # Validate the mount and visual asset before creating SimulationContext or touching the GPU.
+        from .racket_mount_adapter import validate_mount_transform, resolve_racket_visual_path
+        validate_mount_transform(racket_mount_transform)
+        racket_visual_path = str(resolve_racket_visual_path(racket_visual_path))
+    # Only the formal B601-RS path opts into the TGS velocity-consistency fix.
+    _sim_cfg = (rebot_rs_simulation_cfg(dt=SIM_DT) if _direct_arm
+                else sim_utils.SimulationCfg(dt=SIM_DT, device="cuda:0"))
+    sim = sim_utils.SimulationContext(_sim_cfg)
+    if _direct_arm:
+        _mount = REBOT_RS["mount_world"]
+        _origin0 = SIMULATION["env_spacing"] * 0.0  # env_0 origin x offset is 0; see env_origin helper
+        _direct_robot = spawn_rebot_rs_directly(
+            translation=(_mount[0] + _origin0, _mount[1], _mount[2]))
+        _cfg_cls = ShuttleOnlySceneCfg if include_shuttle else CourtOnlySceneCfg
+    else:
+        _direct_robot = None
+        _cfg_cls = BadmintonSceneCfg if (include_robot or include_shuttle) else CourtOnlySceneCfg
     scene = InteractiveScene(_cfg_cls(num_envs=num_envs, env_spacing=SIMULATION["env_spacing"]))
+    if include_racket:
+        from .racket_mount_adapter import attach_racket_visual
+        attach_racket_visual(
+            stage=_stage(),
+            arm_prim_path=REBOT_RS_PRIM_PATH,
+            mount_transform=racket_mount_transform,
+            asset_path=racket_visual_path,
+        )
     # large static ground collider covering the whole vectorised env grid
     _eo = scene.env_origins.cpu().float()
     _cx = float((_eo[:, 0].min() + _eo[:, 0].max()) / 2.0)
@@ -124,7 +168,10 @@ def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_ax
     if include_ground:
         _g = _box("/World/Ground", (2.0 * _half, 2.0 * _half, 0.40), (_cx, _cy, -0.203),
                   (0.10, 0.10, 0.10), collision=True)
-        UsdGeom.Imageable(_g).MakeInvisible()
+        # _box returns a prim PATH; UsdGeom.Imageable needs the prim itself (passing the string raises
+        # Boost.Python.ArgumentError). This path is only reached with include_ground=True, which the
+        # court-only default never exercised.
+        UsdGeom.Imageable(_stage().GetPrimAtPath(_g)).MakeInvisible()
     light = sim_utils.DistantLightCfg(intensity=700.0, color=(0.8, 0.8, 0.8))
     light.func("/World/Light", light, translation=(0.0, 0.0, 10.0))
     dome = sim_utils.DomeLightCfg(intensity=350.0, color=(0.85, 0.88, 0.95))
@@ -151,15 +198,42 @@ def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_ax
             _box(_p + "/Z", (_th, _th, _ln), (0.0, 0.0, _ln / 2.0), (0.05, 0.2, 1.0))
             _xf = UsdGeom.Xform.Define(_stage(), _p)
             _xf.AddTranslateOp().Set(Gf.Vec3d(0.0, 0.0, 0.0))
-            _xf.AddOrientOp().Set(Gf.Quatf(1.0, Gf.Vec3f(0.0, 0.0, 0.0)))
+            # An xformOp's precision is fixed when the op is created: an op added here wants GfQuatf while a
+            # spawner-created op wants GfQuatd. Setting the wrong one raises "Type mismatch for ...: expected
+            # 'GfQuatf', got 'GfQuatd'" (and the mirror image), so match the op's own declared precision.
+            _orient = _xf.AddOrientOp()
+            if _orient.GetPrecision() == UsdGeom.XformOp.PrecisionDouble:
+                _orient.Set(Gf.Quatd(1.0, Gf.Vec3d(0.0, 0.0, 0.0)))
+            else:
+                _orient.Set(Gf.Quatf(1.0, Gf.Vec3f(0.0, 0.0, 0.0)))
     sim.reset()
-    robot = scene.articulations.get("robot") if include_robot else None
+    if _direct_arm:
+        _jp = torch.tensor(
+            [[REBOT_RS["rest_joint_pos"].get(nm, 0.0) for nm in _direct_robot.joint_names]],
+            dtype=torch.float32, device=_direct_robot.device)
+        _direct_robot.write_joint_state_to_sim(_jp, torch.zeros_like(_jp))
+        _direct_robot.set_joint_position_target(_jp)
+        _direct_robot.write_data_to_sim()
+        scene.direct_articulations = [_direct_robot]
+        robot = _direct_robot
+    else:
+        robot = scene.articulations.get("robot") if include_robot else None
     shuttle = scene.rigid_objects.get("shuttle") if include_shuttle else None
     return sim, scene, robot, shuttle, contact_sensor, extra
 
 
 def step_env(scene, sim, dt=None):
-    """One simulation step with data sync + buffer update."""
+    """One simulation step with data sync + buffer update.
+
+    Articulations spawned directly (F1 workaround) are not part of InteractiveScene, so they are
+    written before the step and refreshed after it.
+    """
+    _dt = SIM_DT if dt is None else dt
+    _direct = getattr(scene, "direct_articulations", ())
     scene.write_data_to_sim()
+    for _art in _direct:
+        _art.write_data_to_sim()
     sim.step()
-    scene.update(SIM_DT if dt is None else dt)
+    scene.update(_dt)
+    for _art in _direct:
+        _art.update(_dt)
