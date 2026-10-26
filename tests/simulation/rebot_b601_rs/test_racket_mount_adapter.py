@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "simulation"))
 
 from badminton_scene.racket_mount_adapter import (  # noqa: E402
     RacketMountError,
+    _quat_wxyz_from_z_axis,
     gripper_end_prim_path,
     load_racket_collision_proxy,
     racket_mount_prim_path,
@@ -98,3 +99,26 @@ def test_collision_proxy_loader_rejects_unknown_primitive_type(tmp_path):
     path.write_text(json.dumps(bad), encoding="utf-8")
     with pytest.raises(RacketMountError, match="unsupported collision primitive"):
         load_racket_collision_proxy(str(path))
+
+
+
+@pytest.mark.parametrize("direction", [
+    (0.0, 0.0, 1.0),
+    (1.0, 0.0, 0.0),
+    (0.0, 1.0, 0.0),
+    (0.0, 0.0, -1.0),
+    (1.0, 2.0, 3.0),
+])
+def test_capsule_quaternion_rotates_local_z_onto_proxy_segment(direction):
+    import math
+    import numpy as np
+
+    w, x, y, z = _quat_wxyz_from_z_axis(direction)
+    rotation = np.array([
+        [1 - 2 * (y*y + z*z), 2 * (x*y - z*w), 2 * (x*z + y*w)],
+        [2 * (x*y + z*w), 1 - 2 * (x*x + z*z), 2 * (y*z - x*w)],
+        [2 * (x*z - y*w), 2 * (y*z + x*w), 1 - 2 * (x*x + y*y)],
+    ])
+    target = np.asarray(direction, dtype=float)
+    target /= np.linalg.norm(target)
+    assert rotation @ np.array([0.0, 0.0, 1.0]) == pytest.approx(target, abs=1e-6)
