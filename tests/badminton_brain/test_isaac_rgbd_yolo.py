@@ -18,7 +18,7 @@ from badminton_brain.perception.isaac_rgbd_yolo import (  # noqa: E402
     UltralyticsShuttleDetector,
     read_camera_frame,
 )
-from badminton_brain.types import RobotSensorState  # noqa: E402
+from badminton_brain.types import BrainBoundaryError, COURT_FRAME, RobotSensorState  # noqa: E402
 
 
 class Proxy:
@@ -102,6 +102,7 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
         self.assertEqual(result.position.shape, (1, 3))
         np.testing.assert_allclose(result.position[0], [1.0, 2.0, 1.0], atol=1e-8)
         np.testing.assert_allclose(result.valid_mask, [1.0])
+        self.assertEqual(result.frame, COURT_FRAME)
         self.assertEqual(self.module.last_diagnostic["reason"], "detection_and_depth_valid")
 
     def test_no_detection_is_a_masked_miss_not_origin_measurement(self):
@@ -139,7 +140,7 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
         rgb = np.zeros((1, 80, 100, 3), dtype=np.float32)
         rgb[0, 0, 0, 0] = np.nan
         self.camera.data.output["rgb"] = Proxy(rgb)
-        with self.assertRaisesRegex(Exception, "rgb buffer contains NaN/Inf"):
+        with self.assertRaisesRegex(BrainBoundaryError, "rgb buffer contains NaN/Inf"):
             self.module.process(sensor_state(0.0))
 
     def test_velocity_uses_two_valid_timestamped_measurements(self):

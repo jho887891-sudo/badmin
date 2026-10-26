@@ -7,7 +7,7 @@ loaded only when UltralyticsShuttleDetector is constructed.
 
 Authenticity boundaries:
 - It consumes rendered RGB and distance-to-image-plane buffers, never shuttle GT.
-- It only supports one environment until env-origin to court-frame handling is verified.
+- It is N=1 only. The project layout defines env_0 world origin and court-frame origin at the net centre with aligned axes; this identity mapping is an explicit scene assumption, not a hardware calibration.
 - The configured camera rig and pixel/depth uncertainty are simulation engineering
   parameters, not measured hardware calibration.
 - A valid depth projection is a measurement candidate, not proof of 3D accuracy.
@@ -244,9 +244,11 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
     """Single-view RGB-D perception module for the existing brain message contract.
 
     The returned point is back-projected from the highest-confidence target-class
-    bounding-box centre using the depth pixels in a central box patch. A second
-    camera can be evaluated independently and compared by the integration probe.
-    This is intentionally not labelled as stereo triangulation.
+    bounding-box centre using the depth pixels in a central box patch. For env_0,
+    the existing scene contract aligns the world frame with the court frame, so
+    these coordinates are passed through unchanged. This identity mapping is not
+    generalized to cloned environments. A second camera can be evaluated
+    independently and compared by the integration probe. This is not stereo triangulation.
     """
 
     name = "isaac_rgbd_yolo_perception"
@@ -338,6 +340,7 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
             covariance=(np.eye(3, dtype=float) * 1e6)[None, :, :],
             timestamp=timestamp,
             valid_mask=np.array([0.0]),
+            frame="court",
         )
 
     def process(self, sensors: RobotSensorState) -> ShuttleMeasurement:
@@ -470,6 +473,7 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
             covariance=covariance_world[None, :, :],
             timestamp=timestamp,
             valid_mask=np.array([1.0]),
+            frame="court",
         )
 
 

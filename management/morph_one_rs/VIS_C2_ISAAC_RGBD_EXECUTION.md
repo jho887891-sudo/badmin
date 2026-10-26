@@ -6,7 +6,7 @@ Status at authoring time: implementation submitted for review; **Isaac Sim runti
 
 Connect the existing single-environment court scene to two actual Isaac Lab camera sensors, read RGB plus distance-to-image-plane depth, run a caller-selected already-trained Ultralytics-compatible YOLO checkpoint, and produce timestamped 3D measurement candidates.
 
-This is a sensor/inference integration gate only. The reported 3D coordinates are world-frame values; no court-frame transform has been calibrated or independently verified. It does not run the robot, send commands, train YOLO, or claim calibrated 3D accuracy.
+This is a sensor/inference integration gate only. For env_0, world-frame coordinates are passed through as court-frame coordinates because the project layout defines the court origin at the net centre and aligns the world axes. This identity mapping is a scene assumption, not an independently verified runtime transform or hardware calibration. The probe does not generalize to cloned environments. It does not run the robot, send commands, train YOLO, or claim calibrated 3D accuracy.
 
 ## Preconditions
 
