@@ -43,7 +43,7 @@ This VIS-C2 probe is not the full fixed evaluation harness. It emits per-frame o
 
 ## Acceptance
 
-Preliminary VIS-C2 PASS requires both cameras to return correctly shaped RGB and depth, finite runtime intrinsics/pose, at least one target detection from each camera, and at least one valid depth-derived 3D measurement from each camera.
+Preliminary VIS-C2 PASS requires both cameras to return correctly shaped RGB and depth, finite runtime intrinsics/pose, at least one prediction of the required target class from each camera, and at least one valid depth-derived 3D measurement from each camera. This does not prove the predicted box belongs to the rendered shuttle fixture: fixture association is not evaluated in this gate.
 
 A detector miss is not a camera sensor failure. The script records camera status separately and returns a non-zero status if either camera has no valid detection/measurement.
 
