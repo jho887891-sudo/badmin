@@ -31,7 +31,7 @@ jobs:
         run: python -m pip install --upgrade "numpy>=1.24,<3" "pytest>=7,<9" "usd-core==25.11"
       - name: Run P0 and P6 regression tests
         run: |
-          python -m pytest -q \
+          python -m pytest -q -rs \
             tests/simulation/rebot_b601_rs/test_scene_arm_route.py \
             tests/simulation/rebot_b601_rs/test_racket_mount_adapter.py \
             tests/simulation/p6_racket_contact_kinematics_test.py \
