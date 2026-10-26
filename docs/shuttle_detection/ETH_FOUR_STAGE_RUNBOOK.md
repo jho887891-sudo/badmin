@@ -33,6 +33,31 @@ pytest -q tests/test_eth_four_stage_*.py
 
 CPU 夹具的输出必须是 `CPU_FIXTURE_ONLY`、`optimizer_steps: 0`、`real_recall: UNKNOWN`。文件包括 `stage1.png/.txt`、`stage2.png/.txt`、`stage4.png/.txt`、`manifest.json`；旧目录存在时拒绝覆盖。
 
+## 下一步：真实 ETH 全量框清单（必须在数据实际挂载的 Linux 端执行）
+
+本分支的仓库文件 data/eth_real_hardneg_v2_train_manifest.csv 当前是 **0 字节**，不能作为真实清单。请从已挂载的数据位置指定实际的 V2 manifest、标签根目录和冻结评测 manifest；不要把这个空占位文件当作成功输入。
+
+先在远端仓库根目录执行：
+
+~~~bash
+set -euo pipefail
+: "$ETH_V2_MANIFEST"
+: "$ETH_LABEL_ROOT"
+: "$FROZEN_EVAL_MANIFEST"
+OUT_ROOT="$(mktemp -d /tmp/eth-four-stage-inventory.XXXXXX)"
+python tools/eth_four_stage_inventory.py \
+  --manifest "$ETH_V2_MANIFEST" \
+  --label-root "$ETH_LABEL_ROOT" \
+  --frozen-eval-manifest "$FROZEN_EVAL_MANIFEST" \
+  --out-inventory "$OUT_ROOT/instances.csv" \
+  --out-audit "$OUT_ROOT/audit.json"
+printf 'ETH_INVENTORY_OUTPUT=%s\n' "$OUT_ROOT"
+~~~
+
+若有多个冻结评测清单，重复传入 --frozen-eval-manifest。命令会检查实际图片是否存在、图片宽高是否与 manifest 一致、图片 SHA256 是否匹配；会调用原有 prepare_eth_real_foregrounds.py 的 V2 parser 和 train/eval 来源过滤，并在新模式下绕过历史 10/24 px 门槛。**旧版默认门槛保持不变。**
+
+成功输出只代表 CANDIDATES_PENDING_REVIEW，下一道门仍是人工 Mask 审核，不代表可以训练。若出现 BLOCKED_DATA_INVENTORY，保留完整错误信息与路径，不要生成空清单来绕过。
+
 ## 真正的 ETH 运行前置门
 
 1. 读取实际远端 ETH TRAIN 原图、标注与冻结验证集清单，原图 SHA256 可核对；不得把 val/test 或任何评测派生图加入训练。
