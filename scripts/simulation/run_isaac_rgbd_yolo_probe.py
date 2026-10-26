@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import platform
 import subprocess
 import sys
@@ -92,6 +93,23 @@ def main() -> int:
         PARSER.error("checkpoint does not exist: " + str(checkpoint))
     if not shuttle_usd.is_file():
         PARSER.error("shuttle visual USD does not exist: " + str(shuttle_usd))
+    court_asset = Path(os.environ.get(
+        "BADMINTON_COURT_ASSET_USD",
+        str(REPO_ROOT / "assets" / "court" / "badminton_court.usd"),
+    )).expanduser().resolve()
+    if not court_asset.is_file():
+        PARSER.error("court USD asset does not exist: " + str(court_asset))
+    os.environ["BADMINTON_COURT_ASSET_USD"] = str(court_asset)
+    if ARGS.expected_checkpoint_sha256 is not None:
+        expected_sha = str(ARGS.expected_checkpoint_sha256).strip().lower()
+        if len(expected_sha) != 64 or any(ch not in "0123456789abcdef" for ch in expected_sha):
+            PARSER.error("--expected-checkpoint-sha256 must be 64 hexadecimal characters")
+        actual_sha = sha256_file(checkpoint)
+        if actual_sha.lower() != expected_sha:
+            PARSER.error(
+                "checkpoint SHA256 mismatch before Isaac startup: expected " +
+                expected_sha + ", got " + actual_sha
+            )
     if ARGS.frames < 1:
         PARSER.error("--frames must be >= 1")
     if ARGS.imgsz < 32:
@@ -113,6 +131,10 @@ def main() -> int:
     if out.exists():
         PARSER.error("refusing to overwrite existing output directory: " + str(out))
     out.mkdir(parents=True, exist_ok=False)
+    print("[preflight] checkpoint SHA256: " + sha256_file(checkpoint), flush=True)
+    print("[preflight] court USD: " + str(court_asset), flush=True)
+    print("[preflight] shuttle visual USD: " + str(shuttle_usd), flush=True)
+    print("[preflight] output: " + str(out), flush=True)
 
     ARGS.headless = True
     ARGS.enable_cameras = True
