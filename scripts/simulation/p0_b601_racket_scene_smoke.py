@@ -227,30 +227,74 @@ def main(argv=None) -> int:
             raise RuntimeError("non-finite joint position after simulation steps")
 
         cache = UsdGeom.XformCache(Usd.TimeCode.Default())
-        gripper_world = cache.GetLocalToWorldTransform(gripper).Transform(Gf.Vec3d(0.0, 0.0, 0.0))
+        gripper_world_xf = cache.GetLocalToWorldTransform(gripper)
+        gripper_world = gripper_world_xf.Transform(Gf.Vec3d(0.0, 0.0, 0.0))
         visual_prim = stage.GetPrimAtPath(visual_path)
-        visual_world = cache.GetLocalToWorldTransform(visual_prim).Transform(Gf.Vec3d(0.0, 0.0, 0.0))
+        mount_prim = stage.GetPrimAtPath(mount_path)
+        visual_world_xf = cache.GetLocalToWorldTransform(visual_prim)
+        mount_world_xf = cache.GetLocalToWorldTransform(mount_prim)
+        visual_world = visual_world_xf.Transform(Gf.Vec3d(0.0, 0.0, 0.0))
+
+        # A reference to /RacketVisual must preserve its authored root frame. Compare
+        # origin and three local basis probes against RacketMount to detect an
+        # unexpected reference transform or an accidental unit/scale change.
+        probes = (
+            Gf.Vec3d(0.0, 0.0, 0.0),
+            Gf.Vec3d(0.1, 0.0, 0.0),
+            Gf.Vec3d(0.0, 0.1, 0.0),
+            Gf.Vec3d(0.0, 0.0, 0.1),
+        )
+        mount_visual_probe_error_m = max(
+            math.dist(
+                tuple(mount_world_xf.Transform(point)),
+                tuple(visual_world_xf.Transform(point)),
+            )
+            for point in probes
+        )
+
+        link6_path = gripper_path.rsplit("/", 1)[0]
+        link6_prim = stage.GetPrimAtPath(link6_path)
+        collider_body_ancestors = {}
+        for prim in colliders:
+            ancestor = prim
+            body_path = None
+            while ancestor and ancestor.IsValid():
+                if ancestor.HasAPI(UsdPhysics.RigidBodyAPI):
+                    body_path = str(ancestor.GetPath())
+                    break
+                ancestor = ancestor.GetParent()
+            collider_body_ancestors[str(prim.GetPath())] = body_path
+        unique_body_ancestors = sorted({value for value in collider_body_ancestors.values()})
 
         checks = {
             "arm_root_prim_valid": bool(arm_root.IsValid()),
             "gripper_end_prim_valid": bool(gripper.IsValid()),
+            "link6_prim_valid": bool(link6_prim.IsValid()),
+            "link6_has_rigid_body": bool(link6_prim.HasAPI(UsdPhysics.RigidBodyAPI)),
             "racket_visual_prim_valid": bool(visual_prim.IsValid()),
+            "racket_mount_prim_valid": bool(mount_prim.IsValid()),
             "collision_proxy_prim_valid": bool(proxy_root.IsValid()),
             "collision_primitive_count": len(colliders),
             "expected_collision_primitive_count": int(proxy_doc["primitive_count"]),
             "capsule_count": capsule_count,
             "box_count": box_count,
+            "collision_proxy_rigid_body_ancestor_paths": unique_body_ancestors,
+            "all_collision_shapes_bound_to_link6": bool(
+                link6_prim.IsValid()
+                and link6_prim.HasAPI(UsdPhysics.RigidBodyAPI)
+                and unique_body_ancestors == [str(link6_prim.GetPath())]
+            ),
+            "visual_mount_alignment_max_probe_error_m": mount_visual_probe_error_m,
+            "visual_aligned_with_mount": mount_visual_probe_error_m <= 1e-5,
             "joint_count": len(robot.joint_names),
             "joint_names": list(robot.joint_names),
             "joint_positions_rad_or_m": [float(v) for v in joint_pos],
             "simulation_steps_completed": args.steps,
             "gripper_end_world_position_m": [float(v) for v in gripper_world],
             "racket_visual_origin_world_position_m": [float(v) for v in visual_world],
-            "mount_status_on_mount_prim": stage.GetPrimAtPath(mount_path).GetCustomDataByKey("badminton_mount_status"),
+            "mount_status_on_mount_prim": mount_prim.GetCustomDataByKey("badminton_mount_status"),
             "mount_status_on_visual_prim": visual_prim.GetCustomDataByKey("badminton_mount_status"),
-            "racket_has_separate_rigid_body": bool(
-                stage.GetPrimAtPath(mount_path).HasAPI(UsdPhysics.RigidBodyAPI)
-            ),
+            "racket_has_separate_rigid_body": bool(mount_prim.HasAPI(UsdPhysics.RigidBodyAPI)),
         }
         report["checks"] = checks
         expected = int(proxy_doc["primitive_count"])
@@ -260,6 +304,20 @@ def main(argv=None) -> int:
             raise RuntimeError("unexpected collision primitive type distribution")
         if len(robot.joint_names) < 8:
             raise RuntimeError("expected the B601-RS 8-DOF articulation, got %d joints" % len(robot.joint_names))
+        if not checks["link6_has_rigid_body"]:
+            raise RuntimeError("link6 does not carry UsdPhysics.RigidBodyAPI; proxy inheritance is not verified")
+        if not checks["all_collision_shapes_bound_to_link6"]:
+            raise RuntimeError(
+                "collision shapes do not all resolve to link6 as their nearest rigid-body ancestor: "
+                + repr(unique_body_ancestors)
+            )
+        if not checks["visual_aligned_with_mount"]:
+            raise RuntimeError(
+                "referenced racket visual root does not match RacketMount transform; max probe error %.6g m"
+                % mount_visual_probe_error_m
+            )
+        if checks["racket_has_separate_rigid_body"]:
+            raise RuntimeError("racket mount unexpectedly has a separate RigidBodyAPI")
         if checks["mount_status_on_mount_prim"] != mount["status"]:
             raise RuntimeError("mount evidence label missing from RacketMount prim")
         if checks["mount_status_on_visual_prim"] != mount["status"]:
