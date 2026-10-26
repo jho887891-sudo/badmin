@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import re
@@ -27,6 +28,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import clean_cp_contract as C  # noqa: E402
@@ -224,8 +226,17 @@ def _pixel_box(box, frame_width: int, frame_height: int) -> list:
             max(0, min(frame_width, x2)), max(0, min(frame_height, y2))]
 
 
+def _sha256_path(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def audit_eth_train_instances(v2_manifest, min_short: int = DEFAULT_MIN_SHORT, min_long: int = DEFAULT_MIN_LONG,
-                              *, label_root=None, frozen_eval_manifests=()) -> dict:
+                              *, label_root=None, frozen_eval_manifests=(),
+                              include_all_sizes: bool = False, require_image_files: bool = False) -> dict:
     """Select ETH train-only real positives and record a reason for every row that was not selected.
 
     Every rejection is enumerated, so an evaluation image that never becomes a foreground leaves a trace
@@ -245,6 +256,8 @@ def audit_eth_train_instances(v2_manifest, min_short: int = DEFAULT_MIN_SHORT, m
 
     instances: list = []
     rejections: list = []
+    eligible_train_label_boxes = 0
+    invalid_box_count = 0
     for row in rows:
         image = str(row.get("image") or "").strip()
         stem = Path(image).stem if image else ""
@@ -286,6 +299,28 @@ def audit_eth_train_instances(v2_manifest, min_short: int = DEFAULT_MIN_SHORT, m
         if frame_width <= 0 or frame_height <= 0:
             raise EthForegroundBlocked("image %s has no usable frame size: %dx%d" % (image, frame_width, frame_height))
 
+        if include_all_sizes or require_image_files:
+            image_path = Path(image)
+            if not image_path.is_file():
+                raise EthForegroundBlocked("raw ETH image missing: %s (BLOCKED_FOREGROUND_IMAGES_MISSING)" % image)
+            try:
+                with Image.open(image_path) as image_obj:
+                    actual_width, actual_height = image_obj.size
+                    image_obj.verify()
+            except Exception as exc:
+                raise EthForegroundBlocked("raw ETH image unreadable: %s (%s)" % (image, exc))
+            if (actual_width, actual_height) != (frame_width, frame_height):
+                raise EthForegroundBlocked("manifest/image dimensions disagree for %s: manifest=%dx%d actual=%dx%d" %
+                                           (image, frame_width, frame_height, actual_width, actual_height))
+            actual_digest = _sha256_path(image_path)
+            if include_all_sizes:
+                if not re.fullmatch(r"[0-9a-fA-F]{64}", digest):
+                    raise EthForegroundBlocked("missing valid SHA256 in V2 manifest for %s" % image)
+                if actual_digest.lower() != digest.lower():
+                    raise EthForegroundBlocked("raw ETH image SHA256 mismatch for %s: manifest=%s actual=%s" %
+                                               (image, digest, actual_digest))
+            digest = actual_digest
+
         label_path = resolve_label_path(row, label_root)
         boxes = parse_yolo_label(label_path)
         declared = str(row.get("n_boxes") or "").strip()
@@ -297,17 +332,26 @@ def audit_eth_train_instances(v2_manifest, min_short: int = DEFAULT_MIN_SHORT, m
             reject("no_boxes", "label %s carries no instance" % label_path)
             continue
 
+        eligible_train_label_boxes += len(boxes)
         for index, box in enumerate(boxes):
             x1, y1, x2, y2 = _pixel_box(box, frame_width, frame_height)
             box_width, box_height = x2 - x1, y2 - y1
             short, long_side = min(box_width, box_height), max(box_width, box_height)
-            if short < min_short or long_side < min_long:
+            instance_id = ("%s#%d" % (digest, index)) if include_all_sizes else ("%s#%d" % (stem, index))
+            if box_width <= 0 or box_height <= 0:
+                invalid_box_count += 1
+                rejections.append({"image": image, "instance_id": instance_id,
+                                   "reason": "quantized_empty_bbox",
+                                   "detail": "box %dx%d px after pixel quantization" % (box_width, box_height),
+                                   "bbox_xyxy": [x1, y1, x2, y2]})
+                continue
+            if not include_all_sizes and (short < min_short or long_side < min_long):
                 reject("below_min_size",
                        "%s#%d is %dx%d px, below the %d/%d px floors" % (stem, index, box_width, box_height,
                                                                         min_short, min_long))
                 continue
             instances.append({
-                "instance_id": "%s#%d" % (stem, index),
+                "instance_id": instance_id,
                 "image": image,
                 "label": str(label_path),
                 "location": str(row.get("location") or "").strip(),
@@ -339,7 +383,10 @@ def audit_eth_train_instances(v2_manifest, min_short: int = DEFAULT_MIN_SHORT, m
         "manifest": str(manifest_path),
         "min_short": int(min_short),
         "min_long": int(min_long),
+        "include_all_sizes": bool(include_all_sizes),
         "rows": len(rows),
+        "eligible_train_label_boxes": eligible_train_label_boxes,
+        "invalid_box_count": invalid_box_count,
         "instances": instances,
         "rejections": rejections,
         "rejections_by_reason": by_reason,
