@@ -43,6 +43,8 @@ def fake_isaaclab_modules():
     sensors = types.ModuleType("isaaclab.sensors")
     sensors.Camera = FakeCamera
     sensors.CameraCfg = FakeCameraCfg
+    isaaclab.sim = sim
+    isaaclab.sensors = sensors
     return {
         "isaaclab": isaaclab,
         "isaaclab.sim": sim,
