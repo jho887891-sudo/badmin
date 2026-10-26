@@ -165,6 +165,7 @@ class UltralyticsShuttleDetector:
         conf: float = 0.25,
         device: str = "cuda:0",
         class_id: Optional[int] = 0,
+        expected_sha256: Optional[str] = None,
     ) -> None:
         self.checkpoint_path = Path(checkpoint_path).expanduser().resolve()
         if not self.checkpoint_path.is_file():
@@ -178,6 +179,16 @@ class UltralyticsShuttleDetector:
         self.device = str(device)
         self.class_id = None if class_id is None else int(class_id)
         self.checkpoint_sha256 = _sha256_file(self.checkpoint_path)
+        expected = None if expected_sha256 is None else str(expected_sha256).strip().lower()
+        if expected is not None:
+            if len(expected) != 64 or any(ch not in "0123456789abcdef" for ch in expected):
+                raise ValueError("expected_sha256 must be a 64-character hexadecimal digest")
+            if self.checkpoint_sha256.lower() != expected:
+                raise ValueError(
+                    "checkpoint SHA256 mismatch: expected " + expected +
+                    ", got " + self.checkpoint_sha256
+                )
+        self.expected_checkpoint_sha256 = expected
 
         try:
             from ultralytics import YOLO

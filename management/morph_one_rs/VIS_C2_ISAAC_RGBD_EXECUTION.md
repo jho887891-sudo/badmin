@@ -21,7 +21,7 @@ This is a sensor/inference integration gate only. It does not run the robot, sen
 
 From the repository root, choose the frozen checkpoint path from the local checkpoint registry and execute:
 
-    scripts/simulation/run_isaac_rgbd_yolo_probe.sh --checkpoint /absolute/path/to/existing_ultralytics_checkpoint.pt --out outputs/vision/vis_c2_isaac_rgbd_run_001 --frames 3 --imgsz 1024 --conf 0.25 --class-id 0 --model-device cuda:0
+    scripts/simulation/run_isaac_rgbd_yolo_probe.sh --checkpoint /absolute/path/to/baseline_os/weights/best.pt --expected-checkpoint-sha256 61c491206904bba66ee866a8d5b7a45b4b10668c87c07804e2b58e147d74c963 --out outputs/vision/vis_c2_isaac_rgbd_run_001 --frames 3 --imgsz 1024 --conf 0.25 --class-id 0 --model-device cuda:0
 
 The default visual test fixture is the existing shuttlecock_visual.usd placed at (-0.5, 0.0, 1.25) m. It is rendered into the scene only; its known pose is not passed to the detector or measurement module. This near-side placement avoids using a hidden target behind the net as a false-negative test.
 

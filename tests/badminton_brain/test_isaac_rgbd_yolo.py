@@ -2,7 +2,9 @@
 """CPU-only tests for the Isaac RGB-D perception adapter using camera doubles."""
 from __future__ import annotations
 
+import hashlib
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -13,6 +15,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from badminton_brain.perception.isaac_rgbd_yolo import (  # noqa: E402
     IsaacRgbdPerceptionModule,
+    UltralyticsShuttleDetector,
     read_camera_frame,
 )
 from badminton_brain.types import RobotSensorState  # noqa: E402
@@ -143,6 +146,17 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
     def test_requires_single_environment(self):
         with self.assertRaises(ValueError):
             IsaacRgbdPerceptionModule(self.camera, self.detector, num_envs=2)
+
+    def test_expected_checkpoint_sha256_mismatch_fails_before_model_loading(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            checkpoint = Path(tmp) / "weights.pt"
+            checkpoint.write_bytes(b"frozen-test-bytes")
+            actual = hashlib.sha256(b"frozen-test-bytes").hexdigest()
+            self.assertEqual(len(actual), 64)
+            with self.assertRaisesRegex(ValueError, "checkpoint SHA256 mismatch"):
+                UltralyticsShuttleDetector(checkpoint, expected_sha256="0" * 64)
+            with self.assertRaisesRegex(ValueError, "64-character hexadecimal"):
+                UltralyticsShuttleDetector(checkpoint, expected_sha256="not-a-sha")
 
     def test_detector_receives_rgb_without_alpha(self):
         image = np.zeros((1, 80, 100, 4), dtype=np.uint8)

@@ -25,6 +25,8 @@ from isaaclab.app import AppLauncher
 PARSER = argparse.ArgumentParser(description=__doc__)
 AppLauncher.add_app_launcher_args(PARSER)
 PARSER.add_argument("--checkpoint", required=True, help="existing Ultralytics-compatible trained checkpoint")
+PARSER.add_argument("--expected-checkpoint-sha256", default=None,
+                    help="optional frozen expected SHA256; mismatch aborts before model loading")
 PARSER.add_argument("--out", default=None, help="new output directory; existing paths are refused")
 PARSER.add_argument("--shuttle-usd", default=None, help="visual shuttle USD; defaults to repository asset")
 PARSER.add_argument("--frames", type=int, default=3)
@@ -130,6 +132,7 @@ def main() -> int:
         detector = UltralyticsShuttleDetector(
             checkpoint, imgsz=ARGS.imgsz, conf=ARGS.conf,
             device=ARGS.model_device, class_id=class_id,
+            expected_sha256=ARGS.expected_checkpoint_sha256,
         )
         sim, scene, _robot, _shuttle, _contact, extra = create_scene(
             num_envs=1,
@@ -306,6 +309,7 @@ def main() -> int:
             "platform": platform.platform(),
             "checkpoint_path": str(checkpoint),
             "checkpoint_sha256": detector.checkpoint_sha256,
+            "expected_checkpoint_sha256": detector.expected_checkpoint_sha256,
             "checkpoint_model_names": str(detector.model_names),
             "checkpoint_format": "Ultralytics YOLO API loaded directly; no conversion or training",
             "shuttle_visual_usd": str(shuttle_usd),
