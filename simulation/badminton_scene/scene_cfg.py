@@ -6,6 +6,8 @@ avoid spawner path pitfalls; robot/shuttle registered as InteractiveScene
 physics assets for vectorized cloning. Physics 240 Hz (ENGINEERING_V0_1).
 """
 from __future__ import annotations
+import os
+from pathlib import Path
 import omni.usd
 import isaaclab.sim as sim_utils
 from isaaclab.scene import InteractiveScene, InteractiveSceneCfg
@@ -26,11 +28,16 @@ def _stage():
     return omni.usd.get_context().get_stage()
 
 
-COURT_ASSET_USD = "/home/T7/ojh/robot_sim/assets/court/badminton_court.usd"
+COURT_ASSET_USD = os.environ.get(
+    "BADMINTON_COURT_ASSET_USD",
+    str(Path(__file__).resolve().parents[2] / "assets" / "court" / "badminton_court.usd"),
+)
 
 
 def add_court_asset(prefix):
     """Reference the generated parameterized court asset (configs/court.yaml)."""
+    if not Path(COURT_ASSET_USD).is_file():
+        raise FileNotFoundError("court USD asset not found: " + COURT_ASSET_USD)
     st = _stage()
     path = prefix + "/CourtAsset"
     xf = UsdGeom.Xform.Define(st, path)
