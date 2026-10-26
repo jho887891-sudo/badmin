@@ -55,6 +55,7 @@ class UKFValidityIntegrationTests(unittest.TestCase):
             timestamp=0.0,
         )
         before = ukf.state.copy()
+        before_covariance = ukf.covariance.copy()
 
         ukf.update(_measurement(
             [[1.1, 0.0, 1.0], [100.0, 100.0, 100.0]],
@@ -66,6 +67,9 @@ class UKFValidityIntegrationTests(unittest.TestCase):
         # measurement; UKF.update alone must not pull it toward the bogus row.
         self.assertFalse(np.allclose(ukf.state[0], before[0]))
         np.testing.assert_allclose(ukf.state[1], before[1], rtol=0.0, atol=1e-12)
+        np.testing.assert_allclose(
+            ukf.covariance[1], before_covariance[1], rtol=0.0, atol=1e-12
+        )
 
     def test_all_invalid_frame_returns_ukf_prediction_not_zero_measurement(self):
         estimator = EkfEstimatorModule(num_envs=1, use_ukf=True)
@@ -85,6 +89,31 @@ class UKFValidityIntegrationTests(unittest.TestCase):
             float(np.linalg.norm(dropout.shuttle_position[0])),
             0.1,
             "an invalid zero-filled measurement must not replace the UKF state",
+        )
+
+    def test_estimator_accepts_bare_ukf_without_argument_collision(self):
+        ukf = ShuttleUKF(num_envs=1, fuse_velocity=False)
+        ukf.initialize(
+            position=np.array([[1.0, 0.0, 1.0]]),
+            velocity=np.zeros((1, 3)),
+            drag_k=0.1,
+            covariance=np.eye(7) * 0.02,
+            timestamp=0.0,
+        )
+        estimator = EkfEstimatorModule(num_envs=1, shuttle_filter=ukf, use_ukf=False)
+        estimator.process(
+            _measurement([[1.0, 0.0, 1.0]], timestamp=0.0, valid_mask=[1.0]),
+            _robot_sensors(0.0),
+        )
+        dropout = estimator.process(
+            _measurement([[0.0, 0.0, 0.0]], timestamp=0.1, valid_mask=[0.0]),
+            _robot_sensors(0.1),
+        )
+        self.assertTrue(np.isfinite(dropout.shuttle_position).all())
+        self.assertGreater(
+            float(np.linalg.norm(dropout.shuttle_position[0])),
+            0.1,
+            "bare UKF injection must predict across an invalid observation",
         )
 
 
