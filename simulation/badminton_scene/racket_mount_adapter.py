@@ -175,6 +175,22 @@ def _set_orient(op, quaternion_wxyz, Gf, UsdGeom) -> None:
         op.Set(Gf.Quatf(w, Gf.Vec3f(x, y, z)))
 
 
+def capsule_spine_height_from_endpoints(axis_start, axis_end, radius: float) -> float:
+    """Convert endpoint-to-endpoint length to USD capsule cylinder-spine height.
+
+    USD UsdGeomCapsule.height excludes the two hemispherical caps. The proxy JSON
+    stores axis_start_m/axis_end_m as the OUTER endpoints of the fitted shape,
+    so subtract both cap radii. If the segment is shorter than its diameter, use
+    a zero-height capsule (a sphere-like conservative proxy) rather than a
+    negative height. This may over-cover very short taper segments, never under-cover.
+    """
+    if not _finite_vector(axis_start, 3) or not _finite_vector(axis_end, 3):
+        raise RacketMountError("capsule endpoints must be finite 3D vectors")
+    if not _finite_positive(radius):
+        raise RacketMountError("capsule radius must be positive")
+    return max(math.dist(axis_start, axis_end) - 2.0 * float(radius), 0.0)
+
+
 def _author_collision_proxy(stage, parent_path: str, primitives: list) -> str:
     """Author primitive colliders under the link6 rigid body via gripper_end.
 
@@ -192,13 +208,21 @@ def _author_collision_proxy(stage, parent_path: str, primitives: list) -> str:
             a = tuple(float(v) for v in geometry["axis_start_m"])
             b = tuple(float(v) for v in geometry["axis_end_m"])
             direction = tuple(b[i] - a[i] for i in range(3))
-            length = math.dist(a, b)
+            radius = float(geometry["radius_m"])
+            height = capsule_spine_height_from_endpoints(a, b, radius)
             centre = tuple((a[i] + b[i]) / 2.0 for i in range(3))
             quat = _quat_wxyz_from_z_axis(direction)
             capsule = UsdGeom.Capsule.Define(stage, path)
             capsule.CreateAxisAttr().Set(UsdGeom.Tokens.z)
-            capsule.CreateHeightAttr().Set(length)
-            capsule.CreateRadiusAttr().Set(float(geometry["radius_m"]))
+            capsule.CreateHeightAttr().Set(height)
+            capsule.CreateRadiusAttr().Set(radius)
+            # OpenUSD requires an authored extent when height/radius are authored.
+            # The extent is local to the capsule's +Z spine before its xform rotation.
+            half_z = height / 2.0 + radius
+            capsule.CreateExtentAttr().Set([
+                Gf.Vec3f(-radius, -radius, -half_z),
+                Gf.Vec3f(radius, radius, half_z),
+            ])
             capsule.AddTranslateOp().Set(Gf.Vec3d(*centre))
             _set_orient(capsule.AddOrientOp(), quat, Gf, UsdGeom)
             prim = capsule.GetPrim()
@@ -206,7 +230,8 @@ def _author_collision_proxy(stage, parent_path: str, primitives: list) -> str:
             cube = UsdGeom.Cube.Define(stage, path)
             cube.CreateSizeAttr().Set(2.0)
             cube.AddTranslateOp().Set(Gf.Vec3d(*geometry["center_m"]))
-            cube.AddScaleOp().Set(Gf.Vec3f(*geometry["half_extents_m"]))
+            # AddScaleOp() defaults to double precision on this newly defined prim.
+            cube.AddScaleOp().Set(Gf.Vec3d(*geometry["half_extents_m"]))
             prim = cube.GetPrim()
         UsdPhysics.CollisionAPI.Apply(prim)
         prim.SetCustomDataByKey("badminton_evidence_class", "PROXY_DERIVED")
@@ -262,4 +287,5 @@ __all__ = [
     "gripper_end_prim_path", "racket_mount_prim_path",
     "resolve_racket_visual_path", "resolve_collision_proxy_path",
     "load_racket_collision_proxy", "validate_mount_transform",
+    "capsule_spine_height_from_endpoints",
 ]

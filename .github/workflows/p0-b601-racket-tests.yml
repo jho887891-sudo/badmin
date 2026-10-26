@@ -1,0 +1,39 @@
+name: P0 B601-RS racket contact tests
+
+on:
+  pull_request:
+    branches:
+      - p6/dynamic-fk
+    paths:
+      - "src/simulation/rebot_b601_rs/kinematics/**"
+      - "simulation/badminton_scene/**"
+      - "outputs/simulation/rebot_b601_rs/morph_one/p6_frames/racket_collision_proxy.json"
+      - "tests/simulation/**"
+      - ".github/workflows/p0-b601-racket-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pure-python:
+    name: Pure-Python FK, frame and proxy tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+      - name: Install test dependencies
+        run: python -m pip install --upgrade "numpy>=1.24,<3" "pytest>=7,<9"
+      - name: Run P0 and P6 regression tests
+        run: |
+          python -m pytest -q \
+            tests/simulation/rebot_b601_rs/test_scene_arm_route.py \
+            tests/simulation/rebot_b601_rs/test_racket_mount_adapter.py \
+            tests/simulation/p6_racket_contact_kinematics_test.py \
+            tests/simulation/p6_dynamic_fk_test.py

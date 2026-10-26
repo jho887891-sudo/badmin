@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / "simulation"))
 from badminton_scene.racket_mount_adapter import (  # noqa: E402
     RacketMountError,
     _quat_wxyz_from_z_axis,
+    capsule_spine_height_from_endpoints,
     gripper_end_prim_path,
     load_racket_collision_proxy,
     racket_mount_prim_path,
@@ -122,3 +123,26 @@ def test_capsule_quaternion_rotates_local_z_onto_proxy_segment(direction):
     target = np.asarray(direction, dtype=float)
     target /= np.linalg.norm(target)
     assert rotation @ np.array([0.0, 0.0, 1.0]) == pytest.approx(target, abs=1e-6)
+
+
+
+def test_usd_capsule_spine_height_preserves_long_proxy_outer_endpoints():
+    # The source proxy endpoints describe the complete outer extent, not just the cylinder.
+    length = 0.15669
+    radius = 0.015845
+    height = capsule_spine_height_from_endpoints(
+        (0.0, 0.0, 0.0), (0.0, 0.0, length), radius
+    )
+    assert height == pytest.approx(0.125)
+    assert height + 2.0 * radius == pytest.approx(length)
+
+
+def test_usd_capsule_short_taper_fails_conservatively_to_zero_spine_height():
+    # This proxy segment is shorter than its cap diameter. A negative USD height is forbidden.
+    length = 0.014133
+    radius = 0.015845
+    height = capsule_spine_height_from_endpoints(
+        (0.0, 0.0, 0.0), (0.0, 0.0, length), radius
+    )
+    assert height == 0.0
+    assert height + 2.0 * radius >= length
