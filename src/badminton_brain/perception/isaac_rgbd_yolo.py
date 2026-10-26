@@ -341,6 +341,7 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
             timestamp=timestamp,
             valid_mask=np.array([0.0]),
             frame="court",
+            velocity_valid_mask=np.array([0.0]),
         )
 
     def process(self, sensors: RobotSensorState) -> ShuttleMeasurement:
@@ -460,6 +461,7 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
             "position_world_m": position_world.tolist(),
             "velocity_world_mps": velocity.tolist(),
             "velocity_status": velocity_status,
+            "velocity_valid": velocity_status == "FINITE_DIFFERENCE_BETWEEN_VALID_RGBD_MEASUREMENTS",
             "covariance_world_m2": covariance_world.tolist(),
             "covariance_status": "TEMP_PARAMETERIZED_PROXY",
             "covariance_note": (
@@ -474,6 +476,9 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
             timestamp=timestamp,
             valid_mask=np.array([1.0]),
             frame="court",
+            velocity_valid_mask=np.array([
+                1.0 if velocity_status == "FINITE_DIFFERENCE_BETWEEN_VALID_RGBD_MEASUREMENTS" else 0.0
+            ]),
         )
 
 

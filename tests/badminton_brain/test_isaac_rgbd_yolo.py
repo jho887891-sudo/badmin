@@ -109,6 +109,7 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
         self.detector.detections = []
         result = self.module.process(sensor_state(0.0))
         np.testing.assert_allclose(result.valid_mask, [0.0])
+        np.testing.assert_allclose(result.velocity_valid_mask, [0.0])
         np.testing.assert_allclose(result.position, np.zeros((1, 3)))
         self.assertEqual(self.module.last_diagnostic["reason"], "no_target_detection")
 
@@ -149,6 +150,7 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
             {"xyxy": [55.0, 35.0, 65.0, 45.0], "confidence": 0.9, "class_id": 0}
         ]
         result = self.module.process(sensor_state(0.1))
+        np.testing.assert_allclose(result.velocity_valid_mask, [1.0])
         self.assertEqual(self.module.last_diagnostic["velocity_status"],
                          "FINITE_DIFFERENCE_BETWEEN_VALID_RGBD_MEASUREMENTS")
         self.assertAlmostEqual(float(result.velocity[0, 0]), 2.0, places=6)
