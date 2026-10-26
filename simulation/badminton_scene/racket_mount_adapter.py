@@ -230,8 +230,10 @@ def _author_collision_proxy(stage, parent_path: str, primitives: list) -> str:
             cube = UsdGeom.Cube.Define(stage, path)
             cube.CreateSizeAttr().Set(2.0)
             cube.AddTranslateOp().Set(Gf.Vec3d(*geometry["center_m"]))
-            # AddScaleOp() defaults to double precision on this newly defined prim.
-            cube.AddScaleOp().Set(Gf.Vec3d(*geometry["half_extents_m"]))
+            # Explicitly request double precision; USD defaults may vary by schema/version.
+            cube.AddScaleOp(UsdGeom.XformOp.PrecisionDouble).Set(
+                Gf.Vec3d(*geometry["half_extents_m"])
+            )
             prim = cube.GetPrim()
         UsdPhysics.CollisionAPI.Apply(prim)
         prim.SetCustomDataByKey("badminton_evidence_class", "PROXY_DERIVED")

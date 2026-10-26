@@ -71,12 +71,11 @@ def test_racket_visual_and_43_collision_shapes_are_authored_with_valid_usd_types
     assert float(extent[0][2]) == pytest.approx(-(height / 2.0 + radius))
     assert float(extent[1][2]) == pytest.approx(height / 2.0 + radius)
 
-    # AddScaleOp on a fresh USD prim defaults to double precision. The old Vec3f
-    # assignment failed at runtime; this guards the actual USD attribute type.
+    # Explicitly authored double precision avoids a Vec3f/Vec3d mismatch at runtime.
     bed = stage.GetPrimAtPath(
         mount_path + "/CollisionProxy/racket_string_bed_slab_07"
     )
     scale = bed.GetAttribute("xformOp:scale")
     assert scale.IsValid()
-    assert scale.GetTypeName() == Sdf.ValueTypeNames.Double3
+    assert str(scale.GetTypeName()) == "double3"
     assert scale.Get() is not None
