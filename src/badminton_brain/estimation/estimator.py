@@ -138,7 +138,7 @@ class EkfEstimatorModule(EstimationModule):
         # the bridge/custom adapter consumes update(measurement, sensors) -> dict.
         # In either case the validity mask stays inside ShuttleMeasurement.  It
         # must never be passed as the positional 'sensors' or 'env_ids' argument.
-        from .shuttle_ukf import ShuttleEstimatorBridge, ShuttleUKF
+        from .shuttle_ukf import ShuttleUKF
 
         if isinstance(self.shuttle_filter, ShuttleUKF):
             self.shuttle_filter.step(perception)
