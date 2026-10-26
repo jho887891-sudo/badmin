@@ -9,11 +9,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import os
 import platform
 import subprocess
 import sys
-import time
 import traceback
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,7 +32,7 @@ PARSER.add_argument("--imgsz", type=int, default=1024)
 PARSER.add_argument("--conf", type=float, default=0.25)
 PARSER.add_argument("--class-id", type=int, default=0, help="target class ID; use -1 to disable class filtering")
 PARSER.add_argument("--model-device", default="cuda:0", help="device passed to Ultralytics, separate from Isaac AppLauncher")
-PARSER.add_argument("--target-pos", type=float, nargs=3, default=[-0.5, 0.0, 1.3],
+PARSER.add_argument("--target-pos", type=float, nargs=3, default=[-0.5, 0.0, 1.25],
                     help="visual test-fixture root position in court/world metres")
 ARGS = PARSER.parse_args()
 

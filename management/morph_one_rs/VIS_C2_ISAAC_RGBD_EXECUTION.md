@@ -22,7 +22,7 @@ From the repository root, choose the frozen checkpoint path from the local check
 
     scripts/simulation/run_isaac_rgbd_yolo_probe.sh --checkpoint /absolute/path/to/existing_ultralytics_checkpoint.pt --out outputs/vision/vis_c2_isaac_rgbd_run_001 --frames 3 --imgsz 1024 --conf 0.25 --class-id 0 --model-device cuda:0
 
-The default visual test fixture is the existing shuttlecock_visual.usd placed at (-0.5, 0.0, 1.3) m. It is rendered into the scene only; its known pose is not passed to the detector or measurement module. This near-side placement avoids using a hidden target behind the net as a false-negative test.
+The default visual test fixture is the existing shuttlecock_visual.usd placed at (-0.5, 0.0, 1.25) m. It is rendered into the scene only; its known pose is not passed to the detector or measurement module. This near-side placement avoids using a hidden target behind the net as a false-negative test.
 
 The wrapper refuses to install packages, update environments, kill other processes, overwrite output, train a model, or launch closed-loop robot control.
 
