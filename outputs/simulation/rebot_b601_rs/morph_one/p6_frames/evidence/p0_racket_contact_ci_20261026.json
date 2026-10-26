@@ -1,0 +1,55 @@
+{
+  "schema": "p0_racket_contact_ci_evidence/1",
+  "source_commit_sha": "2ed5db8175a55171f3a8170e945509538e1cd8b2",
+  "branch": "feature/p0-b601-racket-contact-chain",
+  "pull_request": 63,
+  "workflow": {
+    "name": "P0 B601-RS racket contact tests",
+    "run_id": 40285332369,
+    "url": "https://github.com/jho887891-sudo/badmin/actions/runs/40285332369",
+    "status": "success"
+  },
+  "environment": {
+    "runner": "ubuntu-latest",
+    "python": "3.10.22",
+    "numpy": "2.2.6",
+    "pytest": "8.4.2",
+    "openusd_python_package": "usd-core==25.11"
+  },
+  "checks": {
+    "syntax_check_isaac_lab_smoke_script": "PASS",
+    "pytest": {
+      "passed": 128,
+      "failed": 0,
+      "skipped": 1,
+      "duration_seconds": 0.8
+    },
+    "skipped_tests": [
+      {
+        "test": "tests/simulation/p6_joint_anchors_test.py:507",
+        "reason": "no read-only copy of physics.usda locally; anchors are pinned by sha256 instead"
+      }
+    ]
+  },
+  "scope": {
+    "verified": [
+      "Python FK/frame-chain tests",
+      "UNKNOWN-transform guards",
+      "racket collision proxy JSON integrity and real mesh containment checks",
+      "OpenUSD 25.11 in-memory authoring of racket visual and 43 collision shapes",
+      "capsule spine-height/extent math",
+      "explicit USD scale/orient precision",
+      "smoke script syntax"
+    ],
+    "not_verified": [
+      "Isaac Sim/PhysX runtime",
+      "target GPU simulation",
+      "real B601-RS/racket mount calibration",
+      "Morph One chassis integration",
+      "racket mass/COM/inertia",
+      "shuttle-racket contact dynamics",
+      "hardware deployment"
+    ]
+  },
+  "next_gate": "Run scripts/simulation/p0_b601_racket_scene_smoke.py on the target Isaac Lab host with an explicitly opted-in simulation-only mount; then obtain and validate the physical racket-mount calibration before contact-dynamics claims."
+}

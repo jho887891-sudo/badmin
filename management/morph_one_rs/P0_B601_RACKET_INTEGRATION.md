@@ -30,9 +30,34 @@ The helper racket_stringbed_center_proxy derives the midpoint of the committed v
 5. The official Morph One CAD has not been classified into a verified chassis geometry. This branch does not fabricate or claim a physical Morph One chassis model.
 6. The B601-RS scene's InteractiveScene drive-binding issue is worked around by direct articulation; formal create_scene remains num_envs=1.
 
-## Local verification commands
+## Automated CI evidence (2026-10-26)
 
-    python -m pytest tests/simulation/rebot_b601_rs/test_scene_arm_route.py tests/simulation/rebot_b601_rs/test_racket_mount_adapter.py tests/simulation/p6_racket_contact_kinematics_test.py -q
-    python -m pytest tests/simulation/p6_dynamic_fk_test.py -q
+- Source commit: `2ed5db8175a55171f3a8170e945509538e1cd8b2`
+- GitHub Actions: [run 40285332369](https://github.com/jho887891-sudo/badmin/actions/runs/40285332369)
+- Environment: Ubuntu runner, Python 3.10.22, NumPy 2.2.6, pytest 8.4.2, OpenUSD `usd-core==25.11`
+- Result: **128 passed, 1 skipped, 0 failed**; the Isaac Lab smoke script also passed `py_compile`.
+- The one skip is `tests/simulation/p6_joint_anchors_test.py:507`: the runner does not contain the read-only `physics.usda` layer copy, and the test uses the committed SHA-256-pinned anchors instead.
+- This validates Python kinematics, P6 frame/joint/proxy regression checks and OpenUSD in-memory authoring. It does **not** validate Isaac Sim / PhysX runtime behavior, a GPU simulation, the real racket mount, or shuttle-racket contact dynamics.
 
-The code-only tests require Python, NumPy and pytest. They do not require Isaac Sim. The visual attachment and collision prims must be checked on the target Isaac Sim host; no such run is claimed here.
+## Reproducible verification
+
+Install the CI-only dependencies and run the same regression suite:
+
+    python -m pip install "numpy>=1.24,<3" "pytest>=7,<9" "usd-core==25.11"
+    python -m pytest -q -rs \
+      tests/simulation/rebot_b601_rs/test_scene_arm_route.py \
+      tests/simulation/rebot_b601_rs/test_racket_mount_adapter.py \
+      tests/simulation/p6_racket_contact_kinematics_test.py \
+      tests/simulation/p6_dynamic_fk_test.py \
+      tests/simulation/p6_frame_tree_test.py \
+      tests/simulation/p6_joint_anchors_test.py \
+      tests/simulation/p6_racket_proxy_test.py \
+      tests/simulation/rebot_b601_rs/test_racket_usd_authoring.py
+
+For the next gate, run the dedicated Isaac Lab smoke script on the target host after verifying `ISAACLAB_ROOT`, `BADMINTON_ROOT`, and the actual B601-RS USD path. The test-only identity mount is deliberately explicit and is **not** a physical calibration:
+
+    "$ISAACLAB_ROOT/isaaclab.sh" -p "$BADMINTON_ROOT/scripts/simulation/p0_b601_racket_scene_smoke.py" \
+      --headless --robot-usd "$REBOT_RS_USD" --test-identity-mount --steps 120 \
+      --output "$BADMINTON_ROOT/outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/p0_racket_scene_smoke_20261026.json"
+
+The smoke script runs only a fixed-base simulation of the B601-RS and checks that the racket visual and 43 collision proxies survive reset and stepping. It does not create or deploy a real robot, does not include the Morph One chassis or a shuttle, and does not claim physical contact dynamics. No target-host Isaac Sim run is claimed yet.
