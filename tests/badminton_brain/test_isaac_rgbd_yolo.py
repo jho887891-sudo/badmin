@@ -149,13 +149,22 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
     def test_velocity_uses_two_valid_timestamped_measurements(self):
         self.module.process(sensor_state(0.0))
         self.detector.detections = [
-            {"xyxy": [55.0, 35.0, 65.0, 45.0], "confidence": 0.9, "class_id": 0}
+            {"xyxy": [47.0, 35.0, 57.0, 45.0], "confidence": 0.9, "class_id": 0}
         ]
-        result = self.module.process(sensor_state(0.1))
+        result = self.module.process(sensor_state(1.0 / 60.0))
         np.testing.assert_allclose(result.velocity_valid_mask, [1.0])
         self.assertEqual(self.module.last_diagnostic["velocity_status"],
                          "FINITE_DIFFERENCE_BETWEEN_VALID_RGBD_MEASUREMENTS")
-        self.assertAlmostEqual(float(result.velocity[0, 0]), 2.0, places=6)
+        self.assertAlmostEqual(float(result.velocity[0, 0]), 2.4, places=6)
+
+    def test_long_detection_gap_does_not_emit_fusable_velocity(self):
+        self.module.process(sensor_state(0.0))
+        result = self.module.process(sensor_state(0.2))
+        np.testing.assert_allclose(result.valid_mask, [1.0])
+        np.testing.assert_allclose(result.velocity_valid_mask, [0.0])
+        np.testing.assert_allclose(result.velocity, np.zeros((1, 3)))
+        self.assertEqual(self.module.last_diagnostic["velocity_status"],
+                         "VELOCITY_UNAVAILABLE_AFTER_GAP")
 
     def test_covariance_is_symmetric_positive_semidefinite(self):
         result = self.module.process(sensor_state(0.0))

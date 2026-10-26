@@ -266,6 +266,7 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
         depth_patch_fraction: float = 0.30,
         pixel_sigma_px: float = 1.5,
         depth_sigma_floor_m: float = 0.005,
+        max_velocity_gap_s: float = 0.05,
     ) -> None:
         if int(num_envs) != 1:
             raise ValueError("IsaacRgbdPerceptionModule is N=1 only; env-origin conversion is unverified")
@@ -275,6 +276,8 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
             raise ValueError("depth_patch_fraction must be in (0, 1]")
         if float(pixel_sigma_px) <= 0.0 or float(depth_sigma_floor_m) <= 0.0:
             raise ValueError("uncertainty proxy values must be positive")
+        if not math.isfinite(float(max_velocity_gap_s)) or float(max_velocity_gap_s) <= 0.0:
+            raise ValueError("max_velocity_gap_s must be finite and positive")
         self.camera = camera
         self.detector = detector
         self.target_class_id = None if target_class_id is None else int(target_class_id)
@@ -283,6 +286,7 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
         self.depth_patch_fraction = float(depth_patch_fraction)
         self.pixel_sigma_px = float(pixel_sigma_px)
         self.depth_sigma_floor_m = float(depth_sigma_floor_m)
+        self.max_velocity_gap_s = float(max_velocity_gap_s)
         self._previous_position: Optional[np.ndarray] = None
         self._previous_timestamp: Optional[float] = None
         self.last_diagnostic: dict[str, Any] = {}
@@ -440,13 +444,20 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
         covariance_world = 0.5 * (covariance_world + covariance_world.T)
 
         velocity_status = "BOOTSTRAP_ZERO_FIRST_VALID_FRAME"
+        velocity_gap_s: Optional[float] = None
         velocity = np.zeros(3, dtype=float)
         if self._previous_position is not None and self._previous_timestamp is not None:
             dt = timestamp - self._previous_timestamp
             if dt <= 0.0:
                 raise BrainBoundaryError("valid RGB-D measurements require strictly increasing timestamps")
-            velocity = (position_world - self._previous_position) / dt
-            velocity_status = "FINITE_DIFFERENCE_BETWEEN_VALID_RGBD_MEASUREMENTS"
+            velocity_gap_s = float(dt)
+            if dt <= self.max_velocity_gap_s:
+                velocity = (position_world - self._previous_position) / dt
+                velocity_status = "FINITE_DIFFERENCE_BETWEEN_VALID_RGBD_MEASUREMENTS"
+            else:
+                # Rebase on this position but do not pretend a long dropout gap
+                # provides a reliable instantaneous velocity for the UKF.
+                velocity_status = "VELOCITY_UNAVAILABLE_AFTER_GAP"
         self._previous_position = position_world.copy()
         self._previous_timestamp = timestamp
 
@@ -461,6 +472,8 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
             "position_world_m": position_world.tolist(),
             "velocity_world_mps": velocity.tolist(),
             "velocity_status": velocity_status,
+            "velocity_gap_s": velocity_gap_s,
+            "max_velocity_gap_s": self.max_velocity_gap_s,
             "velocity_valid": velocity_status == "FINITE_DIFFERENCE_BETWEEN_VALID_RGBD_MEASUREMENTS",
             "covariance_world_m2": covariance_world.tolist(),
             "covariance_status": "TEMP_PARAMETERIZED_PROXY",
