@@ -166,6 +166,15 @@ def _quat_wxyz_from_z_axis(direction):
     return (math.cos(half), ax * s, ay * s, az * s)
 
 
+def _set_orient(op, quaternion_wxyz, Gf, UsdGeom) -> None:
+    """Set an orient op using its declared USD precision (float or double)."""
+    w, x, y, z = (float(v) for v in quaternion_wxyz)
+    if op.GetPrecision() == UsdGeom.XformOp.PrecisionDouble:
+        op.Set(Gf.Quatd(w, Gf.Vec3d(x, y, z)))
+    else:
+        op.Set(Gf.Quatf(w, Gf.Vec3f(x, y, z)))
+
+
 def _author_collision_proxy(stage, parent_path: str, primitives: list) -> str:
     """Author primitive colliders under the link6 rigid body via gripper_end.
 
@@ -191,13 +200,13 @@ def _author_collision_proxy(stage, parent_path: str, primitives: list) -> str:
             capsule.CreateHeightAttr().Set(length)
             capsule.CreateRadiusAttr().Set(float(geometry["radius_m"]))
             capsule.AddTranslateOp().Set(Gf.Vec3d(*centre))
-            capsule.AddOrientOp().Set(Gf.Quatd(quat[0], Gf.Vec3d(*quat[1:])))
+            _set_orient(capsule.AddOrientOp(), quat, Gf, UsdGeom)
             prim = capsule.GetPrim()
         else:
             cube = UsdGeom.Cube.Define(stage, path)
             cube.CreateSizeAttr().Set(2.0)
             cube.AddTranslateOp().Set(Gf.Vec3d(*geometry["center_m"]))
-            cube.AddScaleOp().Set(Gf.Vec3d(*geometry["half_extents_m"]))
+            cube.AddScaleOp().Set(Gf.Vec3f(*geometry["half_extents_m"]))
             prim = cube.GetPrim()
         UsdPhysics.CollisionAPI.Apply(prim)
         prim.SetCustomDataByKey("badminton_evidence_class", "PROXY_DERIVED")
@@ -238,7 +247,7 @@ def attach_racket_visual(stage, *, arm_prim_path: str,
     mount_xform = UsdGeom.Xform.Define(stage, mount_path)
     mount_xform.AddTranslateOp().Set(Gf.Vec3d(*mount.translation_m))
     orient = mount_xform.AddOrientOp()
-    orient.Set(Gf.Quatd(mount.quaternion_wxyz[0], Gf.Vec3d(*mount.quaternion_wxyz[1:])))
+    _set_orient(orient, mount.quaternion_wxyz, Gf, UsdGeom)
     visual_xform = UsdGeom.Xform.Define(stage, visual_path)
     visual_xform.GetPrim().GetReferences().AddReference(str(asset), Sdf.Path("/RacketVisual"))
     visual_xform.GetPrim().SetCustomDataByKey("badminton_mount_status", mount.status)
