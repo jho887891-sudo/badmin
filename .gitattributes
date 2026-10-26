@@ -1,0 +1,2 @@
+# ETH four-stage inventory evidence is byte-exact (tool emits CRLF CSVs); never normalise it.
+outputs/shuttle_detection/eth_four_stage_inventory/** -text

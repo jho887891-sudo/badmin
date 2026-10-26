@@ -1,0 +1,15 @@
+{
+  "status": "CANDIDATES_PENDING_REVIEW",
+  "counts": {
+    "total_manifest_rows": 15255,
+    "train_label_boxes_total": 13992,
+    "usable_instances": 13992,
+    "unusable_instances": 0,
+    "excluded_non_train_rows": 1263
+  },
+  "source_gate": "PASS",
+  "inventory_csv": "/home/dgut/eth_audit/out/inventory_20261026T074352Z/instances.csv",
+  "inventory_csv_sha256": "1bc3887d4236c69257ddd2e0f3c5fb9542ac93e4da7fa4c7960e4a66fe9761ed",
+  "audit_json": "/home/dgut/eth_audit/out/inventory_20261026T074352Z/audit.json",
+  "next_gate": "HUMAN_MASK_REVIEW_REQUIRED"
+}

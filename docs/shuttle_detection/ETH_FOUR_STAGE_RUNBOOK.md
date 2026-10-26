@@ -35,7 +35,12 @@ CPU 夹具的输出必须是 `CPU_FIXTURE_ONLY`、`optimizer_steps: 0`、`real_r
 
 ## 下一步：真实 ETH 全量框清单（必须在数据实际挂载的 Linux 端执行）
 
-本分支的仓库文件 data/eth_real_hardneg_v2_train_manifest.csv 当前是 **0 字节**，不能作为真实清单。请从已挂载的数据位置指定实际的 V2 manifest、标签根目录和冻结评测 manifest；不要把这个空占位文件当作成功输入。
+**更正（2026-10-26 实测）**：此前记录的“`data/eth_real_hardneg_v2_train_manifest.csv` 是 0 字节”已不成立。
+该文件在 `29f4b46` 上是 **6 303 784 B**（git blob；Linux 检出 6 319 040 B，差值为 CRLF），
+sha256 `d2bd887357555c9262f769ba81d3bfd49350e1670e80a94ecdc1d166898a8d4d`，含 28 列与 `is_positive`。
+它已作为真实 V2 清单在远端执行并被独立复核通过，结果见
+`docs/shuttle_detection/ETH_FOUR_STAGE_INVENTORY_AUDIT.md`（13 992 框 / PASS / `CANDIDATES_PENDING_REVIEW`）。
+仍需注意：不要把任何空占位 CSV 当作成功输入；冻结评测清单的独立性见该报告的 2.3 节（当前为 `UNKNOWN`）。
 
 先在远端仓库根目录执行：
 

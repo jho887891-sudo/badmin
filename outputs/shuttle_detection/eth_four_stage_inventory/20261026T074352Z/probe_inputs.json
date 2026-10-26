@@ -1,0 +1,234 @@
+{
+  "data/eth_real_hardneg_v2_train_manifest.csv": {
+    "exists": true,
+    "bytes": 6319040,
+    "sha256": "d2bd887357555c9262f769ba81d3bfd49350e1670e80a94ecdc1d166898a8d4d",
+    "columns": [
+      "image",
+      "label",
+      "location",
+      "difficulty",
+      "split",
+      "set_dir",
+      "role",
+      "in_official_training",
+      "source",
+      "is_negative",
+      "n_boxes",
+      "width",
+      "height",
+      "sha256",
+      "equiv_size_640",
+      "median_equiv_size_640",
+      "min_equiv_size_640",
+      "equiv_sizes",
+      "is_positive",
+      "repeat_index",
+      "local_path",
+      "file",
+      "bytes",
+      "label_nonempty",
+      "provenance_title",
+      "provenance_license",
+      "provenance_url",
+      "provenance_present"
+    ],
+    "n_data_rows": 15255,
+    "count_split": {
+      "train": 15255
+    },
+    "count_source": {
+      "eth_main": 13993,
+      "hard_negative": 712,
+      "eth_negative": 550
+    },
+    "count_role": {
+      "official_positives": 13993,
+      "hard_negative": 712,
+      "official_negatives": 550
+    },
+    "count_is_positive": {
+      "True": 13992,
+      "False": 1263
+    },
+    "count_is_negative": {
+      "False": 13992,
+      "True": 1263
+    },
+    "count_in_official_training": {
+      "True": 14543,
+      "False": 712
+    },
+    "count_set_dir": {
+      "cab_2_easy": 2543,
+      "glc_1_easy": 2118,
+      "ticino_2_easy": 1733,
+      "cab_1_easy": 1606,
+      "ticino_1_easy": 1250,
+      "ml_4_easy": 1214,
+      "ticino_1_medium": 1187,
+      "cab_2_medium": 728,
+      "ticino_2_medium": 636,
+      "coco_train_easy": 550,
+      "cab_1_medium": 521,
+      "hard_negatives2": 424
+    },
+    "count_difficulty": {
+      "easy": 11014,
+      "medium": 3529,
+      "n/a": 712
+    },
+    "image_key": "image",
+    "image_sample_checked": 402,
+    "image_sample_missing": 0,
+    "image_sample_missing_examples": [],
+    "label_key": "label",
+    "label_sample_checked": 402,
+    "label_sample_missing": 33,
+    "label_sample_missing_examples": [
+      "",
+      "",
+      ""
+    ]
+  },
+  "data/eth_real_hardneg_v2_val_manifest.csv": {
+    "exists": true,
+    "bytes": 1217290,
+    "sha256": "ddaf46aebc6a8261e640197af26476e86d4075d8d69493cce6de24b2527e6784",
+    "columns": [
+      "image",
+      "label",
+      "location",
+      "difficulty",
+      "split",
+      "set_dir",
+      "role",
+      "in_official_training",
+      "source",
+      "is_negative",
+      "n_boxes",
+      "width",
+      "height",
+      "sha256",
+      "equiv_size_640",
+      "median_equiv_size_640",
+      "min_equiv_size_640",
+      "equiv_sizes"
+    ],
+    "n_data_rows": 2920,
+    "count_split": {
+      "train": 2920
+    },
+    "count_source": {
+      "eth_main": 2920
+    },
+    "count_role": {
+      "official_positives": 2920
+    },
+    "count_is_negative": {
+      "False": 2920
+    },
+    "count_in_official_training": {
+      "True": 2920
+    },
+    "count_set_dir": {
+      "glc_2_easy": 1506,
+      "uetlibergstrasse_2_easy": 1244,
+      "glc_2_medium": 107,
+      "uetlibergstrasse_2_medium": 63
+    },
+    "count_difficulty": {
+      "easy": 2750,
+      "medium": 170
+    },
+    "image_key": "image",
+    "image_sample_checked": 418,
+    "image_sample_missing": 0,
+    "image_sample_missing_examples": [],
+    "label_key": "label",
+    "label_sample_checked": 418,
+    "label_sample_missing": 0,
+    "label_sample_missing_examples": []
+  },
+  "data/eth_only_v1_train_manifest.csv": {
+    "exists": false
+  },
+  "data/eth_only_v1_val_manifest.csv": {
+    "exists": true,
+    "bytes": 1217290,
+    "sha256": "ddaf46aebc6a8261e640197af26476e86d4075d8d69493cce6de24b2527e6784",
+    "columns": [
+      "image",
+      "label",
+      "location",
+      "difficulty",
+      "split",
+      "set_dir",
+      "role",
+      "in_official_training",
+      "source",
+      "is_negative",
+      "n_boxes",
+      "width",
+      "height",
+      "sha256",
+      "equiv_size_640",
+      "median_equiv_size_640",
+      "min_equiv_size_640",
+      "equiv_sizes"
+    ],
+    "n_data_rows": 2920,
+    "count_split": {
+      "train": 2920
+    },
+    "count_source": {
+      "eth_main": 2920
+    },
+    "count_role": {
+      "official_positives": 2920
+    },
+    "count_is_negative": {
+      "False": 2920
+    },
+    "count_in_official_training": {
+      "True": 2920
+    },
+    "count_set_dir": {
+      "glc_2_easy": 1506,
+      "uetlibergstrasse_2_easy": 1244,
+      "glc_2_medium": 107,
+      "uetlibergstrasse_2_medium": 63
+    },
+    "count_difficulty": {
+      "easy": 2750,
+      "medium": 170
+    },
+    "image_key": "image",
+    "image_sample_checked": 418,
+    "image_sample_missing": 0,
+    "image_sample_missing_examples": [],
+    "label_key": "label",
+    "label_sample_checked": 418,
+    "label_sample_missing": 0,
+    "label_sample_missing_examples": []
+  },
+  "data/yolo26s_v2_full_eth_cont_v1_train_manifest.csv": {
+    "exists": false
+  },
+  "data/clean_outdoor_cp_v1/frozen_eval_index.csv": {
+    "exists": true,
+    "bytes": 815395,
+    "sha256": "cdd4440a567e8dc3b77c6b056c5d475c1c0c8c0915a4cccba8d5c7fdd8811abe",
+    "columns": [
+      "source_id",
+      "role",
+      "sha256",
+      "bytes",
+      "origin"
+    ],
+    "n_data_rows": 3989,
+    "count_role": {
+      "FROZEN_EVAL": 3989
+    }
+  }
+}

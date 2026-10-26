@@ -1,0 +1,59 @@
+{
+  "instances": 13992,
+  "distinct_images": 13992,
+  "boxes_per_image": {
+    "0": 13992
+  },
+  "id_format_bad": 0,
+  "unique_instance_ids": 13992,
+  "unique_image_digests": 13992,
+  "source_sha256_equals_id_digest": true,
+  "short_px": {
+    "min": 6,
+    "p50": 23.0,
+    "p95": 44.0,
+    "max": 283,
+    "mean": 25.12
+  },
+  "long_px": {
+    "min": 6,
+    "p50": 29.0,
+    "p95": 55.0,
+    "max": 377,
+    "mean": 32.05
+  },
+  "included_below_legacy_floors": {
+    "short_lt_10px": 99,
+    "long_lt_24px": 3365,
+    "either_floor_violated": 3365,
+    "zero_or_one_px_any_side": 0
+  },
+  "by_set_dir": {
+    "cab_2_easy": 2543,
+    "glc_1_easy": 2118,
+    "ticino_2_easy": 1733,
+    "cab_1_easy": 1606,
+    "ticino_1_easy": 1249,
+    "ml_4_easy": 1214,
+    "ticino_1_medium": 1187,
+    "cab_2_medium": 728,
+    "ticino_2_medium": 636,
+    "cab_1_medium": 521,
+    "glc_1_medium": 328,
+    "ml_4_medium": 129
+  },
+  "by_location": {
+    "cab_2": 3271,
+    "glc_1": 2446,
+    "ticino_1": 2436,
+    "ticino_2": 2369,
+    "cab_1": 2127,
+    "ml_4": 1343
+  },
+  "status": {
+    "PENDING_REVIEW": 13992
+  },
+  "reason": {
+    "mask_not_reviewed": 13992
+  }
+}

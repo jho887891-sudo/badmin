@@ -1,0 +1,49 @@
+{
+  "independent_re_derivation": {
+    "manifest_rows": 15255,
+    "positives_after_firewalls": 13992,
+    "expected_boxes": 13992,
+    "rejected": {
+      "not_positive": 1263
+    },
+    "distinct_positive_images": 13992,
+    "locations": [
+      "cab_1",
+      "cab_2",
+      "glc_1",
+      "ml_4",
+      "ticino_1",
+      "ticino_2"
+    ],
+    "set_dirs": [
+      "cab_1_easy",
+      "cab_1_medium",
+      "cab_2_easy",
+      "cab_2_medium",
+      "glc_1_easy",
+      "glc_1_medium",
+      "ml_4_easy",
+      "ml_4_medium",
+      "ticino_1_easy",
+      "ticino_1_medium",
+      "ticino_2_easy",
+      "ticino_2_medium"
+    ],
+    "box_short_min": 1
+  },
+  "inventory": {
+    "rows": 13992,
+    "distinct_instance_ids": 13992,
+    "images_byte_verified": 13992,
+    "image_sha_mismatches": 0
+  },
+  "cross_check": {
+    "row_count_matches": true,
+    "image_set_matches": true,
+    "isolation_leaks": 0,
+    "bad_instance_ids": 0,
+    "bad_bboxes": 0
+  },
+  "failures": [],
+  "verdict": "PASS"
+}
