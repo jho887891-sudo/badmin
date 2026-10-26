@@ -27,6 +27,10 @@ The default visual test fixture is the existing shuttlecock_visual.usd placed at
 
 The wrapper refuses to install packages, update environments, kill other processes, overwrite output, train a model, or launch closed-loop robot control.
 
+## Scope boundary
+
+This VIS-C2 probe is not the full fixed evaluation harness. It emits per-frame overlay PNGs and timestamped RGB-D measurement candidates, but does not produce `overlay.mp4` or `tracks.jsonl`: it does not yet run track association or the UKF track-output stage. Keep the existing evaluator contract unchanged; this probe must not be reported as a full tracking evaluation.
+
 ## Output contract
 
 - images/left_frame_*.png and images/right_frame_*.png: raw camera RGB.

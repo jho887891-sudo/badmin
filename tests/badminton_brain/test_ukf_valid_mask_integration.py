@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from badminton_brain.estimation.estimator import EkfEstimatorModule  # noqa: E402
 from badminton_brain.estimation.shuttle_ukf import ShuttleUKF  # noqa: E402
-from badminton_brain.types import RobotSensorState, ShuttleMeasurement  # noqa: E402
+from badminton_brain.types import BrainBoundaryError, RobotSensorState, ShuttleMeasurement  # noqa: E402
 
 
 def _measurement(position, timestamp, valid_mask, velocity_valid_mask=None):
@@ -74,6 +74,17 @@ class UKFValidityIntegrationTests(unittest.TestCase):
         np.testing.assert_allclose(
             ukf.covariance[1], before_covariance[1], rtol=0.0, atol=1e-12
         )
+
+    def test_velocity_cannot_be_valid_when_position_is_invalid(self):
+        with self.assertRaisesRegex(
+            BrainBoundaryError, "velocity_valid_mask cannot be true when valid_mask is false"
+        ):
+            _measurement(
+                [[1.0, 0.0, 1.0]],
+                timestamp=0.0,
+                valid_mask=[0.0],
+                velocity_valid_mask=[1.0],
+            )
 
     def test_position_only_frame_does_not_fuse_unavailable_zero_velocity(self):
         initial_position = np.array([[1.0, 0.0, 1.0]])
