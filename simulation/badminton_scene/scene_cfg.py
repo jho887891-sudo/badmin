@@ -123,7 +123,8 @@ class CourtOnlySceneCfg(InteractiveSceneCfg):
 
 def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_axes=None, statics_mode="first",
                  include_robot: bool = False, include_shuttle: bool = False, include_ground: bool = False,
-                 include_racket: bool = False, racket_mount_transform=None, racket_visual_path=None):
+                 include_racket: bool = False, racket_mount_transform=None, racket_visual_path=None,
+                 include_racket_collision: bool = False, racket_collision_proxy_path=None):
     # F1: the converted B601-RS gets no drive torque when registered through InteractiveScene, so the
     # formal arm is spawned and bound directly (verified to hold the rest pose). See
     # management/rebot_b601_rs/ARM_MIGRATION_RECORD.md section E/F1.
@@ -135,9 +136,15 @@ def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_ax
         if not include_robot or not _direct_arm:
             raise ValueError("include_racket requires include_robot=True with the formal B601-RS direct-articulation route")
         # Validate the mount and visual asset before creating SimulationContext or touching the GPU.
-        from .racket_mount_adapter import validate_mount_transform, resolve_racket_visual_path
+        from .racket_mount_adapter import (
+            validate_mount_transform, resolve_racket_visual_path, load_racket_collision_proxy,
+        )
         validate_mount_transform(racket_mount_transform)
         racket_visual_path = str(resolve_racket_visual_path(racket_visual_path))
+        if include_racket_collision:
+            load_racket_collision_proxy(racket_collision_proxy_path)
+    elif include_racket_collision:
+        raise ValueError("include_racket_collision=True requires include_racket=True")
     # Only the formal B601-RS path opts into the TGS velocity-consistency fix.
     _sim_cfg = (rebot_rs_simulation_cfg(dt=SIM_DT) if _direct_arm
                 else sim_utils.SimulationCfg(dt=SIM_DT, device="cuda:0"))
@@ -159,6 +166,8 @@ def create_scene(num_envs: int = 1, contact_cfg=None, extra_sensors=None, pre_ax
             arm_prim_path=REBOT_RS_PRIM_PATH,
             mount_transform=racket_mount_transform,
             asset_path=racket_visual_path,
+            include_collision=include_racket_collision,
+            collision_proxy_path=racket_collision_proxy_path,
         )
     # large static ground collider covering the whole vectorised env grid
     _eo = scene.env_origins.cpu().float()

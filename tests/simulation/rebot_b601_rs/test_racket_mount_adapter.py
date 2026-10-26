@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / "simulation"))
 from badminton_scene.racket_mount_adapter import (  # noqa: E402
     RacketMountError,
     gripper_end_prim_path,
+    load_racket_collision_proxy,
     racket_mount_prim_path,
     validate_mount_transform,
 )
@@ -73,3 +74,27 @@ def test_gripper_and_racket_paths_are_under_the_b601_rs_asset():
     gripper = gripper_end_prim_path(arm)
     assert gripper.endswith("/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_end")
     assert racket_mount_prim_path(arm) == gripper + "/RacketMount"
+
+
+def test_committed_collision_proxy_has_43_valid_engineering_primitives():
+    doc = load_racket_collision_proxy()
+    assert doc["schema"] == "p6_racket_collision_proxy/1"
+    assert "NOT a manufacturer collision model" in doc["kind"]
+    assert doc["primitive_count"] == 43
+    assert len(doc["primitives"]) == 43
+    assert {item["type"] for item in doc["primitives"]} == {"capsule", "box"}
+
+
+def test_collision_proxy_loader_rejects_unknown_primitive_type(tmp_path):
+    import json
+
+    bad = {
+        "schema": "p6_racket_collision_proxy/1",
+        "kind": "ENGINEERING_PROXY — NOT a manufacturer collision model",
+        "primitive_count": 1,
+        "primitives": [{"id": "bad_shape", "type": "sphere", "geometry": {}}],
+    }
+    path = tmp_path / "bad_proxy.json"
+    path.write_text(json.dumps(bad), encoding="utf-8")
+    with pytest.raises(RacketMountError, match="unsupported collision primitive"):
+        load_racket_collision_proxy(str(path))
