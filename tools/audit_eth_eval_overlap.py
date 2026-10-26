@@ -82,7 +82,7 @@ def audit_eval_overlap(train_manifest:str|Path,frozen_eval_index:str|Path,
     repeated_sha={sha:count for sha,count in overlap_by_sha.items() if count>1}
     val_report={'provided':bool(val),'rows':len(val),'split_values':dict(Counter(str(r.get('split') or '') for r in val)),
                 'in_official_training_true':sum(str(r.get('in_official_training') or '').strip().lower() in {'true','1','yes'} for r in val),
-                'images_train_path_tokens':sum('/images/train/' in str(r.get('image') or '').replace('\\\\','/').lower() for r in val),
+                'images_train_path_tokens':sum('/images/train/' in str(r.get('image') or '').replace(chr(92),'/').lower() for r in val),
                 'locations':dict(Counter(str(r.get('location') or 'UNKNOWN') for r in val)),
                 'train_manifest_location_intersection':sorted(
                     {str(r.get('location') or '') for r in val}&{str(r.get('location') or '') for r in train}
