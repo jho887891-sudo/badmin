@@ -99,6 +99,14 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
         self.assertEqual(frame["rgb"].shape, (80, 100, 3))
         self.assertEqual(frame["depth_m"].shape, (80, 100))
 
+    def test_accepts_batched_depth_without_explicit_channel_axis(self):
+        self.camera.data.output["distance_to_image_plane"] = Proxy(
+            np.full((1, 80, 100), 2.0, dtype=np.float32)
+        )
+        frame = read_camera_frame(self.camera)
+        self.assertEqual(frame["depth_m"].shape, (80, 100))
+        np.testing.assert_allclose(frame["depth_m"], 2.0)
+
     def test_depth_backprojection_returns_court_frame_measurement(self):
         result = self.module.process(sensor_state(0.0))
         self.assertEqual(result.position.shape, (1, 3))
