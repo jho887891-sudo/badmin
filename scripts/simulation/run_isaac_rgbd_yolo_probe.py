@@ -35,7 +35,7 @@ PARSER.add_argument("--conf", type=float, default=0.25)
 PARSER.add_argument("--class-id", type=int, default=0, help="target class ID; use -1 to disable class filtering")
 PARSER.add_argument("--model-device", default="cuda:0", help="device passed to Ultralytics, separate from Isaac AppLauncher")
 PARSER.add_argument("--target-pos", type=float, nargs=3, default=[-0.5, 0.0, 1.25],
-                    help="visual test-fixture root position in court/world metres")
+                    help="visual test-fixture root position in world-frame metres")
 ARGS = PARSER.parse_args()
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -229,9 +229,9 @@ def main() -> int:
                     "bbox_xyxy_px": native(diagnostic.get("bbox_xyxy_px")),
                     "depth_m": diagnostic.get("depth_m"),
                     "depth_valid_pixel_count": int(diagnostic.get("depth_valid_pixel_count", 0)),
-                    "position_court_m": native(measurement.position[0]),
-                    "velocity_court_mps": native(measurement.velocity[0]),
-                    "covariance_court_m2": native(measurement.covariance[0]),
+                    "position_world_m": native(measurement.position[0]),
+                    "velocity_world_mps": native(measurement.velocity[0]),
+                    "covariance_world_m2": native(measurement.covariance[0]),
                     "covariance_status": diagnostic.get("covariance_status"),
                     "velocity_status": diagnostic.get("velocity_status"),
                     "processing_ms": float(diagnostic.get("processing_ms", 0.0)),

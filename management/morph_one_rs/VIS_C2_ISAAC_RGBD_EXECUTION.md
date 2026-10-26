@@ -6,7 +6,7 @@ Status at authoring time: implementation submitted for review; **Isaac Sim runti
 
 Connect the existing single-environment court scene to two actual Isaac Lab camera sensors, read RGB plus distance-to-image-plane depth, run a caller-selected already-trained Ultralytics-compatible YOLO checkpoint, and produce timestamped 3D measurement candidates.
 
-This is a sensor/inference integration gate only. It does not run the robot, send commands, train YOLO, or claim calibrated 3D accuracy.
+This is a sensor/inference integration gate only. The reported 3D coordinates are world-frame values; no court-frame transform has been calibrated or independently verified. It does not run the robot, send commands, train YOLO, or claim calibrated 3D accuracy.
 
 ## Preconditions
 
@@ -32,7 +32,7 @@ The wrapper refuses to install packages, update environments, kill other process
 - images/left_frame_*.png and images/right_frame_*.png: raw camera RGB.
 - images/*_overlay.png: detector boxes on the same rendered frame.
 - depth/*.npy: raw distance-to-image-plane depth in metres.
-- detections.jsonl: per-frame, per-camera boxes, confidence, timestamp, depth patch statistics, 3D point, velocity, covariance, latency, and checkpoint SHA256.
+- detections.jsonl: per-frame, per-camera boxes, confidence, timestamp, depth patch statistics, world-frame 3D point, velocity, covariance, latency, and checkpoint SHA256.
 - metrics.json: camera, detector, RGB-D projection status, per-camera counts, latency, and left/right consistency diagnostics.
 - manifest.json: code HEAD, checkpoint and visual-asset SHA256, parameters, and SHA256 of output artifacts.
 - failure.json: exception details if the runtime fails after output creation.

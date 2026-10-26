@@ -97,7 +97,7 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
         self.assertEqual(frame["rgb"].shape, (80, 100, 3))
         self.assertEqual(frame["depth_m"].shape, (80, 100))
 
-    def test_depth_backprojection_returns_court_frame_measurement(self):
+    def test_depth_backprojection_returns_world_frame_measurement(self):
         result = self.module.process(sensor_state(0.0))
         self.assertEqual(result.position.shape, (1, 3))
         np.testing.assert_allclose(result.position[0], [1.0, 2.0, 1.0], atol=1e-8)
@@ -126,6 +126,21 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
         result = self.module.process(sensor_state(0.0))
         np.testing.assert_allclose(result.valid_mask, [0.0])
         self.assertEqual(self.module.last_diagnostic["reason"], "no_target_detection")
+
+    def test_missing_class_id_is_not_accepted_when_target_class_is_required(self):
+        self.detector.detections = [
+            {"xyxy": [45.0, 35.0, 55.0, 45.0], "confidence": 0.99}
+        ]
+        result = self.module.process(sensor_state(0.0))
+        np.testing.assert_allclose(result.valid_mask, [0.0])
+        self.assertEqual(self.module.last_diagnostic["reason"], "no_target_detection")
+
+    def test_nonfinite_rgb_buffer_is_rejected(self):
+        rgb = np.zeros((1, 80, 100, 3), dtype=np.float32)
+        rgb[0, 0, 0, 0] = np.nan
+        self.camera.data.output["rgb"] = Proxy(rgb)
+        with self.assertRaisesRegex(Exception, "rgb buffer contains NaN/Inf"):
+            self.module.process(sensor_state(0.0))
 
     def test_velocity_uses_two_valid_timestamped_measurements(self):
         self.module.process(sensor_state(0.0))

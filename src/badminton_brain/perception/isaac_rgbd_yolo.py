@@ -94,6 +94,8 @@ def read_camera_frame(camera: Any) -> dict[str, np.ndarray]:
     rgb = _first_view(output["rgb"], "rgb", 4)
     if rgb.ndim != 3 or rgb.shape[2] < 3:
         raise BrainBoundaryError("rgb must have shape HxWxC, got " + repr(rgb.shape))
+    if not np.isfinite(rgb).all():
+        raise BrainBoundaryError("rgb buffer contains NaN/Inf")
     rgb = rgb[:, :, :3]
     if not np.issubdtype(rgb.dtype, np.integer):
         finite = rgb[np.isfinite(rgb)]
@@ -309,7 +311,7 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
             x1, y1, x2, y2 = [float(v) for v in box]
             if x2 <= x1 or y2 <= y1:
                 continue
-            if target_class_id is not None and class_id is not None and class_id != target_class_id:
+            if target_class_id is not None and class_id != target_class_id:
                 continue
             parsed.append({
                 "xyxy": [x1, y1, x2, y2],
@@ -325,8 +327,8 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
         self.last_diagnostic.update({
             "valid": False,
             "reason": reason,
-            "position_court_m": [0.0, 0.0, 0.0],
-            "velocity_court_mps": [0.0, 0.0, 0.0],
+            "position_world_m": [0.0, 0.0, 0.0],
+            "velocity_world_mps": [0.0, 0.0, 0.0],
             "covariance_status": "TEMP_PARAMETERIZED_PROXY",
             "processing_ms": (time.perf_counter() - started) * 1000.0,
         })
@@ -452,10 +454,10 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
             "class_id": detection["class_id"],
             "depth_m": z,
             "depth_mad_m": mad,
-            "position_court_m": position_world.tolist(),
-            "velocity_court_mps": velocity.tolist(),
+            "position_world_m": position_world.tolist(),
+            "velocity_world_mps": velocity.tolist(),
             "velocity_status": velocity_status,
-            "covariance_court_m2": covariance_world.tolist(),
+            "covariance_world_m2": covariance_world.tolist(),
             "covariance_status": "TEMP_PARAMETERIZED_PROXY",
             "covariance_note": (
                 "pixel_sigma_px and depth_sigma_floor_m are engineering proxies, not calibrated noise"
