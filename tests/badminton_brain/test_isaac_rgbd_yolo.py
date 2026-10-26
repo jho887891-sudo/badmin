@@ -97,11 +97,12 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
         self.assertEqual(frame["rgb"].shape, (80, 100, 3))
         self.assertEqual(frame["depth_m"].shape, (80, 100))
 
-    def test_depth_backprojection_returns_world_frame_measurement(self):
+    def test_depth_backprojection_returns_court_frame_measurement(self):
         result = self.module.process(sensor_state(0.0))
         self.assertEqual(result.position.shape, (1, 3))
         np.testing.assert_allclose(result.position[0], [1.0, 2.0, 1.0], atol=1e-8)
         np.testing.assert_allclose(result.valid_mask, [1.0])
+        np.testing.assert_allclose(result.velocity_valid_mask, [0.0])
         self.assertEqual(result.frame, COURT_FRAME)
         self.assertEqual(self.module.last_diagnostic["reason"], "detection_and_depth_valid")
 
@@ -119,6 +120,7 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
         )
         result = self.module.process(sensor_state(0.0))
         np.testing.assert_allclose(result.valid_mask, [0.0])
+        np.testing.assert_allclose(result.velocity_valid_mask, [0.0])
         self.assertEqual(self.module.last_diagnostic["reason"], "no_valid_depth_in_center_patch")
 
     def test_wrong_class_is_not_accepted_as_shuttle(self):
