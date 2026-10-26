@@ -303,6 +303,8 @@ def main() -> int:
             "camera_sensor_status": "PASS",
             "detector_execution_status": "PASS",
             "detection_status": detection_status,
+            "detection_semantics": "target_class_prediction_present; fixture association is not evaluated",
+            "fixture_association_status": "UNKNOWN_NOT_EVALUATED",
             "rgbd_measurement_status": rgbd_status,
             "three_d_accuracy_status": "UNKNOWN_NO_INDEPENDENT_SHUTTLE_CENTRE_GT",
             "hardware_calibration_status": "UNKNOWN_SIM_ONLY_TEMP_RIG",
@@ -327,6 +329,7 @@ def main() -> int:
             "camera_shapes_and_runtime_calibration": camera_shapes,
             "notes": [
                 "The visual shuttle root pose is only a render fixture and is not fed to perception.",
+                "A target-class prediction is not proof that the rendered fixture itself was detected; fixture association is not evaluated.",
                 "RGB-D back-projection is not stereo triangulation.",
                 "A valid 3D projection is not a validated 3D accuracy result.",
                 "No robot commands, closed-loop control, training, or deployment are performed.",
