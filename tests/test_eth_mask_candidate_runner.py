@@ -92,3 +92,15 @@ def test_inventory_source_role_and_split_are_required(tmp_path):
     out=run_mask_candidates(inv,tmp_path/'out')
     assert out['status']=='BLOCKED_SOURCE_INTEGRITY'
     assert out['source_integrity_failures']==1
+
+
+def test_missing_grabcut_backend_is_a_top_level_blocker(tmp_path,monkeypatch):
+    import run_eth_mask_candidates as runner
+    inv,row=make_input(tmp_path)
+    monkeypatch.setattr(runner,'propose_instance_mask',
+        lambda *a,**k:{'candidate_alpha':None,'status':'UNRECOVERABLE',
+                       'reason':'BLOCKED_MASK_BACKEND','method':'grabcut'})
+    out=run_mask_candidates(inv,tmp_path/'out')
+    assert out['status']=='BLOCKED_MASK_BACKEND'
+    assert out['approved_masks']==0
+    assert out['training_permitted'] is False
