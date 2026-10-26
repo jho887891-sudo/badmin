@@ -32,8 +32,8 @@ The helper racket_stringbed_center_proxy derives the midpoint of the committed v
 
 ## Automated CI evidence (2026-10-26)
 
-- Source commit: `2ed5db8175a55171f3a8170e945509538e1cd8b2`
-- GitHub Actions: [run 40285332369](https://github.com/jho887891-sudo/badmin/actions/runs/40285332369)
+- Source commit: `b22c1e753174ed827cff311d39277aff9aa57420`
+- GitHub Actions: [run 40286480569](https://github.com/jho887891-sudo/badmin/actions/runs/40286480569)
 - Environment: Ubuntu runner, Python 3.10.22, NumPy 2.2.6, pytest 8.4.2, OpenUSD `usd-core==25.11`
 - Result: **128 passed, 1 skipped, 0 failed**; the Isaac Lab smoke script also passed `py_compile`.
 - The one skip is `tests/simulation/p6_joint_anchors_test.py:507`: the runner does not contain the read-only `physics.usda` layer copy, and the test uses the committed SHA-256-pinned anchors instead.
@@ -60,4 +60,4 @@ For the next gate, run the dedicated Isaac Lab smoke script on the target host a
       --headless --robot-usd "$REBOT_RS_USD" --test-identity-mount --steps 120 \
       --output "$BADMINTON_ROOT/outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/p0_racket_scene_smoke_20261026.json"
 
-The smoke script runs only a fixed-base simulation of the B601-RS and checks that the racket visual and 43 collision proxies survive reset and stepping. It does not create or deploy a real robot, does not include the Morph One chassis or a shuttle, and does not claim physical contact dynamics. No target-host Isaac Sim run is claimed yet.
+The smoke script runs only a fixed-base simulation of the B601-RS. In addition to checking that the racket visual and all 43 collision proxies survive reset and stepping, it checks that link6 has a rigid-body API, every collider resolves to link6 as its nearest rigid-body ancestor, the referenced racket root matches the mount transform within 1e-5 m, and the racket mount does not create a separate rigid body. These are runtime assertions in the script, not yet target-host results. It does not create or deploy a real robot, does not include the Morph One chassis or a shuttle, and does not claim physical contact dynamics. No target-host Isaac Sim run is claimed yet.

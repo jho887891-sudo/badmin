@@ -1,12 +1,12 @@
 {
   "schema": "p0_racket_contact_ci_evidence/1",
-  "source_commit_sha": "2ed5db8175a55171f3a8170e945509538e1cd8b2",
+  "source_commit_sha": "b22c1e753174ed827cff311d39277aff9aa57420",
   "branch": "feature/p0-b601-racket-contact-chain",
   "pull_request": 63,
   "workflow": {
     "name": "P0 B601-RS racket contact tests",
-    "run_id": 40285332369,
-    "url": "https://github.com/jho887891-sudo/badmin/actions/runs/40285332369",
+    "run_id": 40286480569,
+    "url": "https://github.com/jho887891-sudo/badmin/actions/runs/40286480569",
     "status": "success"
   },
   "environment": {
@@ -39,11 +39,14 @@
       "OpenUSD 25.11 in-memory authoring of racket visual and 43 collision shapes",
       "capsule spine-height/extent math",
       "explicit USD scale/orient precision",
-      "smoke script syntax"
+      "syntax check of the Isaac Lab runtime smoke script"
     ],
     "not_verified": [
       "Isaac Sim/PhysX runtime",
       "target GPU simulation",
+      "runtime assertion that all collision shapes inherit link6 as nearest rigid-body ancestor",
+      "runtime racket visual/mount transform alignment check",
+      "runtime persistence of all 43 colliders after reset and stepping",
       "real B601-RS/racket mount calibration",
       "Morph One chassis integration",
       "racket mass/COM/inertia",
@@ -51,5 +54,5 @@
       "hardware deployment"
     ]
   },
-  "next_gate": "Run scripts/simulation/p0_b601_racket_scene_smoke.py on the target Isaac Lab host with an explicitly opted-in simulation-only mount; then obtain and validate the physical racket-mount calibration before contact-dynamics claims."
+  "next_gate": "Run scripts/simulation/p0_b601_racket_scene_smoke.py on the target Isaac Lab host with an explicitly opted-in simulation-only mount; inspect the generated evidence JSON and resolve any failed runtime assertion before claiming the scene integration is verified."
 }
