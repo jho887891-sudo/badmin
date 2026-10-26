@@ -123,6 +123,8 @@ class EkfEstimatorModule(EstimationModule):
         position = np.asarray(perception.position, dtype=float)
         velocity = np.asarray(perception.velocity, dtype=float)
         if self.shuttle_filter is None:
+            # Explicit TEMP passthrough only: invalid rows are zero-filled because
+            # no estimator exists to maintain a predicted state for them.
             if valid is not None and len(valid) != position.shape[0]:
                 keep = np.zeros_like(position)
                 keep[valid] = position[valid]
@@ -130,13 +132,26 @@ class EkfEstimatorModule(EstimationModule):
                 keep_v[valid] = velocity[valid]
                 return keep, keep_v
             return position, velocity
-        if valid is not None:
-            if not valid:
-                return position, velocity          # nothing to update: keep the last estimate
-            estimate = self.shuttle_filter.update(perception, valid)
-        else:
-            estimate = self.shuttle_filter.update(perception, sensors)
-        return np.asarray(estimate['position'], dtype=float), np.asarray(estimate['velocity'], dtype=float)
+
+        # Keep the injected-filter contract unambiguous.  A bare ShuttleUKF
+        # consumes measurements via step() and returns state through properties;
+        # the bridge/custom adapter consumes update(measurement, sensors) -> dict.
+        # In either case the validity mask stays inside ShuttleMeasurement.  It
+        # must never be passed as the positional 'sensors' or 'env_ids' argument.
+        from .shuttle_ukf import ShuttleUKF
+
+        if isinstance(self.shuttle_filter, ShuttleUKF):
+            self.shuttle_filter.step(perception)
+            return (
+                np.asarray(self.shuttle_filter.position, dtype=float),
+                np.asarray(self.shuttle_filter.velocity, dtype=float),
+            )
+
+        estimate = self.shuttle_filter.update(perception, sensors)
+        return (
+            np.asarray(estimate['position'], dtype=float),
+            np.asarray(estimate['velocity'], dtype=float),
+        )
 
     def _racket_contact_pose(self, base_pose: np.ndarray) -> np.ndarray:
         """Court-frame racket-contact pose under a TEMP identity offset from robot_base."""

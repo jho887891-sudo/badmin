@@ -377,7 +377,12 @@ class ShuttleUKF:
 
     def update(self, measurement: ShuttleMeasurement,
                env_ids: Optional[Sequence[int]] = None) -> None:
-        """Fuse one batched ShuttleMeasurement (position, and velocity when enabled)."""
+        """Fuse valid rows of one batched ShuttleMeasurement.
+
+        Rows whose valid_mask is false are missing observations: they must not
+        change that environment's state or covariance.  The caller is
+        responsible for calling predict(dt) before update() when time advances.
+        """
         if not isinstance(measurement, ShuttleMeasurement):
             raise BrainBoundaryError(
                 f"update expects a ShuttleMeasurement, got {type(measurement).__name__}")
@@ -390,10 +395,26 @@ class ShuttleUKF:
             raise BrainBoundaryError(
                 f"measurement.covariance must have shape ({m}, 3, 3), got {cov.shape}")
 
+        if measurement.valid_mask is None:
+            valid_mask = np.ones(m, dtype=bool)
+        else:
+            raw_mask = np.asarray(measurement.valid_mask, dtype=float).reshape(-1)
+            if raw_mask.shape != (m,):
+                raise BrainBoundaryError(
+                    f"measurement.valid_mask must have shape ({m},), got {raw_mask.shape}")
+            if not np.isfinite(raw_mask).all():
+                raise BrainBoundaryError("measurement.valid_mask contains NaN/Inf")
+            valid_mask = raw_mask > 0.5
+
         obs_dim = 6 if self.fuse_velocity else 3
         innovations = np.zeros((m, obs_dim))
         nis = np.zeros(m)
         for j, e in enumerate(index):
+            # An invalid row is a missing measurement, not a measurement at
+            # the sentinel coordinates commonly used to fill empty detections.
+            if not valid_mask[j]:
+                continue
+
             r_pos = 0.5 * (cov[j] + cov[j].T) + _MEASUREMENT_JITTER * np.eye(3)
             if not np.isfinite(r_pos).all():
                 raise BrainBoundaryError("measurement covariance contains NaN/Inf")
