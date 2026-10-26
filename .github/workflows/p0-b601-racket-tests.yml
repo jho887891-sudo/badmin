@@ -36,4 +36,7 @@ jobs:
             tests/simulation/rebot_b601_rs/test_racket_mount_adapter.py \
             tests/simulation/p6_racket_contact_kinematics_test.py \
             tests/simulation/p6_dynamic_fk_test.py \
+            tests/simulation/p6_frame_tree_test.py \
+            tests/simulation/p6_joint_anchors_test.py \
+            tests/simulation/p6_racket_proxy_test.py \
             tests/simulation/rebot_b601_rs/test_racket_usd_authoring.py
