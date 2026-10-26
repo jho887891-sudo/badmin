@@ -12,6 +12,7 @@ This is a sensor/inference integration gate only. It does not run the robot, sen
 
 - Run on the Linux host that has the project Isaac Lab environment and court USD asset.
 - Supply an existing Ultralytics-compatible checkpoint explicitly. The script never chooses or converts weights silently.
+- Recommended first probe candidate from the repository's known release record: `baseline_os` / `shuttle-detector-v2-2026-09-15`, YOLO26s, class 0 `shuttlecock`, SHA256 `61c491206904bba66ee866a8d5b7a45b4b10668c87c07804e2b58e147d74c963` (20,317,957 bytes). The freeze handoff labels it `FROZEN_CANDIDATE`, not deployable; use it only as the existing simulation probe candidate. Locate the actual local `weights/best.pt`, verify that SHA, and stop if the file is absent or mismatched.
 - The older ETH YOLOv8 state-dict checkpoint recorded as non-Ultralytics format may not load through the Ultralytics API. If that is the only checkpoint available, stop and add an explicit architecture adapter rather than changing the weights.
 - The camera rig values come from scene_layout.CAMERA and are TEMP engineering geometry, not measured hardware extrinsics.
 - The output directory must not already exist.
