@@ -1,0 +1,287 @@
+{
+  "collide_sha_count": 89,
+  "collide_detail_first12": [
+    {
+      "sha256": "00228acebe6b0be16614236e46a4305dbdc24dc38d3e17dabf1521f0338ea701",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives2/raw/hn2_002.jpg",
+      "train_set_dir": "hard_negatives2",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives2/raw/hn2_002.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives2",
+      "frozen_role": "FROZEN_EVAL"
+    },
+    {
+      "sha256": "01a81933ad607fcd55ca4d4d47d0eb1a2d79d814c21ec1f9dd360a4270ddcbb2",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives/raw/hn_032.jpg",
+      "train_set_dir": "hard_negatives",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives/raw/hn_032.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives",
+      "frozen_role": "FROZEN_EVAL"
+    },
+    {
+      "sha256": "070f4e805c3cca047cbd98f256755cc293291f81af4164520f226f51a5e62075",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives2/raw/hn2_046.jpg",
+      "train_set_dir": "hard_negatives2",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives2/raw/hn2_046.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives2",
+      "frozen_role": "FROZEN_EVAL"
+    },
+    {
+      "sha256": "0ab8d7f72014606c796da46eaa4361bfaacb223d7c67197e93a3f62d84c71b4b",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives/raw/hn_025.jpg",
+      "train_set_dir": "hard_negatives",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives/raw/hn_025.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives",
+      "frozen_role": "FROZEN_EVAL"
+    },
+    {
+      "sha256": "0b3cb4afa4baf83c57aa4f1157589e0cd030b741b5c2a4c31010cdbc72e23b87",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives2/raw/hn2_020.jpg",
+      "train_set_dir": "hard_negatives2",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives2/raw/hn2_020.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives2",
+      "frozen_role": "FROZEN_EVAL"
+    },
+    {
+      "sha256": "0b78a9b98b660534ed83d4af63de247eb11179ba90d2e169a1ba8ef70114a3b1",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives/raw/hn_020.jpg",
+      "train_set_dir": "hard_negatives",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives/raw/hn_020.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives",
+      "frozen_role": "FROZEN_EVAL"
+    },
+    {
+      "sha256": "0f5227a107b7dc13dd110f97572493053c2af93322e90c67f942ed7d80fe4ae2",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives2/raw/hn2_041.jpg",
+      "train_set_dir": "hard_negatives2",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives2/raw/hn2_041.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives2",
+      "frozen_role": "FROZEN_EVAL"
+    },
+    {
+      "sha256": "13e8be2fac8b3a75408997139f9d9baed2bfb7528796f4bf5f084fa41ba1ed95",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives/raw/hn_031.jpg",
+      "train_set_dir": "hard_negatives",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives/raw/hn_031.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives",
+      "frozen_role": "FROZEN_EVAL"
+    },
+    {
+      "sha256": "18e4209013f5a1babbf83384b396820b9f60e524c78d58f734c1b76e60ab6128",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives2/raw/hn2_045.jpg",
+      "train_set_dir": "hard_negatives2",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives2/raw/hn2_045.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives2",
+      "frozen_role": "FROZEN_EVAL"
+    },
+    {
+      "sha256": "1c6450ad498a2e48f225358c011de312ba9a087f7867707b9db81d395d908148",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives2/raw/hn2_055.jpg",
+      "train_set_dir": "hard_negatives2",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives2/raw/hn2_055.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives2",
+      "frozen_role": "FROZEN_EVAL"
+    },
+    {
+      "sha256": "1c94f44282bdb833e55d053761f2fc4bcec4b82dfc3cc93e23d2bb40487f5c1e",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives/raw/hn_012.jpg",
+      "train_set_dir": "hard_negatives",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives/raw/hn_012.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives",
+      "frozen_role": "FROZEN_EVAL"
+    },
+    {
+      "sha256": "20f811fd0089e18446c78141a251747fe144e8bf3762c4fe1cedf719a71bbc62",
+      "train_rows": 8,
+      "train_image": "/home/T7/dgut/robot_sim/outputs/shuttle_capability/hard_negatives/raw/hn_005.jpg",
+      "train_set_dir": "hard_negatives",
+      "train_role": "hard_negative",
+      "train_repeat_indexes": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "frozen_rows": 1,
+      "frozen_source_id": "outputs/shuttle_capability/hard_negatives/raw/hn_005.jpg",
+      "frozen_origin": "outputs/shuttle_capability/hard_negatives",
+      "frozen_role": "FROZEN_EVAL"
+    }
+  ],
+  "train_images_repeated_gt1": 89,
+  "collide_images": 89,
+  "collide_images_subset_of_repeated": true,
+  "frozen_origins": {
+    "outputs/shuttle_capability/controlled_capability": 2070,
+    "outputs/shuttle_capability/train_data": 856,
+    "outputs/shuttle_capability/real_match_frames": 235,
+    "outputs/shuttle_capability/challenge_test": 227,
+    "outputs/shuttle_capability/synthetic_on_real_bg": 160,
+    "outputs/shuttle_capability/real_video": 150,
+    "outputs/shuttle_capability/real_images": 89,
+    "outputs/shuttle_capability/synthetic_3d": 84,
+    "outputs/shuttle_capability/hard_negatives2": 60,
+    "outputs/shuttle_capability/hard_negatives": 36,
+    "outputs/shuttle_capability/real_train": 22
+  },
+  "frozen_roles": {
+    "FROZEN_EVAL": 3989
+  },
+  "repeated_rows": 712,
+  "repeated_role_dist": {
+    "hard_negative": 712
+  },
+  "repeated_source_dist": {
+    "hard_negative": 712
+  },
+  "repeated_set_dir_dist": {
+    "hard_negatives2": 424,
+    "hard_negatives": 288
+  }
+}

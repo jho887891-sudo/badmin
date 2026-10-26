@@ -1,0 +1,155 @@
+{
+  "train_rows": 15255,
+  "train_distinct_images": 14632,
+  "train_distinct_sha": 14632,
+  "val_rows": 2920,
+  "val_distinct_images": 2920,
+  "overlap_val_in_train_by_path": 0,
+  "overlap_val_in_train_by_sha": 0,
+  "official_positives_but_not_is_positive": 1,
+  "examples": [
+    {
+      "image": "/home/T7/dgut/robot_sim/eth_shuttle_detection/ticino_1_easy/images/train/ticino_1_00212.jpg",
+      "role": "official_positives",
+      "is_positive": "False",
+      "is_negative": "True",
+      "source": "eth_main",
+      "set_dir": "ticino_1_easy",
+      "n_boxes": "0"
+    }
+  ],
+  "train_images_with_multiplicity_gt1": 89,
+  "max_multiplicity": 8,
+  "repeat_index_distribution": {
+    "0": 14632,
+    "1": 89,
+    "2": 89,
+    "3": 89,
+    "4": 89,
+    "5": 89
+  },
+  "source_x_setdir_top": [
+    [
+      "eth_main",
+      "cab_2_easy",
+      2543
+    ],
+    [
+      "eth_main",
+      "glc_1_easy",
+      2118
+    ],
+    [
+      "eth_main",
+      "ticino_2_easy",
+      1733
+    ],
+    [
+      "eth_main",
+      "cab_1_easy",
+      1606
+    ],
+    [
+      "eth_main",
+      "ticino_1_easy",
+      1250
+    ],
+    [
+      "eth_main",
+      "ml_4_easy",
+      1214
+    ],
+    [
+      "eth_main",
+      "ticino_1_medium",
+      1187
+    ],
+    [
+      "eth_main",
+      "cab_2_medium",
+      728
+    ],
+    [
+      "eth_main",
+      "ticino_2_medium",
+      636
+    ],
+    [
+      "eth_negative",
+      "coco_train_easy",
+      550
+    ],
+    [
+      "eth_main",
+      "cab_1_medium",
+      521
+    ],
+    [
+      "hard_negative",
+      "hard_negatives2",
+      424
+    ],
+    [
+      "eth_main",
+      "glc_1_medium",
+      328
+    ],
+    [
+      "hard_negative",
+      "hard_negatives",
+      288
+    ],
+    [
+      "eth_main",
+      "ml_4_medium",
+      129
+    ]
+  ],
+  "positives_rows": 13992,
+  "positives_by_set_dir": {
+    "cab_2_easy": 2543,
+    "glc_1_easy": 2118,
+    "ticino_2_easy": 1733,
+    "cab_1_easy": 1606,
+    "ticino_1_easy": 1249,
+    "ml_4_easy": 1214,
+    "ticino_1_medium": 1187,
+    "cab_2_medium": 728,
+    "ticino_2_medium": 636,
+    "cab_1_medium": 521,
+    "glc_1_medium": 328,
+    "ml_4_medium": 129
+  },
+  "positives_by_location": {
+    "cab_2": 3271,
+    "glc_1": 2446,
+    "ticino_1": 2436,
+    "ticino_2": 2369,
+    "cab_1": 2127,
+    "ml_4": 1343
+  },
+  "positives_n_boxes_sum": 13992,
+  "frozen_columns": [
+    "source_id",
+    "role",
+    "sha256",
+    "bytes",
+    "origin"
+  ],
+  "frozen_rows": 3989,
+  "frozen_first_row": {
+    "source_id": "outputs/shuttle_capability/challenge_test/images/c1_hard_scene_00_0.jpg",
+    "role": "FROZEN_EVAL",
+    "sha256": "e5084997d2684d04e09922f1fbdfd540e302248b5b5cf9af78fa2f41f0b97d1e",
+    "bytes": "464425",
+    "origin": "outputs/shuttle_capability/challenge_test"
+  },
+  "frozen_distinct_paths": 1,
+  "frozen_distinct_sha": 3956,
+  "frozen_overlap_train_by_path": 0,
+  "frozen_overlap_train_by_sha": 89,
+  "frozen_overlap_train_by_stem": 0,
+  "frozen_sample_paths": [
+    ""
+  ]
+}
