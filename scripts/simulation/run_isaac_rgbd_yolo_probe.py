@@ -38,6 +38,7 @@ ARGS = PARSER.parse_args()
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
+sys.path.insert(0, str(REPO_ROOT / "src"))
 
 
 def sha256_file(path: Path) -> str:
@@ -118,12 +119,12 @@ def main() -> int:
 
         from simulation.badminton_scene.scene_cfg import create_scene
         from simulation.badminton_scene.stereo_camera_cfg import build_stereo_camera_sensor_specs
-        from src.badminton_brain.perception.isaac_rgbd_yolo import (
+        from badminton_brain.perception.isaac_rgbd_yolo import (
             IsaacRgbdPerceptionModule,
             UltralyticsShuttleDetector,
             read_camera_frame,
         )
-        from src.badminton_brain.types import RobotSensorState
+        from badminton_brain.types import RobotSensorState
 
         class_id = None if ARGS.class_id < 0 else int(ARGS.class_id)
         detector = UltralyticsShuttleDetector(
