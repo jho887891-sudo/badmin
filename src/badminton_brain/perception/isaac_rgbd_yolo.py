@@ -24,7 +24,7 @@ from typing import Any, Optional
 import numpy as np
 
 from ..interfaces import PerceptionModule
-from ..types import BrainBoundaryError, RobotSensorState, ShuttleMeasurement
+from ..types import BrainBoundaryError, COURT_FRAME, RobotSensorState, ShuttleMeasurement
 
 
 def _to_numpy(value: Any) -> np.ndarray:
@@ -373,7 +373,7 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
             covariance=(np.eye(3, dtype=float) * 1e6)[None, :, :],
             timestamp=timestamp,
             valid_mask=np.array([0.0]),
-            frame="court",
+            frame=COURT_FRAME,
             velocity_valid_mask=np.array([0.0]),
         )
 
@@ -517,7 +517,7 @@ class IsaacRgbdPerceptionModule(PerceptionModule):
             covariance=covariance_world[None, :, :],
             timestamp=timestamp,
             valid_mask=np.array([1.0]),
-            frame="court",
+            frame=COURT_FRAME,
             velocity_valid_mask=np.array([
                 1.0 if velocity_status == "FINITE_DIFFERENCE_BETWEEN_VALID_RGBD_MEASUREMENTS" else 0.0
             ]),

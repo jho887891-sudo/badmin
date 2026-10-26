@@ -179,6 +179,7 @@ def main() -> int:
         latency_by_camera: dict[str, list[float]] = {"left": [], "right": []}
         detections_by_camera: dict[str, int] = {"left": 0, "right": 0}
         valid3d_by_camera: dict[str, int] = {"left": 0, "right": 0}
+        valid_velocity_by_camera: dict[str, int] = {"left": 0, "right": 0}
 
         for frame_index in range(int(ARGS.frames)):
             timestamp = float(frame_index) / 60.0
@@ -224,6 +225,8 @@ def main() -> int:
                     detections_by_camera[name] += 1
                 if bool(diagnostic.get("valid")):
                     valid3d_by_camera[name] += 1
+                if bool(diagnostic.get("velocity_valid", False)):
+                    valid_velocity_by_camera[name] += 1
                 latency_by_camera[name].append(float(diagnostic.get("processing_ms", 0.0)))
                 record = {
                     "frame_index": frame_index,
@@ -285,6 +288,7 @@ def main() -> int:
             "records_written": len(records),
             "detection_frames_by_camera": detections_by_camera,
             "valid_rgbd_measurements_by_camera": valid3d_by_camera,
+            "valid_velocity_measurements_by_camera": valid_velocity_by_camera,
             "processing_latency_ms_by_camera": {
                 name: {
                     "p50": float(np.percentile(values, 50)) if values else None,
@@ -343,6 +347,7 @@ def main() -> int:
             "checkpoint_sha256": detector.checkpoint_sha256,
             "detections_by_camera": detections_by_camera,
             "valid_rgbd_by_camera": valid3d_by_camera,
+            "valid_velocity_by_camera": valid_velocity_by_camera,
         }, indent=2), flush=True)
         return 0 if overall.startswith("PASS_") else 3
 
