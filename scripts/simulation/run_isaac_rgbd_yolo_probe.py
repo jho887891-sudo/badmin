@@ -32,7 +32,9 @@ PARSER.add_argument("--shuttle-usd", default=None, help="visual shuttle USD; def
 PARSER.add_argument("--frames", type=int, default=3)
 PARSER.add_argument("--imgsz", type=int, default=1024)
 PARSER.add_argument("--conf", type=float, default=0.25)
-PARSER.add_argument("--class-id", type=int, default=0, help="target class ID; use -1 to disable class filtering")
+PARSER.add_argument("--class-id", type=int, default=0, help="target shuttlecock class ID; class filtering is mandatory")
+PARSER.add_argument("--expected-class-name", default="shuttlecock",
+                    help="expected class name for --class-id; mismatches abort the probe")
 PARSER.add_argument("--model-device", default="cuda:0", help="device passed to Ultralytics, separate from Isaac AppLauncher")
 PARSER.add_argument("--target-pos", type=float, nargs=3, default=[-0.5, 0.0, 1.25],
                     help="visual test-fixture root position in world-frame metres")
@@ -96,6 +98,10 @@ def main() -> int:
         PARSER.error("--imgsz must be >= 32")
     if not 0.0 <= ARGS.conf <= 1.0:
         PARSER.error("--conf must be in [0, 1]")
+    if ARGS.class_id < 0:
+        PARSER.error("--class-id must be non-negative; target-class filtering is mandatory")
+    if not str(ARGS.expected_class_name).strip():
+        PARSER.error("--expected-class-name must be non-empty")
 
     if ARGS.out is None:
         run_stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -128,11 +134,12 @@ def main() -> int:
         )
         from badminton_brain.types import RobotSensorState
 
-        class_id = None if ARGS.class_id < 0 else int(ARGS.class_id)
+        class_id = int(ARGS.class_id)
         detector = UltralyticsShuttleDetector(
             checkpoint, imgsz=ARGS.imgsz, conf=ARGS.conf,
             device=ARGS.model_device, class_id=class_id,
             expected_sha256=ARGS.expected_checkpoint_sha256,
+            expected_class_name=ARGS.expected_class_name,
         )
         sim, scene, _robot, _shuttle, _contact, extra = create_scene(
             num_envs=1,
@@ -314,6 +321,7 @@ def main() -> int:
             "checkpoint_path": str(checkpoint),
             "checkpoint_sha256": detector.checkpoint_sha256,
             "expected_checkpoint_sha256": detector.expected_checkpoint_sha256,
+            "expected_class_name": detector.expected_class_name,
             "checkpoint_model_names": str(detector.model_names),
             "checkpoint_format": "Ultralytics YOLO API loaded directly; no conversion or training",
             "shuttle_visual_usd": str(shuttle_usd),

@@ -168,6 +168,7 @@ class UltralyticsShuttleDetector:
         device: str = "cuda:0",
         class_id: Optional[int] = 0,
         expected_sha256: Optional[str] = None,
+        expected_class_name: Optional[str] = "shuttlecock",
     ) -> None:
         self.checkpoint_path = Path(checkpoint_path).expanduser().resolve()
         if not self.checkpoint_path.is_file():
@@ -180,6 +181,15 @@ class UltralyticsShuttleDetector:
         self.conf = float(conf)
         self.device = str(device)
         self.class_id = None if class_id is None else int(class_id)
+        if self.class_id is not None and self.class_id < 0:
+            raise ValueError("class_id must be non-negative")
+        self.expected_class_name = (
+            None if expected_class_name is None else str(expected_class_name).strip().casefold()
+        )
+        if self.expected_class_name == "":
+            raise ValueError("expected_class_name must be non-empty or None")
+        if self.expected_class_name is not None and self.class_id is None:
+            raise ValueError("class_id is required when expected_class_name is set")
         self.checkpoint_sha256 = _sha256_file(self.checkpoint_path)
         expected = None if expected_sha256 is None else str(expected_sha256).strip().lower()
         if expected is not None:
@@ -206,6 +216,25 @@ class UltralyticsShuttleDetector:
                 "select an existing compatible checkpoint or implement an explicit adapter"
             ) from exc
         self.model_names = getattr(self.model, "names", None)
+        if self.expected_class_name is not None:
+            names = self.model_names
+            if isinstance(names, Mapping):
+                actual_class_name = names.get(self.class_id, names.get(str(self.class_id)))
+            elif isinstance(names, (list, tuple)) and self.class_id < len(names):
+                actual_class_name = names[self.class_id]
+            else:
+                actual_class_name = None
+            if actual_class_name is None:
+                raise RuntimeError(
+                    "checkpoint class names do not identify class_id " + str(self.class_id)
+                )
+            actual_normalized = str(actual_class_name).strip().casefold()
+            if actual_normalized != self.expected_class_name:
+                raise RuntimeError(
+                    "checkpoint class_id " + str(self.class_id) + " is " +
+                    repr(str(actual_class_name)) + "; expected target class " +
+                    repr(self.expected_class_name)
+                )
 
     def detect(self, image_rgb: np.ndarray) -> list[dict[str, Any]]:
         """Run the existing model. Ultralytics NumPy input is BGR, so convert explicitly."""
