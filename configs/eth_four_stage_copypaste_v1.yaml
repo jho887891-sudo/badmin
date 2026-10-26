@@ -1,0 +1,23 @@
+run_id: ETH_FOUR_STAGE_CP_V1
+stages: [stage1, stage2, stage4, stage3]
+imgsz: 1024
+seed: 42
+train_source_splits: [train]
+output_root: /home/T7/dgut/robot_sim/eth_four_stage_copypaste_v1
+# Explicitly exclude white/near-white from Stage 1.
+palette_rgb:
+  - [22, 38, 83]
+  - [26, 78, 45]
+  - [41, 32, 71]
+  - [62, 38, 32]
+  - [34, 47, 55]
+checkpoint:
+  # Must be filled and sha256-verified against the intended YOLO checkpoint before training.
+  path: ''
+  sha256: ''
+evaluation:
+  iou: 0.5
+  conf: 0.25
+  imgsz: 1024
+  ground_truth_required: true
+  prohibit_test_selection: true
