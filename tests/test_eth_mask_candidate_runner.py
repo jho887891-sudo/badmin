@@ -68,8 +68,9 @@ def test_tiny_target_is_not_silently_dropped(tmp_path):
 
 def test_duplicate_inventory_id_never_silently_overwrites(tmp_path):
     inv,row=make_input(tmp_path)
-    with inv.open('a',encoding='utf-8') as f:
-        f.write(','.join(str(row[k]) for k in FIELDS)+'\n')
+    with inv.open('a',newline='',encoding='utf-8') as f:
+        w=csv.DictWriter(f,fieldnames=FIELDS)
+        w.writerow(row)
     out=run_mask_candidates(inv,tmp_path/'out')
     assert out['status']=='BLOCKED_SOURCE_INTEGRITY'
     assert out['input_rows']==2
