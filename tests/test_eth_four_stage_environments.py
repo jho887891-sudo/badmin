@@ -9,7 +9,8 @@ from eth_four_stage_environments import validate_real_background,make_stage4_sam
 def foreground():
     rgb=np.full((12,12,3),238,dtype=np.uint8)
     mask=np.zeros((12,12),dtype=np.float32); mask[2:10,4:8]=1
-    return {'sample_id':'eth-1','rgb':rgb,'alpha':mask,'source_sha256':'F'*64,'source':'eth_train','qa_status':'APPROVED'}
+    return {'sample_id':'eth-1','rgb':rgb,'alpha':mask,'source_sha256':'F'*64,'source':'eth_train','qa_status':'APPROVED','reviewed':True,
+            'reviewer_id':'human-1','review_method':'visual'}
 
 
 def background():
@@ -67,3 +68,9 @@ def test_unauthorized_roi_outside_frame_rejected():
 def test_background_pixels_outside_target_unchanged():
     bg=background();r=make_stage4_sample(foreground(),bg,{'center_x':40,'center_y':35},seed=21)
     assert np.array_equal(r['image'][0:10],bg['image'][0:10])
+
+def test_approved_string_without_human_review_is_rejected():
+    fg=foreground();fg['reviewed']=False
+    assert fg['qa_status']=='APPROVED'
+    with pytest.raises(EnvironmentRejected):
+        make_stage4_sample(fg,background(),{'center_x':40,'center_y':35},seed=21)
