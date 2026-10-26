@@ -35,7 +35,7 @@ CPU 夹具的输出必须是 `CPU_FIXTURE_ONLY`、`optimizer_steps: 0`、`real_r
 
 ## 下一步：真实 ETH 全量框清单（必须在数据实际挂载的 Linux 端执行）
 
-本分支的仓库文件 data/eth_real_hardneg_v2_train_manifest.csv 当前是 **0 字节**，不能作为真实清单。请从已挂载的数据位置指定实际的 V2 manifest、标签根目录和冻结评测 manifest；不要把这个空占位文件当作成功输入。
+更正：此前通过文件内容预览得到“0 字节”的判断不准确。GitHub tree 对应 blob 的实际大小为 **6,303,784 bytes**；大文件内容预览可能不返回正文，不能据此判为空文件。远端实际清单仍须按执行报告核验 SHA256 与字节数，再作为真实输入。
 
 先在远端仓库根目录执行：
 
@@ -57,6 +57,60 @@ printf 'ETH_INVENTORY_OUTPUT=%s\n' "$OUT_ROOT"
 若有多个冻结评测清单，重复传入 --frozen-eval-manifest。命令会检查实际图片是否存在、图片宽高是否与 manifest 一致、图片 SHA256 是否匹配；会调用原有 prepare_eth_real_foregrounds.py 的 V2 parser 和 train/eval 来源过滤，并在新模式下绕过历史 10/24 px 门槛。**旧版默认门槛保持不变。**
 
 成功输出只代表 CANDIDATES_PENDING_REVIEW，下一道门仍是人工 Mask 审核，不代表可以训练。若出现 BLOCKED_DATA_INVENTORY，保留完整错误信息与路径，不要生成空清单来绕过。
+
+## 下一步 A：为全量框生成 Mask 候选（不自动审批、不训练）
+
+需要把最新分支代码同步到实际 Linux 工作目录，再使用本次审计通过的 inventory。先确认代码版本和数据清单：
+
+~~~bash
+set -euo pipefail
+git rev-parse HEAD
+sha256sum data/eth_real_hardneg_v2_train_manifest.csv
+sha256sum outputs/shuttle_detection/eth_four_stage_inventory/20261026T074352Z/instances.csv
+~~~
+
+将下列路径替换成真实审计输出目录；输出目录必须是新目录：
+
+~~~bash
+set -euo pipefail
+INVENTORY="outputs/shuttle_detection/eth_four_stage_inventory/20261026T074352Z/instances.csv"
+OUT_ROOT="$(mktemp -d /tmp/eth-mask-candidates.XXXXXX)"
+rmdir "$OUT_ROOT"
+python tools/run_eth_mask_candidates.py \
+  --inventory "$INVENTORY" \
+  --output-dir "$OUT_ROOT" \
+  --sheet-size 64
+printf 'MASK_CANDIDATE_OUTPUT=%s\n' "$OUT_ROOT"
+~~~
+
+这个工具会对每一行重新核对源图片 SHA256 和标签 SHA256，使用局部 ROI 提出 GrabCut 候选，输出：
+- \`candidate_manifest.jsonl\`：每个实例的处理状态、失败原因、来源哈希和候选 Mask 路径。
+- \`review.csv\`：人工审核登记表，reviewed、reviewer_id、review_method、decision 默认留空。
+- \`masks/\`：候选 alpha PNG。
+- \`review_sheets/\`：每 64 个实例一张原图/Mask 对照审核图。
+- \`audit.json\`：处理数量、来源完整性失败、尺寸分层及状态统计。
+
+所有候选状态都是 \`PENDING_REVIEW\` 或 \`UNRECOVERABLE\`；来源 SHA 或标签 SHA 不匹配时总状态为 \`BLOCKED_SOURCE_INTEGRITY\`。\`approved_masks\` 必须为 0，\`training_permitted\` 必须为 false。不得把矩形框直接当作已审核 Mask。6 px 等极小目标保留在清单中，但候选质量可能不足，必须由审核决定是否可用于合成；不可恢复的实例仍保留原图供阶段 3 真实训练使用。
+
+## 下一步 B：只读审计训练/评测重叠（与 Mask 候选可并行）
+
+原始清单和冻结索引均不得修改。使用独立新目录记录哈希重叠及标签冲突：
+
+~~~bash
+set -euo pipefail
+OUT_ROOT="$(mktemp -d /tmp/eth-eval-overlap-audit.XXXXXX)"
+rmdir "$OUT_ROOT"
+python tools/audit_eth_eval_overlap.py \
+  --train-manifest data/eth_real_hardneg_v2_train_manifest.csv \
+  --frozen-eval-index data/clean_outdoor_cp_v1/frozen_eval_index.csv \
+  --val-manifest data/eth_real_hardneg_v2_val_manifest.csv \
+  --output-dir "$OUT_ROOT"
+printf 'EVAL_OVERLAP_AUDIT=%s\n' "$OUT_ROOT"
+~~~
+
+该工具只输出 \`audit.json\`、\`training_rows_overlapping_frozen_eval.csv\` 和 \`contradictory_official_positive_rows.csv\`，不改原始数据、不创建“独立评测集”，也不会自动选择新的评测来源。89 张重叠难负样本应由后续人工确认其训练/评测用途；\`ticino_1_00212.jpg\` 的矛盾标注应在新版本清单中修订，原版保留作证据。
+
+\`eth_real_hardneg_v2_val_manifest.csv\` 目前不能直接用于报告独立 Recall；新的真实评测协议必须有明确的允许来源、与全部训练来源零内容重叠，以及逐帧人工 GT。上述条件完成前，Recall 和灯具误检改善仍为 \`UNKNOWN\`。
 
 ## 真正的 ETH 运行前置门
 
