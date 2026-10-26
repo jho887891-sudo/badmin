@@ -121,3 +121,30 @@ def test_duplicate_source_row_is_rejected_and_reconciled(tmp_path):
     assert r['counts']['unusable_instances']==2
     assert sum(x['reason']=='duplicate_source_instance' for x in r['rejections'])==2
     assert r['source_gate']=='PASS'
+
+
+def test_legacy_default_size_floors_remain_unchanged(tmp_path):
+    import prepare_eth_real_foregrounds as P
+    manifest,_=_data(tmp_path)
+    old=P.audit_eth_train_instances(manifest,min_short=10,min_long=24)
+    assert len(old['instances'])==1
+    assert old['instances'][0]['bbox_short']>=10
+    assert any(x['reason']=='below_min_size' for x in old['rejections'])
+
+
+def test_cli_writes_hash_manifest_and_refuses_overwrite(tmp_path):
+    from eth_four_stage_inventory import main
+    manifest,_=_data(tmp_path)
+    frozen=tmp_path/'frozen.csv'
+    frozen.write_text('image,sha256\n',encoding='utf-8')
+    inventory=tmp_path/'out'/'instances.csv'
+    audit=tmp_path/'out'/'audit.json'
+    args=['--manifest',str(manifest),'--frozen-eval-manifest',str(frozen),
+          '--out-inventory',str(inventory),'--out-audit',str(audit)]
+    assert main(args)==0
+    assert inventory.is_file() and audit.is_file()
+    payload=__import__('json').loads(audit.read_text(encoding='utf-8'))
+    assert payload['next_gate']=='HUMAN_MASK_REVIEW_REQUIRED'
+    assert payload['approved_masks']==0
+    assert len(list(csv.DictReader(inventory.open(encoding='utf-8'))))==2
+    assert main(args)==2
