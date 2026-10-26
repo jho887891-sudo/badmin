@@ -116,6 +116,15 @@ class IsaacRgbdPerceptionTests(unittest.TestCase):
         self.assertEqual(result.frame, COURT_FRAME)
         self.assertEqual(self.module.last_diagnostic["reason"], "detection_and_depth_valid")
 
+    def test_opengl_camera_pose_rotates_depth_ray_into_world_frame(self):
+        # Isaac Lab quat_w_opengl is xyzw. This 120-degree camera orientation
+        # maps the OpenGL optical axis (-Z) to court/world +X.
+        self.camera.data.quat_w_opengl = Proxy(
+            np.array([[0.5, -0.5, -0.5, 0.5]], dtype=float)
+        )
+        result = self.module.process(sensor_state(0.0))
+        np.testing.assert_allclose(result.position[0], [3.0, 2.0, 3.0], atol=1e-8)
+
     def test_no_detection_is_a_masked_miss_not_origin_measurement(self):
         self.detector.detections = []
         result = self.module.process(sensor_state(0.0))
