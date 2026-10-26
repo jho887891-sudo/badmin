@@ -109,9 +109,16 @@ def read_camera_frame(camera: Any) -> dict[str, np.ndarray]:
 
     depth = _first_view(output["distance_to_image_plane"], "distance_to_image_plane", 4)
     if depth.ndim == 3:
-        if depth.shape[2] < 1:
-            raise BrainBoundaryError("depth image has no channels")
-        depth = depth[:, :, 0]
+        # Support both channel-last depth (H, W, 1) and batched scalar depth
+        # (1, H, W), which some camera wrappers expose without a channel axis.
+        if depth.shape[0] == 1 and depth.shape[1:] == rgb.shape[:2]:
+            depth = depth[0]
+        elif depth.shape[:2] == rgb.shape[:2] and depth.shape[2] >= 1:
+            depth = depth[:, :, 0]
+        else:
+            raise BrainBoundaryError(
+                "depth must be HxW, HxWxC, or 1xHxW for N=1; got " + repr(depth.shape)
+            )
     if depth.ndim != 2 or depth.shape != rgb.shape[:2]:
         raise BrainBoundaryError(
             "depth shape must match rgb height/width, got " + repr(depth.shape))
