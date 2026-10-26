@@ -37,8 +37,10 @@ def validate_real_background(record: dict, frozen:list[dict]) -> dict:
 def make_stage4_sample(foreground:dict,background:dict,placement:dict,seed:int, *, frozen:list[dict] | None=None) -> dict:
     validation=validate_real_background(background,frozen or [])
     if validation['status']!='PASS':raise EnvironmentRejected('background rejected: '+','.join(validation['reasons']))
-    if foreground.get('qa_status')!='APPROVED' or foreground.get('source')!='eth_train' or not foreground.get('source_sha256'):
-        raise EnvironmentRejected('foreground requires approved ETH train source and hash')
+    if (foreground.get('qa_status')!='APPROVED' or foreground.get('source')!='eth_train'
+            or not foreground.get('source_sha256') or foreground.get('reviewed') is not True
+            or not foreground.get('reviewer_id') or not foreground.get('review_method')):
+        raise EnvironmentRejected('foreground requires verified human-approved ETH train mask')
     fg=np.asarray(foreground['rgb'],dtype=np.uint8)
     alpha=np.asarray(foreground['alpha'],dtype=np.float32)
     if fg.ndim!=3 or fg.shape[2]!=3 or alpha.shape!=fg.shape[:2] or alpha.min()<0 or alpha.max()>1:
