@@ -15,6 +15,8 @@ sys.path.insert(0, str(ROOT))
 from simulation.badminton_scene.stereo_camera_cfg import (  # noqa: E402
     build_stereo_camera_sensor_specs,
 )
+from simulation.badminton_scene.scene_layout import CAMERA  # noqa: E402
+from src.badminton_brain.perception.stereo_geometry import forward_camera_rotation  # noqa: E402
 
 
 class FakeCfg:
@@ -78,11 +80,20 @@ class StereoCameraConfigTests(unittest.TestCase):
 
         self.assertEqual(left.offset.pos, (-1.4, 0.145, 1.2))
         self.assertEqual(right.offset.pos, (-1.4, -0.145, 1.2))
-        pitch_rad = math.radians(4.0)
+        pitch_rad = math.radians(float(CAMERA["pitch_deg"]))
         expected_rot = (0.0, math.sin(pitch_rad / 2.0), 0.0, math.cos(pitch_rad / 2.0))
         for cfg in (left, right):
             for actual, expected in zip(cfg.offset.rot, expected_rot):
                 self.assertAlmostEqual(actual, expected, places=12)
+
+        # Isaac Lab convention="world" uses +X forward / +Z up. Its Y rotation
+        # must point the optical axis in the same direction as the frozen court
+        # geometry helper, which defines the signed pitch convention.
+        theta = 2.0 * math.atan2(left.offset.rot[1], left.offset.rot[3])
+        camera_forward_world = (math.cos(theta), 0.0, -math.sin(theta))
+        geometry_forward_world = forward_camera_rotation(float(CAMERA["pitch_deg"]))[:, 2]
+        for actual, expected in zip(camera_forward_world, geometry_forward_world):
+            self.assertAlmostEqual(actual, float(expected), places=12)
 
     def test_rejects_invalid_resolution_before_importing_isaaclab(self):
         with self.assertRaisesRegex(ValueError, "at least 32"):
