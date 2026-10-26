@@ -88,3 +88,12 @@ def test_no_overlap_is_not_enough_to_call_eval_independent(tmp_path):
     assert r['sha_overlap']['unique_sha256']==0
     assert r['status']=='AUDIT_ONLY_REVIEW_REQUIRED'
     assert r['policy']['new_independent_eval_set_created'] is False
+
+
+def test_windows_path_separator_is_normalized(tmp_path):
+    train,ev,val=setup(tmp_path)
+    rows=list(csv.DictReader(val.open()))
+    rows[0]['image']=r'C:\data\images\train\val.jpg'
+    write_csv(val,TRAIN_FIELDS,rows)
+    r=audit_eval_overlap(train,ev,val)
+    assert r['val_semantics']['images_train_path_tokens']==1
