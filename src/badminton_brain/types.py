@@ -121,6 +121,9 @@ class ShuttleMeasurement:
     # DEC-023: which rows are real detections.  An out-of-view shuttle must never be
     # consumed as a measurement at the origin.
     valid_mask: Any = None
+    # A position can be valid before velocity can be estimated from temporal history.
+    # None preserves legacy behavior: velocity is assumed valid wherever position is valid.
+    velocity_valid_mask: Any = None
 
     def __post_init__(self) -> None:
         check_court_frame(self)
@@ -128,10 +131,32 @@ class ShuttleMeasurement:
         if self.valid_mask is not None:
             self.valid_mask = check_per_env_scalar('ShuttleMeasurement.valid_mask',
                                                    np.asarray(self.valid_mask, dtype=float))
+        if self.velocity_valid_mask is not None:
+            self.velocity_valid_mask = check_per_env_scalar(
+                'ShuttleMeasurement.velocity_valid_mask',
+                np.asarray(self.velocity_valid_mask, dtype=float),
+            )
         self.position = check_batched('ShuttleMeasurement.position', self.position, 3)
         self.velocity = check_batched('ShuttleMeasurement.velocity', self.velocity, 3)
         self.covariance = check_batched('ShuttleMeasurement.covariance', self.covariance, 3)
-        _check_batch_dim([self.position, self.velocity, self.covariance], 'ShuttleMeasurement')
+        batch_dim = _check_batch_dim(
+            [self.position, self.velocity, self.covariance], 'ShuttleMeasurement'
+        )
+        for name, mask in (
+            ('valid_mask', self.valid_mask),
+            ('velocity_valid_mask', self.velocity_valid_mask),
+        ):
+            if mask is not None and mask.shape[0] != batch_dim:
+                raise BrainBoundaryError(
+                    f'ShuttleMeasurement.{name} must have shape ({batch_dim},), got {mask.shape}'
+                )
+        if self.valid_mask is not None and self.velocity_valid_mask is not None:
+            position_valid = self.valid_mask > 0.5
+            velocity_valid = self.velocity_valid_mask > 0.5
+            if np.any(velocity_valid & ~position_valid):
+                raise BrainBoundaryError(
+                    'ShuttleMeasurement.velocity_valid_mask cannot be true when valid_mask is false'
+                )
 
 
 @dataclass
