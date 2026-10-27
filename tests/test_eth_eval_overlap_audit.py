@@ -97,3 +97,12 @@ def test_windows_path_separator_is_normalized(tmp_path):
     write_csv(val,TRAIN_FIELDS,rows)
     r=audit_eval_overlap(train,ev,val)
     assert r['val_semantics']['images_train_path_tokens']==1
+
+
+def test_eval_audit_json_ends_with_newline_not_literal_escape(tmp_path):
+    train, ev, val = setup(tmp_path)
+    run(train, ev, tmp_path/'audit', val)
+    raw = (tmp_path/'audit'/'audit.json').read_bytes()
+    assert json.loads(raw)['sha_overlap']['unique_sha256'] == 1
+    assert raw.endswith(bytes([10]))
+    assert not raw.endswith(bytes([92, 110]))
