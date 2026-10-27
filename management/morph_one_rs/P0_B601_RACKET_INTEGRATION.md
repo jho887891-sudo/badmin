@@ -61,3 +61,56 @@ For the next gate, run the dedicated Isaac Lab smoke script on the target host a
       --output "$BADMINTON_ROOT/outputs/simulation/rebot_b601_rs/morph_one/p6_frames/evidence/p0_racket_scene_smoke_20261026.json"
 
 The smoke script runs only a fixed-base simulation of the B601-RS. In addition to checking that the racket visual and all 43 collision proxies survive reset and stepping, it checks that link6 has a rigid-body API, every collider resolves to link6 as its nearest rigid-body ancestor, the referenced racket root matches the mount transform within 1e-5 m, and the racket mount does not create a separate rigid body. These are runtime assertions in the script, not yet target-host results. It does not create or deploy a real robot, does not include the Morph One chassis or a shuttle, and does not claim physical contact dynamics. No target-host Isaac Sim run is claimed yet.
+
+
+## PR #63 GitHub-direct remediation and automated acceptance gate (2026-10-27)
+
+The target host reported a successful 120-step simulation on *a different local commit*:
+`9ff4ab8adaeb24c95327df6ee07d55d1ade61ec9`, which never reached GitHub
+because the target host's HTTPS Git traffic was directed at an unavailable
+`127.0.0.1:10080` proxy. Its JSON evidence is only on the target host
+(`p0_racket_scene_smoke_formal_20261027T074316Z.json`, reported SHA256
+`70b2080d91709fcf40a4cb69762cae3321c816aa88e8a53089a6896eeec2e088`).
+Do **not** relabel that run as having exercised this PR's new code commit.
+
+The GitHub-side equivalent fixes were separately implemented and verified by CI:
+
+1. `scripts/simulation/p0_b601_racket_scene_smoke.py` authors the racket only
+   after `sim_utils.make_uninstanceable(REBOT_RS_PRIM_PATH, stage)`, without
+   modifying the source USD asset.
+2. A native Isaac Sim `app.close()` may terminate with `exit_group(0)`;
+   the original code lost its report. The PR now uses
+   `try: write_report_exclusive(output, report) finally: app.close()` so
+   the structured PASS/FAIL evidence is persisted before native shutdown.
+3. `tests/simulation/rebot_b601_rs/test_p0_smoke_regressions.py` executes the
+   actual Python finalizer body with a simulated non-returning close and guards
+   mount authoring order. RED: [CI #40472083100](https://github.com/jho887891-sudo/badmin/actions/runs/40472083100)
+   **5 failed**, GREEN: [CI #40472215330](https://github.com/jho887891-sudo/badmin/actions/runs/40472215330)
+   **133 passed, 1 skipped**.
+4. `tools/p0/verify_racket_smoke.py` independently verifies the final
+   smoke JSON from *outside* Isaac Sim. It refuses missing reports, incomplete
+   or nonfinite data, status!=PASS, wrong step/count/ancestry checks, or any
+   unvalidated physical mount claim. RED: [CI #40472606837](https://github.com/jho887891-sudo/badmin/actions/runs/40472606837)
+   **19 failed** before the validator existed; GREEN:
+   [CI #40472770599](https://github.com/jho887891-sudo/badmin/actions/runs/40472770599)
+   **152 passed, 1 skipped**.
+
+### Direct external report check (no Isaac dependency)
+
+```bash
+python tools/p0/verify_racket_smoke.py --report /absolute/path/to/new_120step_report.json
+```
+
+The checker prints `PASS` and returns 0 only if every required field in the
+JSON confirms the fixed-base B601-RS + **proxy**-racket smoke contract.
+A failure/missing report returns 2. The checker is not a substitute for running
+the actual Isaac Lab smoke with the **current GitHub PR SHA**.
+
+### Final outstanding gate
+
+Perform a new 120-step Isaac Lab run from a **fresh clean checkout of this PR's
+actual head** on `jxxy`, keeping `/home/dgut/badmin_project_pr63_integration`
+(the host's original local `9ff4ab8` worktree) untouched. Pin the newly checked
+out commit, preserve the new report/log hashes, then run the verifier above.
+There is no GitHub-side capability here to execute commands on the target host.
+The real racket mount and shuttle-racket impact response remain UNKNOWN.
