@@ -104,3 +104,24 @@ def test_missing_grabcut_backend_is_a_top_level_blocker(tmp_path,monkeypatch):
     assert out['status']=='BLOCKED_MASK_BACKEND'
     assert out['approved_masks']==0
     assert out['training_permitted'] is False
+
+
+def test_candidate_jsonl_has_one_json_object_per_line(tmp_path):
+    inv, row = make_input(tmp_path)
+    run_mask_candidates(inv, tmp_path/'out')
+    raw = (tmp_path/'out'/'candidate_manifest.jsonl').read_bytes()
+    lines = raw.splitlines()
+    assert len(lines) == 1
+    assert lines[0].endswith(b'}')
+    assert raw.endswith(bytes([10]))
+    record = json.loads(lines[0])
+    assert record['instance_id'] == row['instance_id']
+
+
+def test_candidate_audit_json_has_real_line_ending(tmp_path):
+    inv, _ = make_input(tmp_path)
+    run_mask_candidates(inv, tmp_path/'out')
+    raw = (tmp_path/'out'/'audit.json').read_bytes()
+    assert json.loads(raw)['input_rows'] == 1
+    assert raw.endswith(bytes([10]))
+    assert not raw.endswith(bytes([92, 110]))
