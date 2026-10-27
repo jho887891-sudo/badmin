@@ -1,0 +1,148 @@
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "simulation"))
+
+from badminton_scene.racket_mount_adapter import (  # noqa: E402
+    RacketMountError,
+    _quat_wxyz_from_z_axis,
+    capsule_spine_height_from_endpoints,
+    gripper_end_prim_path,
+    load_racket_collision_proxy,
+    racket_mount_prim_path,
+    validate_mount_transform,
+)
+
+
+def test_unknown_mount_is_rejected_even_when_no_values_are_provided():
+    with pytest.raises(RacketMountError, match="status must be"):
+        validate_mount_transform({
+            "status": "UNKNOWN",
+            "translation_m": None,
+            "quaternion_wxyz": None,
+            "source": "",
+        })
+
+
+def test_unknown_mount_cannot_smuggle_in_an_identity_matrix():
+    with pytest.raises(RacketMountError, match="status must be"):
+        validate_mount_transform({
+            "status": "UNKNOWN",
+            "translation_m": [0.0, 0.0, 0.0],
+            "quaternion_wxyz": [1.0, 0.0, 0.0, 0.0],
+            "source": "unverified identity",
+        })
+
+
+def test_explicit_simulation_assumption_is_accepted_and_labelled():
+    value = validate_mount_transform({
+        "status": "SIMULATION_ASSUMPTION",
+        "translation_m": [0.01, -0.02, 0.03],
+        "quaternion_wxyz": [1.0, 0.0, 0.0, 0.0],
+        "source": "unit-test-only assumed mount",
+    })
+    assert value.status == "SIMULATION_ASSUMPTION"
+    assert value.translation_m == (0.01, -0.02, 0.03)
+
+
+def test_non_unit_quaternion_is_rejected_not_silently_normalized():
+    with pytest.raises(RacketMountError, match="unit length"):
+        validate_mount_transform({
+            "status": "MEASURED",
+            "translation_m": [0.0, 0.0, 0.0],
+            "quaternion_wxyz": [2.0, 0.0, 0.0, 0.0],
+            "source": "test fixture",
+        })
+
+
+def test_measured_mount_requires_source_provenance():
+    with pytest.raises(RacketMountError, match="provenance"):
+        validate_mount_transform({
+            "status": "MEASURED",
+            "translation_m": [0.0, 0.0, 0.0],
+            "quaternion_wxyz": [1.0, 0.0, 0.0, 0.0],
+            "source": "",
+        })
+
+
+def test_gripper_and_racket_paths_are_under_the_b601_rs_asset():
+    arm = "/World/envs/env_0/Robot/RebotB601RS"
+    gripper = gripper_end_prim_path(arm)
+    assert gripper.endswith("/Geometry/base_link/link1/link2/link3/link4/link5/link6/gripper_end")
+    assert racket_mount_prim_path(arm) == gripper + "/RacketMount"
+
+
+def test_committed_collision_proxy_has_43_valid_engineering_primitives():
+    doc = load_racket_collision_proxy()
+    assert doc["schema"] == "p6_racket_collision_proxy/1"
+    assert "NOT a manufacturer collision model" in doc["kind"]
+    assert doc["primitive_count"] == 43
+    assert len(doc["primitives"]) == 43
+    assert {item["type"] for item in doc["primitives"]} == {"capsule", "box"}
+
+
+def test_collision_proxy_loader_rejects_unknown_primitive_type(tmp_path):
+    import json
+
+    bad = {
+        "schema": "p6_racket_collision_proxy/1",
+        "kind": "ENGINEERING_PROXY — NOT a manufacturer collision model",
+        "primitive_count": 1,
+        "primitives": [{"id": "bad_shape", "type": "sphere", "geometry": {}}],
+    }
+    path = tmp_path / "bad_proxy.json"
+    path.write_text(json.dumps(bad), encoding="utf-8")
+    with pytest.raises(RacketMountError, match="unsupported collision primitive"):
+        load_racket_collision_proxy(str(path))
+
+
+
+@pytest.mark.parametrize("direction", [
+    (0.0, 0.0, 1.0),
+    (1.0, 0.0, 0.0),
+    (0.0, 1.0, 0.0),
+    (0.0, 0.0, -1.0),
+    (1.0, 2.0, 3.0),
+])
+def test_capsule_quaternion_rotates_local_z_onto_proxy_segment(direction):
+    import math
+    import numpy as np
+
+    w, x, y, z = _quat_wxyz_from_z_axis(direction)
+    rotation = np.array([
+        [1 - 2 * (y*y + z*z), 2 * (x*y - z*w), 2 * (x*z + y*w)],
+        [2 * (x*y + z*w), 1 - 2 * (x*x + z*z), 2 * (y*z - x*w)],
+        [2 * (x*z - y*w), 2 * (y*z + x*w), 1 - 2 * (x*x + y*y)],
+    ])
+    target = np.asarray(direction, dtype=float)
+    target /= np.linalg.norm(target)
+    assert rotation @ np.array([0.0, 0.0, 1.0]) == pytest.approx(target, abs=1e-6)
+
+
+
+def test_usd_capsule_spine_height_preserves_long_proxy_outer_endpoints():
+    # The source proxy endpoints describe the complete outer extent, not just the cylinder.
+    length = 0.15669
+    radius = 0.015845
+    height = capsule_spine_height_from_endpoints(
+        (0.0, 0.0, 0.0), (0.0, 0.0, length), radius
+    )
+    assert height == pytest.approx(0.125)
+    assert height + 2.0 * radius == pytest.approx(length)
+
+
+def test_usd_capsule_short_taper_fails_conservatively_to_zero_spine_height():
+    # This proxy segment is shorter than its cap diameter. A negative USD height is forbidden.
+    length = 0.014133
+    radius = 0.015845
+    height = capsule_spine_height_from_endpoints(
+        (0.0, 0.0, 0.0), (0.0, 0.0, length), radius
+    )
+    assert height == 0.0
+    assert height + 2.0 * radius >= length
