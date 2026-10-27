@@ -139,7 +139,7 @@ def run(train_manifest,frozen_eval_index,output_dir,val_manifest=None)->dict:
                        'label_conflicts':'contradictory_official_positive_rows.csv',
                        'report':'audit.json'}
     with (out/'audit.json').open('x',encoding='utf-8') as f:
-        json.dump(report,f,indent=2,ensure_ascii=False);f.write('\\n')
+        json.dump(report,f,indent=2,ensure_ascii=False);f.write('\n')
     return report
 
 
