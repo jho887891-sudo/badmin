@@ -35,6 +35,7 @@ jobs:
         run: |
           python -m pytest -q -rs \
             tests/simulation/rebot_b601_rs/test_scene_arm_route.py \
+            tests/simulation/rebot_b601_rs/test_p0_smoke_regressions.py \
             tests/simulation/rebot_b601_rs/test_racket_mount_adapter.py \
             tests/simulation/p6_racket_contact_kinematics_test.py \
             tests/simulation/p6_dynamic_fk_test.py \
