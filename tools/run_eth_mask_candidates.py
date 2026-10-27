@@ -222,7 +222,7 @@ def run_mask_candidates(inventory_csv: str | Path, output_dir: str | Path, *,
                 sheet.paste(tile,((j%cols)*tile_w,(j//cols)*tile_h))
             sheet.save(preview_dir/f'review_{(idx//sheet_size)+1:04d}.jpg',quality=88)
     with (out/'candidate_manifest.jsonl').open('x',encoding='utf-8') as f:
-        for rec in records:f.write(json.dumps(rec,ensure_ascii=False,separators=(',',':'))+'\\n')
+        for rec in records:f.write(json.dumps(rec,ensure_ascii=False,separators=(',',':'))+'\n')
     review_fields=list(review_rows[0].keys())
     with (out/'review.csv').open('x',newline='',encoding='utf-8') as f:
         writer=csv.DictWriter(f,fieldnames=review_fields);writer.writeheader();writer.writerows(review_rows)
@@ -247,7 +247,7 @@ def run_mask_candidates(inventory_csv: str | Path, output_dir: str | Path, *,
                  'Source hash or label hash mismatch blocks training use.',
                  'Review CSV decisions are intentionally blank.']
     }
-    with (out/'audit.json').open('x',encoding='utf-8') as f:json.dump(report,f,indent=2,ensure_ascii=False);f.write('\\n')
+    with (out/'audit.json').open('x',encoding='utf-8') as f:json.dump(report,f,indent=2,ensure_ascii=False);f.write('\n')
     return report
 
 
