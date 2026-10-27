@@ -183,6 +183,10 @@ def main(argv=None) -> int:
         robot = spawn_rebot_rs_directly(translation=tuple(REBOT_RS["mount_world"]))
 
         stage = omni.usd.get_context().get_stage()
+        # The converted robot USD includes instanceable link prims. We must
+        # author the racket mount on the runtime stage, not into an instance proxy
+        # and never into the referenced robot USD asset.
+        sim_utils.make_uninstanceable(REBOT_RS_PRIM_PATH, stage)
         arm_root = stage.GetPrimAtPath(REBOT_RS_PRIM_PATH)
         gripper_path = gripper_end_prim_path(REBOT_RS_PRIM_PATH)
         gripper = stage.GetPrimAtPath(gripper_path)
@@ -328,9 +332,14 @@ def main(argv=None) -> int:
         report["error"] = "%s: %s" % (type(exc).__name__, exc)
         report["traceback"] = traceback.format_exc()
     finally:
-        if app is not None:
-            app.close()
-        write_report_exclusive(output, report)
+        # In Isaac Sim 6.0 the native app.close() may call exit_group(0),
+        # bypassing all subsequent Python statements, including atexit.
+        # Persist authoritative PASS/FAIL evidence before initiating shutdown.
+        try:
+            write_report_exclusive(output, report)
+        finally:
+            if app is not None:
+                app.close()
 
     print(json.dumps(report, indent=2, ensure_ascii=False))
     print("WROTE", output)
