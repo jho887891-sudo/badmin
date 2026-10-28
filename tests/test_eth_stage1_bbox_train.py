@@ -15,6 +15,7 @@ from generate_eth_stage1_bbox_preview import LOCATIONS, run
 from train_eth_stage1_bbox import (
     TrainingBlocked, check_synthetic_dataset, check_real_val,
     materialize_dataset_config, preflight, sha256, inspect_loaded_yolo26s,
+    build_stage1_train_kwargs,
 )
 
 
@@ -163,3 +164,33 @@ def test_yolo26s_model_identity_checks_loaded_architecture():
     ):
         with pytest.raises(TrainingBlocked, match='YOLO26s'):
             inspect_loaded_yolo26s(invalid)
+
+
+def test_explicit_warmup_prevents_bias_learning_rate_spike(tmp_path):
+    kwargs = build_stage1_train_kwargs(tmp_path/'dataset.yaml', tmp_path/'run',
+                                       epochs=30, batch=8, seed=20261027,
+                                       device='0', workers=4, lr0=1e-4)
+    assert kwargs['optimizer'] == 'AdamW'
+    assert kwargs['lr0'] == pytest.approx(1e-4)
+    assert kwargs['warmup_epochs'] == pytest.approx(3.0)
+    assert kwargs['warmup_bias_lr'] == pytest.approx(0.0)
+    assert kwargs['imgsz'] == 1024
+    assert kwargs['scale'] == 0.0
+    assert kwargs['mosaic'] == 0.0
+
+
+def test_warmup_settings_apply_to_smoke_and_formal_runs(tmp_path):
+    for epochs, batch in ((1, 4), (30, 8)):
+        kwargs = build_stage1_train_kwargs(tmp_path/'data.yaml', tmp_path/'run',
+                                           epochs=epochs, batch=batch, seed=1,
+                                           device='0', workers=0, lr0=1e-4)
+        assert kwargs['warmup_bias_lr'] == 0.0
+        assert kwargs['warmup_epochs'] == 3.0
+        assert kwargs['epochs'] == epochs and kwargs['batch'] == batch
+
+
+def test_training_hyperparameters_reject_nonpositive_lr(tmp_path):
+    with pytest.raises(TrainingBlocked, match='invalid training hyperparameters'):
+        build_stage1_train_kwargs(tmp_path/'data.yaml', tmp_path/'run',
+                                  epochs=30, batch=8, seed=1,
+                                  device='0', workers=4, lr0=0.0)

@@ -225,6 +225,9 @@ def preflight(dataset: Path, val_csv: Path, model: Path, model_sha256: str,
               'time_bins_proxy_not_physical_time': True,
               'visual_quality_review': 'UNKNOWN_UNLESS_SEPARATELY_SIGNED_OFF',
               'checkpoint_selection_scope': 'internal_real_val_only',
+              'optimizer': 'AdamW', 'lr0': 1e-4,
+              'warmup_epochs': 3.0, 'warmup_bias_lr': 0.0,
+              'warmup_bias_lr_contract': 'bias_lr_starts_at_zero_then_warms_up_to_scheduler_target',
               'dataset_root': str(dataset), 'val_manifest': str(val_csv), 'run_root': str(run_root)}
     return result, real_val
 
@@ -251,24 +254,40 @@ def materialize_dataset_config(dataset: Path, val: list[dict], run_root: Path) -
     return yaml_path
 
 
-def launch_train(trainer: Any, yaml_path: Path, run_root: Path, *, epochs: int, batch: int,
-                 seed: int, device: str, workers: int, lr0: float) -> None:
+def build_stage1_train_kwargs(yaml_path: Path, run_root: Path, *, epochs: int, batch: int,
+                              seed: int, device: str, workers: int, lr0: float) -> dict:
+    """Explicitly control Ultralytics warmup for all parameter groups.
+
+    With optimizer=AdamW, Ultralytics normally uses warmup_bias_lr=0.1.
+    For lr0=1e-4 this can yield bias-group rates 300-700x higher in
+    epochs 1-2. Setting it to 0 makes bias warm up from zero like other
+    groups; this is a deliberate change from the previous 9-epoch run.
+    """
     if epochs < 1 or batch < 1 or workers < 0 or lr0 <= 0:
         raise TrainingBlocked('invalid training hyperparameters')
+    return dict(data=str(yaml_path), imgsz=1024, epochs=epochs, batch=batch,
+                optimizer='AdamW', lr0=lr0, seed=seed, deterministic=True,
+                # Explicit warmup settings: no hidden 0.1 bias LR.
+                warmup_epochs=3.0, warmup_bias_lr=0.0,
+                device=device, workers=workers, project=str(run_root), name='training',
+                exist_ok=False, val=True, save=True, save_period=1,
+                patience=epochs, cache=False, multi_scale=False,
+                mosaic=0.0, mixup=0.0, copy_paste=0.0,
+                hsv_h=0.0, hsv_s=0.0, hsv_v=0.0,
+                degrees=0.0, translate=0.0, scale=0.0, shear=0.0,
+                perspective=0.0, flipud=0.0, fliplr=0.0,
+                close_mosaic=0)
+
+
+def launch_train(trainer: Any, yaml_path: Path, run_root: Path, *, epochs: int, batch: int,
+                 seed: int, device: str, workers: int, lr0: float) -> None:
+    kwargs = build_stage1_train_kwargs(yaml_path, run_root, epochs=epochs, batch=batch,
+                                       seed=seed, device=device, workers=workers, lr0=lr0)
     import torch
     if not torch.cuda.is_available():
         raise TrainingBlocked('CUDA not available; refuse GPU training')
     inspect_loaded_yolo26s(trainer)
-    trainer.train(data=str(yaml_path), imgsz=1024, epochs=epochs, batch=batch,
-                  optimizer='AdamW', lr0=lr0, seed=seed, deterministic=True,
-                  device=device, workers=workers, project=str(run_root), name='training',
-                  exist_ok=False, val=True, save=True, save_period=1,
-                  patience=epochs, cache=False, multi_scale=False,
-                  mosaic=0.0, mixup=0.0, copy_paste=0.0,
-                  hsv_h=0.0, hsv_s=0.0, hsv_v=0.0,
-                  degrees=0.0, translate=0.0, scale=0.0, shear=0.0,
-                  perspective=0.0, flipud=0.0, fliplr=0.0,
-                  close_mosaic=0)
+    trainer.train(**kwargs)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -298,6 +317,7 @@ def main(argv: list[str] | None = None) -> int:
             raise TrainingBlocked('invalid hyperparameters')
         summary['requested_epochs'] = args.epochs
         summary['batch'] = args.batch
+        summary['lr0'] = args.lr0
         summary['seed'] = args.seed
         summary['execute_requested'] = args.execute
         if not args.execute:
