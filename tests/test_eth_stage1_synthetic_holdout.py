@@ -14,6 +14,7 @@ from build_eth_stage1_synthetic_holdout import build,source_split,HoldoutBlocked
 from generate_eth_stage1_bbox_preview import LOCATIONS,load_inventory,sha256,PALETTE
 from train_eth_stage1_synthetic_holdout import (
     check_synthetic_validation,preflight,make_dataset_yaml,TrainingBlocked,
+    is_valid_normalized_box,
 )
 
 def fixture_inventory(root:Path, frames:int=32)->Path:
@@ -129,3 +130,20 @@ def test_reject_existing_output_and_check_model_sha(generated):
         build(inv,root,expected_instances=192,embargo_frames=2)
     with pytest.raises(TrainingBlocked,match='SHA mismatch'):
         preflight(root,model,'0'*64,root.parent/'new_run',expected_original=192)
+
+
+def test_nine_decimal_yolo_boundary_rounding_is_accepted():
+    # A 1 px box at the origin in 1024x1024, rounded to nine decimal places.
+    w = round(1/1024, 9)
+    cx = round((1/1024)/2, 9)
+    assert cx-w/2 < 0
+    assert is_valid_normalized_box(cx,cx,w,w)
+    # Equally important: near the opposite image edge.
+    assert is_valid_normalized_box(1-cx,1-cx,w,w)
+
+
+def test_rounded_bbox_tolerance_rejects_real_invalid_geometry():
+    assert not is_valid_normalized_box(0.0001,0.5,0.001,0.1)
+    assert not is_valid_normalized_box(0.5,0.5,0.0,0.1)
+    assert not is_valid_normalized_box(float('nan'),0.5,0.1,0.1)
+    assert not is_valid_normalized_box(0.5,float('inf'),0.1,0.1)

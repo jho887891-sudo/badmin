@@ -93,6 +93,24 @@ def _check_split_sources(root:Path,report:dict)->tuple[dict,dict]:
             raise TrainingBlocked('same source frame appears across partitions')
     return inv,hashes
 
+# PNG/label generation writes nine decimal places. Its rounded YOLO center and
+# size can place a mathematically valid border box ~5e-10 outside the canvas.
+# Tolerate only that quantization error; still reject materially invalid boxes.
+_NORMALIZED_LABEL_EPS = 1e-9
+
+
+def is_valid_normalized_box(cx:float,cy:float,w:float,h:float)->bool:
+    if not all(math.isfinite(q) for q in (cx,cy,w,h)):
+        return False
+    if not (0 < w <= 1 and 0 < h <= 1):
+        return False
+    return (0 <= cx <= 1 and 0 <= cy <= 1
+            and cx-w/2 >= -_NORMALIZED_LABEL_EPS
+            and cy-h/2 >= -_NORMALIZED_LABEL_EPS
+            and cx+w/2 <= 1+_NORMALIZED_LABEL_EPS
+            and cy+h/2 <= 1+_NORMALIZED_LABEL_EPS)
+
+
 def check_synthetic_validation(val_dir:Path, *, expected_unique:int,
                                forbidden_hashes:set[str],
                                verify_output_hashes:bool=True)->dict:
@@ -156,8 +174,7 @@ def check_synthetic_validation(val_dir:Path, *, expected_unique:int,
             cx,cy,w,h=map(float,parts[1:])
         except ValueError as exc:
             raise TrainingBlocked('synthetic val label has bad coordinates') from exc
-        if not all(math.isfinite(q) for q in (cx,cy,w,h)) or not (
-            0<w<=1 and 0<h<=1 and w/2<=cx<=1-w/2 and h/2<=cy<=1-h/2):
+        if not is_valid_normalized_box(cx,cy,w,h):
             raise TrainingBlocked('invalid synthetic val BBox normalized coordinates')
     if len(ids)!=expected_unique or dict(sorted(scene_count.items()))!=report.get('by_scene'):
         raise TrainingBlocked('val scene/source coverage mismatch')
