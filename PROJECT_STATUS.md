@@ -1,5 +1,7 @@
 # Project Status
 
+> **羽毛球检测/ETH 增强独立工作线（2026-10-28 更新）：** Stage 1 BBox-only 真实 ETH 预览 **100 张图片 + 100 标签已生成**（服务器回传 `PASS_DATA_GENERATION_NOT_TRAINING`），固定代码 SHA `5d9ab53d586a2cac05ce7568954c349220818445`。**视觉 QA、Mask 批准、YOLO 训练和真实视频 Recall 均未验证**。入口：[ETH Stage 1 BBox-only 实施与验收](docs/shuttle_detection/ETH_STAGE1_BBOX_ONLY.md)。该独立视觉工作线不替代下方旧版整机 PiPER/RL 状态；下方旧记录时间是 2026-09-09，应在对应整机任务核验后更新。
+
 > 保持简短：30 秒看懂项目在哪。每日工作结束或关键节点更新。
 
 - **Current Stage:** 仿真环境已就绪并冻结 baseline；**PiPER Stage 0 完成**（导入/articulation/限位/坐标系/控制全部验收通过）；RL Stage 0 未开始
