@@ -133,9 +133,10 @@ def test_reject_existing_output_and_check_model_sha(generated):
 
 
 def test_nine_decimal_yolo_boundary_rounding_is_accepted():
-    # A 1 px box at the origin in 1024x1024, rounded to nine decimal places.
-    w = round(1/1024, 9)
-    cx = round((1/1024)/2, 9)
+    # A 2 px box at the origin in 1024x1024, rounded to nine decimal places.
+    # Its 0.0009765625 center rounds down, while the size remains exact.
+    w = round(2/1024, 9)
+    cx = round((2/1024)/2, 9)
     assert cx-w/2 < 0
     assert is_valid_normalized_box(cx,cx,w,w)
     # Equally important: near the opposite image edge.
