@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Train YOLO Stage-1 on *full, scene/time-balanced* ETH BBox-only composites.
+"""Train YOLO26s detection Stage-1 on *full, scene/time-balanced* ETH BBox-only composites.
 
 Requires exact source hashes, independent internal-validation *source* hashes,
 verified model checkpoint bytes, and newly allocated output root.
@@ -18,6 +18,36 @@ from typing import Any
 
 class TrainingBlocked(RuntimeError):
     pass
+
+
+REQUIRED_MODEL_FILENAME = 'yolo26s.pt'
+
+
+def validate_checkpoint_filename(model: Path) -> None:
+    """Fail closed before any GPU use: this experiment starts from YOLO26s."""
+    if model.name.lower() != REQUIRED_MODEL_FILENAME:
+        raise TrainingBlocked('Stage 1 requires an explicitly verified yolo26s.pt; '
+                              'got ' + model.name)
+
+
+def inspect_loaded_yolo26s(loaded: Any) -> dict:
+    """Inspect the actual parsed network, not just the checkpoint filename.
+
+    Ultralytics stores original YAML metadata in loaded.model.yaml.
+    A renamed YOLOv8s or YOLO26 segmentation model must not pass.
+    """
+    network = getattr(loaded, 'model', None)
+    model_yaml = getattr(network, 'yaml', None)
+    if not isinstance(model_yaml, dict):
+        raise TrainingBlocked('YOLO26s architecture YAML metadata unavailable')
+    task = str(getattr(loaded, 'task', ''))
+    config_name = str(model_yaml.get('yaml_file', '')).lower()
+    scale = str(model_yaml.get('scale', '')).lower()
+    if task != 'detect' or 'yolo26' not in Path(config_name).stem or scale != 's':
+        raise TrainingBlocked('checkpoint is not YOLO26s detection: '
+                              f'task={task!r}, yaml_file={config_name!r}, scale={scale!r}')
+    return {'task': task, 'yaml_file': config_name, 'scale': scale,
+            'architecture_verified': True}
 
 
 def sha256(path: Path) -> str:
@@ -174,6 +204,7 @@ def preflight(dataset: Path, val_csv: Path, model: Path, model_sha256: str,
               expected_unique: int = 13992, verify_output_hashes: bool = True) -> tuple[dict, list[dict]]:
     if run_root.exists():
         raise TrainingBlocked('run root already exists: '+str(run_root))
+    validate_checkpoint_filename(model)
     data = check_synthetic_dataset(dataset, bins=bins, expected_unique=expected_unique,
                                    verify_output_hashes=verify_output_hashes)
     real_val = check_real_val(val_csv, val_root=val_root,
@@ -182,6 +213,8 @@ def preflight(dataset: Path, val_csv: Path, model: Path, model_sha256: str,
     if len(target_sha) != 64 or not model.is_file() or sha256(model) != target_sha:
         raise TrainingBlocked('checkpoint path or SHA256 mismatch')
     result = {'status': 'PASS', 'model': str(model), 'model_sha256': target_sha,
+              'model_family_requested': 'YOLO26s', 'model_filename_checked': True,
+              'architecture_loaded_and_checked': False,
               'stage': 'stage1_bbox_only', 'imgsz': 1024,
               'train_images': data['images'], 'train_unique_instances': len(data['source_ids']),
               'train_duplicate_exposures': data['duplicates'], 'per_scene_time_exposures': data['scene_time_exposures'],
@@ -218,15 +251,14 @@ def materialize_dataset_config(dataset: Path, val: list[dict], run_root: Path) -
     return yaml_path
 
 
-def launch_train(model: Path, yaml_path: Path, run_root: Path, *, epochs: int, batch: int,
+def launch_train(trainer: Any, yaml_path: Path, run_root: Path, *, epochs: int, batch: int,
                  seed: int, device: str, workers: int, lr0: float) -> None:
     if epochs < 1 or batch < 1 or workers < 0 or lr0 <= 0:
         raise TrainingBlocked('invalid training hyperparameters')
     import torch
     if not torch.cuda.is_available():
         raise TrainingBlocked('CUDA not available; refuse GPU training')
-    from ultralytics import YOLO
-    trainer = YOLO(str(model))
+    inspect_loaded_yolo26s(trainer)
     trainer.train(data=str(yaml_path), imgsz=1024, epochs=epochs, batch=batch,
                   optimizer='AdamW', lr0=lr0, seed=seed, deterministic=True,
                   device=device, workers=workers, project=str(run_root), name='training',
@@ -279,12 +311,23 @@ def main(argv: list[str] | None = None) -> int:
         if args.device != '0':
             raise TrainingBlocked('this stage1 training contract expects device 0 only')
         summary['cuda_name'] = torch.cuda.get_device_name(0)
+        try:
+            from ultralytics import YOLO
+            import ultralytics
+            trainer = YOLO(str(args.model))
+            summary['loaded_architecture'] = inspect_loaded_yolo26s(trainer)
+            summary['ultralytics_version'] = str(ultralytics.__version__)
+            summary['architecture_loaded_and_checked'] = True
+        except TrainingBlocked:
+            raise
+        except Exception as exc:
+            raise TrainingBlocked('YOLO26s load/Ultralytics compatibility failed: '+repr(exc)) from exc
         yaml_path = materialize_dataset_config(args.dataset_root, valid, args.run_root)
         (args.run_root/'preflight.json').write_text(json.dumps(summary, ensure_ascii=False,
                                                               indent=2)+'\n', encoding='utf-8')
         print(json.dumps({'status': 'TRAINING_LAUNCH', 'preflight': str(args.run_root/'preflight.json'),
                           'data_yaml': str(yaml_path)}, ensure_ascii=False), flush=True)
-        launch_train(args.model, yaml_path, args.run_root, epochs=args.epochs,
+        launch_train(trainer, yaml_path, args.run_root, epochs=args.epochs,
                      batch=args.batch, seed=args.seed, device=args.device,
                      workers=args.workers, lr0=args.lr0)
         return 0

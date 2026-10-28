@@ -5,6 +5,7 @@ import hashlib
 import json
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from PIL import Image
@@ -13,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent/'tools'))
 from generate_eth_stage1_bbox_preview import LOCATIONS, run
 from train_eth_stage1_bbox import (
     TrainingBlocked, check_synthetic_dataset, check_real_val,
-    materialize_dataset_config, preflight, sha256,
+    materialize_dataset_config, preflight, sha256, inspect_loaded_yolo26s,
 )
 
 
@@ -60,7 +61,7 @@ def prepared(tmp_path: Path):
     root = tmp_path/'synthetic'
     report = run(inv, root, mode='balanced-full', expected_count=0, bins=2,
                  size=(1024,1024), seed=1)
-    model = tmp_path/'yolov8s.pt'
+    model = tmp_path/'yolo26s.pt'
     model.write_bytes(b'model-fixture-only')
     return root, model, inv, report
 
@@ -137,3 +138,28 @@ def test_dataset_yaml_has_real_val_symlinks(tmp_path):
     assert (tmp_path/'new_run/validation/labels/000000.txt').is_symlink()
     with pytest.raises(TrainingBlocked, match='exists'):
         materialize_dataset_config(root, checked, tmp_path/'new_run')
+
+
+def test_yolov8s_checkpoint_filename_is_rejected(tmp_path):
+    root, model, inv, report = prepared(tmp_path)
+    val = make_val(tmp_path)
+    old_model = tmp_path/'yolov8s.pt'
+    old_model.write_bytes(model.read_bytes())
+    with pytest.raises(TrainingBlocked, match='yolo26s'):
+        preflight(root, val, old_model, sha256(old_model), tmp_path/'new_run',
+                  expected_unique=24, bins=2)
+
+
+def test_yolo26s_model_identity_checks_loaded_architecture():
+    def stub(yaml, task='detect'):
+        return SimpleNamespace(task=task, model=SimpleNamespace(yaml=yaml))
+    valid = stub({'yaml_file':'yolo26.yaml', 'scale':'s'})
+    assert inspect_loaded_yolo26s(valid)['architecture_verified']
+    for invalid in (
+        stub({'yaml_file':'yolov8.yaml', 'scale':'s'}),
+        stub({'yaml_file':'yolo26.yaml', 'scale':'n'}),
+        stub({'yaml_file':'yolo26-seg.yaml', 'scale':'s'}, task='segment'),
+        stub({}, task='detect'),
+    ):
+        with pytest.raises(TrainingBlocked, match='YOLO26s'):
+            inspect_loaded_yolo26s(invalid)
